@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="9,00"
+	Name="maxcalcengine"
+	ProjectGUID="{82ACA313-8E59-44E2-9F32-C33D68CA776A}"
+	Keyword="MakeFileProj"
+	TargetFrameworkVersion="131072"
+	>
+	<Platforms>
+		<Platform
+			Name="Win32"
+		/>
+	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="..\$(ConfigurationName)\$(ProjectName)"
+			IntermediateDirectory="..\$(ConfigurationName)\$(ProjectName)"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="cd ..\$(ConfigurationName) &amp;&amp; nmake"
+				ReBuildCommandLine="cd ..\$(ConfigurationName) &amp;&amp; cmake .. &amp;&amp; nmake"
+				CleanCommandLine="cd ..\$(ConfigurationName) &amp;&amp; nmake clean"
+				Output="..\$(ConfigurationName)\$(ProjectName)\maxcalcengine.exe"
+				PreprocessorDefinitions="WIN32;_DEBUG"
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="..\$(ConfigurationName)\$(ProjectName)"
+			IntermediateDirectory="..\$(ConfigurationName)\$(ProjectName)"
+			ConfigurationType="0"
+			>
+			<Tool
+				Name="VCNMakeTool"
+				BuildCommandLine="cd ..\$(ConfigurationName) &amp;&amp; nmake"
+				ReBuildCommandLine="cd ..\$(ConfigurationName) &amp;&amp; cmake .. &amp;&amp; nmake"
+				CleanCommandLine=""
+				Output="..\$(ConfigurationName)\$(ProjectName)\maxcalcengine.exe"
+				PreprocessorDefinitions="WIN32;NDEBUG"
+				IncludeSearchPath=""
+				ForcedIncludes=""
+				AssemblySearchPath=""
+				ForcedUsingAssemblies=""
+				CompileAsManaged=""
+			/>
+		</Configuration>
+	</Configurations>
+	<References>
+	</References>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
+			>
+			<File
+				RelativePath=".\decNumber\decContext.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\decNumber\decNumber.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+			>
+			<File
+				RelativePath=".\decNumber\decContext.h"
+				>
+			</File>
+			<File
+				RelativePath=".\decNumber\decNumber.h"
+				>
+			</File>
+			<File
+				RelativePath=".\decNumber\decNumberLocal.h"
+				>
+			</File>
+			<File
+				RelativePath=".\decNumber\gstdint.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			>
+		</Filter>
+		<File
+			RelativePath=".\CMakeLists.txt"
+			>
+		</File>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

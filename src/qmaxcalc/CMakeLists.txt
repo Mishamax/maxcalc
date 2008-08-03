@@ -1,0 +1,35 @@
+# QMaxCalc CMakeLists.txt
+
+#
+# Qt4 support
+#
+
+FIND_PACKAGE (Qt4)
+INCLUDE (${QT_USE_FILE})
+
+# It's needed to solve linking problems under Windows when WIN32 option is specified in ADD_EXECUTABLE()
+IF (WIN32)
+	LINK_LIBRARIES (${QT_QTMAIN_LIBRARY})
+ENDIF (WIN32)
+
+
+#
+# MaxCalc Engine
+#
+
+INCLUDE_DIRECTORIES (${MAXCALC_SOURCE_DIR}/maxcalcengine)
+LINK_DIRECTORIES (${MAXCALC_BINARY_DIR}/maxcalcengine)
+
+
+#
+# Add executable and link MaxCalc Engine
+#
+
+# WIN32 is specified on Windows to remove console
+IF (WIN32)
+	ADD_EXECUTABLE (qmaxcalc WIN32 main.cpp)
+ELSE (WIN32)
+	ADD_EXECUTABLE (qmaxcalc main.cpp)
+ENDIF (WIN32)
+
+TARGET_LINK_LIBRARIES (qmaxcalc ${QT_LIBRARIES} maxcalcengine)
