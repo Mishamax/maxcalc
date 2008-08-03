@@ -9,6 +9,9 @@ IF (COMMAND cmake_policy)
 	CMAKE_POLICY (SET CMP0003 NEW)
 ENDIF (COMMAND cmake_policy)
 
+ENABLE_TESTING()
+
 ADD_SUBDIRECTORY (maxcalcengine)
 ADD_SUBDIRECTORY (maxcalc)
 ADD_SUBDIRECTORY (qmaxcalc)
+ADD_SUBDIRECTORY (maxcalctest)
