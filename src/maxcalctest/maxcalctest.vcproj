@@ -27,8 +27,8 @@
 				ReBuildCommandLine="cd ..\$(ConfigurationName) &amp;&amp; cmake .. &amp;&amp; nmake"
 				CleanCommandLine="cd ..\$(ConfigurationName) &amp;&amp; nmake clean"
 				Output="..\$(ConfigurationName)\$(ProjectName)\maxcalctest.exe"
-				PreprocessorDefinitions="WIN32;_DEBUG"
-				IncludeSearchPath=""
+				PreprocessorDefinitions="WIN32;_DEBUG;UNICODE;_UNICODE"
+				IncludeSearchPath="..\maxcalcengine"
 				ForcedIncludes=""
 				AssemblySearchPath=""
 				ForcedUsingAssemblies=""
@@ -47,7 +47,7 @@
 				ReBuildCommandLine=""
 				CleanCommandLine=""
 				Output="maxcalctest.exe"
-				PreprocessorDefinitions="WIN32;NDEBUG"
+				PreprocessorDefinitions="WIN32;NDEBUG;UNICODE;_UNICODE"
 				IncludeSearchPath=""
 				ForcedIncludes=""
 				AssemblySearchPath=""
@@ -65,7 +65,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\main.cpp"
+				RelativePath=".\stringconv.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\test.cpp"
 				>
 			</File>
 		</Filter>
@@ -74,6 +78,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\test.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

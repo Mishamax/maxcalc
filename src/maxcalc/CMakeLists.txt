@@ -12,5 +12,7 @@ LINK_DIRECTORIES (${MAXCALC_BINARY_DIR}/maxcalcengine)
 # Add executable and link MaxCalc Engine
 #
 
+ADD_DEFINITIONS (-DUNICODE -D_UNICODE)
+
 ADD_EXECUTABLE (maxcalc main.cpp)
 TARGET_LINK_LIBRARIES (maxcalc maxcalcengine)

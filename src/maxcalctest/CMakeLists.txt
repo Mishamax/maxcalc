@@ -12,6 +12,8 @@ LINK_DIRECTORIES (${MAXCALC_BINARY_DIR}/maxcalcengine)
 # Add executable, link MaxCalc Engine and add test
 #
 
-ADD_EXECUTABLE (maxcalctest main.cpp)
-TARGET_LINK_LIBRARIES (maxcalctest maxcalcengine)
-ADD_TEST (maxcalctest ${MAXCALC_BINARY_DIR}/maxcalctest/maxcalctest.exe)
+ADD_DEFINITIONS (-DUNICODE -D_UNICODE)
+
+ADD_EXECUTABLE (stringconv stringconv.cpp test.cpp)
+TARGET_LINK_LIBRARIES (stringconv maxcalcengine)
+ADD_TEST (stringconv ${MAXCALC_BINARY_DIR}/maxcalctest/stringconv.exe)

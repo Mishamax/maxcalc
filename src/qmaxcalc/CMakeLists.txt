@@ -25,6 +25,8 @@ LINK_DIRECTORIES (${MAXCALC_BINARY_DIR}/maxcalcengine)
 # Add executable and link MaxCalc Engine
 #
 
+ADD_DEFINITIONS (-DUNICODE -D_UNICODE)
+
 # WIN32 is specified on Windows to remove console
 IF (WIN32)
 	ADD_EXECUTABLE (qmaxcalc WIN32 main.cpp)
