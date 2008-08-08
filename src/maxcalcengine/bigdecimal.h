@@ -17,16 +17,39 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
-#include "bigdecimal.h"
+#ifndef BIGDECIMAL_H
+#define BIGDECIMAL_H
 
-#include <iostream>
+/*!
+	Defines precision of BigDecimal in decimal digits.
+	MaxCalcEngine has to be recompiled in order to change precision.
+*/
+#define DECNUMDIGITS 100
+
+#include "decNumber/decNumber.h"
+#include "tstring.h"
 
 using namespace std;
 
-int main(int argc, char ** argv)
+class BigDecimal
 {
-//	BigDecimal res = BigDecimal(L"12234.234") * BigDecimal(L"2434.23443") / BigDecimal(L"3.1");
-	BigDecimal res = BigDecimal(L"100000000000000000") / BigDecimal(L"2");
-	wcout << res.toString().c_str() << endl;
-	return 0;
-}
+public:
+	BigDecimal(const tstring & str);
+	BigDecimal(const BigDecimal & decimal);
+	BigDecimal(const decNumber & num);
+
+	tstring toString(bool engineeringFormat = false, const int digitsAfterDecimalPoint = -1);
+
+	BigDecimal operator+(const BigDecimal & decimal);
+	BigDecimal operator-(const BigDecimal & decimal);
+	BigDecimal operator*(const BigDecimal & decimal);
+	BigDecimal operator/(const BigDecimal & decimal);
+
+private:
+	decNumber number;
+	decContext context;
+
+	void initContext();
+};
+
+#endif

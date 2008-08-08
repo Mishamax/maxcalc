@@ -22,10 +22,18 @@
 
 #include <string>
 
+using namespace std;
+
 #ifdef UNICODE
-typedef tstring std::wstring;
+
+typedef wchar_t tchar;
+typedef wstring tstring;
+
 #else
-typedef tstring std::string;
+
+typedef char   tchar;
+typedef string tstring;
+
 #endif // UNICODE
 
 #endif // TSTRING_H

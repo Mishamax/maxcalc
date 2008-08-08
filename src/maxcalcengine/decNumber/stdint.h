@@ -1,4 +1,4 @@
-/* gstdint.h –– some standard integer types from C99 */
+/* stdint.h –– some standard integer types from C99 */
 
 typedef unsigned char uint8_t;
 typedef char int8_t;

@@ -7,4 +7,5 @@ ADD_LIBRARY (maxcalcengine STATIC
 	decNumber/decContext.cpp
 	
 	stringconv.cpp
+	bigdecimal.cpp
 	)
