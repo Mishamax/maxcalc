@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="maxcalc"
+	Name="maxcalc-cli"
 	ProjectGUID="{C0835760-DD97-4F69-885D-84346E963BF5}"
 	RootNamespace="maxcalc"
 	Keyword="MakeFileProj"

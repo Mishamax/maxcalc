@@ -29,9 +29,10 @@ ADD_DEFINITIONS (-DUNICODE -D_UNICODE)
 
 # WIN32 is specified on Windows to remove console
 IF (WIN32)
-	ADD_EXECUTABLE (qmaxcalc WIN32 main.cpp)
+	ADD_EXECUTABLE (maxcalc-win WIN32 main.cpp)
+	TARGET_LINK_LIBRARIES (maxcalc-win ${QT_LIBRARIES} maxcalcengine)
 ELSE (WIN32)
-	ADD_EXECUTABLE (qmaxcalc main.cpp)
+	ADD_EXECUTABLE (maxcalc-gui main.cpp)
+	TARGET_LINK_LIBRARIES (maxcalc-gui ${QT_LIBRARIES} maxcalcengine)
 ENDIF (WIN32)
 
-TARGET_LINK_LIBRARIES (qmaxcalc ${QT_LIBRARIES} maxcalcengine)

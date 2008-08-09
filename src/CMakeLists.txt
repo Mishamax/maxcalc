@@ -12,6 +12,6 @@ ENDIF (COMMAND cmake_policy)
 ENABLE_TESTING()
 
 ADD_SUBDIRECTORY (maxcalcengine)
-ADD_SUBDIRECTORY (maxcalc)
-ADD_SUBDIRECTORY (qmaxcalc)
+ADD_SUBDIRECTORY (maxcalc-cli)
+ADD_SUBDIRECTORY (maxcalc-gui)
 ADD_SUBDIRECTORY (maxcalctest)

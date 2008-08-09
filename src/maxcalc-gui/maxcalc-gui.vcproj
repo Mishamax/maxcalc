@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="qmaxcalc"
+	Name="maxcalc-gui"
 	ProjectGUID="{919415BD-59F5-4DD0-A87B-FD05D0E953DA}"
 	RootNamespace="qmaxcalc"
 	Keyword="MakeFileProj"
@@ -27,7 +27,7 @@
 				BuildCommandLine="cd ..\$(ConfigurationName) &amp;&amp; nmake"
 				ReBuildCommandLine="cd ..\$(ConfigurationName) &amp;&amp; cmake .. &amp;&amp; nmake"
 				CleanCommandLine="cd ..\$(ConfigurationName) &amp;&amp; nmake clean"
-				Output="..\$(ConfigurationName)\$(ProjectName)\qmaxcalc.exe"
+				Output="..\$(ConfigurationName)\$(ProjectName)\maxcalc-win.exe"
 				PreprocessorDefinitions="WIN32;_DEBUG;UNICODE;_UNICODE"
 				IncludeSearchPath=""
 				ForcedIncludes=""

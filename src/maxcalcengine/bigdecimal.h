@@ -27,18 +27,17 @@
 #define DECNUMDIGITS 100
 
 #include "decNumber/decNumber.h"
-#include "tstring.h"
+#include <QString>
 
-using namespace std;
 
 class BigDecimal
 {
 public:
-	BigDecimal(const tstring & str);
+	BigDecimal(const QString & str);
 	BigDecimal(const BigDecimal & decimal);
 	BigDecimal(const decNumber & num);
 
-	tstring toString(bool engineeringFormat = false, const int digitsAfterDecimalPoint = -1);
+	QString toString(bool engineeringFormat = false, const int digitsAfterDecimalPoint = -1);
 
 	BigDecimal operator+(const BigDecimal & decimal);
 	BigDecimal operator-(const BigDecimal & decimal);

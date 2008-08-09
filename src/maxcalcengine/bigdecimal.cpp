@@ -18,9 +18,7 @@
  *****************************************************************************/
 
 #include "bigdecimal.h"
-#include "stringconv.h"
 
-using namespace std;
 
 /*!
 	\class BigDecimal
@@ -36,17 +34,10 @@ using namespace std;
 /*!
 	Constructs a new instance of \c BigDecimal class from given \a str.
 */
-BigDecimal::BigDecimal(const tstring & str)
+BigDecimal::BigDecimal(const QString & str)
 {
 	initContext();
-
-#ifdef UNICODE
-	string narrowStr;
-	StringConv::wideCharToMultiByte(StringConv::LOCAL_8BIT, str, narrowStr);
-	decNumberFromString(&number, narrowStr.c_str(), &context);
-#else
-	decNumberFromString(&number, str.c_str(), &context);
-#endif
+	decNumberFromString(&number, str.toAscii().data(), &context);
 	decNumberTrim(&number);
 }
 
@@ -71,7 +62,7 @@ BigDecimal::BigDecimal(const decNumber & num)
 	If \a digitsAfterDecimalPoint is -1 the default precision is used.
 	If specified precision is too high and cannot be provided the default precision is used as well.
 */
-tstring BigDecimal::toString(bool engineeringFormat, const int digitsAfterDecimalPoint)
+QString BigDecimal::toString(bool engineeringFormat, const int digitsAfterDecimalPoint)
 {
 	_ASSERTE(digitsAfterDecimalPoint >= -1);
 
@@ -97,16 +88,9 @@ tstring BigDecimal::toString(bool engineeringFormat, const int digitsAfterDecima
 	else
 		decNumberToString(numberToConvert, str);
 
-	tstring tstr;
-
-#ifdef UNICODE
-	StringConv::multiByteToWideChar(StringConv::LOCAL_8BIT, str, tstr);
-#else
-	tstr = str;
-#endif
-
+	QString qstr(str);
 	delete str;
-	return tstr;
+	return qstr;
 }
 
 /*!

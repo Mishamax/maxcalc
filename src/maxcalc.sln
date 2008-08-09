@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "maxcalc", "maxcalc\maxcalc.vcproj", "{C0835760-DD97-4F69-885D-84346E963BF5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "maxcalc-cli", "maxcalc-cli\maxcalc-cli.vcproj", "{C0835760-DD97-4F69-885D-84346E963BF5}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "maxcalcengine", "maxcalcengine\maxcalcengine.vcproj", "{82ACA313-8E59-44E2-9F32-C33D68CA776A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "qmaxcalc", "qmaxcalc\qmaxcalc.vcproj", "{919415BD-59F5-4DD0-A87B-FD05D0E953DA}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "maxcalc-gui", "maxcalc-gui\maxcalc-gui.vcproj", "{919415BD-59F5-4DD0-A87B-FD05D0E953DA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A04B3DD3-2253-4925-86C7-B975941C1DAA}"
 	ProjectSection(SolutionItems) = preProject

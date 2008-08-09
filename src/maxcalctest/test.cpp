@@ -13,3 +13,7 @@ void Test(const char * fileName, int lineNumber, bool isSucceded, const char * e
 		cerr << endl << fileName << "\nLine " << lineNumber << ":\t" << expr << endl << endl;
 	}
 }
+
+void main()
+{
+}
