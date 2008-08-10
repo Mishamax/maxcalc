@@ -27,28 +27,107 @@
 #define DECNUMDIGITS 100
 
 #include "decNumber/decNumber.h"
+#include "exception.h"
+
 #include <QString>
 
 
 class BigDecimal
 {
 public:
+
+	// Constructors
 	BigDecimal(const QString & str);
 	BigDecimal(const BigDecimal & decimal);
 	BigDecimal(const decNumber & num);
+	BigDecimal(const int num);
+	BigDecimal(const unsigned num);
 
+	// Conversion functions
 	QString toString(bool engineeringFormat = false, const int digitsAfterDecimalPoint = -1);
+	int toInt();
+	int toUInt();
+
+	// Operators
+	BigDecimal operator+();
+	BigDecimal operator-();
+
+	BigDecimal operator++();
+	BigDecimal operator++(int);
+	BigDecimal operator--();
+	BigDecimal operator--(int);
 
 	BigDecimal operator+(const BigDecimal & decimal);
 	BigDecimal operator-(const BigDecimal & decimal);
 	BigDecimal operator*(const BigDecimal & decimal);
 	BigDecimal operator/(const BigDecimal & decimal);
+	BigDecimal operator%(const BigDecimal & decimal);
+
+	BigDecimal operator+=(const BigDecimal & decimal);
+	BigDecimal operator-=(const BigDecimal & decimal);
+	BigDecimal operator*=(const BigDecimal & decimal);
+	BigDecimal operator/=(const BigDecimal & decimal);
+	BigDecimal operator%=(const BigDecimal & decimal);
+
+	BigDecimal operator~();
+
+	BigDecimal operator|(const BigDecimal & decimal);
+	BigDecimal operator&(const BigDecimal & decimal);
+	BigDecimal operator^(const BigDecimal & decimal);
+	BigDecimal operator<<(const BigDecimal & shift);
+	BigDecimal operator>>(const BigDecimal & shift);
+
+	BigDecimal operator|=(const BigDecimal & decimal);
+	BigDecimal operator&=(const BigDecimal & decimal);
+	BigDecimal operator^=(const BigDecimal & decimal);
+	BigDecimal operator<<=(const BigDecimal & shift);
+	BigDecimal operator>>=(const BigDecimal & shift);
+
+	BigDecimal operator==(const BigDecimal & decimal);
+	BigDecimal operator!=(const BigDecimal & decimal);
+	BigDecimal operator<(const BigDecimal & decimal);
+	BigDecimal operator>(const BigDecimal & decimal);
+	BigDecimal operator<=(const BigDecimal & decimal);
+	BigDecimal operator>=(const BigDecimal & decimal);
+
+	// Misc functions
+	bool isZero();
+	bool isNegative();
+	bool isPositive();
+
+	BigDecimal toIntegral();
+	BigDecimal abs();
+	BigDecimal exp();
+	BigDecimal ln();
+	BigDecimal log10();
+	BigDecimal sqrt();
+
+	BigDecimal pow(const BigDecimal & power);
+	BigDecimal div(const BigDecimal & decimal);
+	BigDecimal max(const BigDecimal & decimal);
+	BigDecimal min(const BigDecimal & decimal);
+
+	// Exception classes
+
+	class BigDecimalException : public Exception {};
+	class DivisionByZeroException : public BigDecimalException {};
+	class OverflowException : public BigDecimalException {};
+	class UnderflowException : public BigDecimalException {};
+	class ConvertionSyntaxException : public BigDecimalException {};
+	class DivisionImpossibleException : public BigDecimalException {};
+	class DivisionUndefinedException : public BigDecimalException {};
+	class InsufficientStorageException : public BigDecimalException {};
+	class InvalidContextException : public BigDecimalException {};
+	class InvalidOperationException : public BigDecimalException {};
 
 private:
 	decNumber number;
 	decContext context;
 
+	// Internal functions
 	void initContext();
+	void checkContextStatus();
+	int compare(const BigDecimal & decimal);
 };
 
 #endif

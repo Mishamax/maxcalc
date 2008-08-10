@@ -25,8 +25,16 @@ using namespace std;
 
 int main()
 {
-//	BigDecimal res = BigDecimal(L"12234.234") * BigDecimal(L"2434.23443") / BigDecimal(L"3.1");
-	BigDecimal res = BigDecimal(QString("100000000000000000")) / BigDecimal(QString("2"));
-	wcout << res.toString().toAscii().data() << endl;
+	try
+	{
+//		BigDecimal res = BigDecimal(L"12234.234") * BigDecimal(L"2434.23443") / BigDecimal(L"3.1");
+		BigDecimal res = BigDecimal(QString("100000000000000000")) / BigDecimal(QString("2"));
+		wcout << res.toString().toAscii().data() << endl;
+		BigDecimal dec = 1;
+	}
+	catch (...)
+	{
+		cout << "Exception" << endl;
+	}
 	return 0;
 }
