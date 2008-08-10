@@ -23,7 +23,7 @@
 
 using namespace std;
 
-int main(int argc, char ** argv)
+int main()
 {
 //	BigDecimal res = BigDecimal(L"12234.234") * BigDecimal(L"2434.23443") / BigDecimal(L"3.1");
 	BigDecimal res = BigDecimal(QString("100000000000000000")) / BigDecimal(QString("2"));
