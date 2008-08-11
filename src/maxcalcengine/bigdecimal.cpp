@@ -19,6 +19,18 @@
 
 #include "bigdecimal.h"
 
+// Macro for creating new decContext with default settings
+#define NEW_CONTEXT(context) \
+	decContext context; \
+	context.digits	= DECNUMDIGITS; \
+	context.emax	= DEC_MAX_EMAX; \
+	context.emin	= DEC_MIN_EMIN; \
+	context.round	= DEC_ROUND_HALF_UP; \
+	context.traps	= 0; \
+	context.status	= 0; \
+	context.clamp	= 0;
+
+
 /*!
 	\defgroup MaxCalcEngine MaxCalc Engine
 */
@@ -28,31 +40,52 @@
 	\brief Represents an arbitrary-precision decimal number.
 
 	\c BigDecimal uses decNumber library as its backend.
-	Precision is hard-written and defined by DECNUMDIGITS macros in bigdecimal.h, so
+	Precision is hard-written and defined by \a DECNUMDIGITS macros in bigdecimal.h, so
 	MaxCalcEngine has to be recompiled in order to change precision.
 
 	\ingroup MaxCalcEngine
 */
+
+
+/******************************************************************************
+ * Constructors
+ *****************************************************************************/
+
 
 /*!
 	Constructs a new instance of \c BigDecimal class from given \a str.
 */
 BigDecimal::BigDecimal(const QString & str)
 {
-	initContext();
+	NEW_CONTEXT(context);
+	// Construct number
 	decNumberFromString(&number, str.toAscii().data(), &context);
-	checkContextStatus();
+	checkContextStatus(context);
+	// Remove trailing zeros
 	decNumberReduce(&number, &number, &context);
-	checkContextStatus();
+	checkContextStatus(context);
 }
 
 /*!
-	Constructs a copy of \a decimal.
+	Constructs a new instance of \c BigDecimal class from given \a str.
 */
-BigDecimal::BigDecimal(const BigDecimal & decimal)
+BigDecimal::BigDecimal(const char * str)
 {
-	decNumberCopy(&number, &decimal.number);
-	context = decimal.context;
+	NEW_CONTEXT(context);
+	// Construct number
+	decNumberFromString(&number, str, &context);
+	checkContextStatus(context);
+	// Remove trailing zeros
+	decNumberReduce(&number, &number, &context);
+	checkContextStatus(context);
+}
+
+/*!
+	Constructs a copy of \a num.
+*/
+BigDecimal::BigDecimal(const BigDecimal & num)
+{
+	decNumberCopy(&number, &num.number);
 }
 
 /*!
@@ -60,40 +93,47 @@ BigDecimal::BigDecimal(const BigDecimal & decimal)
 */
 BigDecimal::BigDecimal(const decNumber & num)
 {
-	initContext();
 	decNumberCopy(&number, &num);
 }
 
 /*!
-	Constructs a BigDecimal from \c int \a num.
+	Constructs a \c BigDecimal from \c int \a num.
 */
 BigDecimal::BigDecimal(const int num)
 {
-	initContext();
 	decNumberFromInt32(&number, num);
 }
 
 /*!
-	Constructs a BigDecimal from \c unsigned \a num.
+	Constructs a \c BigDecimal from \c unsigned \a num.
 */
 BigDecimal::BigDecimal(const unsigned num)
 {
-	initContext();
 	decNumberFromUInt32(&number, num);
 }
 
+
+/******************************************************************************
+ * Conversion functions
+ *****************************************************************************/
+
+
 /*!
-	Converts \c BigDecimal to string.
+	Converts this number to \c QString.
+	
 	\a engineeringFormat determines if scientific (default) or engineering format is used.
+	
 	If \a digitsAfterDecimalPoint is -1 the default precision is used.
-	If specified precision is too high and cannot be provided the default precision is used as well.
+	Raises \c InvalidOperationException if specified precision is too high and cannot be provided.
 */
-QString BigDecimal::toString(bool engineeringFormat, const int digitsAfterDecimalPoint)
+QString BigDecimal::toString(bool engineeringFormat, const int digitsAfterDecimalPoint) const
 {
 	Q_ASSERT(digitsAfterDecimalPoint >= -1);
 
+	NEW_CONTEXT(context);
+
 	char * str = new char[DECNUMDIGITS + 14];
-	decNumber * numberToConvert = &number;
+	decNumber numberToConvert = number;
 
 	// Rescale number if needed
 	decNumber result;
@@ -102,51 +142,62 @@ QString BigDecimal::toString(bool engineeringFormat, const int digitsAfterDecima
 		decNumber exp;
 		decNumberFromInt32(&exp, -digitsAfterDecimalPoint);
 		decNumberRescale(&result, &number, &exp, &context);
-		checkContextStatus();
-		numberToConvert = &result;
+		checkContextStatus(context);
+		numberToConvert = result;
 	}
 
-	decNumberReduce(&number, &number, &context);
-	checkContextStatus();
+	// Remove trailing zeros
+	decNumberReduce(&numberToConvert, &numberToConvert, &context);
+	checkContextStatus(context);
 
+	// Make conversion
 	if (engineeringFormat)
-		decNumberToEngString(numberToConvert, str);
+		decNumberToEngString(&numberToConvert, str);
 	else
-		decNumberToString(numberToConvert, str);
+		decNumberToString(&numberToConvert, str);
 
+	// Convert char* to QString
 	QString qstr(str);
 	delete str;
 	return qstr;
 }
 
 /*!
-	Converts BigDecimal to \c int.
+	Converts this number to \c int.
 	Raises \c InvalidOperationException if a number cannot be represented as int
 		(does not have exponent of 0 or out-of-range).
 */
-int BigDecimal::toInt()
+int BigDecimal::toInt() const
 {
+	NEW_CONTEXT(context);
 	int result = decNumberToInt32(&number, &context);
-	checkContextStatus();
+	checkContextStatus(context);
 	return result;
 }
 
 /*!
-	Converts BigDecimal to \c unsigned.
-	Raises \c InvalidOperationException if a number cannot be represented as int
+	Converts this number to \c unsigned.
+	Raises \c InvalidOperationException if a number cannot be represented as unsigned
 		(does not have exponent of 0 or out-of-range).
 */
-int BigDecimal::toUInt()
+unsigned BigDecimal::toUInt() const
 {
-	int result = decNumberToUInt32(&number, &context);
-	checkContextStatus();
+	NEW_CONTEXT(context);
+	unsigned result = decNumberToUInt32(&number, &context);
+	checkContextStatus(context);
 	return result;
 }
+
+
+/******************************************************************************
+ * Misc functions
+ *****************************************************************************/
+
 
 /*!
 	Returns \c true if the number is zero.
 */
-bool BigDecimal::isZero()
+bool BigDecimal::isZero() const
 {
 	return decNumberIsZero(&number);
 }
@@ -154,7 +205,7 @@ bool BigDecimal::isZero()
 /*!
 	Returns \c true if the number is negative.
 */
-bool BigDecimal::isNegative()
+bool BigDecimal::isNegative() const
 {
 	return decNumberIsNegative(&number);
 }
@@ -162,34 +213,41 @@ bool BigDecimal::isNegative()
 /*!
 	Returns \c true if the number is positive.
 */
-bool BigDecimal::isPositive()
+bool BigDecimal::isPositive() const
 {
 	return (!decNumberIsZero(&number) && !decNumberIsNegative(&number));
 }
 
+
+/******************************************************************************
+ * Operators
+ *****************************************************************************/
+
+
 /*!
-	Returns the same BigDecimal.
+	Returns the same \c BigDecimal as this number.
 */
-BigDecimal BigDecimal::operator+()
+BigDecimal BigDecimal::operator+() const
 {
 	return *this;
 }
 
 /*!
-	Returns negated BigDecimal.
+	Returns negated number.
 */
-BigDecimal BigDecimal::operator-()
+BigDecimal BigDecimal::operator-() const
 {
+	NEW_CONTEXT(context);
 	decNumber result;
 	decNumberMinus(&result, &number, &context);
-	checkContextStatus();
+	checkContextStatus(context);
 	return result;
 }
 
 // TODO: more efficient ++ and -- implementations
 
 /*!
-	Increases BigDecimal by one (prefix increment).
+	Increases this number by one (prefix increment).
 */
 BigDecimal BigDecimal::operator++()
 {
@@ -197,7 +255,7 @@ BigDecimal BigDecimal::operator++()
 }
 
 /*!
-	Increases BigDecimal by one (postfix increment).
+	Increases this number by one (postfix increment).
 */
 BigDecimal BigDecimal::operator++(int)
 {
@@ -207,7 +265,7 @@ BigDecimal BigDecimal::operator++(int)
 }
 
 /*!
-	Decreases BigDecimal by one (prefix increment).
+	Decreases this number by one (prefix increment).
 */
 BigDecimal BigDecimal::operator--()
 {
@@ -215,7 +273,7 @@ BigDecimal BigDecimal::operator--()
 }
 
 /*!
-	Decreases BigDecimal by one (postfix increment).
+	Decreases this number by one (postfix increment).
 */
 BigDecimal BigDecimal::operator--(int)
 {
@@ -225,405 +283,437 @@ BigDecimal BigDecimal::operator--(int)
 }
 
 /*!
-	Adds two BigDecimals.
+	Adds two numbers.
 */
-BigDecimal BigDecimal::operator+(const BigDecimal & decimal)
+BigDecimal BigDecimal::operator+(const BigDecimal & decimal) const
 {
+	NEW_CONTEXT(context);
 	decNumber result;
 	decNumberAdd(&result, &number, &decimal.number, &context);
-	checkContextStatus();
+	checkContextStatus(context);
 	return result;
 }
 
 /*!
-	Subtracts two BigDecimals.
+	Subtracts two numbers.
 */
-BigDecimal BigDecimal::operator-(const BigDecimal & decimal)
+BigDecimal BigDecimal::operator-(const BigDecimal & decimal) const
 {
+	NEW_CONTEXT(context);
 	decNumber result;
 	decNumberSubtract(&result, &number, &decimal.number, &context);
-	checkContextStatus();
+	checkContextStatus(context);
 	return result;
 }
 
 /*!
-	Multiplies two BigDecimals.
+	Multiplies two numbers.
 */
-BigDecimal BigDecimal::operator*(const BigDecimal & decimal)
+BigDecimal BigDecimal::operator*(const BigDecimal & decimal) const
 {
+	NEW_CONTEXT(context);
 	decNumber result;
 	decNumberMultiply(&result, &number, &decimal.number, &context);
-	checkContextStatus();
+	checkContextStatus(context);
 	return result;
 }
 
 /*!
-	Divides two BigDecimals.
+	Divides two numbers.
 */
-BigDecimal BigDecimal::operator/(const BigDecimal & decimal)
+BigDecimal BigDecimal::operator/(const BigDecimal & decimal) const
 {
+	NEW_CONTEXT(context);
 	decNumber result;
 	decNumberDivide(&result, &number, &decimal.number, &context);
-	checkContextStatus();
+	checkContextStatus(context);
 	return result;
 }
 
 /*!
-	Calculates remainder of division of two BigDecimals.
+	Calculates remainder of division of two numbers.
 */
-BigDecimal BigDecimal::operator%(const BigDecimal & decimal)
+BigDecimal BigDecimal::operator%(const BigDecimal & decimal) const
 {
+	NEW_CONTEXT(context);
 	decNumber result;
 	decNumberRemainder(&result, &number, &decimal.number, &context);
-	checkContextStatus();
+	checkContextStatus(context);
 	return result;
 }
 
 /*!
-	Adds two BigDecimals.
+	Adds \a decimal to this number.
 */
 BigDecimal BigDecimal::operator+=(const BigDecimal & decimal)
 {
+	NEW_CONTEXT(context);
 	decNumberAdd(&number, &number, &decimal.number, &context);
-	checkContextStatus();
+	checkContextStatus(context);
 	return *this;
 }
 
 /*!
-	Subtracts two BigDecimals.
+	Subtracts \a decimal from this number.
 */
 BigDecimal BigDecimal::operator-=(const BigDecimal & decimal)
 {
+	NEW_CONTEXT(context);
 	decNumberSubtract(&number, &number, &decimal.number, &context);
-	checkContextStatus();
+	checkContextStatus(context);
 	return *this;
 }
 
 /*!
-	Multiplies two BigDecimals.
+	Multiplies this number by \a decimal.
 */
 BigDecimal BigDecimal::operator*=(const BigDecimal & decimal)
 {
+	NEW_CONTEXT(context);
 	decNumberMultiply(&number, &number, &decimal.number, &context);
-	checkContextStatus();
+	checkContextStatus(context);
 	return *this;
 }
 
 /*!
-	Divides two BigDecimals.
+	Divides this number by \a decimal.
 */
 BigDecimal BigDecimal::operator/=(const BigDecimal & decimal)
 {
+	NEW_CONTEXT(context);
 	decNumberDivide(&number, &number, &decimal.number, &context);
-	checkContextStatus();
+	checkContextStatus(context);
 	return *this;
 }
 
 /*!
-	Calculates remainder of division of two BigDecimals.
+	Calculates remainder of division of this number by \a decimal.
 */
 BigDecimal BigDecimal::operator%=(const BigDecimal & decimal)
 {
+	NEW_CONTEXT(context);
 	decNumberRemainder(&number, &number, &decimal.number, &context);
-	checkContextStatus();
+	checkContextStatus(context);
 	return *this;
 }
 
 /*!
-	Calculates digit-wise invertion of BigDecimal.
+	Calculates digit-wise invertion of this number.
 */
-BigDecimal BigDecimal::operator~()
+BigDecimal BigDecimal::operator~() const
 {
+	NEW_CONTEXT(context);
 	decNumber result;
 	decNumberInvert(&result, &number, &context);
-	checkContextStatus();
+	checkContextStatus(context);
 	return result;
 }
 
 /*!
-	Calculates digit-wise logical OR of two BigDecimals.
+	Calculates digit-wise logical OR of two numbers.
 */
-BigDecimal BigDecimal::operator|(const BigDecimal & decimal)
+BigDecimal BigDecimal::operator|(const BigDecimal & decimal) const
 {
+	NEW_CONTEXT(context);
 	decNumber result;
 	decNumberOr(&result, &number, &decimal.number, &context);
-	checkContextStatus();
+	checkContextStatus(context);
 	return result;
 }
 
 /*!
-	Calculates digit-wise logical AND of two BigDecimals.
+	Calculates digit-wise logical AND of two numbers.
 */
-BigDecimal BigDecimal::operator&(const BigDecimal & decimal)
+BigDecimal BigDecimal::operator&(const BigDecimal & decimal) const
 {
+	NEW_CONTEXT(context);
 	decNumber result;
 	decNumberAnd(&result, &number, &decimal.number, &context);
-	checkContextStatus();
+	checkContextStatus(context);
 	return result;
 }
 
 /*!
-	Calculates digit-wise logical XOR of two BigDecimals.
+	Calculates digit-wise logical XOR of two numbers.
 */
-BigDecimal BigDecimal::operator^(const BigDecimal & decimal)
+BigDecimal BigDecimal::operator^(const BigDecimal & decimal) const
 {
+	NEW_CONTEXT(context);
 	decNumber result;
 	decNumberXor(&result, &number, &decimal.number, &context);
-	checkContextStatus();
+	checkContextStatus(context);
 	return result;
 }
 
 /*!
-	Shifts \a this to the left by \a shift.
+	Shifts this number to the left by \a shift.
 */
-BigDecimal BigDecimal::operator<<(const BigDecimal & shift)
+BigDecimal BigDecimal::operator<<(const BigDecimal & shift) const
 {
+	NEW_CONTEXT(context);
 	decNumber result;
 	decNumberShift(&result, &number, &shift.number, &context);
-	checkContextStatus();
+	checkContextStatus(context);
 	return result;
 }
 
 /*!
-	Shifts \a this to the right by \a shift.
+	Shifts this number to the right by \a shift.
 */
-BigDecimal BigDecimal::operator>>(const BigDecimal & shift)
+BigDecimal BigDecimal::operator>>(const BigDecimal & shift) const
 {
+	NEW_CONTEXT(context);
 	decNumber result;
 	decNumber negativeShift;
 	decNumberMinus(&negativeShift, &shift.number, &context);
+	checkContextStatus(context);
 	decNumberShift(&result, &number, &negativeShift, &context);
-	checkContextStatus();
+	checkContextStatus(context);
 	return result;
 }
 
 /*!
-	Calculates digit-wise logical OR of two BigDecimals.
+	Calculates digit-wise logical OR of this number and \a decimal.
 */
 BigDecimal BigDecimal::operator|=(const BigDecimal & decimal)
 {
+	NEW_CONTEXT(context);
 	decNumberOr(&number, &number, &decimal.number, &context);
-	checkContextStatus();
+	checkContextStatus(context);
 	return *this;
 }
 
 /*!
-	Calculates digit-wise logical AND of two BigDecimals.
+	Calculates digit-wise logical AND of this number and \a decimal.
 */
 BigDecimal BigDecimal::operator&=(const BigDecimal & decimal)
 {
+	NEW_CONTEXT(context);
 	decNumberAnd(&number, &number, &decimal.number, &context);
-	checkContextStatus();
+	checkContextStatus(context);
 	return *this;
 }
 
 /*!
-	Calculates digit-wise logical XOR of two BigDecimals.
+	Calculates digit-wise logical XOR of this number and \a decimal.
 */
 BigDecimal BigDecimal::operator^=(const BigDecimal & decimal)
 {
+	NEW_CONTEXT(context);
 	decNumberXor(&number, &number, &decimal.number, &context);
-	checkContextStatus();
+	checkContextStatus(context);
 	return *this;
 }
 
 /*!
-	Shifts \a this to the left by \a shift.
+	Shifts this number to the left by \a shift.
 */
 BigDecimal BigDecimal::operator<<=(const BigDecimal & shift)
 {
+	NEW_CONTEXT(context);
 	decNumberShift(&number, &number, &shift.number, &context);
-	checkContextStatus();
+	checkContextStatus(context);
 	return *this;
 }
 
 /*!
-	Shifts \a this to the right by \a shift.
+	Shifts this number to the right by \a shift.
 */
 BigDecimal BigDecimal::operator>>=(const BigDecimal & shift)
 {
+	NEW_CONTEXT(context);
 	decNumber negativeShift;
 	decNumberMinus(&negativeShift, &shift.number, &context);
+	checkContextStatus(context);
 	decNumberShift(&number, &number, &negativeShift, &context);
-	checkContextStatus();
+	checkContextStatus(context);
 	return *this;
 }
 
 /*!
-	Returns \c true if two BigDecimals are equal.
+	Returns \c true if two numbers are equal.
 */
-BigDecimal BigDecimal::operator==(const BigDecimal & decimal)
+BigDecimal BigDecimal::operator==(const BigDecimal & decimal) const
 {
-	return (compare(decimal) == 0);
+	return (compare(number, decimal.number) == 0);
 }
 
 /*!
-	Returns \c true if two BigDecimals are not equal.
+	Returns \c true if two numbers are not equal.
 */
-BigDecimal BigDecimal::operator!=(const BigDecimal & decimal)
+BigDecimal BigDecimal::operator!=(const BigDecimal & decimal) const
 {
-	return (compare(decimal) != 0);
+	return (compare(number, decimal.number) != 0);
 }
 
 /*!
-	Returns \c true if \a this number is less than \a decimal.
+	Returns \c true if the first number is less than the second.
 */
-BigDecimal BigDecimal::operator<(const BigDecimal & decimal)
+BigDecimal BigDecimal::operator<(const BigDecimal & decimal) const
 {
-	return (compare(decimal) < 0);
+	return (compare(number, decimal.number) < 0);
 }
 
 /*!
-	Returns \c true if \a this number is more than \a decimal.
+	Returns \c true if the first number is more than the second.
 */
-BigDecimal BigDecimal::operator>(const BigDecimal & decimal)
+BigDecimal BigDecimal::operator>(const BigDecimal & decimal) const
 {
-	return (compare(decimal) > 0);
+	return (compare(number, decimal.number) > 0);
 }
 
 /*!
-	Returns \c true if \a this number is less or equal than \a decimal.
+	Returns \c true if the first number is less or equal than the second.
 */
-BigDecimal BigDecimal::operator<=(const BigDecimal & decimal)
+BigDecimal BigDecimal::operator<=(const BigDecimal & decimal) const
 {
-	return (compare(decimal) <= 0);
+	return (compare(number, decimal.number) <= 0);
 }
 
 /*!
-	Returns \c true if \a this number is more or equal than \a decimal.
+	Returns \c true if the first number is more or equal than the second.
 */
-BigDecimal BigDecimal::operator>=(const BigDecimal & decimal)
+BigDecimal BigDecimal::operator>=(const BigDecimal & decimal) const
 {
-	return (compare(decimal) >= 0);
+	return (compare(number, decimal.number) >= 0);
 }
 
+
+/******************************************************************************
+ * Math functions
+ *****************************************************************************/
+
+
 /*!
-	Returns integer part of the number.
+	Returns integer part of \a num.
 */
-BigDecimal BigDecimal::toIntegral()
+BigDecimal BigDecimal::integer(const BigDecimal & num)
 {
+	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberToIntegralValue(&result, &number, &context);
-	checkContextStatus();
+	decNumberToIntegralValue(&result, &num.number, &context);
+	checkContextStatus(context);
 	return result;
 }
 
 /*!
-	Calculates absolute value.
+	Calculates absolute value of \a num.
 */
-BigDecimal BigDecimal::abs()
+BigDecimal BigDecimal::abs(const BigDecimal & num)
 {
+	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberAbs(&result, &number, &context);
-	checkContextStatus();
+	decNumberAbs(&result, &num.number, &context);
+	checkContextStatus(context);
 	return result;
 }
 
 /*!
-	Calculates exponent.
+	Calculates exponent of \a num.
 */
-BigDecimal BigDecimal::exp()
+BigDecimal BigDecimal::exp(const BigDecimal & num)
 {
+	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberExp(&result, &number, &context);
-	checkContextStatus();
+	decNumberExp(&result, &num.number, &context);
+	checkContextStatus(context);
 	return result;
 }
 
 /*!
-	Calculates natural logarithm.
+	Calculates natural logarithm of \a num.
 */
-BigDecimal BigDecimal::ln()
+BigDecimal BigDecimal::ln(const BigDecimal & num)
 {
+	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberLn(&result, &number, &context);
-	checkContextStatus();
+	decNumberLn(&result, &num.number, &context);
+	checkContextStatus(context);
 	return result;
 }
 
 /*!
-	Calculates base-10 logarithm.
+	Calculates base-10 logarithm of \a num.
 */
-BigDecimal BigDecimal::log10()
+BigDecimal BigDecimal::log10(const BigDecimal & num)
 {
+	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberLog10(&result, &number, &context);
-	checkContextStatus();
+	decNumberLog10(&result, &num.number, &context);
+	checkContextStatus(context);
 	return result;
 }
 
 /*!
-	Calculates square root.
+	Calculates square root of \a num.
 */
-BigDecimal BigDecimal::sqrt()
+BigDecimal BigDecimal::sqrt(const BigDecimal & num)
 {
+	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberSquareRoot(&result, &number, &context);
-	checkContextStatus();
+	decNumberSquareRoot(&result, &num.number, &context);
+	checkContextStatus(context);
 	return result;
 }
 
 /*!
-	Raises \a this BigDecimal to \a power.
+	Raises \a num to \a power.
 */
-BigDecimal BigDecimal::pow(const BigDecimal & power)
+BigDecimal BigDecimal::pow(const BigDecimal & num, const BigDecimal & power)
 {
+	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberPower(&result, &number, &power.number, &context);
-	checkContextStatus();
+	decNumberPower(&result, &num.number, &power.number, &context);
+	checkContextStatus(context);
 	return result;
 }
 
 /*!
-	Calculates integer part of the result of dividing \a this by \a decimal.
+	Calculates integer part of the result of dividing \a dividend by \a divisor.
 */
-BigDecimal BigDecimal::div(const BigDecimal & decimal)
+BigDecimal BigDecimal::div(const BigDecimal & dividend, const BigDecimal & divisor)
 {
+	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberDivideInteger(&result, &number, &decimal.number, &context);
-	checkContextStatus();
+	decNumberDivideInteger(&result, &dividend.number, &divisor.number, &context);
+	checkContextStatus(context);
 	return result;
 }
 
 /*!
-	Returns max of \a this and \a decimal.
+	Returns max of two numbers.
 */
-BigDecimal BigDecimal::max(const BigDecimal & decimal)
+BigDecimal BigDecimal::max(const BigDecimal & num, const BigDecimal & decimal)
 {
+	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberMax(&result, &number, &decimal.number, &context);
-	checkContextStatus();
+	decNumberMax(&result, &num.number, &decimal.number, &context);
+	checkContextStatus(context);
 	return result;
 }
 
 /*!
-	Returns min of \a this and \a decimal.
+	Returns min of two numbers.
 */
-BigDecimal BigDecimal::min(const BigDecimal & decimal)
+BigDecimal BigDecimal::min(const BigDecimal & num, const BigDecimal & decimal)
 {
+	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberMin(&result, &number, &decimal.number, &context);
-	checkContextStatus();
+	decNumberMin(&result, &num.number, &decimal.number, &context);
+	checkContextStatus(context);
 	return result;
 }
 
-/*!
-	Inits decContext with default settings and DECNUMDIGITS precision.
-*/
-void BigDecimal::initContext()
-{
-	// Init context with default settings (max 9-digit exponents, 0.5 rounds up)
-	decContextDefault(&context, DEC_INIT_BASE);
-	// Disable traps
-	context.traps = 0;
-	// Set precision
-	context.digits = DECNUMDIGITS;
-}
+
+/******************************************************************************
+ * Internal functions
+ *****************************************************************************/
+
 
 /*!
-	Checks \a decContext.status and throws an exception is there is an error
+	Checks \a context.status and throws an exception is there is an error
 */
-void BigDecimal::checkContextStatus()
+void BigDecimal::checkContextStatus(const decContext & context)
 {
 	if (context.status & DEC_Errors)
 	{
@@ -648,17 +738,17 @@ void BigDecimal::checkContextStatus()
 		else
 			throw BigDecimalException();
 	}
-	context.status = 0;
 }
 
 /*!
-	Returns -1 is \a this number is less than \a decimal, 1 if more and 0 if they are equal.
+	Returns -1 is \a n1 is less than \a n2, 1 if more and 0 if they are equal.
 */
-int BigDecimal::compare(const BigDecimal & decimal)
+int BigDecimal::compare(const decNumber & n1, const decNumber & n2)
 {
+	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberCompare(&result, &number, &decimal.number, &context);
-	checkContextStatus();
+	decNumberCompare(&result, &n1, &n2, &context);
+	checkContextStatus(context);
 	
 	return (decNumberIsZero(&result) ? 0 : (decNumberIsNegative(&result) ? -1 : 1));
 }

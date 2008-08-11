@@ -38,30 +38,36 @@ public:
 
 	// Constructors
 	BigDecimal(const QString & str);
-	BigDecimal(const BigDecimal & decimal);
+	BigDecimal(const char * str);
+	BigDecimal(const BigDecimal & num);
 	BigDecimal(const decNumber & num);
 	BigDecimal(const int num);
 	BigDecimal(const unsigned num);
 
 	// Conversion functions
-	QString toString(bool engineeringFormat = false, const int digitsAfterDecimalPoint = -1);
-	int toInt();
-	int toUInt();
+	QString toString(bool engineeringFormat = false, const int digitsAfterDecimalPoint = -1) const;
+	int toInt() const;
+	unsigned toUInt() const;
+
+	// Misc functions
+	bool isZero() const;
+	bool isNegative() const;
+	bool isPositive() const;
 
 	// Operators
-	BigDecimal operator+();
-	BigDecimal operator-();
+	BigDecimal operator+() const;
+	BigDecimal operator-() const;
 
 	BigDecimal operator++();
 	BigDecimal operator++(int);
 	BigDecimal operator--();
 	BigDecimal operator--(int);
 
-	BigDecimal operator+(const BigDecimal & decimal);
-	BigDecimal operator-(const BigDecimal & decimal);
-	BigDecimal operator*(const BigDecimal & decimal);
-	BigDecimal operator/(const BigDecimal & decimal);
-	BigDecimal operator%(const BigDecimal & decimal);
+	BigDecimal operator+(const BigDecimal & decimal) const;
+	BigDecimal operator-(const BigDecimal & decimal) const;
+	BigDecimal operator*(const BigDecimal & decimal) const;
+	BigDecimal operator/(const BigDecimal & decimal) const;
+	BigDecimal operator%(const BigDecimal & decimal) const;
 
 	BigDecimal operator+=(const BigDecimal & decimal);
 	BigDecimal operator-=(const BigDecimal & decimal);
@@ -69,13 +75,13 @@ public:
 	BigDecimal operator/=(const BigDecimal & decimal);
 	BigDecimal operator%=(const BigDecimal & decimal);
 
-	BigDecimal operator~();
+	BigDecimal operator~() const;
 
-	BigDecimal operator|(const BigDecimal & decimal);
-	BigDecimal operator&(const BigDecimal & decimal);
-	BigDecimal operator^(const BigDecimal & decimal);
-	BigDecimal operator<<(const BigDecimal & shift);
-	BigDecimal operator>>(const BigDecimal & shift);
+	BigDecimal operator|(const BigDecimal & decimal) const;
+	BigDecimal operator&(const BigDecimal & decimal) const;
+	BigDecimal operator^(const BigDecimal & decimal) const;
+	BigDecimal operator<<(const BigDecimal & shift) const;
+	BigDecimal operator>>(const BigDecimal & shift) const;
 
 	BigDecimal operator|=(const BigDecimal & decimal);
 	BigDecimal operator&=(const BigDecimal & decimal);
@@ -83,32 +89,26 @@ public:
 	BigDecimal operator<<=(const BigDecimal & shift);
 	BigDecimal operator>>=(const BigDecimal & shift);
 
-	BigDecimal operator==(const BigDecimal & decimal);
-	BigDecimal operator!=(const BigDecimal & decimal);
-	BigDecimal operator<(const BigDecimal & decimal);
-	BigDecimal operator>(const BigDecimal & decimal);
-	BigDecimal operator<=(const BigDecimal & decimal);
-	BigDecimal operator>=(const BigDecimal & decimal);
+	BigDecimal operator==(const BigDecimal & decimal) const;
+	BigDecimal operator!=(const BigDecimal & decimal) const;
+	BigDecimal operator<(const BigDecimal & decimal) const;
+	BigDecimal operator>(const BigDecimal & decimal) const;
+	BigDecimal operator<=(const BigDecimal & decimal) const;
+	BigDecimal operator>=(const BigDecimal & decimal) const;
 
-	// Misc functions
-	bool isZero();
-	bool isNegative();
-	bool isPositive();
-
-	BigDecimal toIntegral();
-	BigDecimal abs();
-	BigDecimal exp();
-	BigDecimal ln();
-	BigDecimal log10();
-	BigDecimal sqrt();
-
-	BigDecimal pow(const BigDecimal & power);
-	BigDecimal div(const BigDecimal & decimal);
-	BigDecimal max(const BigDecimal & decimal);
-	BigDecimal min(const BigDecimal & decimal);
+	// Math functions
+	static BigDecimal integer(const BigDecimal & num);
+	static BigDecimal abs(const BigDecimal & num);
+	static BigDecimal exp(const BigDecimal & num);
+	static BigDecimal ln(const BigDecimal & num);
+	static BigDecimal log10(const BigDecimal & num);
+	static BigDecimal sqrt(const BigDecimal & num);
+	static BigDecimal pow(const BigDecimal & num, const BigDecimal & power);
+	static BigDecimal div(const BigDecimal & dividend, const BigDecimal & divisor);
+	static BigDecimal max(const BigDecimal & n1, const BigDecimal & n2);
+	static BigDecimal min(const BigDecimal & n1, const BigDecimal & n2);
 
 	// Exception classes
-
 	class BigDecimalException : public Exception {};
 	class DivisionByZeroException : public BigDecimalException {};
 	class OverflowException : public BigDecimalException {};
@@ -121,13 +121,12 @@ public:
 	class InvalidOperationException : public BigDecimalException {};
 
 private:
+	// Decimal number
 	decNumber number;
-	decContext context;
 
 	// Internal functions
-	void initContext();
-	void checkContextStatus();
-	int compare(const BigDecimal & decimal);
+	static void checkContextStatus(const decContext & context);
+	static int compare(const decNumber & n1, const decNumber & n2);
 };
 
 #endif
