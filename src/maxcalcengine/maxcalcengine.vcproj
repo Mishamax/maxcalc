@@ -68,6 +68,10 @@
 				RelativePath=".\bigdecimal.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\complex.cpp"
+				>
+			</File>
 			<Filter
 				Name="decNumber"
 				>
@@ -88,6 +92,10 @@
 			>
 			<File
 				RelativePath=".\bigdecimal.h"
+				>
+			</File>
+			<File
+				RelativePath=".\complex.h"
 				>
 			</File>
 			<File

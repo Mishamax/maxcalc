@@ -51,6 +51,13 @@
  * Constructors
  *****************************************************************************/
 
+/*!
+	Default constructor (initializes the number with zero).
+*/
+BigDecimal::BigDecimal()
+{
+	decNumberFromInt32(&number, 0);
+}
 
 /*!
 	Constructs a new instance of \c BigDecimal class from given \a str.
@@ -285,11 +292,11 @@ BigDecimal BigDecimal::operator--(int)
 /*!
 	Adds two numbers.
 */
-BigDecimal BigDecimal::operator+(const BigDecimal & decimal) const
+BigDecimal BigDecimal::operator+(const BigDecimal & num) const
 {
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberAdd(&result, &number, &decimal.number, &context);
+	decNumberAdd(&result, &number, &num.number, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -297,11 +304,11 @@ BigDecimal BigDecimal::operator+(const BigDecimal & decimal) const
 /*!
 	Subtracts two numbers.
 */
-BigDecimal BigDecimal::operator-(const BigDecimal & decimal) const
+BigDecimal BigDecimal::operator-(const BigDecimal & num) const
 {
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberSubtract(&result, &number, &decimal.number, &context);
+	decNumberSubtract(&result, &number, &num.number, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -309,11 +316,11 @@ BigDecimal BigDecimal::operator-(const BigDecimal & decimal) const
 /*!
 	Multiplies two numbers.
 */
-BigDecimal BigDecimal::operator*(const BigDecimal & decimal) const
+BigDecimal BigDecimal::operator*(const BigDecimal & num) const
 {
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberMultiply(&result, &number, &decimal.number, &context);
+	decNumberMultiply(&result, &number, &num.number, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -321,11 +328,11 @@ BigDecimal BigDecimal::operator*(const BigDecimal & decimal) const
 /*!
 	Divides two numbers.
 */
-BigDecimal BigDecimal::operator/(const BigDecimal & decimal) const
+BigDecimal BigDecimal::operator/(const BigDecimal & num) const
 {
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberDivide(&result, &number, &decimal.number, &context);
+	decNumberDivide(&result, &number, &num.number, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -333,66 +340,66 @@ BigDecimal BigDecimal::operator/(const BigDecimal & decimal) const
 /*!
 	Calculates remainder of division of two numbers.
 */
-BigDecimal BigDecimal::operator%(const BigDecimal & decimal) const
+BigDecimal BigDecimal::operator%(const BigDecimal & num) const
 {
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberRemainder(&result, &number, &decimal.number, &context);
+	decNumberRemainder(&result, &number, &num.number, &context);
 	checkContextStatus(context);
 	return result;
 }
 
 /*!
-	Adds \a decimal to this number.
+	Adds \a num to this number.
 */
-BigDecimal BigDecimal::operator+=(const BigDecimal & decimal)
+BigDecimal BigDecimal::operator+=(const BigDecimal & num)
 {
 	NEW_CONTEXT(context);
-	decNumberAdd(&number, &number, &decimal.number, &context);
+	decNumberAdd(&number, &number, &num.number, &context);
 	checkContextStatus(context);
 	return *this;
 }
 
 /*!
-	Subtracts \a decimal from this number.
+	Subtracts \a num from this number.
 */
-BigDecimal BigDecimal::operator-=(const BigDecimal & decimal)
+BigDecimal BigDecimal::operator-=(const BigDecimal & num)
 {
 	NEW_CONTEXT(context);
-	decNumberSubtract(&number, &number, &decimal.number, &context);
+	decNumberSubtract(&number, &number, &num.number, &context);
 	checkContextStatus(context);
 	return *this;
 }
 
 /*!
-	Multiplies this number by \a decimal.
+	Multiplies this number by \a num.
 */
-BigDecimal BigDecimal::operator*=(const BigDecimal & decimal)
+BigDecimal BigDecimal::operator*=(const BigDecimal & num)
 {
 	NEW_CONTEXT(context);
-	decNumberMultiply(&number, &number, &decimal.number, &context);
+	decNumberMultiply(&number, &number, &num.number, &context);
 	checkContextStatus(context);
 	return *this;
 }
 
 /*!
-	Divides this number by \a decimal.
+	Divides this number by \a num.
 */
-BigDecimal BigDecimal::operator/=(const BigDecimal & decimal)
+BigDecimal BigDecimal::operator/=(const BigDecimal & num)
 {
 	NEW_CONTEXT(context);
-	decNumberDivide(&number, &number, &decimal.number, &context);
+	decNumberDivide(&number, &number, &num.number, &context);
 	checkContextStatus(context);
 	return *this;
 }
 
 /*!
-	Calculates remainder of division of this number by \a decimal.
+	Calculates remainder of division of this number by \a num.
 */
-BigDecimal BigDecimal::operator%=(const BigDecimal & decimal)
+BigDecimal BigDecimal::operator%=(const BigDecimal & num)
 {
 	NEW_CONTEXT(context);
-	decNumberRemainder(&number, &number, &decimal.number, &context);
+	decNumberRemainder(&number, &number, &num.number, &context);
 	checkContextStatus(context);
 	return *this;
 }
@@ -412,11 +419,11 @@ BigDecimal BigDecimal::operator~() const
 /*!
 	Calculates digit-wise logical OR of two numbers.
 */
-BigDecimal BigDecimal::operator|(const BigDecimal & decimal) const
+BigDecimal BigDecimal::operator|(const BigDecimal & num) const
 {
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberOr(&result, &number, &decimal.number, &context);
+	decNumberOr(&result, &number, &num.number, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -424,11 +431,11 @@ BigDecimal BigDecimal::operator|(const BigDecimal & decimal) const
 /*!
 	Calculates digit-wise logical AND of two numbers.
 */
-BigDecimal BigDecimal::operator&(const BigDecimal & decimal) const
+BigDecimal BigDecimal::operator&(const BigDecimal & num) const
 {
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberAnd(&result, &number, &decimal.number, &context);
+	decNumberAnd(&result, &number, &num.number, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -436,11 +443,11 @@ BigDecimal BigDecimal::operator&(const BigDecimal & decimal) const
 /*!
 	Calculates digit-wise logical XOR of two numbers.
 */
-BigDecimal BigDecimal::operator^(const BigDecimal & decimal) const
+BigDecimal BigDecimal::operator^(const BigDecimal & num) const
 {
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberXor(&result, &number, &decimal.number, &context);
+	decNumberXor(&result, &number, &num.number, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -473,34 +480,34 @@ BigDecimal BigDecimal::operator>>(const BigDecimal & shift) const
 }
 
 /*!
-	Calculates digit-wise logical OR of this number and \a decimal.
+	Calculates digit-wise logical OR of this number and \a num.
 */
-BigDecimal BigDecimal::operator|=(const BigDecimal & decimal)
+BigDecimal BigDecimal::operator|=(const BigDecimal & num)
 {
 	NEW_CONTEXT(context);
-	decNumberOr(&number, &number, &decimal.number, &context);
+	decNumberOr(&number, &number, &num.number, &context);
 	checkContextStatus(context);
 	return *this;
 }
 
 /*!
-	Calculates digit-wise logical AND of this number and \a decimal.
+	Calculates digit-wise logical AND of this number and \a num.
 */
-BigDecimal BigDecimal::operator&=(const BigDecimal & decimal)
+BigDecimal BigDecimal::operator&=(const BigDecimal & num)
 {
 	NEW_CONTEXT(context);
-	decNumberAnd(&number, &number, &decimal.number, &context);
+	decNumberAnd(&number, &number, &num.number, &context);
 	checkContextStatus(context);
 	return *this;
 }
 
 /*!
-	Calculates digit-wise logical XOR of this number and \a decimal.
+	Calculates digit-wise logical XOR of this number and \a num.
 */
-BigDecimal BigDecimal::operator^=(const BigDecimal & decimal)
+BigDecimal BigDecimal::operator^=(const BigDecimal & num)
 {
 	NEW_CONTEXT(context);
-	decNumberXor(&number, &number, &decimal.number, &context);
+	decNumberXor(&number, &number, &num.number, &context);
 	checkContextStatus(context);
 	return *this;
 }
@@ -533,49 +540,49 @@ BigDecimal BigDecimal::operator>>=(const BigDecimal & shift)
 /*!
 	Returns \c true if two numbers are equal.
 */
-BigDecimal BigDecimal::operator==(const BigDecimal & decimal) const
+bool BigDecimal::operator==(const BigDecimal & num) const
 {
-	return (compare(number, decimal.number) == 0);
+	return (compare(number, num.number) == 0);
 }
 
 /*!
 	Returns \c true if two numbers are not equal.
 */
-BigDecimal BigDecimal::operator!=(const BigDecimal & decimal) const
+bool BigDecimal::operator!=(const BigDecimal & num) const
 {
-	return (compare(number, decimal.number) != 0);
+	return (compare(number, num.number) != 0);
 }
 
 /*!
 	Returns \c true if the first number is less than the second.
 */
-BigDecimal BigDecimal::operator<(const BigDecimal & decimal) const
+bool BigDecimal::operator<(const BigDecimal & num) const
 {
-	return (compare(number, decimal.number) < 0);
+	return (compare(number, num.number) < 0);
 }
 
 /*!
 	Returns \c true if the first number is more than the second.
 */
-BigDecimal BigDecimal::operator>(const BigDecimal & decimal) const
+bool BigDecimal::operator>(const BigDecimal & num) const
 {
-	return (compare(number, decimal.number) > 0);
+	return (compare(number, num.number) > 0);
 }
 
 /*!
 	Returns \c true if the first number is less or equal than the second.
 */
-BigDecimal BigDecimal::operator<=(const BigDecimal & decimal) const
+bool BigDecimal::operator<=(const BigDecimal & num) const
 {
-	return (compare(number, decimal.number) <= 0);
+	return (compare(number, num.number) <= 0);
 }
 
 /*!
 	Returns \c true if the first number is more or equal than the second.
 */
-BigDecimal BigDecimal::operator>=(const BigDecimal & decimal) const
+bool BigDecimal::operator>=(const BigDecimal & num) const
 {
-	return (compare(number, decimal.number) >= 0);
+	return (compare(number, num.number) >= 0);
 }
 
 
