@@ -2,10 +2,10 @@ TEMPLATE = app
 TARGET = maxcalctest
 
 CONFIG += qt debug_and_release warn_on console
-QT -= gui
+QT = core testlib
 
-HEADERS += test.h
-SOURCES += test.cpp
+HEADERS += bigdecimaltest.h
+SOURCES += main.cpp bigdecimaltest.cpp
 
 INCLUDEPATH += ../maxcalcengine
 

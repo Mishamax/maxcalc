@@ -20,11 +20,10 @@
 #ifndef BIGDECIMAL_H
 #define BIGDECIMAL_H
 
-/*!
-	Defines precision of BigDecimal in decimal digits.
-	MaxCalcEngine has to be recompiled in order to change precision.
-*/
+
+// Defines precision of decNumber in decimal digits.
 #define DECNUMDIGITS 100
+
 
 #include "decNumber/decNumber.h"
 #include "exception.h"
@@ -32,11 +31,40 @@
 #include <QString>
 
 
+//****************************************************************************
+// BigDecimalFormat definition
+//****************************************************************************
+
+class BigDecimalFormat
+{
+public:
+	// Properties
+	bool engineeringFormat;
+	bool lowerCaseE;
+	int digitsAfterDecimalPoint;
+
+	// Constructor
+	BigDecimalFormat(
+		bool engineeringFormat = false,
+		bool lowerCaseE = false,
+		const int digitsAfterDecimalPoint = -1);
+};
+
+
+// Default BigDecimal format
+static const BigDecimalFormat defaultBigDecimalFormat = BigDecimalFormat();
+
+
+//****************************************************************************
+// BigDecimal definition
+//****************************************************************************
+
 class BigDecimal
 {
 public:
 
 	// Constructors
+	
 	BigDecimal();
 	BigDecimal(const QString & str);
 	BigDecimal(const char * str);
@@ -45,16 +73,22 @@ public:
 	BigDecimal(const unsigned num);
 
 	// Conversion functions
-	QString toString(bool engineeringFormat = false, const int digitsAfterDecimalPoint = -1) const;
+	
+	QString toString(const BigDecimalFormat & format = defaultBigDecimalFormat) const;
 	int toInt() const;
 	unsigned toUInt() const;
 
 	// Misc functions
+	
 	bool isZero() const;
 	bool isNegative() const;
 	bool isPositive() const;
 
+	BigDecimal integer() const;
+	BigDecimal fractional() const;
+
 	// Operators
+
 	BigDecimal operator+() const;
 	BigDecimal operator-() const;
 
@@ -97,7 +131,7 @@ public:
 	bool operator>=(const BigDecimal & num) const;
 
 	// Math functions
-	static BigDecimal integer(const BigDecimal & num);
+
 	static BigDecimal abs(const BigDecimal & num);
 	static BigDecimal exp(const BigDecimal & num);
 	static BigDecimal ln(const BigDecimal & num);
@@ -109,6 +143,7 @@ public:
 	static BigDecimal min(const BigDecimal & n1, const BigDecimal & n2);
 
 	// Exception classes
+	
 	class BigDecimalException : public Exception {};
 	class DivisionByZeroException : public BigDecimalException {};
 	class OverflowException : public BigDecimalException {};
@@ -130,4 +165,4 @@ private:
 	static int compare(const decNumber & n1, const decNumber & n2);
 };
 
-#endif
+#endif // BIGDECIMAL_H

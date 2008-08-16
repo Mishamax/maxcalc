@@ -21,6 +21,7 @@
 			OutputDirectory="..\$(ConfigurationName)"
 			IntermediateDirectory="..\$(ConfigurationName)"
 			ConfigurationType="0"
+			BuildLogFile="$(ConfigurationName)\BuildLog.htm"
 			>
 			<Tool
 				Name="VCNMakeTool"
@@ -41,6 +42,7 @@
 			OutputDirectory="..\$(ConfigurationName)"
 			IntermediateDirectory="..\$(ConfigurationName)"
 			ConfigurationType="0"
+			BuildLogFile="$(ConfigurationName)\BuildLog.htm"
 			>
 			<Tool
 				Name="VCNMakeTool"
