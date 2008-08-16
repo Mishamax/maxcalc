@@ -104,6 +104,10 @@
 				RelativePath=".\exception.h"
 				>
 			</File>
+			<File
+				RelativePath=".\settings.h"
+				>
+			</File>
 			<Filter
 				Name="decNumber"
 				>

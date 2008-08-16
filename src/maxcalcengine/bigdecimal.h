@@ -20,11 +20,8 @@
 #ifndef BIGDECIMAL_H
 #define BIGDECIMAL_H
 
-
-// Defines precision of decNumber in decimal digits.
-#define DECNUMDIGITS 100
-
-
+// settings.h must be included before decNumber.h
+#include "settings.h"
 #include "decNumber/decNumber.h"
 #include "exception.h"
 
@@ -39,15 +36,15 @@ class BigDecimalFormat
 {
 public:
 	// Properties
+	int precision;
 	bool engineeringFormat;
 	bool lowerCaseE;
-	int digitsAfterDecimalPoint;
 
 	// Constructor
 	BigDecimalFormat(
+		int precision = defaultOutputPrecision,
 		bool engineeringFormat = false,
-		bool lowerCaseE = false,
-		const int digitsAfterDecimalPoint = -1);
+		bool lowerCaseE = false);
 };
 
 
@@ -62,6 +59,10 @@ static const BigDecimalFormat defaultBigDecimalFormat = BigDecimalFormat();
 class BigDecimal
 {
 public:
+
+	// Math constants (they are defined in bigdecimal.cpp)
+	static const BigDecimal E;
+	static const BigDecimal PI;
 
 	// Constructors
 	
@@ -136,11 +137,18 @@ public:
 	static BigDecimal exp(const BigDecimal & num);
 	static BigDecimal ln(const BigDecimal & num);
 	static BigDecimal log10(const BigDecimal & num);
+	static BigDecimal sqr(const BigDecimal & num);
 	static BigDecimal sqrt(const BigDecimal & num);
 	static BigDecimal pow(const BigDecimal & num, const BigDecimal & power);
 	static BigDecimal div(const BigDecimal & dividend, const BigDecimal & divisor);
 	static BigDecimal max(const BigDecimal & n1, const BigDecimal & n2);
 	static BigDecimal min(const BigDecimal & n1, const BigDecimal & n2);
+	static BigDecimal pi();
+	static BigDecimal fact(const BigDecimal & num);
+	static BigDecimal sin(const BigDecimal & num);
+	static BigDecimal cos(const BigDecimal & num);
+	static BigDecimal tan(const BigDecimal & num);
+	static BigDecimal ctan(const BigDecimal & num);
 
 	// Exception classes
 	
@@ -154,6 +162,7 @@ public:
 	class InsufficientStorageException : public BigDecimalException {};
 	class InvalidContextException : public BigDecimalException {};
 	class InvalidOperationException : public BigDecimalException {};
+	class InvalidNumberInFactorial : public BigDecimalException {};
 
 private:
 	// Decimal number

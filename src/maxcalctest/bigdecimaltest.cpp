@@ -8,9 +8,9 @@ void BigDecimalTest::bigDecimalFormat()
 	BigDecimalFormat format;
 	BigDecimalFormat expected = defaultBigDecimalFormat;
 
+	QCOMPARE(format.precision, expected.precision);
 	QCOMPARE(format.engineeringFormat, expected.engineeringFormat);
 	QCOMPARE(format.lowerCaseE, expected.lowerCaseE);
-	QCOMPARE(format.digitsAfterDecimalPoint, expected.digitsAfterDecimalPoint);
 }
 
 void BigDecimalTest::fromQString()
@@ -113,10 +113,14 @@ void BigDecimalTest::toString()
 {
 	BigDecimal dec = 100;
 	QCOMPARE(dec.toString(), QString("1E+2"));
-	QCOMPARE(dec.toString(BigDecimalFormat(false)), QString("1E+2"));
-	QCOMPARE(dec.toString(BigDecimalFormat(true)), QString("100"));
-	QCOMPARE(dec.toString(BigDecimalFormat(true, false, 10)), QString("100"));
-	QCOMPARE(dec.toString(BigDecimalFormat(false, true)), QString("1e+2"));
+	QCOMPARE(dec.toString(BigDecimalFormat(defaultOutputPrecision, false)), QString("1E+2"));
+	QCOMPARE(dec.toString(BigDecimalFormat(defaultOutputPrecision, true)), QString("100"));
+	QCOMPARE(dec.toString(BigDecimalFormat(defaultOutputPrecision, true, false)), QString("100"));
+	QCOMPARE(dec.toString(BigDecimalFormat(defaultOutputPrecision, false, true)), QString("1e+2"));
+
+	dec = "123.456";
+	QCOMPARE(dec.toString(BigDecimalFormat(4)), BigDecimal("123.5").toString());
+	QCOMPARE(BigDecimal(dec.toString(BigDecimalFormat(2))), BigDecimal("1.2E+2"));
 }
 
 void BigDecimalTest::toInt()
@@ -259,6 +263,7 @@ void BigDecimalTest::exp()
 {
 	QCOMPARE(BigDecimal::exp(0), BigDecimal(1));
 	QCOMPARE(BigDecimal::exp(BigDecimal::ln(0)), BigDecimal(0));
+	QCOMPARE(BigDecimal::exp(1), BigDecimal::E);
 }
 
 void BigDecimalTest::ln()
@@ -266,12 +271,23 @@ void BigDecimalTest::ln()
 	QCOMPARE(BigDecimal::ln(1), BigDecimal(0));
 	QCOMPARE(BigDecimal::ln(BigDecimal::exp(0)), BigDecimal(0));
 	QCOMPARE(BigDecimal::ln(BigDecimal::exp("-3467.2")), BigDecimal("-3467.2"));
+	COMPARE_WITH_PRECISION(BigDecimal::ln(BigDecimal::E), BigDecimal(1), DEFAULT_PRECISION);
+	COMPARE_WITH_PRECISION(BigDecimal::ln(BigDecimal::E * BigDecimal::E), BigDecimal(2), DEFAULT_PRECISION);
+	COMPARE_WITH_PRECISION(BigDecimal::ln(BigDecimal::sqr(BigDecimal::E)), BigDecimal(2), DEFAULT_PRECISION);
+	COMPARE_WITH_PRECISION(BigDecimal::ln(BigDecimal::pow(BigDecimal::E, 125)), BigDecimal(125), DEFAULT_PRECISION);
 }
 
 void BigDecimalTest::log10()
 {
 	QCOMPARE(BigDecimal::log10(1), BigDecimal(0));
 	QCOMPARE(BigDecimal::log10(1000), BigDecimal(3));
+}
+
+void BigDecimalTest::sqr()
+{
+	QCOMPARE(BigDecimal::sqr(0), BigDecimal(0));
+	QCOMPARE(BigDecimal::sqr(4), BigDecimal(16));
+	QCOMPARE(BigDecimal::sqrt(BigDecimal::sqr("534.123")), BigDecimal("534.123"));
 }
 
 void BigDecimalTest::sqrt()
@@ -303,4 +319,85 @@ void BigDecimalTest::min()
 {
 	QCOMPARE(BigDecimal::min(23, 13), BigDecimal(13));
 	QCOMPARE(BigDecimal::min(65, 65), BigDecimal(65));
+}
+
+void BigDecimalTest::fact()
+{
+	QCOMPARE(BigDecimal::fact(0), BigDecimal(1));
+	QCOMPARE(BigDecimal::fact(1), BigDecimal(1));
+	QCOMPARE(BigDecimal::fact(2), BigDecimal(2));
+	QCOMPARE(BigDecimal::fact(3), BigDecimal(6));
+	QCOMPARE(BigDecimal::fact(4), BigDecimal(24));
+	QCOMPARE(BigDecimal::fact(5), BigDecimal(120));
+	COMPARE_WITH_PRECISION(BigDecimal::fact(5), BigDecimal("120.120"), 3);
+
+	try
+	{
+		BigDecimal::fact(-1);
+		QFAIL("Factorial of -1");
+	}
+	catch (BigDecimal::InvalidNumberInFactorial)
+	{
+	}
+
+	try
+	{
+		BigDecimal::fact("1.2");
+		QFAIL("Factorial of 1.2");
+	}
+	catch (BigDecimal::InvalidNumberInFactorial)
+	{
+	}
+}
+
+void BigDecimalTest::sin()
+{
+	COMPARE_WITH_PRECISION(BigDecimal::sin(0), BigDecimal(0), DEFAULT_PRECISION);
+	COMPARE_WITH_PRECISION(BigDecimal::sin(BigDecimal::PI / 2), BigDecimal(1), DEFAULT_PRECISION);
+	COMPARE_WITH_PRECISION(BigDecimal::sin(BigDecimal::PI), BigDecimal(0), DEFAULT_PRECISION);
+	COMPARE_WITH_PRECISION(BigDecimal::sin((BigDecimal::PI * 3) / 2), BigDecimal(-1), DEFAULT_PRECISION);
+	COMPARE_WITH_PRECISION(BigDecimal::sin(BigDecimal::PI * 2), BigDecimal(0), DEFAULT_PRECISION);
+
+//	COMPARE_WITH_PRECISION(BigDecimal::sin(BigDecimal::PI * 742342346), BigDecimal(0), DEFAULT_PRECISION);
+//	COMPARE_WITH_PRECISION(BigDecimal::sin(BigDecimal::PI * 436677271 / 2), BigDecimal(-1), DEFAULT_PRECISION);
+//	COMPARE_WITH_PRECISION(BigDecimal::sin(BigDecimal::PI * 436677273 / 2), BigDecimal(1), DEFAULT_PRECISION);
+}
+
+void BigDecimalTest::cos()
+{
+	COMPARE_WITH_PRECISION(BigDecimal::cos(0), BigDecimal(1), DEFAULT_PRECISION);
+	COMPARE_WITH_PRECISION(BigDecimal::cos(BigDecimal::PI / 2), BigDecimal(0), DEFAULT_PRECISION);
+	COMPARE_WITH_PRECISION(BigDecimal::cos(BigDecimal::PI), BigDecimal(-1), DEFAULT_PRECISION);
+	COMPARE_WITH_PRECISION(BigDecimal::cos((BigDecimal::PI * 3) / 2), BigDecimal(0), DEFAULT_PRECISION);
+	COMPARE_WITH_PRECISION(BigDecimal::cos(BigDecimal::PI * 2), BigDecimal(1), DEFAULT_PRECISION);
+
+//	COMPARE_WITH_PRECISION(BigDecimal::cos(BigDecimal::PI * 742342346), BigDecimal(1), DEFAULT_PRECISION);
+//	COMPARE_WITH_PRECISION(BigDecimal::cos(BigDecimal::PI * 742342349), BigDecimal(-1), DEFAULT_PRECISION);
+//	COMPARE_WITH_PRECISION(BigDecimal::cos(BigDecimal::PI * 742342341 / 2), BigDecimal(0), DEFAULT_PRECISION);
+}
+
+void BigDecimalTest::tan()
+{
+	COMPARE_WITH_PRECISION(BigDecimal::tan(0), BigDecimal(0), DEFAULT_PRECISION);
+	COMPARE_WITH_PRECISION(BigDecimal::tan(BigDecimal::PI), BigDecimal(0), DEFAULT_PRECISION);
+	COMPARE_WITH_PRECISION(BigDecimal::tan(BigDecimal::PI * 2), BigDecimal(0), DEFAULT_PRECISION);
+}
+
+void BigDecimalTest::ctan()
+{
+	COMPARE_WITH_PRECISION(BigDecimal::ctan(BigDecimal::PI / 2), BigDecimal(0), DEFAULT_PRECISION);
+	COMPARE_WITH_PRECISION(BigDecimal::ctan(BigDecimal::PI * 3 / 2), BigDecimal(0), DEFAULT_PRECISION);
+}
+
+void BigDecimalTest::consts()
+{
+	// Check PI (reference number has 128 digits precision)
+	COMPARE_WITH_PRECISION(BigDecimal::PI,
+		BigDecimal("3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446"),
+		DEFAULT_PRECISION);
+
+	// Check E (reference number has 128 digits precision)
+	COMPARE_WITH_PRECISION(BigDecimal::E,
+		BigDecimal("2.7182818284590452353602874713526624977572470936999595749669676277240766303535475945713821785251664274274663919320030599218174136"),
+		DEFAULT_PRECISION);
 }

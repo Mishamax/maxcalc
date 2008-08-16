@@ -28,8 +28,8 @@ int main()
 {
 	try
 	{
-//		BigDecimal res = BigDecimal(L"12234.234") * BigDecimal(L"2434.23443") / BigDecimal(L"3.1");
-		BigDecimal res = BigDecimal(QString("100000000000000000")) / BigDecimal(QString("2"));
+		BigDecimal res = BigDecimal("12234.234") * BigDecimal("2434.23443") / BigDecimal("3.1");
+//		BigDecimal res = BigDecimal(QString("100000000000000000")) / BigDecimal(QString("2"));
 		wcout << res.toString().toAscii().data() << endl;
 		BigDecimal dec = 1;
 
@@ -40,5 +40,8 @@ int main()
 	{
 		cout << "Exception" << endl;
 	}
+
+	cout << BigDecimal::cos(BigDecimal::PI / 2).toString().toAscii().data() << endl;
+
 	return 0;
 }

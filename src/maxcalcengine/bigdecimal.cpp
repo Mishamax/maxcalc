@@ -25,10 +25,10 @@
 */
 
 
-// Macro for creating new decContext with default settings
-#define NEW_CONTEXT(context) \
+// Macro for creating new decContext with default settings and specified precision
+#define NEW_CONTEXT_WITH_PRECISION(context, precision) \
 	decContext context; \
-	context.digits	= DECNUMDIGITS; \
+	context.digits	= precision; \
 	context.emax	= DEC_MAX_MATH; \
 	context.emin	= -DEC_MAX_MATH; \
 	context.round	= DEC_ROUND_HALF_UP; \
@@ -37,18 +37,12 @@
 	context.clamp	= 0;
 
 
-/*!
-	\var DECNUMDIGITS
-	Defines precision of BigDecimal in decimal digits.
+// Macro for creating new decContext with default settings
+#define NEW_CONTEXT(context) NEW_CONTEXT_WITH_PRECISION(context, DECNUMDIGITS)
 
-	The maximum precision of BigDecimal is hard-written by this macro in bigdecimal.h
-	and cannot be changed at runtime.
-	This macro must be defined before inclusion of decNumber.h,
-	otherwise the precision will be set to default value 1.
 
-	\sa BigDecimal
-	\ingroup MaxCalcEngine
-*/
+static const BigDecimal calculationPrecisionDec = BigDecimal(calculationPrecision);
+static const BigDecimal piCalculationPrecisionDec = BigDecimal(piCalculationPrecision);
 
 
 //****************************************************************************
@@ -62,6 +56,16 @@
 
 	\sa BigDecimal::toString()
 	\ingroup MaxCalcEngine
+*/
+
+/*!
+	\var BigDecimalFormat::precision
+	\brief Determines precision used for rounding.
+
+	This value should not be more than defaultOutputPrecision and may not be more than DECNUMDIGITS.
+	By default it is set to defaultOutputPrecision.
+
+	\sa defaultOutputPrecision, DECNUMDIGITS
 */
 
 /*!
@@ -82,15 +86,6 @@
 */
 
 /*!
-	\var BigDecimalFormat::digitsAfterDecimalPoint
-	\brief Determines maximum number of digits shown after decimal point.
-
-	By default it is set to -1 which means maximum possible number of digits is shown.
-	If specified \a digitsAfterDecimalPoint is too high and cannot be provided BigDecimal::toString()
-	will raise BigDecimal::InvalidOperationException exception.
-*/
-
-/*!
 	\var defaultBigDecimalFormat
 	\brief An instance of BigDecimalFormat with default settings
 	(engineeringFormat = false, lowerCaseE = false, digitsAfterDecimalPoint = -1).
@@ -99,16 +94,13 @@
 /*!
 	Contructs a new instance of BigDecimalFormat.
 */
-BigDecimalFormat::BigDecimalFormat(
-	bool engineeringFormat_,
-	bool lowerCaseE_,
-	const int digitsAfterDecimalPoint_)
+BigDecimalFormat::BigDecimalFormat(int precision_, bool engineeringFormat_, bool lowerCaseE_)
 {
-	Q_ASSERT(digitsAfterDecimalPoint_ >= -1);
+	Q_ASSERT(precision_ >= 1);
 
+	precision = precision_;
 	engineeringFormat = engineeringFormat_;
 	lowerCaseE = lowerCaseE_;
-	digitsAfterDecimalPoint = digitsAfterDecimalPoint_;
 }
 
 
@@ -125,13 +117,13 @@ BigDecimalFormat::BigDecimalFormat(
 	implementation of General Decimal Arithmetic (http://speleotrove.com/decimal/).
 	Package from Internation Components for Unicode is used (http://icu-project.org/).
 	
-	Maximum precision of BigDecimal is hard-written and defined by
-	\a DECNUMDIGITS macro in bigdecimal.h, so MaxCalcEngine has to be
-	recompiled in order to change precision.
+	Precision settings of BigDecimal are hard-written and defined in settings.h,
+	so MaxCalcEngine has to be recompiled in order to change precision.
 
 	When converting to string, number format is specified by BigDecimalFormat class.
 
-	\sa DECNUMDIGITS, BigDecimalFormat
+	\sa BigDecimalFormat
+	\sa DECNUMDIGITS, calculationPrecision, piCalculationPrecision, defaultOutputPrecision
 	\sa http://speleotrove.com/decimal/decnumber.html
 	\sa http://www.alphaworks.ibm.com/tech/decnumber
 	\sa http://speleotrove.com/decimal/
@@ -179,6 +171,15 @@ BigDecimalFormat::BigDecimalFormat(
 	\class BigDecimal::InvalidOperationException
 	\brief Invalid operation exception. Represents \a DEC_Invalid_operation error in decNumber.
 */
+
+/*!
+	E number.
+*/
+const BigDecimal BigDecimal::E = BigDecimal::exp(1);
+/*!
+	PI number.
+*/
+const BigDecimal BigDecimal::PI = BigDecimal::pi();
 
 //****************************************************************************
 // Constructors
@@ -263,6 +264,11 @@ BigDecimal::BigDecimal(const unsigned num)
 	
 	The following parameters can be specified in BigDecimalFormat:
 
+	- BigDecimalFormat::precision -
+	  determines precision used for rounding. This value should not be more than
+	  defaultOutputPrecision and may not be more than DECNUMDIGITS.
+	  By default it is set to defaultOutputPrecision.
+
 	- BigDecimalFormat::engineeringFormat -
 	  determines whether scientific (default) or engineering number format is used.
 	  In scientific format there is just one digit before decimal point when exponent is needed.
@@ -274,44 +280,47 @@ BigDecimal::BigDecimal(const unsigned num)
 	  determines whether lower or upper case 'E' is used when exponent is needed.
 	  By default upper case 'E' is used.
 
-	- BigDecimalFormat::digitsAfterDecimalPoint -
-	  determines maximum number of digits shown after decimal point.
-	  By default it is set to -1 which means maximum possible number of digits is shown.
-	  If specified \a digitsAfterDecimalPoint is too high and cannot be provided BigDecimal::toString()
-	  will raise InvalidOperationException exception.
-
 	If format is not specified, defaultBigDecimalFormat is used
-	(\a engineeringFormat = false, \a lowerCaseE = false, \a digitsAfterDecimalPoint = -1).
+	(\a precision = \a defaultOutputPrecision, \a engineeringFormat = \a false, \a lowerCaseE = \a false).
 
 	\sa BigDecimalFormat, InvalidOperationException
 */
 QString BigDecimal::toString(const BigDecimalFormat & format) const
 {
-	NEW_CONTEXT(context);
+	NEW_CONTEXT_WITH_PRECISION(context, format.precision);
 
-	char * str = new char[DECNUMDIGITS + 14];
-	decNumber numberToConvert = number;
+	char * str = new char[format.precision + 14];
 
-	// Rescale number if needed
-	decNumber result;
-	if (format.digitsAfterDecimalPoint != -1)
-	{
-		decNumber exp;
-		decNumberFromInt32(&exp, -format.digitsAfterDecimalPoint);
-		decNumberRescale(&result, &number, &exp, &context);
-		checkContextStatus(context);
-		numberToConvert = result;
-	}
+	decNumber num;
 
-	// Remove trailing zeros
-	decNumberReduce(&numberToConvert, &numberToConvert, &context);
+	// Remove trailing zeros and round to needed precision
+	decNumberReduce(&num, &number, &context);
 	checkContextStatus(context);
 
-	// Make conversion
+	// Adjust exponent
+	if (num.exponent < -format.precision)
+	{
+		decNumber exp;
+		decNumberFromInt32(&exp, -format.precision);
+		decNumberRescale(&num, &num, &exp, &context);
+		checkContextStatus(context);
+		// Remove trailing zeros again
+		decNumberTrim(&num);
+		checkContextStatus(context);
+	}
+
+	// To prevent "-0" output
+	if (decNumberIsZero(&num) && decNumberIsNegative(&num))
+	{
+		decNumberMinus(&num, &num, &context);
+		checkContextStatus(context);
+	}
+
+	// Make conversion to engineering or scientific format
 	if (format.engineeringFormat)
-		decNumberToEngString(&numberToConvert, str);
+		decNumberToEngString(&num, str);
 	else
-		decNumberToString(&numberToConvert, str);
+		decNumberToString(&num, str);
 
 	// Convert char* to QString
 	QString qstr(str);
@@ -822,6 +831,18 @@ BigDecimal BigDecimal::log10(const BigDecimal & num)
 }
 
 /*!
+	Calculates square of \a num.
+*/
+BigDecimal BigDecimal::sqr(const BigDecimal & num)
+{
+	NEW_CONTEXT(context);
+	decNumber result;
+	decNumberMultiply(&result, &num.number, &num.number, &context);
+	checkContextStatus(context);
+	return result;
+}
+
+/*!
 	Calculates square root of \a num.
 */
 BigDecimal BigDecimal::sqrt(const BigDecimal & num)
@@ -881,6 +902,136 @@ BigDecimal BigDecimal::min(const BigDecimal & num, const BigDecimal & decimal)
 	return result;
 }
 
+// TODO: faster calculation of PI, Fact, Sin, Cos, etc using decNumber functions
+//		instead of BigDecimal functions and operators
+
+/*!
+	Calculates PI number.
+
+	This function uses Brent–Salamin algorithm
+	(http://en.wikipedia.org/wiki/Gauss%E2%80%93Legendre_algorithm).
+	Calculation continies while difference between a(n) and b(n)
+	is more than piCalculationPrecision. Value of this constant
+	must be enough to calculate PI with DECNUMDIGITS precision.
+
+	\sa piCalculationPrecision, DECNUMDIGITS
+	\sa http://en.wikipedia.org/wiki/Gauss%E2%80%93Legendre_algorithm
+*/
+BigDecimal BigDecimal::pi()
+{
+	BigDecimal a = 1, a_old;
+	BigDecimal b = BigDecimal(1) / BigDecimal::sqrt(2);
+	BigDecimal t = BigDecimal("0.25");
+	BigDecimal p = 1;
+
+	while (BigDecimal::abs(a - b) > piCalculationPrecisionDec)
+	{
+		a_old = a;
+		a = (a + b) / 2;
+		b = BigDecimal::sqrt(a_old * b);
+		t = t - p * sqr(a_old - a);
+		p *= 2;
+	}
+
+	return sqr(a + b) / (BigDecimal(4) * t);
+}
+
+/*!
+	Calculates factorial of \a num.
+*/
+BigDecimal BigDecimal::fact(const BigDecimal & num)
+{
+	if (num.isZero())
+		return 1;
+	if (num.isNegative() || !num.fractional().isZero())
+		throw InvalidNumberInFactorial();
+
+	BigDecimal result = 1;
+	for (BigDecimal tmp = 1; tmp <= num; tmp++)
+		result *= tmp;
+	return result;
+}
+
+// TODO: better angle decreasing before calculation of trigonometrical functions
+// TODO: use fast multiplication+addition function for count*(count+1)
+
+/*!
+	Calculates sine of \a num (measured in radians).
+	This function uses Taylor serie.
+*/
+BigDecimal BigDecimal::sin(const BigDecimal & num)
+{
+	BigDecimal angle = num % (PI * 2);
+	BigDecimal result = angle, fraction = angle, count = 2, numerator = angle, denominator = 1;
+	BigDecimal sqrNum = sqr(angle);
+
+	while (fraction > calculationPrecisionDec)
+	{
+		numerator *= sqrNum;
+		denominator *= count * (count+1);
+		count += 2;
+		fraction = numerator / denominator;
+		result -= fraction;
+
+		numerator *= sqrNum;
+		denominator *= count * (count+1);
+		count += 2;
+		fraction = numerator / denominator;
+		result += fraction;
+	}
+
+	return result;
+}
+
+/*!
+	Calculates cosine of \a num (measured in radians).
+	This function uses Taylor serie.
+*/
+BigDecimal BigDecimal::cos(const BigDecimal & num)
+{
+	BigDecimal angle = num % (PI * 2);
+	BigDecimal result = 1, fraction = 1, count = 1, numerator = 1, denominator = 1;
+	BigDecimal sqrNum = sqr(angle);
+
+	while (fraction > calculationPrecisionDec)
+	{
+		numerator *= sqrNum;
+		denominator *= count * (count+1);
+		count += 2;
+		fraction = numerator / denominator;
+		result -= fraction;
+
+		numerator *= sqrNum;
+		denominator *= count * (count+1);
+		count += 2;
+		fraction = numerator / denominator;
+		result += fraction;
+	}
+
+	return result;
+}
+
+// TODO: error checking in tan() and ctan()
+
+/*!
+	Calculates tan of \a num (measured in radians).
+	This functions calculates tan(num) as sin(num) / cos(num).
+*/
+BigDecimal BigDecimal::tan(const BigDecimal & num)
+{
+	BigDecimal angle = num % (PI * 2);
+	return sin(angle) / cos(angle);
+}
+
+/*!
+	Calculates ctan of \a num (measured in radians).
+	This functions calculates ctan(num) as cos(num) / sin(num).
+*/
+BigDecimal BigDecimal::ctan(const BigDecimal & num)
+{
+	BigDecimal angle = num % (PI * 2);
+	return cos(angle) / sin(angle);
+}
 
 //****************************************************************************
 // Internal functions

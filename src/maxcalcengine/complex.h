@@ -20,10 +20,10 @@ public:
 		const bool multiplyBetweenIAndImaginaryPart_ = false,
 		bool spacesAroundSignes_ = false,
 		const QChar imaginaryOne_ = 'i',
+		const int precision_ = defaultOutputPrecision,
 		const bool engineeringFormat_ = false,
-		const bool smallE_ = false,
-		const int digitsAfterDecimalPoint_ = -1) :
-	BigDecimalFormat(engineeringFormat_, smallE_, digitsAfterDecimalPoint_)
+		const bool smallE_ = false) :
+	BigDecimalFormat(precision_, engineeringFormat_, smallE_)
 	{
 		iBeforeImaginaryPart = iBeforeImaginaryPart_;
 		multiplyBetweenIAndImaginaryPart = multiplyBetweenIAndImaginaryPart_;
