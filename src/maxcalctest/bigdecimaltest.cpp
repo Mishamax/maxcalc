@@ -6,7 +6,7 @@
 void BigDecimalTest::bigDecimalFormat()
 {
 	BigDecimalFormat format;
-	BigDecimalFormat expected = defaultBigDecimalFormat;
+	BigDecimalFormat expected = BigDecimalFormat::getDefault();
 
 	QCOMPARE(format.precision, expected.precision);
 	QCOMPARE(format.engineeringFormat, expected.engineeringFormat);
@@ -39,6 +39,30 @@ void BigDecimalTest::fromCharStr()
 	QVERIFY(dec.isZero());
 	QCOMPARE(dec.integer(), BigDecimal(0));
 	QCOMPARE(dec.fractional(), BigDecimal(0));
+
+	// Stress tests
+
+	// 100-digit number with 5-digit exponent
+	dec = "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890E+99999";
+	QVERIFY(dec.isPositive());
+	QCOMPARE(dec.integer(), BigDecimal("123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789E+100000"));
+	QCOMPARE(dec.fractional(), BigDecimal(0));
+
+	// 110-digit number with 5-digit exponent
+	dec = "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890E+99999";
+	QVERIFY(dec.isPositive());
+	QCOMPARE(dec.integer(), BigDecimal("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890e99999"));
+	QCOMPARE(dec.fractional(), BigDecimal(0));
+
+	// 110-digit negative number with 5-digit negative exponent
+	dec = "-12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890e-99999";
+	QVERIFY(dec.isNegative());
+	QCOMPARE(dec, BigDecimal("-12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890E-99999"));
+
+	// 120-digit zero
+	dec = "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000E+00000000000000";
+	QVERIFY(dec.isZero());
+	QCOMPARE(dec, BigDecimal(0));
 }
 
 void BigDecimalTest::fromBigDecimal()
@@ -84,43 +108,20 @@ void BigDecimalTest::fromUInt()
 	QCOMPARE(dec.fractional(), BigDecimal(0));
 }
 
-void BigDecimalTest::constructionStress()
-{
-	// 100-digit number with 5-digit exponent
-	BigDecimal dec = "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890E+99999";
-	QVERIFY(dec.isPositive());
-	QCOMPARE(dec.integer(), BigDecimal("123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789E+100000"));
-	QCOMPARE(dec.fractional(), BigDecimal(0));
-
-	// 110-digit number with 5-digit exponent
-	dec = "12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890E+99999";
-	QVERIFY(dec.isPositive());
-	QCOMPARE(dec.integer(), BigDecimal("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890e99999"));
-	QCOMPARE(dec.fractional(), BigDecimal(0));
-
-	// 110-digit negative number with 5-digit negative exponent
-	dec = "-12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890e-99999";
-	QVERIFY(dec.isNegative());
-	QCOMPARE(dec, BigDecimal("-12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890E-99999"));
-
-	// 120-digit zero
-	dec = "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000E+00000000000000";
-	QVERIFY(dec.isZero());
-	QCOMPARE(dec, BigDecimal(0));
-}
-
 void BigDecimalTest::toString()
 {
 	BigDecimal dec = 100;
 	QCOMPARE(dec.toString(), QString("1E+2"));
-	QCOMPARE(dec.toString(BigDecimalFormat(defaultOutputPrecision, false)), QString("1E+2"));
-	QCOMPARE(dec.toString(BigDecimalFormat(defaultOutputPrecision, true)), QString("100"));
-	QCOMPARE(dec.toString(BigDecimalFormat(defaultOutputPrecision, true, false)), QString("100"));
-	QCOMPARE(dec.toString(BigDecimalFormat(defaultOutputPrecision, false, true)), QString("1e+2"));
+	QCOMPARE(dec.toString(BigDecimalFormat(MAX_IO_PRECISION, false)), QString("1E+2"));
+	QCOMPARE(dec.toString(BigDecimalFormat(MAX_IO_PRECISION, true)), QString("100"));
+	QCOMPARE(dec.toString(BigDecimalFormat(MAX_IO_PRECISION, true, false)), QString("100"));
+	QCOMPARE(dec.toString(BigDecimalFormat(MAX_IO_PRECISION, false, true)), QString("1e+2"));
 
 	dec = "123.456";
 	QCOMPARE(dec.toString(BigDecimalFormat(4)), BigDecimal("123.5").toString());
 	QCOMPARE(BigDecimal(dec.toString(BigDecimalFormat(2))), BigDecimal("1.2E+2"));
+
+	QCOMPARE(BigDecimal("1E-4378").toString(), QString("1E-4378"));
 }
 
 void BigDecimalTest::toInt()
@@ -208,6 +209,10 @@ void BigDecimalTest::binaryArithmeticOperators()
 	{
 		QCOMPARE(dec2, BigDecimal("Infinity"));
 	}
+
+	QCOMPARE(BigDecimal(QString("100000000000000000")) / BigDecimal(QString("2")), BigDecimal("5E+16"));
+	COMPARE_WITH_PRECISION((BigDecimal("12234.234") * BigDecimal("2434.23443") / BigDecimal("3.1")),
+		BigDecimal("9.60677213789568387096774193548387096774193548387097e6"), DEFAULT_PRECISION);
 }
 
 void BigDecimalTest::binaryLogicalOperators()
@@ -323,13 +328,19 @@ void BigDecimalTest::min()
 
 void BigDecimalTest::fact()
 {
+	// Small factorials
 	QCOMPARE(BigDecimal::fact(0), BigDecimal(1));
 	QCOMPARE(BigDecimal::fact(1), BigDecimal(1));
 	QCOMPARE(BigDecimal::fact(2), BigDecimal(2));
 	QCOMPARE(BigDecimal::fact(3), BigDecimal(6));
 	QCOMPARE(BigDecimal::fact(4), BigDecimal(24));
 	QCOMPARE(BigDecimal::fact(5), BigDecimal(120));
-	COMPARE_WITH_PRECISION(BigDecimal::fact(5), BigDecimal("120.120"), 3);
+	QCOMPARE(BigDecimal::fact(10), BigDecimal(3628800));
+	QCOMPARE(BigDecimal::fact(25), BigDecimal("15511210043330985984000000"));
+
+	// Stress test
+	COMPARE_WITH_PRECISION(BigDecimal::fact(450), BigDecimal("1.73336873E+1000"), 9);
+	COMPARE_WITH_PRECISION(BigDecimal::fact(200000), BigDecimal("1.4202253454703144049669463336823059760899653567464E+973350"), DEFAULT_PRECISION);
 
 	try
 	{
@@ -358,9 +369,18 @@ void BigDecimalTest::sin()
 	COMPARE_WITH_PRECISION(BigDecimal::sin((BigDecimal::PI * 3) / 2), BigDecimal(-1), DEFAULT_PRECISION);
 	COMPARE_WITH_PRECISION(BigDecimal::sin(BigDecimal::PI * 2), BigDecimal(0), DEFAULT_PRECISION);
 
-//	COMPARE_WITH_PRECISION(BigDecimal::sin(BigDecimal::PI * 742342346), BigDecimal(0), DEFAULT_PRECISION);
-//	COMPARE_WITH_PRECISION(BigDecimal::sin(BigDecimal::PI * 436677271 / 2), BigDecimal(-1), DEFAULT_PRECISION);
-//	COMPARE_WITH_PRECISION(BigDecimal::sin(BigDecimal::PI * 436677273 / 2), BigDecimal(1), DEFAULT_PRECISION);
+	COMPARE_WITH_PRECISION(BigDecimal::sin(BigDecimal::PI * 742342346), BigDecimal(0), DEFAULT_PRECISION);
+	COMPARE_WITH_PRECISION(BigDecimal::sin(BigDecimal::PI * 436677271 / 2), BigDecimal(-1), DEFAULT_PRECISION);
+	COMPARE_WITH_PRECISION(BigDecimal::sin(BigDecimal::PI * 436677273 / 2), BigDecimal(1), DEFAULT_PRECISION);
+
+	COMPARE_WITH_PRECISION(BigDecimal::sin(BigDecimal::PI * BigDecimal("99999999999999999999999999999999999999999999999999999999999999999999999999")), BigDecimal(0), DEFAULT_PRECISION);
+
+	// SpeedCrunch 0.10.1 fails this test
+	// Reference number is calculated by Mathematica 6 with 100 digits precision
+	COMPARE_WITH_PRECISION(BigDecimal::sin(BigDecimal::PI *
+		BigDecimal("34678236483724678236482376437643478374837487384783874637846736473467346347E-15")),
+		BigDecimal("0.7365077837912717180169241081842837128232214243058669031072233561867904779639270977189273961709260958"),
+		DEFAULT_PRECISION);
 }
 
 void BigDecimalTest::cos()
@@ -371,9 +391,9 @@ void BigDecimalTest::cos()
 	COMPARE_WITH_PRECISION(BigDecimal::cos((BigDecimal::PI * 3) / 2), BigDecimal(0), DEFAULT_PRECISION);
 	COMPARE_WITH_PRECISION(BigDecimal::cos(BigDecimal::PI * 2), BigDecimal(1), DEFAULT_PRECISION);
 
-//	COMPARE_WITH_PRECISION(BigDecimal::cos(BigDecimal::PI * 742342346), BigDecimal(1), DEFAULT_PRECISION);
-//	COMPARE_WITH_PRECISION(BigDecimal::cos(BigDecimal::PI * 742342349), BigDecimal(-1), DEFAULT_PRECISION);
-//	COMPARE_WITH_PRECISION(BigDecimal::cos(BigDecimal::PI * 742342341 / 2), BigDecimal(0), DEFAULT_PRECISION);
+	COMPARE_WITH_PRECISION(BigDecimal::cos(BigDecimal::PI * 742342346), BigDecimal(1), DEFAULT_PRECISION);
+	COMPARE_WITH_PRECISION(BigDecimal::cos(BigDecimal::PI * 742342349), BigDecimal(-1), DEFAULT_PRECISION);
+	COMPARE_WITH_PRECISION(BigDecimal::cos(BigDecimal::PI * 742342341 / 2), BigDecimal(0), DEFAULT_PRECISION);
 }
 
 void BigDecimalTest::tan()
@@ -391,12 +411,14 @@ void BigDecimalTest::ctan()
 
 void BigDecimalTest::consts()
 {
-	// Check PI (reference number has 128 digits precision)
+	// Reference values are calculated by PowerCalc and have 128 digits precision
+
+	// Check PI
 	COMPARE_WITH_PRECISION(BigDecimal::PI,
 		BigDecimal("3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446"),
 		DEFAULT_PRECISION);
 
-	// Check E (reference number has 128 digits precision)
+	// Check E
 	COMPARE_WITH_PRECISION(BigDecimal::E,
 		BigDecimal("2.7182818284590452353602874713526624977572470936999595749669676277240766303535475945713821785251664274274663919320030599218174136"),
 		DEFAULT_PRECISION);

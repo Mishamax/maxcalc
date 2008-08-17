@@ -24,8 +24,8 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake $(ConfigurationName)"
-				ReBuildCommandLine="qmake &amp;&amp; nmake $(ConfigurationName)"
+				BuildCommandLine="del ..\$(ConfigurationName)\maxcalctest.exe &amp;&amp; nmake $(ConfigurationName)"
+				ReBuildCommandLine="del ..\$(ConfigurationName)\maxcalctest.exe &amp;&amp; qmake &amp;&amp; nmake $(ConfigurationName)"
 				CleanCommandLine="nmake $(ConfigurationName)-clean"
 				Output="..\$(ConfigurationName)\maxcalctest.exe"
 				PreprocessorDefinitions="WIN32;_DEBUG"
@@ -45,9 +45,9 @@
 			>
 			<Tool
 				Name="VCNMakeTool"
-				BuildCommandLine="nmake $(ConfigurationName)"
-				ReBuildCommandLine="qmake &amp;&amp; nmake $(ConfigurationName)"
-				CleanCommandLine="nmake clean"
+				BuildCommandLine="del ..\$(ConfigurationName)\maxcalctest.exe &amp;&amp; nmake $(ConfigurationName)"
+				ReBuildCommandLine="del ..\$(ConfigurationName)\maxcalctest.exe &amp;&amp; qmake &amp;&amp; nmake $(ConfigurationName)"
+				CleanCommandLine="nmake $(ConfigurationName)-clean"
 				Output="..\$(ConfigurationName)\maxcalctest.exe"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				IncludeSearchPath="..\maxcalcengine"

@@ -7,31 +7,6 @@
 #include <QString>
 
 
-class ComplexFormat : public BigDecimalFormat
-{
-public:
-	bool iBeforeImaginaryPart;
-	bool multiplyBetweenIAndImaginaryPart;
-	bool spacesAroundSignes;
-	QChar imaginaryOne;
-
-	ComplexFormat(
-		const bool iBeforeImaginaryPart_ = false,
-		const bool multiplyBetweenIAndImaginaryPart_ = false,
-		bool spacesAroundSignes_ = false,
-		const QChar imaginaryOne_ = 'i',
-		const int precision_ = defaultOutputPrecision,
-		const bool engineeringFormat_ = false,
-		const bool smallE_ = false) :
-	BigDecimalFormat(precision_, engineeringFormat_, smallE_)
-	{
-		iBeforeImaginaryPart = iBeforeImaginaryPart_;
-		multiplyBetweenIAndImaginaryPart = multiplyBetweenIAndImaginaryPart_;
-		spacesAroundSignes = spacesAroundSignes_;
-		imaginaryOne = imaginaryOne_;
-	}
-
-};
 
 static const ComplexFormat defaultComplexFormat = ComplexFormat();
 
@@ -50,7 +25,7 @@ public:
 	Complex(const unsigned real, const unsigned imaginary = 0);
 
 	// Conversion to string
-	QString toString(const ComplexFormat & format = defaultComplexFormat) const;
+	QString toString(const ComplexFormat & format = ComplexFormat::getDefault()) const;
 
 	// Operators
 	Complex operator+() const;

@@ -24,32 +24,9 @@
 #include "settings.h"
 #include "decNumber/decNumber.h"
 #include "exception.h"
+#include "numberformats.h"
 
 #include <QString>
-
-
-//****************************************************************************
-// BigDecimalFormat definition
-//****************************************************************************
-
-class BigDecimalFormat
-{
-public:
-	// Properties
-	int precision;
-	bool engineeringFormat;
-	bool lowerCaseE;
-
-	// Constructor
-	BigDecimalFormat(
-		int precision = defaultOutputPrecision,
-		bool engineeringFormat = false,
-		bool lowerCaseE = false);
-};
-
-
-// Default BigDecimal format
-static const BigDecimalFormat defaultBigDecimalFormat = BigDecimalFormat();
 
 
 //****************************************************************************
@@ -60,9 +37,11 @@ class BigDecimal
 {
 public:
 
-	// Math constants (they are defined in bigdecimal.cpp)
+	// Math constants
 	static const BigDecimal E;
 	static const BigDecimal PI;
+	static const BigDecimal PIDiv2;
+	static const BigDecimal PIMul2;
 
 	// Constructors
 	
@@ -75,7 +54,7 @@ public:
 
 	// Conversion functions
 	
-	QString toString(const BigDecimalFormat & format = defaultBigDecimalFormat) const;
+	QString toString(const BigDecimalFormat & format = BigDecimalFormat::getDefault()) const;
 	int toInt() const;
 	unsigned toUInt() const;
 
@@ -143,7 +122,6 @@ public:
 	static BigDecimal div(const BigDecimal & dividend, const BigDecimal & divisor);
 	static BigDecimal max(const BigDecimal & n1, const BigDecimal & n2);
 	static BigDecimal min(const BigDecimal & n1, const BigDecimal & n2);
-	static BigDecimal pi();
 	static BigDecimal fact(const BigDecimal & num);
 	static BigDecimal sin(const BigDecimal & num);
 	static BigDecimal cos(const BigDecimal & num);
@@ -152,6 +130,8 @@ public:
 
 	// Exception classes
 	
+	// TODO: better exception handling
+
 	class BigDecimalException : public Exception {};
 	class DivisionByZeroException : public BigDecimalException {};
 	class OverflowException : public BigDecimalException {};
@@ -169,9 +149,13 @@ private:
 	decNumber number;
 
 	// Internal functions
+	
 	BigDecimal(const decNumber & num);
 	static void checkContextStatus(const decContext & context);
 	static int compare(const decNumber & n1, const decNumber & n2);
+
+	static BigDecimal pi();
+	static BigDecimal FMA(const BigDecimal & multiplier1, const BigDecimal & multiplier2, const BigDecimal & summand);
 };
 
 #endif // BIGDECIMAL_H

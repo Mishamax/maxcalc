@@ -26,22 +26,8 @@ using namespace std;
 
 int main()
 {
-	try
-	{
-		BigDecimal res = BigDecimal("12234.234") * BigDecimal("2434.23443") / BigDecimal("3.1");
-//		BigDecimal res = BigDecimal(QString("100000000000000000")) / BigDecimal(QString("2"));
-		wcout << res.toString().toAscii().data() << endl;
-		BigDecimal dec = 1;
-
-		Complex c(1, -2);
-		wcout << c.toString().toAscii().data() << endl;
-	}
-	catch (...)
-	{
-		cout << "Exception" << endl;
-	}
-
-	cout << BigDecimal::cos(BigDecimal::PI / 2).toString().toAscii().data() << endl;
+	cout << BigDecimal::sin(BigDecimal::PI).toString().toAscii().data() << endl;
+	cout << BigDecimal::sin(BigDecimal::PI * BigDecimal("99999999999999999999999999999999999999999999999999999999999999999999999999")).toString().toAscii().data() << endl;
 
 	return 0;
 }

@@ -74,6 +74,10 @@
 				RelativePath=".\complex.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\numberformats.cpp"
+				>
+			</File>
 			<Filter
 				Name="decNumber"
 				>
@@ -102,6 +106,10 @@
 			</File>
 			<File
 				RelativePath=".\exception.h"
+				>
+			</File>
+			<File
+				RelativePath=".\numberformats.h"
 				>
 			</File>
 			<File
