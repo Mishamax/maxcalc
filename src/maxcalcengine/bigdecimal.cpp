@@ -19,7 +19,7 @@
 
 #include "bigdecimal.h"
 #include <cstdlib>
-
+#include <QtGlobal>
 
 /*!
 	\defgroup MaxCalcEngine MaxCalc Engine
@@ -50,12 +50,17 @@ static decNumber setCalculationPrecision()
 {
 	char prec[4], str[7] = "1E-";
 
-	// Safe functions for MSVC 2005+ compliers
 #if _MSC_VER > 1400
+	// Safe functions for MSVC 2005+ compliers
 	_itoa_s(WORKING_PRECISION, prec, 4, 10);
 	strcat_s(str, 7, prec);
-#else
+#elif defined(Q_WS_WIN)
+	// Other Windows compilers
 	itoa(WORKING_PRECISION, prec, 10);
+	strcat(str, prec);
+#else
+	// Linux
+	sprintf(prec, "%d", WORKING_PRECISION);
 	strcat(str, prec);
 #endif
 
