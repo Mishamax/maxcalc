@@ -1,10 +1,12 @@
 TEMPLATE = app
 TARGET = maxcalc
-CONFIG += qt debug_and_release warn_on
+CONFIG += qt debug_and_release warn_on precompile_header
 QT -= gui
 win32:CONFIG += console
 
 SOURCES += main.cpp
+
+PRECOMPILED_HEADER = pch.h
 
 INCLUDEPATH += ../maxcalcengine
 

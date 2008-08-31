@@ -2,10 +2,12 @@ TEMPLATE = app
 win32:TARGET = maxcalc-win
 unix:TARGET = maxcalc-gui
 
-CONFIG += qt debug_and_release warn_on
+CONFIG += qt debug_and_release warn_on precompile_header
 win32:CONFIG += windows
 
 SOURCES += main.cpp
+
+PRECOMPILED_HEADER = pch.h
 
 INCLUDEPATH += ../maxcalcengine
 

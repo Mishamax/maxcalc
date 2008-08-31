@@ -113,6 +113,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\pch.h"
+				>
+			</File>
+			<File
 				RelativePath=".\settings.h"
 				>
 			</File>

@@ -1,8 +1,5 @@
 
 #include "complex.h"
-#include <iostream>
-
-using namespace std;
 
 Complex::Complex()
 {
