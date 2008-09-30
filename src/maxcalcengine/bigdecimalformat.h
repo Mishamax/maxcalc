@@ -18,11 +18,11 @@
  *****************************************************************************/
 
 
-#ifndef NUMBERFORMATS_H
-#define NUMBERFORMATS_H
+#ifndef BIGDECIMALFORMAT_H
+#define BIGDECIMALFORMAT_H
 
 #include "settings.h"
-#include <QChar>
+#include <cassert>
 
 //****************************************************************************
 // BigDecimalFormat definition
@@ -31,55 +31,34 @@
 class BigDecimalFormat
 {
 public:
-	// Properties
-	int precision;
-	bool engineeringFormat;
-	bool lowerCaseE;
+	// Enums
+	enum NumberFormat { ScientificFormat, EngineeringFormat };
+	enum ExponentCase { UpperCaseExponent, LowerCaseExponent };
 
 	// Constructor
 	BigDecimalFormat(
 		const int precision = MAX_IO_PRECISION,
-		const bool engineeringFormat = false,
-		const bool lowerCaseE = false);
+		const NumberFormat numberFormat = ScientificFormat,
+		const ExponentCase exponentCase = UpperCaseExponent);
 
 	// Get default format
-	static BigDecimalFormat getDefault();
+	static BigDecimalFormat getDefault() { return BigDecimalFormat(); };
+
+	// Accessors
+	int precision() const { return m_precision; };
+	void setPrecision(int precision) { assert(precision >= 1 && precision <= MAX_IO_PRECISION); m_precision = precision; };
+
+	NumberFormat numberFormat() const { return m_numberFormat; };
+	void setNumberFormat(NumberFormat numberFormat) { m_numberFormat = numberFormat; };
+
+	ExponentCase exponentCase() const { return m_exponentCase; };
+	void setExponentCase(ExponentCase exponentCase) { m_exponentCase = exponentCase; };
 
 private:
-	// Default format
-	static const BigDecimalFormat defaultBigDecimalFormat;
-};
-
-
-//****************************************************************************
-// ComplexFormat definition
-//****************************************************************************
-
-class ComplexFormat : public BigDecimalFormat
-{
-public:
 	// Properties
-	bool iBeforeImaginaryPart;
-	bool multiplyBetweenIAndImaginaryPart;
-	bool spacesAroundSignes;
-	QChar imaginaryOne;
-
-	// Constructor
-	ComplexFormat(
-		const bool iBeforeImaginaryPart_ = false,
-		const bool multiplyBetweenIAndImaginaryPart_ = false,
-		const bool spacesAroundSignes_ = false,
-		const QChar imaginaryOne_ = 'i',
-		const int precision_ = MAX_IO_PRECISION,
-		const bool engineeringFormat_ = false,
-		const bool lowerCaseE_ = false);
-
-	// Get default format
-	static ComplexFormat getDefault();
-
-private:
-	// Default format
-	static const ComplexFormat defaultComplexFormat;
+	int m_precision;
+	NumberFormat m_numberFormat;
+	ExponentCase m_exponentCase;
 };
 
-#endif
+#endif // BIGDECIMALFORMAT_H

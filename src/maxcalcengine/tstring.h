@@ -17,18 +17,36 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
-#include "bigdecimal.h"
-#include "complex.h"
+#ifndef TSTRING_H
+#define TSTRING_H
 
-#include <iostream>
 #include <string>
 
-using namespace std;
+#if defined(UNICODE)
 
-int main()
-{
-	wcout << BigDecimal::sin(BigDecimal::PI).toString().c_str() << endl;
-	wcout << BigDecimal::sin(BigDecimal::PI * BigDecimal(L"99999999999999999999999999999999999999999999999999999999999999999999999999")).toString().c_str() << endl;
+// String literal
+#define _T(x) L ## x
 
-	return 0;
-}
+// tchar and tstring definitions
+typedef wchar_t tchar;
+typedef std::wstring tstring;
+
+// String conversion functions
+std::codecvt_base::result stringToWideString(const std::string & from, std::wstring & to, const char * localeName = "");
+std::codecvt_base::result wideStringToString(const std::wstring & from, std::string & to, const char * localeName = "");
+
+std::codecvt_base::result charToWideChar(const char * from, size_t fromLength, wchar_t * to, size_t toLength, const char * localeName = "");
+std::codecvt_base::result wideCharToChar(const wchar_t * from, size_t fromLength, char * to, size_t toLength, const char * localeName = "");
+
+#else // #if defined(UNICODE)
+
+// String literal
+#define _T(x) x
+
+// tchar and tstring definitions
+typedef char tchar;
+typedef std::string tstring;
+
+#endif // #if defined(UNICODE)
+
+#endif // TSTRING_H

@@ -1,14 +1,14 @@
 TEMPLATE = lib
 TARGET = maxcalcengine
 
-CONFIG += staticlib qt debug_and_release warn_on precompile_header
-QT -= gui
+CONFIG -= qt
+CONFIG += staticlib debug_and_release warn_on precompile_header
 
 HEADERS += decNumber/decContext.h decNumber/decNumber.h decNumber/decNumberLocal.h decNumber/stdint.h
 SOURCES += decNumber/decContext.cpp decNumber/decNumber.cpp
 
-HEADERS += exception.h bigdecimal.h complex.h settings.h numberformats.h
-SOURCES += bigdecimal.cpp complex.cpp numberformats.cpp
+HEADERS += bigdecimal.h complex.h settings.h bigdecimalformat.h complexformat.h tstring.h
+SOURCES += bigdecimal.cpp complex.cpp bigdecimalformat.cpp complexformat.cpp tstring.cpp
 
 PRECOMPILED_HEADER = pch.h
 
@@ -20,3 +20,6 @@ CONFIG(release, debug|release) {
 	DEFINES += NDEBUG
 	DESTDIR = ../release
 }
+
+DEFINES += UNICODE
+win32:DEFINES += WIN32

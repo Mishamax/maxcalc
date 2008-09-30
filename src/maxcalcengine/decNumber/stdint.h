@@ -1,8 +1,6 @@
 /* stdint.h –– some standard integer types from C99 */
 
-#include <QtGlobal>
-
-#if defined(Q_WS_WIN)
+#if defined(_WIN32)
 
 // Windows: There is no stdint.h
 typedef unsigned char uint8_t;

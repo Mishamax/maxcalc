@@ -2,26 +2,27 @@
 #include "bigdecimaltest.h"
 #include "bigdecimal.h"
 #include <QTest>
+#include <string>
 
 void BigDecimalTest::bigDecimalFormat()
 {
 	BigDecimalFormat format;
 	BigDecimalFormat expected = BigDecimalFormat::getDefault();
 
-	QCOMPARE(format.precision, expected.precision);
-	QCOMPARE(format.engineeringFormat, expected.engineeringFormat);
-	QCOMPARE(format.lowerCaseE, expected.lowerCaseE);
+	QCOMPARE(format.precision(), expected.precision());
+	QCOMPARE(format.numberFormat(), expected.numberFormat());
+	QCOMPARE(format.exponentCase(), expected.exponentCase());
 }
 
-void BigDecimalTest::fromQString()
+void BigDecimalTest::fromString()
 {
-	BigDecimal dec(QString("-1121.34E-2"));
+	BigDecimal dec(std::string("-1121.34E-2"));
 
 	QVERIFY(dec.isNegative());
 	QCOMPARE(dec.integer(), BigDecimal(-11));
 	QCOMPARE(dec.fractional(), BigDecimal("0.2134"));
 
-	dec = QString("0");
+	dec = std::string("0");
 	QVERIFY(dec.isZero());
 	QCOMPARE(dec.integer(), BigDecimal(0));
 	QCOMPARE(dec.fractional(), BigDecimal(0));
@@ -111,17 +112,17 @@ void BigDecimalTest::fromUInt()
 void BigDecimalTest::toString()
 {
 	BigDecimal dec = 100;
-	QCOMPARE(dec.toString(), QString("1E+2"));
-	QCOMPARE(dec.toString(BigDecimalFormat(MAX_IO_PRECISION, false)), QString("1E+2"));
-	QCOMPARE(dec.toString(BigDecimalFormat(MAX_IO_PRECISION, true)), QString("100"));
-	QCOMPARE(dec.toString(BigDecimalFormat(MAX_IO_PRECISION, true, false)), QString("100"));
-	QCOMPARE(dec.toString(BigDecimalFormat(MAX_IO_PRECISION, false, true)), QString("1e+2"));
+	QCOMPARE(dec.toString(), std::string("1E+2"));
+	QCOMPARE(dec.toString(BigDecimalFormat(MAX_IO_PRECISION, BigDecimalFormat::ScientificFormat)), std::string("1E+2"));
+	QCOMPARE(dec.toString(BigDecimalFormat(MAX_IO_PRECISION, BigDecimalFormat::EngineeringFormat)), std::string("100"));
+	QCOMPARE(dec.toString(BigDecimalFormat(MAX_IO_PRECISION, BigDecimalFormat::EngineeringFormat, BigDecimalFormat::UpperCaseExponent)), std::string("100"));
+	QCOMPARE(dec.toString(BigDecimalFormat(MAX_IO_PRECISION, BigDecimalFormat::ScientificFormat, BigDecimalFormat::LowerCaseExponent)).c_str(), std::string("1e+2").c_str());
 
 	dec = "123.456";
 	QCOMPARE(dec.toString(BigDecimalFormat(4)), BigDecimal("123.5").toString());
 	QCOMPARE(BigDecimal(dec.toString(BigDecimalFormat(2))), BigDecimal("1.2E+2"));
 
-	QCOMPARE(BigDecimal("1E-4378").toString(), QString("1E-4378"));
+	QCOMPARE(BigDecimal("1E-4378").toString(), std::string("1E-4378"));
 }
 
 void BigDecimalTest::toInt()
@@ -210,7 +211,7 @@ void BigDecimalTest::binaryArithmeticOperators()
 		QCOMPARE(dec2, BigDecimal("Infinity"));
 	}
 
-	QCOMPARE(BigDecimal(QString("100000000000000000")) / BigDecimal(QString("2")), BigDecimal("5E+16"));
+	QCOMPARE(BigDecimal(std::string("100000000000000000")) / BigDecimal(std::string("2")), BigDecimal("5E+16"));
 	COMPARE_WITH_PRECISION((BigDecimal("12234.234") * BigDecimal("2434.23443") / BigDecimal("3.1")),
 		BigDecimal("9.60677213789568387096774193548387096774193548387097e6"), DEFAULT_PRECISION);
 }

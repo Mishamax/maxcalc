@@ -18,8 +18,10 @@
  *****************************************************************************/
 
 #include "bigdecimal.h"
-#include <cstdlib>
-#include <QtGlobal>
+#include "tstring.h"
+
+#include <locale>
+#include <cassert>
 
 /*!
 	\defgroup MaxCalcEngine MaxCalc Engine
@@ -54,7 +56,7 @@ static decNumber setCalculationPrecision()
 	// Safe functions for MSVC 2005+ compliers
 	_itoa_s(WORKING_PRECISION, prec, 4, 10);
 	strcat_s(str, 7, prec);
-#elif defined(Q_WS_WIN)
+#elif defined(WIN32)
 	// Other Windows compilers
 	itoa(WORKING_PRECISION, prec, 10);
 	strcat(str, prec);
@@ -141,6 +143,10 @@ static const decNumber calculationPrecision = setCalculationPrecision();
 	\class BigDecimal::InvalidOperationException
 	\brief Invalid operation exception. Represents \a DEC_Invalid_operation error in decNumber.
 */
+/*!	
+	\class BigDecimal::InvalidNumberInFactorial
+	\brief Invalid (non-integer or negative) number in factorial.
+*/
 
 /*!
 	E number.
@@ -175,15 +181,9 @@ BigDecimal::BigDecimal()
 /*!
 	Constructs a new instance of BigDecimal class from given \a str.
 */
-BigDecimal::BigDecimal(const QString & str)
+BigDecimal::BigDecimal(const std::string & str)
 {
-	NEW_CONTEXT(context);
-	// Construct number
-	decNumberFromString(&number, str.toAscii().data(), &context);
-	checkContextStatus(context);
-	// Remove trailing zeros
-	decNumberReduce(&number, &number, &context);
-	checkContextStatus(context);
+	construct(str.c_str());
 }
 
 /*!
@@ -191,14 +191,36 @@ BigDecimal::BigDecimal(const QString & str)
 */
 BigDecimal::BigDecimal(const char * str)
 {
-	NEW_CONTEXT(context);
-	// Construct number
-	decNumberFromString(&number, str, &context);
-	checkContextStatus(context);
-	// Remove trailing zeros
-	decNumberReduce(&number, &number, &context);
-	checkContextStatus(context);
+	assert(str);
+
+	construct(str);
 }
+
+#if defined(UNICODE)
+
+/*!
+	Constructs a new instance of BigDecimal class from given \a str.
+*/
+BigDecimal::BigDecimal(const std::wstring & str)
+{
+	std::string s;
+	wideStringToString(str, s);
+	construct(s.c_str());
+}
+
+/*!
+	Constructs a new instance of BigDecimal class from given \a str.
+*/
+BigDecimal::BigDecimal(const wchar_t * str)
+{
+	assert(str);
+
+	std::string s;
+	wideStringToString(std::wstring(str), s);
+	construct(s.c_str());
+}
+
+#endif // #if defined(UNICODE)
 
 /*!
 	Constructs a copy of \a num.
@@ -206,14 +228,6 @@ BigDecimal::BigDecimal(const char * str)
 BigDecimal::BigDecimal(const BigDecimal & num)
 {
 	decNumberCopy(&number, &num.number);
-}
-
-/*!
-	Constructs a copy of \a num.
-*/
-BigDecimal::BigDecimal(const decNumber & num)
-{
-	decNumberCopy(&number, &num);
 }
 
 /*!
@@ -239,36 +253,15 @@ BigDecimal::BigDecimal(const unsigned num)
 
 
 /*!
-	Converts this number to QString using given BigDecimalFormat.
-	
-	The following parameters can be specified in BigDecimalFormat:
+	Converts this number to std::string using given BigDecimalFormat.
 
-	- BigDecimalFormat::precision -
-	  determines precision used for rounding. This value should not be more than
-	  defaultOutputPrecision and may not be more than DECNUMDIGITS.
-	  By default it is set to defaultOutputPrecision.
-
-	- BigDecimalFormat::engineeringFormat -
-	  determines whether scientific (default) or engineering number format is used.
-	  In scientific format there is just one digit before decimal point when exponent is needed.
-	  In engineering format the exponent is multiple of three and there may be up to
-			three digits before decimal point.
-	  When exponent is not needed scientific and engineering formats are the same.
-
-	- BigDecimalFormat::lowerCaseE -
-	  determines whether lower or upper case 'E' is used when exponent is needed.
-	  By default upper case 'E' is used.
-
-	If format is not specified, defaultBigDecimalFormat is used
-	(\a precision = \a defaultOutputPrecision, \a engineeringFormat = \a false, \a lowerCaseE = \a false).
+	If \a format is not specified, the default BigDecimalFormat is used.
 
 	\sa BigDecimalFormat, InvalidOperationException
 */
-QString BigDecimal::toString(const BigDecimalFormat & format) const
+std::string BigDecimal::toString(const BigDecimalFormat & format) const
 {
-	NEW_CONTEXT_WITH_SPECIFIED_PRECISION(context, format.precision);
-
-	char * str = new char[format.precision + 14];
+	NEW_CONTEXT_WITH_SPECIFIED_PRECISION(context, format.precision());
 
 	decNumber num;
 
@@ -283,22 +276,48 @@ QString BigDecimal::toString(const BigDecimalFormat & format) const
 		checkContextStatus(context);
 	}
 
+	char * str = new char[format.precision() + 14];
+
 	// Make conversion to engineering or scientific format
-	if (format.engineeringFormat)
+	if (format.numberFormat() == BigDecimalFormat::EngineeringFormat)
 		decNumberToEngString(&num, str);
 	else
 		decNumberToString(&num, str);
 
-	// Convert char* to QString
-	QString qstr(str);
-	delete str;
+	// Convert char* to std::string
+	std::string s(str);
+	
+	delete[] str;
 
 	// Replace 'E' with 'e' if needed
-	if (format.lowerCaseE && qstr.contains('E', Qt::CaseSensitive))
-		qstr.replace('E', 'e');
+	if (format.exponentCase() == BigDecimalFormat::LowerCaseExponent)
+	{
+		size_t expPos = s.find('E');
+		if (expPos != std::string::npos)
+			s.replace(expPos, 1, "e");
+	}
 
-	return qstr;
+	return s;
 }
+
+#if defined(UNICODE)
+
+/*!
+	Converts this number to std::wstring using given BigDecimalFormat.
+	
+	If \a format is not specified, the default BigDecimalFormat is used.
+
+	\sa BigDecimalFormat, InvalidOperationException
+*/
+std::wstring BigDecimal::toWideString(const BigDecimalFormat & format) const
+{
+	const std::string str = toString(format);
+	std::wstring wstr;
+	stringToWideString(str, wstr);
+	return wstr;
+}
+
+#endif // #if defined(UNICODE)
 
 /*!
 	Converts this number to int.
@@ -995,6 +1014,31 @@ BigDecimal BigDecimal::ctan(const BigDecimal & num)
 // Internal functions
 //****************************************************************************
 
+/*!
+	Constructs a copy of \a num.
+*/
+BigDecimal::BigDecimal(const decNumber & num)
+{
+	decNumberCopy(&number, &num);
+}
+
+/*!
+	Constructs a new instance of BigDecimal class from given \a str.
+*/
+void BigDecimal::construct(const char * str)
+{
+	assert(str);
+
+	NEW_CONTEXT(context);
+	
+	// Construct number
+	decNumberFromString(&number, str, &context);
+	checkContextStatus(context);
+	
+	// Remove trailing zeros
+	decNumberReduce(&number, &number, &context);
+	checkContextStatus(context);
+}
 
 /*!
 	Checks \a context.status and throws an exception is there is an error.
@@ -1045,10 +1089,10 @@ int BigDecimal::compare(const decNumber & n1, const decNumber & n2)
 	This function uses Brent–Salamin algorithm
 	(http://en.wikipedia.org/wiki/Gauss%E2%80%93Legendre_algorithm).
 	Calculation continies while difference between a(n) and b(n)
-	is more than piCalculationPrecision. Value of this constant
-	must be enough to calculate PI with DECNUMDIGITS precision.
+	is more than calculationPrecision. calculationPrecision is
+	1E-N, where N is WORKING_PRECISION.
 
-	\sa piCalculationPrecision, DECNUMDIGITS
+	\sa WORKING_PRECISION
 	\sa http://en.wikipedia.org/wiki/Gauss%E2%80%93Legendre_algorithm
 */
 BigDecimal BigDecimal::pi()

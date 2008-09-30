@@ -4,9 +4,9 @@
 
 #include "decNumber/decContext.h"
 
-#include <cstdlib>
-#include <QtGlobal>
-#include <QChar>
-#include <QString>
+#include <string>
+#include <locale>
+#include <cassert>
+#include <exception>
 
 #endif // PCH_H

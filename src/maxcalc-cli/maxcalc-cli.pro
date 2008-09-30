@@ -1,7 +1,8 @@
 TEMPLATE = app
 TARGET = maxcalc
-CONFIG += qt debug_and_release warn_on precompile_header
-QT -= gui
+
+CONFIG -= qt
+CONFIG += debug_and_release warn_on precompile_header
 win32:CONFIG += console
 
 SOURCES += main.cpp
@@ -20,3 +21,6 @@ CONFIG(release, debug|release) {
 	DESTDIR = ../release
 	LIBS += -L../release -lmaxcalcengine
 }
+
+DEFINES += UNICODE
+win32:DEFINES += WIN32

@@ -23,11 +23,10 @@
 // settings.h must be included before decNumber.h
 #include "settings.h"
 #include "decNumber/decNumber.h"
-#include "exception.h"
-#include "numberformats.h"
+#include "bigdecimalformat.h"
 
-#include <QString>
-
+#include <string>
+#include <exception>
 
 //****************************************************************************
 // BigDecimal definition
@@ -46,15 +45,22 @@ public:
 	// Constructors
 	
 	BigDecimal();
-	BigDecimal(const QString & str);
+	BigDecimal(const std::string & str);
 	BigDecimal(const char * str);
+#if defined(UNICODE)
+	BigDecimal(const std::wstring & str);
+	BigDecimal(const wchar_t * str);
+#endif
 	BigDecimal(const BigDecimal & num);
 	BigDecimal(const int num);
 	BigDecimal(const unsigned num);
 
 	// Conversion functions
 	
-	QString toString(const BigDecimalFormat & format = BigDecimalFormat::getDefault()) const;
+	std::string toString(const BigDecimalFormat & format = BigDecimalFormat::getDefault()) const;
+#if defined(UNICODE)
+	std::wstring toWideString(const BigDecimalFormat & format = BigDecimalFormat::getDefault()) const;
+#endif
 	int toInt() const;
 	unsigned toUInt() const;
 
@@ -132,7 +138,7 @@ public:
 	
 	// TODO: better exception handling
 
-	class BigDecimalException : public Exception {};
+	class BigDecimalException : public std::exception {};
 	class DivisionByZeroException : public BigDecimalException {};
 	class OverflowException : public BigDecimalException {};
 	class UnderflowException : public BigDecimalException {};
@@ -151,6 +157,8 @@ private:
 	// Internal functions
 	
 	BigDecimal(const decNumber & num);
+	void construct(const char * str);
+
 	static void checkContextStatus(const decContext & context);
 	static int compare(const decNumber & n1, const decNumber & n2);
 

@@ -21,3 +21,6 @@ CONFIG(release, debug|release) {
 	DESTDIR = ../release
 	LIBS += -L../release -lmaxcalcengine
 }
+
+DEFINES += UNICODE
+win32:DEFINES += WIN32

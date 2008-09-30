@@ -28,7 +28,7 @@
 				ReBuildCommandLine="qmake &amp;&amp; nmake $(ConfigurationName)"
 				CleanCommandLine="nmake $(ConfigurationName)-clean"
 				Output="..\$(ConfigurationName)\maxcalcengine.lib"
-				PreprocessorDefinitions="WIN32;_DEBUG"
+				PreprocessorDefinitions="WIN32;_DEBUG;UNICODE"
 				IncludeSearchPath=""
 				ForcedIncludes=""
 				AssemblySearchPath=""
@@ -49,7 +49,7 @@
 				ReBuildCommandLine="qmake &amp;&amp; nmake $(ConfigurationName)"
 				CleanCommandLine="nmake $(ConfigurationName)-clean"
 				Output="..\$(ConfigurationName)\maxcalcengine.lib"
-				PreprocessorDefinitions="WIN32;NDEBUG"
+				PreprocessorDefinitions="WIN32;NDEBUG;UNICODE"
 				IncludeSearchPath=""
 				ForcedIncludes=""
 				AssemblySearchPath=""
@@ -71,11 +71,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\bigdecimalformat.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\complex.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\numberformats.cpp"
+				RelativePath=".\complexformat.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\tstring.cpp"
 				>
 			</File>
 			<Filter
@@ -101,15 +109,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\bigdecimalformat.h"
+				>
+			</File>
+			<File
 				RelativePath=".\complex.h"
 				>
 			</File>
 			<File
-				RelativePath=".\exception.h"
-				>
-			</File>
-			<File
-				RelativePath=".\numberformats.h"
+				RelativePath=".\complexformat.h"
 				>
 			</File>
 			<File
@@ -118,6 +126,10 @@
 			</File>
 			<File
 				RelativePath=".\settings.h"
+				>
+			</File>
+			<File
+				RelativePath=".\tstring.h"
 				>
 			</File>
 			<Filter

@@ -7,17 +7,33 @@ Complex::Complex()
 	im = 0;
 }
 
-Complex::Complex(const QString & real, const QString & imaginary)
-{
-	re = real;
-	im = imaginary;
-}
-
 Complex::Complex(const char * real, const char * imaginary)
 {
 	re = real;
 	im = imaginary;
 }
+
+Complex::Complex(const std::string & real, const std::string & imaginary)
+{
+	re = real;
+	im = imaginary;
+}
+
+#if defined(UNICODE)
+
+Complex::Complex(const wchar_t * real, const wchar_t * imaginary)
+{
+	re = real;
+	im = imaginary;
+}
+
+Complex::Complex(const std::wstring & real, const std::wstring & imaginary)
+{
+	re = real;
+	im = imaginary;
+}
+
+#endif // #if defined(UNICODE)
 
 Complex::Complex(const BigDecimal & real, const BigDecimal & imaginary)
 {
@@ -37,58 +53,46 @@ Complex::Complex(const unsigned real, const unsigned imaginary)
 	im = imaginary;
 }
 
-QString Complex::toString(const ComplexFormat & format) const
+std::string Complex::toString(const ComplexFormat & format) const
 {
-	QString rePart = re.toString(format);
-	QString imPart = BigDecimal::abs(im).toString(format);
+	std::string rePart = re.toString(format);
+	std::string imPart = BigDecimal::abs(im).toString(format);
 	bool isReZero = re.isZero();
 	bool isImZero = im.isZero();
 	bool isImNegative = im.isNegative();
 
-	QString result;
+	std::string result = "0";
 
 	if (!isReZero)
-	{
-		if (rePart.contains('e', Qt::CaseInsensitive))
-			result = '(' + rePart + ')';
-		else
-			result = rePart;
-	}
+		result = rePart;
 
 	if (!isImZero)
 	{
 		if (!isReZero)
 		{
-			if (format.spacesAroundSignes)
-				result += ' ';
-
 			if (isImNegative)
 				result += '-';
 			else
 				result += '+';
-
-			if (format.spacesAroundSignes)
-				result += ' ';
 		}
 
-		if (format.iBeforeImaginaryPart && format.multiplyBetweenIAndImaginaryPart)
-			result += "i*";
-		else if (format.iBeforeImaginaryPart)
-			result += 'i';
-
-		if (imPart.contains('e', Qt::CaseInsensitive))
-			result += '(' + imPart + ')';
-		else
-			result += imPart;
-
-		if (!format.iBeforeImaginaryPart && format.multiplyBetweenIAndImaginaryPart)
-			result += "*i";
-		else if (!format.iBeforeImaginaryPart)
-			result += 'i';
+		result += imPart + format.imaginaryOne();
 	}
 
 	return result;
 }
+
+#if defined(UNICODE)
+
+std::wstring Complex::toWideString(const ComplexFormat & format) const
+{
+	const std::string str = toString(format);
+	std::wstring wstr;
+	stringToWideString(str, wstr);
+	return wstr;
+}
+
+#endif // #if defined(UNICODE)
 
 Complex Complex::operator+() const
 {

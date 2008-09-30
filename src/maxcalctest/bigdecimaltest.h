@@ -22,7 +22,7 @@ private slots:
 	void bigDecimalFormat();
 
 	// Constructors
-	void fromQString();
+	void fromString();
 	void fromCharStr();
 	void fromBigDecimal();
 	void fromInt();

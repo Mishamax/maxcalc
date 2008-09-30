@@ -3,12 +3,10 @@
 #define COMPLEX_H
 
 #include "bigdecimal.h"
-#include "exception.h"
-#include <QString>
+#include "complexformat.h"
 
-
-
-static const ComplexFormat defaultComplexFormat = ComplexFormat();
+#include <exception>
+#include <string>
 
 class Complex
 {
@@ -18,14 +16,21 @@ public:
 
 	// Constructors
 	Complex();
-	Complex(const QString & real, const QString & imaginary = "0");
 	Complex(const char * real, const char * imaginary = "0");
+	Complex(const std::string & real, const std::string & imaginary = "0");
+#if defined(UNICODE)
+	Complex(const wchar_t * real, const wchar_t * imaginary = L"0");
+	Complex(const std::wstring & real, const std::wstring & imaginary = L"0");
+#endif
 	Complex(const BigDecimal & real, const BigDecimal & imaginary = 0);
 	Complex(const int real, const int imaginary = 0);
 	Complex(const unsigned real, const unsigned imaginary = 0);
 
 	// Conversion to string
-	QString toString(const ComplexFormat & format = ComplexFormat::getDefault()) const;
+	std::string toString(const ComplexFormat & format = ComplexFormat::getDefault()) const;
+#if defined(UNICODE)
+	std::wstring toWideString(const ComplexFormat & format = ComplexFormat::getDefault()) const;
+#endif
 
 	// Operators
 	Complex operator+() const;
@@ -44,8 +49,8 @@ public:
 	static BigDecimal abs(const Complex & num);
 
 	// Exception classes
-	class ComplexException : public Exception {};
-	class DivisionByZeroException : public Exception {};
+	class ComplexException : public std::exception {};
+	class DivisionByZeroException : public ComplexException {};
 };
 
 #endif
