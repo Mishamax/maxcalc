@@ -1,8 +1,8 @@
 TEMPLATE = app
 TARGET = maxcalctest
 
-CONFIG += qt debug_and_release warn_on console
-QT = core testlib
+CONFIG += qt qtestlib debug_and_release warn_on console
+QT = core
 
 HEADERS += bigdecimaltest.h
 SOURCES += main.cpp bigdecimaltest.cpp

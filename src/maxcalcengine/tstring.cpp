@@ -39,7 +39,7 @@ codecvt_base::result stringToWideString(const string & from, wstring & to, const
 {
 	assert(localeName);
 
-	mbstate_t state = 0;
+	mbstate_t state = mbstate_t();
 	const char * c1 = 0;
 	wchar_t * c2 = 0;
 	size_t len = from.length();
@@ -59,7 +59,7 @@ codecvt_base::result wideStringToString(const wstring & from, string & to, const
 {
 	assert(localeName);
 
-	mbstate_t state = 0;
+	mbstate_t state = mbstate_t();
 	const wchar_t * c1 = 0;
 	char * c2 = 0;
 	size_t len = from.length();
@@ -84,7 +84,7 @@ codecvt_base::result charToWideChar(const char * from, size_t fromLength, wchar_
 	assert(from);
 	assert(localeName);
 	
-	mbstate_t state = 0;
+	mbstate_t state = mbstate_t();
 	const char * c1 = 0;
 	wchar_t * c2 = 0;
 	codecvt_base::result res = use_facet<CodeCvt>(locale(localeName)).in(state, &from[0], &from[fromLength], c1, &to[0], &to[toLength], c2);
@@ -108,7 +108,7 @@ codecvt_base::result wideCharToChar(const wchar_t * from, size_t fromLength, cha
 	assert(from);
 	assert(localeName);
 
-	mbstate_t state = 0;
+	mbstate_t state = mbstate_t();
 	const wchar_t * c1 = 0;
 	char * c2 = 0;
 	codecvt_base::result res = use_facet<CodeCvt>(locale(localeName)).out(state, &from[0], &from[fromLength], c1, &to[0], &to[toLength], c2);
