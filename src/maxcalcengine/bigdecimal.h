@@ -20,13 +20,16 @@
 #ifndef BIGDECIMAL_H
 #define BIGDECIMAL_H
 
-// settings.h must be included before decNumber.h
-#include "settings.h"
+// Local
+#include "settings.h" // settings.h must be included before decNumber.h
 #include "decNumber/decNumber.h"
 #include "bigdecimalformat.h"
 
+// STL
 #include <string>
 #include <exception>
+
+namespace MaxCalcEngine {
 
 //****************************************************************************
 // BigDecimal definition
@@ -128,11 +131,15 @@ public:
 	static BigDecimal div(const BigDecimal & dividend, const BigDecimal & divisor);
 	static BigDecimal max(const BigDecimal & n1, const BigDecimal & n2);
 	static BigDecimal min(const BigDecimal & n1, const BigDecimal & n2);
-	static BigDecimal fact(const BigDecimal & num);
+	static BigDecimal factorial(const BigDecimal & num);
 	static BigDecimal sin(const BigDecimal & num);
 	static BigDecimal cos(const BigDecimal & num);
 	static BigDecimal tan(const BigDecimal & num);
 	static BigDecimal ctan(const BigDecimal & num);
+	static BigDecimal arcsin(const BigDecimal & num);
+	static BigDecimal arccos(const BigDecimal & num);
+	static BigDecimal arctan(const BigDecimal & num);
+	static BigDecimal arccot(const BigDecimal & num);
 
 	// Exception classes
 	
@@ -148,22 +155,28 @@ public:
 	class InsufficientStorageException : public BigDecimalException {};
 	class InvalidContextException : public BigDecimalException {};
 	class InvalidOperationException : public BigDecimalException {};
-	class InvalidNumberInFactorial : public BigDecimalException {};
+
+	class InvalidArgumentException : public BigDecimalException {};
+	class InvalidArgumentInFactorialException : public InvalidArgumentException {};
+	class InvalidArgumentInArcSinException : public InvalidArgumentException {};
+	class InvalidArgumentInArcCosException : public InvalidArgumentException {};
 
 private:
 	// Decimal number
-	decNumber number;
+	DecNumber::decNumber number;
 
 	// Internal functions
 	
-	BigDecimal(const decNumber & num);
+	BigDecimal(const DecNumber::decNumber & num);
 	void construct(const char * str);
 
-	static void checkContextStatus(const decContext & context);
-	static int compare(const decNumber & n1, const decNumber & n2);
+	static void checkContextStatus(const DecNumber::decContext & context);
+	static int compare(const DecNumber::decNumber & n1, const DecNumber::decNumber & n2);
 
 	static BigDecimal pi();
 	static BigDecimal FMA(const BigDecimal & multiplier1, const BigDecimal & multiplier2, const BigDecimal & summand);
 };
+
+} // namespace MaxCalcEngine
 
 #endif // BIGDECIMAL_H

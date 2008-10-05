@@ -21,8 +21,11 @@
 #ifndef COMPLEXFORMAT_H
 #define COMPLEXFORMAT_H
 
+// Local
 #include "bigdecimalformat.h"
 #include "tstring.h"
+
+namespace MaxCalcEngine {
 
 //****************************************************************************
 // ComplexFormat definition
@@ -34,10 +37,10 @@ public:
 
 	// Constructor
 	ComplexFormat(
-		const char imaginaryOne = 'i',
 		const int precision = MAX_IO_PRECISION,
 		const NumberFormat numberFormat = ScientificFormat,
-		const ExponentCase exponentCase = UpperCaseExponent);
+		const ExponentCase exponentCase = UpperCaseExponent,
+		const char imaginaryOne = 'i');
 
 	// Get default format
 	static ComplexFormat getDefault() { return ComplexFormat(); };
@@ -50,5 +53,7 @@ private:
 	// Properties
 	char m_imaginaryOne;
 };
+
+} // namespace MaxCalcEngine
 
 #endif // COMPLEXFORMAT_H

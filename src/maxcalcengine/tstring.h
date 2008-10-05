@@ -22,6 +22,8 @@
 
 #include <string>
 
+namespace MaxCalcEngine {
+
 #if defined(UNICODE)
 
 // String literal
@@ -48,5 +50,7 @@ typedef char tchar;
 typedef std::string tstring;
 
 #endif // #if defined(UNICODE)
+
+} // namespace MaxCalcEngine
 
 #endif // TSTRING_H

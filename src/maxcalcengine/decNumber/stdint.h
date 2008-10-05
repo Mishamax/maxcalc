@@ -2,6 +2,9 @@
 
 #if defined(_WIN32)
 
+namespace MaxCalcEngine {
+	namespace DecNumber {
+
 // Windows: There is no stdint.h
 typedef unsigned char uint8_t;
 typedef char int8_t;
@@ -11,6 +14,9 @@ typedef unsigned int uint32_t;
 typedef int int32_t;
 typedef unsigned long long uint64_t;
 typedef long long int64_t;
+
+}	// namespace DecNumber
+}	// namespace MaxCalcEngine
 
 #else
 

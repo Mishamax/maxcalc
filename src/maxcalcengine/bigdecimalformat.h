@@ -21,8 +21,13 @@
 #ifndef BIGDECIMALFORMAT_H
 #define BIGDECIMALFORMAT_H
 
+// Local
 #include "settings.h"
+
+// STL
 #include <cassert>
+
+namespace MaxCalcEngine {
 
 //****************************************************************************
 // BigDecimalFormat definition
@@ -60,5 +65,7 @@ private:
 	NumberFormat m_numberFormat;
 	ExponentCase m_exponentCase;
 };
+
+} // namespace MaxCalcEngine
 
 #endif // BIGDECIMALFORMAT_H

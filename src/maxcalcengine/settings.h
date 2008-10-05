@@ -20,6 +20,7 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+namespace MaxCalcEngine {
 
 /*!
 	Maximum precision of decNumber in decimal digits.
@@ -59,5 +60,7 @@ static const int WORKING_PRECISION = DECNUMDIGITS;
 	\ingroup MaxCalcEngine
 */
 static const int MAX_IO_PRECISION = 50;
+
+} // namespace MaxCalcEngine
 
 #endif // SETTINGS_H

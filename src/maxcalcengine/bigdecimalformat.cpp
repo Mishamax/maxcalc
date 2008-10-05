@@ -17,10 +17,12 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
-
+// Local
 #include "bigdecimalformat.h"
+// STL
 #include <cassert>
 
+namespace MaxCalcEngine {
 
 //****************************************************************************
 // BigDecimalFormat implementation
@@ -70,3 +72,5 @@ BigDecimalFormat::BigDecimalFormat(const int precision, const NumberFormat numbe
 	m_numberFormat = numberFormat;
 	m_exponentCase = exponentCase;
 }
+
+} // namespace MaxCalcEngine

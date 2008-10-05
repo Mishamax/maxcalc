@@ -17,9 +17,10 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
-
+// Local
 #include "complexformat.h"
 
+namespace MaxCalcEngine {
 
 //****************************************************************************
 // ComplexFormat implementation
@@ -44,16 +45,18 @@
 	\fn ComplexFormat::getDefault()
 	\brief Returns ComplexFormat with default settings.
 	
-	The defaults are: imaginaryOne = 'i', precision = MAX_IO_PRECISION,
-	numberFormat = ScientificFormat, exponentCase = UpperCaseExponent.
+	The defaults are: precision = MAX_IO_PRECISION, numberFormat = ScientificFormat,
+	exponentCase = UpperCaseExponent, imaginaryOne = 'i'.
 */
 
 /*!
 	Constructs a new instance of ComplexFormat.
 */
-ComplexFormat::ComplexFormat(const char imaginaryOne, const int precision,
-	const NumberFormat numberFormat, const ExponentCase exponentCase)
-	: BigDecimalFormat(precision, numberFormat, exponentCase)
+ComplexFormat::ComplexFormat(const int precision, const NumberFormat numberFormat,
+							 const ExponentCase exponentCase, const char imaginaryOne)
+							 : BigDecimalFormat(precision, numberFormat, exponentCase)
 {
 	m_imaginaryOne = imaginaryOne;
 }
+
+} // namespace MaxCalcEngine

@@ -30,6 +30,9 @@
   #include <stdlib.h>         /* for abs                              */
   #include <string.h>         /* for memset, strcpy                   */
 
+namespace MaxCalcEngine {
+	namespace DecNumber {
+
   /* Conditional code flag -- set this to match hardware platform     */
   #if !defined(DECLITEND)
   #define DECLITEND 1         /* 1=little-endian, 0=big-endian        */
@@ -729,6 +732,9 @@
 
   /* [end of format-dependent macros and constants]                   */
   #endif
+
+}	// namespace DecNumber
+}	// namespace MaxCalcEngine
 
 #else
   #error decNumberLocal included more than once

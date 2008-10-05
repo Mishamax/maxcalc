@@ -17,11 +17,17 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
+// Local
 #include "bigdecimal.h"
 #include "tstring.h"
 
+// STL
 #include <locale>
 #include <cassert>
+
+namespace MaxCalcEngine {
+
+using namespace DecNumber;
 
 /*!
 	\defgroup MaxCalcEngine MaxCalc Engine
@@ -144,8 +150,20 @@ static const decNumber calculationPrecision = setCalculationPrecision();
 	\brief Invalid operation exception. Represents \a DEC_Invalid_operation error in decNumber.
 */
 /*!	
-	\class BigDecimal::InvalidNumberInFactorial
-	\brief Invalid (non-integer or negative) number in factorial.
+	\class BigDecimal::InvalidArgumentException
+	\brief Invalid argument in function.
+*/
+/*!	
+	\class BigDecimal::InvalidArgumentInFactorialException
+	\brief Invalid (non-integer or negative) argument in factorial() function.
+*/
+/*!	
+	\class BigDecimal::InvalidArgumentInArcSinException
+	\brief Invalid argument in arcsin() function.
+*/
+/*!	
+	\class BigDecimal::InvalidArgumentInArcCosException
+	\brief Invalid argument in arccos() function.
 */
 
 /*!
@@ -896,12 +914,12 @@ BigDecimal BigDecimal::min(const BigDecimal & num, const BigDecimal & decimal)
 /*!
 	Calculates factorial of \a num.
 */
-BigDecimal BigDecimal::fact(const BigDecimal & num)
+BigDecimal BigDecimal::factorial(const BigDecimal & num)
 {
 	if (num.isZero())
 		return 1;
 	if (num.isNegative() || !num.fractional().isZero())
-		throw InvalidNumberInFactorial();
+		throw InvalidArgumentInFactorialException();
 
 	BigDecimal result = 1;
 	unsigned max = num.toUInt();
@@ -1008,6 +1026,72 @@ BigDecimal BigDecimal::ctan(const BigDecimal & num)
 		throw DivisionByZeroException();
 
 	return cos(angle) / sine;
+}
+
+/*!
+	Calculates arcsine of \a num (measured in radians).
+	This function uses formula arcsin(x) = arctan(x / sqrt(1 - x*x)).
+*/
+BigDecimal BigDecimal::arcsin(const BigDecimal & num)
+{
+	if (num == BigDecimal(1))
+		return PI / 2;
+	else if (num == BigDecimal(-1))
+		return -PI / 2;
+
+	if (abs(num) > BigDecimal(1))
+		throw InvalidArgumentInArcSinException();
+
+	return arctan(num / sqrt(-sqrt(num) + 1));
+}
+
+/*!
+	Calculates arccosine of \a num (measured in radians).
+	This function uses formula arccos(x) = pi / 2 - arcsin(x).
+*/
+BigDecimal BigDecimal::arccos(const BigDecimal & num)
+{
+	if (abs(num) > BigDecimal(1))
+		throw InvalidArgumentInArcCosException();
+
+	return PI / 2 - arcsin(num);
+}
+
+/*!
+	Calculates arctangent of \a num (measured in radians).
+	This function uses Taylor serie for -0.5 <= num <= 0.5 and
+	formula arctan(x) = 2 * arctan(x / (1 + sqrt(1 + x*x)) for bigger num.
+*/
+BigDecimal BigDecimal::arctan(const BigDecimal & num)
+{
+	if (abs(num) > BigDecimal("0.5"))
+	{
+		return arctan(num / (sqrt(sqr(num) + 1) + 1)) * 2;
+	}
+	else
+	{
+		BigDecimal fraction = num, result = num;
+		BigDecimal numerator = num, denominator = 1;
+
+		while (abs(fraction) > calculationPrecision)
+		{
+			numerator *= -num * num;
+			denominator += 2;
+			fraction = numerator / denominator;
+			result += fraction;
+		}
+
+		return result;
+	}
+}
+
+/*!
+	Calculates arccotangent of \a num (measured in radians).
+	This function uses formula arccot(x) = pi / 2 - arctan(x).
+*/
+BigDecimal BigDecimal::arccot(const BigDecimal & num)
+{
+	return PI / 2 - arctan(num);
 }
 
 //****************************************************************************
@@ -1125,3 +1209,5 @@ BigDecimal BigDecimal::FMA(const BigDecimal & multiplier1, const BigDecimal & mu
 	checkContextStatus(context);
 	return result;
 }
+
+} // namespace MaxCalcEngine

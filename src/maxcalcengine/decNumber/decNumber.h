@@ -27,6 +27,9 @@
     #include "decContext.h"
   #endif
 
+namespace MaxCalcEngine {
+	namespace DecNumber {
+
   /* Bit settings for decNumber.bits                                  */
   #define DECNEG    0x80      /* Sign; 1=negative, 0=positive or zero */
   #define DECINF    0x40      /* 1=Infinity                           */
@@ -178,5 +181,8 @@
                                     && (dn)->digits==1 \
                                     && (((dn)->bits&DECSPECIAL)==0))
   #define decNumberRadix(dn)       (10)
+
+}	// namespace DecNumber
+}	// namespace MaxCalcEngine
 
 #endif

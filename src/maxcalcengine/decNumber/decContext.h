@@ -57,6 +57,9 @@
   #define DECSUBSET  0             /* 1=enable subset arithmetic      */
   #endif
 
+namespace MaxCalcEngine {
+	namespace DecNumber {
+
   /* Context for operations, with associated constants                */
   enum rounding {
     DEC_ROUND_CEILING,             /* round towards +infinity         */
@@ -250,5 +253,8 @@
   extern uint32_t      decContextTestSavedStatus(uint32_t, uint32_t);
   extern uint32_t      decContextTestStatus(decContext *, uint32_t);
   extern decContext  * decContextZeroStatus(decContext *);
+
+}	// namespace DecNumber
+}	// namespace MaxCalcEngine
 
 #endif

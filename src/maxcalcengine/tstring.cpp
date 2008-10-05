@@ -17,14 +17,18 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
+// Local
 #include "tstring.h"
 
 #if defined(UNICODE)
 
+// STL
 #include <locale>
 #include <cassert>
 
 using namespace std;
+
+namespace MaxCalcEngine {
 
 typedef codecvt<wchar_t, char, mbstate_t> CodeCvt;
 
@@ -115,5 +119,7 @@ codecvt_base::result wideCharToChar(const wchar_t * from, size_t fromLength, cha
 	to[fromLength] = 0;
 	return res;
 }
+
+} // namespace MaxCalcEngine
 
 #endif // #if defined(UNICODE)

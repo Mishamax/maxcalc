@@ -2,34 +2,31 @@
 #ifndef BIGDECIMALTEST_H
 #define BIGDECIMALTEST_H
 
-#include "bigdecimal.h"
+// Qt
 #include <QTest>
-
-// Compares two BigDecimals with specified precision
-#define COMPARE_WITH_PRECISION(n1, n2, precision) \
-	QCOMPARE(BigDecimal((n1).toString(BigDecimalFormat(precision))), \
-		BigDecimal((n2).toString(BigDecimalFormat(precision))));
-
-// Default precision for comparison
-#define DEFAULT_PRECISION MAX_IO_PRECISION
 
 class BigDecimalTest : public QObject
 {
 	Q_OBJECT
 
 private slots:
-	// Test for default BigDecimalFormat
-	void bigDecimalFormat();
+	// BigDecimalFormat tests
+	void bigDecimalFormatDefault();
+	void bigDecimalFormatCustom();
+	void bigDecimalFormatAccessors();
 
 	// Constructors
 	void fromString();
 	void fromCharStr();
+	void fromWideString();
+	void fromWideCharStr();
 	void fromBigDecimal();
 	void fromInt();
 	void fromUInt();
 
 	// Conversions
 	void toString();
+	void toWideString();
 	void toInt();
 	void toUInt();
 
@@ -50,11 +47,15 @@ private slots:
 	void div();
 	void max();
 	void min();
-	void fact();
+	void factorial();
 	void sin();
 	void cos();
 	void tan();
 	void ctan();
+	void arcsin();
+	void arccos();
+	void arctan();
+	void arccot();
 
 	// Misc
 	void consts();

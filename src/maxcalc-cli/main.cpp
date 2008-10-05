@@ -17,13 +17,16 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
+// Local
 #include "bigdecimal.h"
 #include "complex.h"
 
+// STL
 #include <iostream>
 #include <string>
 
 using namespace std;
+using namespace MaxCalcEngine;
 
 int main()
 {
