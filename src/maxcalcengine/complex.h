@@ -52,7 +52,7 @@ public:
 	Complex(const int real, const int imaginary = 0);
 	Complex(const unsigned real, const unsigned imaginary = 0);
 
-	// Conversion to string
+	// Conversions to string
 	std::string toString(const ComplexFormat & format = ComplexFormat::getDefault()) const;
 #if defined(UNICODE)
 	std::wstring toWideString(const ComplexFormat & format = ComplexFormat::getDefault()) const;

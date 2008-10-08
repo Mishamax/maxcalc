@@ -86,19 +86,23 @@ std::string Complex::toString(const ComplexFormat & format) const
 	bool isImZero = im.isZero();
 	bool isImNegative = im.isNegative();
 
-	std::string result = "0";
+	std::string result = "";
+
+	if (isReZero && isImZero)
+		return "0";
 
 	if (!isReZero)
 		result = rePart;
 
 	if (!isImZero)
 	{
-		if (!isReZero)
+		if (!isReZero && !isImNegative)
 		{
-			if (isImNegative)
-				result += '-';
-			else
-				result += '+';
+			result += '+';
+		}
+		else if (isImNegative)
+		{
+			result += '-';
 		}
 
 		result += imPart + format.imaginaryOne();
@@ -146,7 +150,7 @@ Complex Complex::operator*(const Complex & num) const
 
 Complex Complex::operator/(const Complex & num) const
 {
-	BigDecimal sqrt = re * num.re + im * num.im;
+	BigDecimal sqrt = num.re * num.re + num.im * num.im;
 	if (sqrt.isZero())
 		throw DivisionByZeroException();
 	return Complex((re * num.re + im * num.im) / sqrt, (im * num.re - re * num.im) / sqrt);
