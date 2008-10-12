@@ -106,7 +106,7 @@ FILE_PATTERNS          = *.c \
                          *.hpp \
                          *.h++
 RECURSIVE              = YES
-EXCLUDE                = "src/maxcalcengine/decNumber/" "src/debug/" "src/release/"
+EXCLUDE                = "src/maxcalcengine/decNumber/" "src/debug/" "src/release/" "src/maxcalctest"
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
 EXCLUDE_SYMBOLS        = 

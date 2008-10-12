@@ -36,34 +36,57 @@ namespace MaxCalcEngine {
 class BigDecimalFormat
 {
 public:
+	///////////////////////////////////////////////////////////////////////////
 	// Enums
+
+	/// Specifies output formats of BigDecimal number (scientific or engineering).
 	enum NumberFormat { ScientificFormat, EngineeringFormat };
+	/// Specifies case of 'E' letter when exponent is needed.
 	enum ExponentCase { UpperCaseExponent, LowerCaseExponent };
 
-	// Constructor
+
+	///////////////////////////////////////////////////////////////////////////
+	// Constructors
+
 	BigDecimalFormat(
 		const int precision = MAX_IO_PRECISION,
 		const NumberFormat numberFormat = ScientificFormat,
 		const ExponentCase exponentCase = UpperCaseExponent);
 
+
+	///////////////////////////////////////////////////////////////////////////
+	// Functions
+
 	// Get default format
 	static BigDecimalFormat getDefault() { return BigDecimalFormat(); };
 
+
+	///////////////////////////////////////////////////////////////////////////
 	// Accessors
+
+	/// Gets output precision of BigDecimal number.
 	int precision() const { return m_precision; };
+	/// Sets output precision of BigDecimal number.
 	void setPrecision(int precision) { assert(precision >= 1 && precision <= MAX_IO_PRECISION); m_precision = precision; };
 
+	/// Gets format of BigDecimal number.
 	NumberFormat numberFormat() const { return m_numberFormat; };
+	/// Sets format of BigDecimal number.
 	void setNumberFormat(NumberFormat numberFormat) { m_numberFormat = numberFormat; };
 
+	/// Gets case of 'E' letter in BigDecimal number when exponent is needed.
 	ExponentCase exponentCase() const { return m_exponentCase; };
+	/// Sets case of 'E' letter in BigDecimal number when exponent is needed.
 	void setExponentCase(ExponentCase exponentCase) { m_exponentCase = exponentCase; };
 
 private:
+
+	///////////////////////////////////////////////////////////////////////////
 	// Properties
-	int m_precision;
-	NumberFormat m_numberFormat;
-	ExponentCase m_exponentCase;
+
+	int m_precision;				///< Output precision of BigDecimal number.
+	NumberFormat m_numberFormat;	///< Format of BigDecimal Number (scientific or engineering)
+	ExponentCase m_exponentCase;	///< Case of 'E' letter in BigDecimal number when exponent is needed.
 };
 
 } // namespace MaxCalcEngine

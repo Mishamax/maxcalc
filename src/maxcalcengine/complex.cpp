@@ -26,18 +26,45 @@ namespace MaxCalcEngine {
 // Complex implementation
 //****************************************************************************
 
+	
+/*!
+	\class Complex
+	\brief Represents a complex number.
+
+	BigDecimal class is used to represent real and imaginary parts of the complex number.
+
+	When converting to string, number format is specified by ComplexFormat class.
+
+	\sa BigDecimal, ComplexFormat
+	\ingroup MaxCalcEngine
+*/
+
+
+//****************************************************************************
+// Constructors
+//****************************************************************************
+
+/*!
+	Default constructor (initializes the number with zero).
+*/
 Complex::Complex()
 {
 	re = 0;
 	im = 0;
 }
 
+/*!
+	Constructs a new instance of Complex class from given \a real and \a imaginary parts.
+*/
 Complex::Complex(const char * real, const char * imaginary)
 {
 	re = real;
 	im = imaginary;
 }
 
+/*!
+	Constructs a new instance of Complex class from given \a real and \a imaginary parts.
+*/
 Complex::Complex(const std::string & real, const std::string & imaginary)
 {
 	re = real;
@@ -46,12 +73,18 @@ Complex::Complex(const std::string & real, const std::string & imaginary)
 
 #if defined(UNICODE)
 
+/*!
+	Constructs a new instance of Complex class from given \a real and \a imaginary parts.
+*/
 Complex::Complex(const wchar_t * real, const wchar_t * imaginary)
 {
 	re = real;
 	im = imaginary;
 }
 
+/*!
+	Constructs a new instance of Complex class from given \a real and \a imaginary parts.
+*/
 Complex::Complex(const std::wstring & real, const std::wstring & imaginary)
 {
 	re = real;
@@ -60,24 +93,53 @@ Complex::Complex(const std::wstring & real, const std::wstring & imaginary)
 
 #endif // #if defined(UNICODE)
 
+/*!
+	Constructs a new instance of Complex class from given \a real and \a imaginary parts.
+*/
 Complex::Complex(const BigDecimal & real, const BigDecimal & imaginary)
 {
 	re = real;
 	im = imaginary;
 }
 
+/*!
+	Constructs a new instance of Complex class from given \a real and \a imaginary parts.
+*/
 Complex::Complex(const int real, const int imaginary)
 {
 	re = real;
 	im = imaginary;
 }
 
+/*!
+	Constructs a new instance of Complex class from given \a real and \a imaginary parts.
+*/
 Complex::Complex(const unsigned real, const unsigned imaginary)
 {
 	re = real;
 	im = imaginary;
 }
 
+/*!
+	Constructs a copy of \a num.
+*/
+Complex::Complex(const Complex & num)
+{
+	re = num.re;
+	im = num.im;
+}
+
+//****************************************************************************
+// Conversion functions
+//****************************************************************************
+
+/*!
+	Converts this number to std::string using given ComplexFormat.
+
+	If \a format is not specified, the default ComplexFormat is used.
+
+	\sa ComplexFormat
+*/
 std::string Complex::toString(const ComplexFormat & format) const
 {
 	std::string rePart = re.toString(format);
@@ -113,6 +175,13 @@ std::string Complex::toString(const ComplexFormat & format) const
 
 #if defined(UNICODE)
 
+/*!
+	Converts this number to std::wstring using given ComplexFormat.
+
+	If \a format is not specified, the default ComplexFormat is used.
+
+	\sa ComplexFormat
+*/
 std::wstring Complex::toWideString(const ComplexFormat & format) const
 {
 	const std::string str = toString(format);
@@ -123,31 +192,54 @@ std::wstring Complex::toWideString(const ComplexFormat & format) const
 
 #endif // #if defined(UNICODE)
 
+
+//****************************************************************************
+// Operators
+//****************************************************************************
+
+/*!
+	Returns the same Complex number as this number.
+*/
 Complex Complex::operator+() const
 {
 	return *this;
 }
 
+/*!
+	Returns negated number.
+*/
 Complex Complex::operator-() const
 {
 	return Complex(-re, -im);
 }
 
+/*!
+	Adds two numbers.
+*/
 Complex Complex::operator+(const Complex & num) const
 {
 	return Complex(re + num.re, im + num.im);
 }
 
+/*!
+	Subtracts two numbers.
+*/
 Complex Complex::operator-(const Complex & num) const
 {
 	return Complex(re - num.re, im - num.im);
 }
 
+/*!
+	Multiplies two numbers.
+*/
 Complex Complex::operator*(const Complex & num) const
 {
 	return Complex(re * num.re - im * num.im, re * num.im + im * num.re);
 }
 
+/*!
+	Divides two numbers.
+*/
 Complex Complex::operator/(const Complex & num) const
 {
 	BigDecimal sqrt = num.re * num.re + num.im * num.im;
@@ -156,22 +248,42 @@ Complex Complex::operator/(const Complex & num) const
 	return Complex((re * num.re + im * num.im) / sqrt, (im * num.re - re * num.im) / sqrt);
 }
 
+/*!
+	Returns \a true if two numbers are equal.
+*/
 bool Complex::operator==(const Complex & num) const
 {
 	return (re == num.re) && (im == num.im);
 }
 
+/*!
+	Returns \a true if two numbers are not equal.
+*/
 bool Complex::operator!=(const Complex & num) const
 {
 	return (re != num.re) || (im != num.im);
 }
 
+//****************************************************************************
+// Math functions
+//****************************************************************************
+
+/*!
+	Calculates square of \a num.
+
+	sqr(num) = Re(num)^2 + Im(num)^2.
+*/
 BigDecimal Complex::sqr(const Complex & num)
 {
 	// z^2 = |z|^2 = Re^2(z) + Im^2(z)
 	return (num.re * num.re + num.im * num.im);
 }
 
+/*!
+	Calculates absolute value of \a num.
+
+	abs(num) = sqrt(sqr(num)).
+*/
 BigDecimal Complex::abs(const Complex & num)
 {
 	return BigDecimal::sqrt(sqr(num));

@@ -39,12 +39,15 @@ class BigDecimal
 {
 public:
 
+	///////////////////////////////////////////////////////////////////////////
 	// Math constants
 	static const BigDecimal E;
 	static const BigDecimal PI;
 	static const BigDecimal PIDiv2;
 	static const BigDecimal PIMul2;
 
+
+	///////////////////////////////////////////////////////////////////////////
 	// Constructors
 	
 	BigDecimal();
@@ -58,6 +61,8 @@ public:
 	BigDecimal(const int num);
 	BigDecimal(const unsigned num);
 
+
+	///////////////////////////////////////////////////////////////////////////
 	// Conversion functions
 	
 	std::string toString(const BigDecimalFormat & format = BigDecimalFormat::getDefault()) const;
@@ -67,6 +72,8 @@ public:
 	int toInt() const;
 	unsigned toUInt() const;
 
+
+	///////////////////////////////////////////////////////////////////////////
 	// Misc functions
 	
 	bool isZero() const;
@@ -76,6 +83,8 @@ public:
 	BigDecimal integer() const;
 	BigDecimal fractional() const;
 
+
+	///////////////////////////////////////////////////////////////////////////
 	// Operators
 
 	BigDecimal operator+() const;
@@ -119,6 +128,8 @@ public:
 	bool operator<=(const BigDecimal & num) const;
 	bool operator>=(const BigDecimal & num) const;
 
+
+	///////////////////////////////////////////////////////////////////////////
 	// Math functions
 
 	static BigDecimal abs(const BigDecimal & num);
@@ -141,30 +152,49 @@ public:
 	static BigDecimal arctan(const BigDecimal & num);
 	static BigDecimal arccot(const BigDecimal & num);
 
+
+	///////////////////////////////////////////////////////////////////////////
 	// Exception classes
 	
 	// TODO: better exception handling
 
+	/// General BigDecimal exception.
 	class BigDecimalException : public std::exception {};
+	/// Division by zero exception. Represents \a DEC_Division_by_zero error in decNumber.
 	class DivisionByZeroException : public BigDecimalException {};
+	/// Overflow exception. Represents \a DEC_Overflow error in decNumber.
 	class OverflowException : public BigDecimalException {};
+	/// Underflow exception. Represents \a DEC_Underflow error in decNumber.
 	class UnderflowException : public BigDecimalException {};
+	/// Convertion syntax exception. Represents \a DEC_Conversion_syntax error in decNumber.
 	class ConvertionSyntaxException : public BigDecimalException {};
+	/// Division impossible exception. Represents \a DEC_Division_impossible error in decNumber.
 	class DivisionImpossibleException : public BigDecimalException {};
+	/// Division undefined exception. Represents \a DEC_Division_undefined error in decNumber.
 	class DivisionUndefinedException : public BigDecimalException {};
+	/// Insufficient storage exception. Represents \a DEC_Insufficient_storage error in decNumber.
 	class InsufficientStorageException : public BigDecimalException {};
+	/// Invalid context exception. Represents \a DEC_Invalid_context error in decNumber.
 	class InvalidContextException : public BigDecimalException {};
+	/// Invalid operation exception. Represents \a DEC_Invalid_operation error in decNumber.
 	class InvalidOperationException : public BigDecimalException {};
 
+	/// Invalid argument in function.
 	class InvalidArgumentException : public BigDecimalException {};
+	/// Invalid (non-integer or negative) argument in factorial() function.
 	class InvalidArgumentInFactorialException : public InvalidArgumentException {};
+	/// Invalid argument in arcsin() function.
 	class InvalidArgumentInArcSinException : public InvalidArgumentException {};
+	/// Invalid argument in arccos() function.
 	class InvalidArgumentInArcCosException : public InvalidArgumentException {};
 
 private:
+
 	// Decimal number
 	DecNumber::decNumber number;
 
+
+	///////////////////////////////////////////////////////////////////////////
 	// Internal functions
 	
 	BigDecimal(const DecNumber::decNumber & num);

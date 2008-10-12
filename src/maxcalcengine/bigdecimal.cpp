@@ -109,62 +109,6 @@ static const decNumber calculationPrecision = setCalculationPrecision();
 	\ingroup MaxCalcEngine
 */
 
-/*!
-	\class BigDecimal::BigDecimalException
-	\brief General BigDecimal exception.
-*/
-/*!
-	\class BigDecimal::DivisionByZeroException
-	\brief Division by zero exception. Represents \a DEC_Division_by_zero error in decNumber.
-*/
-/*!
-	\class BigDecimal::OverflowException
-	\brief Overflow exception. Represents \a DEC_Overflow error in decNumber.
-*/
-/*!
-	\class BigDecimal::UnderflowException
-	\brief Underflow exception. Represents \a DEC_Underflow error in decNumber.
-*/
-/*!
-	\class BigDecimal::ConvertionSyntaxException
-	\brief Convertion syntax exception. Represents \a DEC_Conversion_syntax error in decNumber.
-*/
-/*!
-	\class BigDecimal::DivisionImpossibleException
-	\brief Division impossible exception. Represents \a DEC_Division_impossible error in decNumber.
-*/
-/*!
-	\class BigDecimal::DivisionUndefinedException
-	\brief Division undefined exception. Represents \a DEC_Division_undefined error in decNumber.
-*/
-/*!
-	\class BigDecimal::InsufficientStorageException
-	\brief Insufficient storage exception. Represents \a DEC_Insufficient_storage error in decNumber.
-*/
-/*!
-	\class BigDecimal::InvalidContextException
-	\brief Invalid context exception. Represents \a DEC_Invalid_context error in decNumber.
-*/
-/*!	
-	\class BigDecimal::InvalidOperationException
-	\brief Invalid operation exception. Represents \a DEC_Invalid_operation error in decNumber.
-*/
-/*!	
-	\class BigDecimal::InvalidArgumentException
-	\brief Invalid argument in function.
-*/
-/*!	
-	\class BigDecimal::InvalidArgumentInFactorialException
-	\brief Invalid (non-integer or negative) argument in factorial() function.
-*/
-/*!	
-	\class BigDecimal::InvalidArgumentInArcSinException
-	\brief Invalid argument in arcsin() function.
-*/
-/*!	
-	\class BigDecimal::InvalidArgumentInArcCosException
-	\brief Invalid argument in arccos() function.
-*/
 
 /*!
 	E number.
@@ -1101,7 +1045,7 @@ BigDecimal BigDecimal::arccot(const BigDecimal & num)
 /*!
 	Constructs a copy of \a num.
 */
-BigDecimal::BigDecimal(const decNumber & num)
+BigDecimal::BigDecimal(const DecNumber::decNumber & num)
 {
 	decNumberCopy(&number, &num);
 }
@@ -1127,7 +1071,7 @@ void BigDecimal::construct(const char * str)
 /*!
 	Checks \a context.status and throws an exception is there is an error.
 */
-void BigDecimal::checkContextStatus(const decContext & context)
+void BigDecimal::checkContextStatus(const DecNumber::decContext & context)
 {
 	if (context.status & DEC_Errors)
 	{
@@ -1157,7 +1101,7 @@ void BigDecimal::checkContextStatus(const decContext & context)
 /*!
 	Compares two numbers and returns -1 is \a n1 is less than \a n2, 1 if more and 0 if they are equal.
 */
-int BigDecimal::compare(const decNumber & n1, const decNumber & n2)
+int BigDecimal::compare(const DecNumber::decNumber & n1, const DecNumber::decNumber & n2)
 {
 	NEW_CONTEXT(context);
 	decNumber result;

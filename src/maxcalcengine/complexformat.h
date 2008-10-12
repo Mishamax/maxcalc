@@ -46,12 +46,14 @@ public:
 	static ComplexFormat getDefault() { return ComplexFormat(); };
 
 	// Accessors
+	/// Gets letter used to represent imaginary one in Complex number.
 	char imaginaryOne() const { return m_imaginaryOne; };
+	/// Sets letter used to represent imaginary one in Complex number.
 	void setImaginaryOne(const char imaginaryOne) { m_imaginaryOne = imaginaryOne; };
 
 private:
 	// Properties
-	char m_imaginaryOne;
+	char m_imaginaryOne;		///< Letter used to represent imaginary one in Complex number.
 };
 
 } // namespace MaxCalcEngine

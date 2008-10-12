@@ -37,10 +37,16 @@ namespace MaxCalcEngine {
 class Complex
 {
 public:
-	// Real and imaginary parts of the complex number
-	BigDecimal re, im;
 
+	/// Real part of the complex number.
+	BigDecimal re;
+	/// Imaginary part of the complex number.
+	BigDecimal im;
+
+
+	///////////////////////////////////////////////////////////////////////////
 	// Constructors
+
 	Complex();
 	Complex(const char * real, const char * imaginary = "0");
 	Complex(const std::string & real, const std::string & imaginary = "0");
@@ -51,14 +57,21 @@ public:
 	Complex(const BigDecimal & real, const BigDecimal & imaginary = 0);
 	Complex(const int real, const int imaginary = 0);
 	Complex(const unsigned real, const unsigned imaginary = 0);
+	Complex(const Complex & num);
 
+
+	///////////////////////////////////////////////////////////////////////////
 	// Conversions to string
+
 	std::string toString(const ComplexFormat & format = ComplexFormat::getDefault()) const;
 #if defined(UNICODE)
 	std::wstring toWideString(const ComplexFormat & format = ComplexFormat::getDefault()) const;
 #endif
 
+
+	///////////////////////////////////////////////////////////////////////////
 	// Operators
+
 	Complex operator+() const;
 	Complex operator-() const;
 
@@ -70,12 +83,20 @@ public:
 	bool operator==(const Complex & num) const;
 	bool operator!=(const Complex & num) const;
 
+
+	///////////////////////////////////////////////////////////////////////////
 	// Math functions
+
 	static BigDecimal sqr(const Complex & num);
 	static BigDecimal abs(const Complex & num);
 
+
+	///////////////////////////////////////////////////////////////////////////
 	// Exception classes
+
+	/// General Complex exception.
 	class ComplexException : public std::exception {}; // TODO: should it be based on std::exception or BigDecimalException?
+	/// Division by zero exception.
 	class DivisionByZeroException : public ComplexException {};
 };
 
