@@ -19,15 +19,14 @@
 
 // Qt
 #include <QApplication>
-#include <QWidget>
-
+//Local
+#include "mainwindow.h"
 
 int main(int argc, char ** argv)
 {
 	QApplication app(argc, argv);
 
-	QWidget mainWindow;
-	mainWindow.setWindowTitle("MaxCalc");
+	MainWindow mainWindow;
 	mainWindow.show();
 
 	return app.exec();

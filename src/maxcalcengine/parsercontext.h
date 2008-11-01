@@ -17,17 +17,25 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
-#ifndef PCH_H
-#define PCH_H
+#ifndef PARSERCONTEXT_H
+#define PARSERCONTEXT_H
 
-// Local
-#include "decNumber/decContext.h"
+namespace MaxCalcEngine {
 
-// STL
-#include <string>
-#include <locale>
-#include <cassert>
-#include <exception>
-#include <sstream>
+//****************************************************************************
+// ParserContext definition
+//****************************************************************************
 
-#endif // PCH_H
+class ParserContext
+{
+public:
+	ParserContext();
+
+
+
+private:
+};
+
+} // namespace MaxCalcEngine
+
+#endif // PARSERCONTEXT_H

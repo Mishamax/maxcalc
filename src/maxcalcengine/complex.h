@@ -45,6 +45,11 @@ public:
 
 
 	///////////////////////////////////////////////////////////////////////////
+	// Constants
+	static const Complex i;
+
+
+	///////////////////////////////////////////////////////////////////////////
 	// Constructors
 
 	Complex();
@@ -85,19 +90,33 @@ public:
 
 
 	///////////////////////////////////////////////////////////////////////////
+	// Misc functions
+	bool isZero() const;
+
+
+	///////////////////////////////////////////////////////////////////////////
 	// Math functions
 
 	static BigDecimal sqr(const Complex & num);
 	static BigDecimal abs(const Complex & num);
+	static BigDecimal arg(const Complex & num);
+	static Complex ln(const Complex & num);
+	static Complex exp(const Complex & num);
+	static Complex pow(const Complex & num, const Complex & power);
+	static Complex sqrt(const Complex & num);
+	static Complex sin(const Complex & num);
+	static Complex cos(const Complex & num);
+	static Complex arcsin(const Complex & num);
+	static Complex arccos(const Complex & num);
+	static Complex arctan(const Complex & num);
+	static Complex arccot(const Complex & num);
+	static Complex sinh(const Complex & num);
+	static Complex cosh(const Complex & num);
+	static Complex arcsinh(const Complex & num);
+	static Complex arccosh(const Complex & num);
+	static Complex arctanh(const Complex & num);
+	static Complex arccoth(const Complex & num);
 
-
-	///////////////////////////////////////////////////////////////////////////
-	// Exception classes
-
-	/// General Complex exception.
-	class ComplexException : public std::exception {}; // TODO: should it be based on std::exception or BigDecimalException?
-	/// Division by zero exception.
-	class DivisionByZeroException : public ComplexException {};
 };
 
 } // namespace MaxCalcEngine

@@ -20,10 +20,12 @@
 // Local
 #include "bigdecimal.h"
 #include "tstring.h"
+#include "exceptions.h"
 
 // STL
 #include <locale>
 #include <cassert>
+#include <sstream>
 
 namespace MaxCalcEngine {
 
@@ -51,35 +53,6 @@ using namespace DecNumber;
 
 // Macro for creating new decContext with default settings and max IO precision
 #define NEW_IO_CONTEXT(context) NEW_CONTEXT_WITH_SPECIFIED_PRECISION(context, MAX_IO_PRECISION)
-
-
-// Constructs decNumber from WORKING_PRECISION
-static decNumber setCalculationPrecision()
-{
-	char prec[4], str[7] = "1E-";
-
-#if _MSC_VER > 1400
-	// Safe functions for MSVC 2005+ compliers
-	_itoa_s(WORKING_PRECISION, prec, 4, 10);
-	strcat_s(str, 7, prec);
-#elif defined(WIN32)
-	// Other Windows compilers
-	itoa(WORKING_PRECISION, prec, 10);
-	strcat(str, prec);
-#else
-	// Linux
-	sprintf(prec, "%d", WORKING_PRECISION);
-	strcat(str, prec);
-#endif
-
-	NEW_CONTEXT(context);
-	decNumber precision;
-	decNumberFromString(&precision, str, &context);
-	return precision;
-}
-
-// Calculation precision for math functions
-static const decNumber calculationPrecision = setCalculationPrecision();
 
 
 //****************************************************************************
@@ -122,6 +95,10 @@ const BigDecimal BigDecimal::PI = BigDecimal::pi();
 	PI / 2 number.
 */
 const BigDecimal BigDecimal::PIDiv2 = BigDecimal::PI / 2;
+/*!
+	PI / 4 number.
+*/
+const BigDecimal BigDecimal::PIDiv4 = BigDecimal::PI / 4;
 /*!
 	PI * 2 number.
 */
@@ -208,6 +185,15 @@ BigDecimal::BigDecimal(const unsigned num)
 	decNumberFromUInt32(&number, num);
 }
 
+/*!
+	Constructs a new instance of BigDecimal class from given \a num.
+*/
+BigDecimal::BigDecimal(const double num)
+{
+	std::stringstream stream;
+	stream << num;
+	construct(stream.str().c_str());
+}
 
 //****************************************************************************
 // Conversion functions
@@ -238,13 +224,14 @@ std::string BigDecimal::toString(const BigDecimalFormat & format) const
 		checkContextStatus(context);
 	}
 
-	char * str = new char[format.precision() + 14];
+	size_t size = format.precision() + 14;
+	char * str = new char[size];
 
 	// Make conversion to engineering or scientific format
 	if (format.numberFormat() == BigDecimalFormat::EngineeringFormat)
-		decNumberToEngString(&num, str);
+		decNumberToEngString(&num, str, size);
 	else
-		decNumberToString(&num, str);
+		decNumberToString(&num, str, size);
 
 	// Convert char* to std::string
 	std::string s(str);
@@ -343,6 +330,64 @@ bool BigDecimal::isPositive() const
 	return (!decNumberIsZero(&number) && !decNumberIsNegative(&number));
 }
 
+
+/*!
+	Rounds \a num to nearest integer.
+
+	The function behaves like floor() if \a num > 0 and like ceil() if \a num < 0.
+*/
+BigDecimal BigDecimal::round() const
+{
+	NEW_CONTEXT(context);
+	decNumber result;
+	decNumberToIntegralValue(&result, &number, &context);
+	checkContextStatus(context);
+	return result;
+}
+
+/*!
+	Returns integer part of \a num (removes fractional part).
+*/
+BigDecimal BigDecimal::integer() const
+{
+	BigDecimal rounded = round();
+
+	if (isPositive() && rounded > *this)
+		rounded--;
+	if (isNegative() && rounded < *this)
+		rounded++;
+
+	return rounded;
+}
+
+/*!
+	Returns fractional part of \a num.
+
+	frac(num) = num - integer(num).
+	The return value is always positive.
+*/
+BigDecimal BigDecimal::fractional() const
+{
+	return BigDecimal::abs(*this - integer());
+}
+
+/*!
+	Returns largest integer less than or equal to \a num (integral value of \a num).
+*/
+BigDecimal BigDecimal::floor() const
+{
+	BigDecimal integral = integer();
+	return ((*this - integral).isZero() || isPositive()) ? integral : integral - 1;
+}
+
+/*!
+	Returns smallest integer more than or equal to \a num.
+*/
+BigDecimal BigDecimal::ceil() const
+{
+	BigDecimal integral = integer();
+	return ((*this - integral).isZero() || isNegative()) ? integral : integral + 1;
+}
 
 //****************************************************************************
 // Operators
@@ -448,6 +493,9 @@ BigDecimal BigDecimal::operator*(const BigDecimal & num) const
 */
 BigDecimal BigDecimal::operator/(const BigDecimal & num) const
 {
+	if (num.isZero())
+		throw DivisionByZeroException();
+
 	NEW_CONTEXT(context);
 	decNumber result;
 	decNumberDivide(&result, &number, &num.number, &context);
@@ -460,6 +508,9 @@ BigDecimal BigDecimal::operator/(const BigDecimal & num) const
 */
 BigDecimal BigDecimal::operator%(const BigDecimal & num) const
 {
+	if (num.isZero())
+		throw DivisionByZeroException();
+
 	NEW_CONTEXT(context);
 	decNumber result;
 	decNumberRemainder(&result, &number, &num.number, &context);
@@ -505,6 +556,9 @@ BigDecimal BigDecimal::operator*=(const BigDecimal & num)
 */
 BigDecimal BigDecimal::operator/=(const BigDecimal & num)
 {
+	if (num.isZero())
+		throw DivisionByZeroException();
+
 	NEW_CONTEXT(context);
 	decNumberDivide(&number, &number, &num.number, &context);
 	checkContextStatus(context);
@@ -516,6 +570,9 @@ BigDecimal BigDecimal::operator/=(const BigDecimal & num)
 */
 BigDecimal BigDecimal::operator%=(const BigDecimal & num)
 {
+	if (num.isZero())
+		throw DivisionByZeroException();
+
 	NEW_CONTEXT(context);
 	decNumberRemainder(&number, &number, &num.number, &context);
 	checkContextStatus(context);
@@ -527,6 +584,9 @@ BigDecimal BigDecimal::operator%=(const BigDecimal & num)
 */
 BigDecimal BigDecimal::operator~() const
 {
+	if (!fractional().isZero())
+		throw LogicalOperationOnFractionalNumberException();
+
 	NEW_CONTEXT(context);
 	decNumber result;
 	decNumberInvert(&result, &number, &context);
@@ -539,6 +599,9 @@ BigDecimal BigDecimal::operator~() const
 */
 BigDecimal BigDecimal::operator|(const BigDecimal & num) const
 {
+	if (!fractional().isZero() || !num.fractional().isZero())
+		throw LogicalOperationOnFractionalNumberException();
+
 	NEW_CONTEXT(context);
 	decNumber result;
 	decNumberOr(&result, &number, &num.number, &context);
@@ -551,6 +614,9 @@ BigDecimal BigDecimal::operator|(const BigDecimal & num) const
 */
 BigDecimal BigDecimal::operator&(const BigDecimal & num) const
 {
+	if (!fractional().isZero() || !num.fractional().isZero())
+		throw LogicalOperationOnFractionalNumberException();
+
 	NEW_CONTEXT(context);
 	decNumber result;
 	decNumberAnd(&result, &number, &num.number, &context);
@@ -563,6 +629,9 @@ BigDecimal BigDecimal::operator&(const BigDecimal & num) const
 */
 BigDecimal BigDecimal::operator^(const BigDecimal & num) const
 {
+	if (!fractional().isZero() || !num.fractional().isZero())
+		throw LogicalOperationOnFractionalNumberException();
+
 	NEW_CONTEXT(context);
 	decNumber result;
 	decNumberXor(&result, &number, &num.number, &context);
@@ -575,6 +644,9 @@ BigDecimal BigDecimal::operator^(const BigDecimal & num) const
 */
 BigDecimal BigDecimal::operator<<(const BigDecimal & shift) const
 {
+	if (!fractional().isZero() || !shift.fractional().isZero())
+		throw LogicalOperationOnFractionalNumberException();
+
 	NEW_CONTEXT(context);
 	decNumber result;
 	decNumberShift(&result, &number, &shift.number, &context);
@@ -587,6 +659,9 @@ BigDecimal BigDecimal::operator<<(const BigDecimal & shift) const
 */
 BigDecimal BigDecimal::operator>>(const BigDecimal & shift) const
 {
+	if (!fractional().isZero() || !shift.fractional().isZero())
+		throw LogicalOperationOnFractionalNumberException();
+
 	NEW_CONTEXT(context);
 	decNumber result;
 	decNumber negativeShift;
@@ -602,6 +677,9 @@ BigDecimal BigDecimal::operator>>(const BigDecimal & shift) const
 */
 BigDecimal BigDecimal::operator|=(const BigDecimal & num)
 {
+	if (!fractional().isZero() || !num.fractional().isZero())
+		throw LogicalOperationOnFractionalNumberException();
+
 	NEW_CONTEXT(context);
 	decNumberOr(&number, &number, &num.number, &context);
 	checkContextStatus(context);
@@ -613,6 +691,9 @@ BigDecimal BigDecimal::operator|=(const BigDecimal & num)
 */
 BigDecimal BigDecimal::operator&=(const BigDecimal & num)
 {
+	if (!fractional().isZero() || !num.fractional().isZero())
+		throw LogicalOperationOnFractionalNumberException();
+
 	NEW_CONTEXT(context);
 	decNumberAnd(&number, &number, &num.number, &context);
 	checkContextStatus(context);
@@ -624,6 +705,9 @@ BigDecimal BigDecimal::operator&=(const BigDecimal & num)
 */
 BigDecimal BigDecimal::operator^=(const BigDecimal & num)
 {
+	if (!fractional().isZero() || !num.fractional().isZero())
+		throw LogicalOperationOnFractionalNumberException();
+
 	NEW_CONTEXT(context);
 	decNumberXor(&number, &number, &num.number, &context);
 	checkContextStatus(context);
@@ -635,6 +719,9 @@ BigDecimal BigDecimal::operator^=(const BigDecimal & num)
 */
 BigDecimal BigDecimal::operator<<=(const BigDecimal & shift)
 {
+	if (!fractional().isZero() || !shift.fractional().isZero())
+		throw LogicalOperationOnFractionalNumberException();
+
 	NEW_CONTEXT(context);
 	decNumberShift(&number, &number, &shift.number, &context);
 	checkContextStatus(context);
@@ -646,6 +733,9 @@ BigDecimal BigDecimal::operator<<=(const BigDecimal & shift)
 */
 BigDecimal BigDecimal::operator>>=(const BigDecimal & shift)
 {
+	if (!fractional().isZero() || !shift.fractional().isZero())
+		throw LogicalOperationOnFractionalNumberException();
+
 	NEW_CONTEXT(context);
 	decNumber negativeShift;
 	decNumberMinus(&negativeShift, &shift.number, &context);
@@ -708,28 +798,6 @@ bool BigDecimal::operator>=(const BigDecimal & num) const
 // Math functions
 //****************************************************************************
 
-
-/*!
-	Returns integer part of \a num.
-*/
-BigDecimal BigDecimal::integer() const
-{
-	NEW_CONTEXT(context);
-	decNumber result;
-	decNumberToIntegralValue(&result, &number, &context);
-	checkContextStatus(context);
-	return result;
-}
-
-/*!
-	Returns fractional part of \a num.
-	The return value is always positive.
-*/
-BigDecimal BigDecimal::fractional() const
-{
-	return abs(*this - integer());
-}
-
 /*!
 	Calculates absolute value of \a num.
 */
@@ -756,9 +824,14 @@ BigDecimal BigDecimal::exp(const BigDecimal & num)
 
 /*!
 	Calculates natural logarithm of \a num.
+
+	\a num must be > 0.
 */
 BigDecimal BigDecimal::ln(const BigDecimal & num)
 {
+	if (num.isZero() || num.isNegative())
+		throw InvalidArgumentInLogException();
+
 	NEW_CONTEXT(context);
 	decNumber result;
 	decNumberLn(&result, &num.number, &context);
@@ -768,9 +841,14 @@ BigDecimal BigDecimal::ln(const BigDecimal & num)
 
 /*!
 	Calculates base-10 logarithm of \a num.
+
+	\a num must be > 0.
 */
 BigDecimal BigDecimal::log10(const BigDecimal & num)
 {
+	if (num.isZero() || num.isNegative())
+		throw InvalidArgumentInLogException();
+
 	NEW_CONTEXT(context);
 	decNumber result;
 	decNumberLog10(&result, &num.number, &context);
@@ -792,9 +870,14 @@ BigDecimal BigDecimal::sqr(const BigDecimal & num)
 
 /*!
 	Calculates square root of \a num.
+
+	\a num must be >= 0.
 */
 BigDecimal BigDecimal::sqrt(const BigDecimal & num)
 {
+	if (num.isNegative())
+		throw InvalidArgumentInSqrtException();
+
 	NEW_CONTEXT(context);
 	decNumber result;
 	decNumberSquareRoot(&result, &num.number, &context);
@@ -804,9 +887,17 @@ BigDecimal BigDecimal::sqrt(const BigDecimal & num)
 
 /*!
 	Raises \a num to \a power.
+
+	Note: 0^0 = 1.
+	If \a num <= 0 then \a power must be >= 0.
 */
 BigDecimal BigDecimal::pow(const BigDecimal & num, const BigDecimal & power)
 {
+	if (num.isZero() && power.isZero())
+		return BigDecimal(1);
+	if ((num.isZero() || num.isNegative()) && power.isNegative())
+		throw InvalidArgumentInPowException();
+
 	NEW_CONTEXT(context);
 	decNumber result;
 	decNumberPower(&result, &num.number, &power.number, &context);
@@ -816,9 +907,14 @@ BigDecimal BigDecimal::pow(const BigDecimal & num, const BigDecimal & power)
 
 /*!
 	Calculates integer part of the result of dividing \a dividend by \a divisor.
+
+	\a divisor must be not zero.
 */
 BigDecimal BigDecimal::div(const BigDecimal & dividend, const BigDecimal & divisor)
 {
+	if (divisor.isZero())
+		throw DivisionByZeroException();
+
 	NEW_CONTEXT(context);
 	decNumber result;
 	decNumberDivideInteger(&result, &dividend.number, &divisor.number, &context);
@@ -857,6 +953,8 @@ BigDecimal BigDecimal::min(const BigDecimal & num, const BigDecimal & decimal)
 
 /*!
 	Calculates factorial of \a num.
+
+	\a num must be integer and >= 0.
 */
 BigDecimal BigDecimal::factorial(const BigDecimal & num)
 {
@@ -884,7 +982,7 @@ BigDecimal BigDecimal::sin(const BigDecimal & num)
 	BigDecimal result = angle, fraction = angle, count = 2, numerator = angle, denominator = 1;
 	BigDecimal sqrNum = sqr(angle);
 
-	while (fraction > calculationPrecision)
+	while (abs(fraction) > BigDecimal(CALCULATION_PRECISION))
 	{
 		numerator *= sqrNum;
 		denominator *= FMA(count, count, count);
@@ -918,7 +1016,7 @@ BigDecimal BigDecimal::cos(const BigDecimal & num)
 	BigDecimal result = 1, fraction = 1, count = 1, numerator = 1, denominator = 1;
 	BigDecimal sqrNum = sqr(angle);
 
-	while (fraction > calculationPrecision)
+	while (abs(fraction) > BigDecimal(CALCULATION_PRECISION))
 	{
 		numerator *= sqrNum;
 		denominator *= FMA(count, count, count);
@@ -943,7 +1041,7 @@ BigDecimal BigDecimal::cos(const BigDecimal & num)
 }
 
 /*!
-	Calculates tan of \a num (measured in radians).
+	Calculates tangent of \a num (measured in radians).
 	This functions calculates tan(num) as sin(num) / cos(num).
 */
 BigDecimal BigDecimal::tan(const BigDecimal & num)
@@ -952,22 +1050,22 @@ BigDecimal BigDecimal::tan(const BigDecimal & num)
 	BigDecimal cosine = cos(angle);
 
 	if (cosine.isZero())
-		throw DivisionByZeroException();
+		throw InvalidArgumentInTanException();
 
 	return sin(angle) / cosine;
 }
 
 /*!
-	Calculates ctan of \a num (measured in radians).
-	This functions calculates ctan(num) as cos(num) / sin(num).
+	Calculates cotangent of \a num (measured in radians).
+	This functions calculates cot(num) as cos(num) / sin(num).
 */
-BigDecimal BigDecimal::ctan(const BigDecimal & num)
+BigDecimal BigDecimal::cot(const BigDecimal & num)
 {
 	BigDecimal angle = num % PIMul2;
 	BigDecimal sine = sin(angle);
 
 	if (sine.isZero())
-		throw DivisionByZeroException();
+		throw InvalidArgumentInCotException();
 
 	return cos(angle) / sine;
 }
@@ -979,14 +1077,14 @@ BigDecimal BigDecimal::ctan(const BigDecimal & num)
 BigDecimal BigDecimal::arcsin(const BigDecimal & num)
 {
 	if (num == BigDecimal(1))
-		return PI / 2;
+		return PIDiv2;
 	else if (num == BigDecimal(-1))
-		return -PI / 2;
+		return -PIDiv2;
 
 	if (abs(num) > BigDecimal(1))
 		throw InvalidArgumentInArcSinException();
 
-	return arctan(num / sqrt(-sqrt(num) + 1));
+	return arctan(num / sqrt(-sqr(num) + 1));
 }
 
 /*!
@@ -998,13 +1096,13 @@ BigDecimal BigDecimal::arccos(const BigDecimal & num)
 	if (abs(num) > BigDecimal(1))
 		throw InvalidArgumentInArcCosException();
 
-	return PI / 2 - arcsin(num);
+	return PIDiv2 - arcsin(num);
 }
 
 /*!
 	Calculates arctangent of \a num (measured in radians).
 	This function uses Taylor serie for -0.5 <= num <= 0.5 and
-	formula arctan(x) = 2 * arctan(x / (1 + sqrt(1 + x*x)) for bigger num.
+	formula arctan(x) = 2 * arctan(x / (1 + sqrt(1 + x*x)) for bigger \a num.
 */
 BigDecimal BigDecimal::arctan(const BigDecimal & num)
 {
@@ -1017,7 +1115,7 @@ BigDecimal BigDecimal::arctan(const BigDecimal & num)
 		BigDecimal fraction = num, result = num;
 		BigDecimal numerator = num, denominator = 1;
 
-		while (abs(fraction) > calculationPrecision)
+		while (abs(fraction) > BigDecimal(CALCULATION_PRECISION))
 		{
 			numerator *= -num * num;
 			denominator += 2;
@@ -1035,8 +1133,9 @@ BigDecimal BigDecimal::arctan(const BigDecimal & num)
 */
 BigDecimal BigDecimal::arccot(const BigDecimal & num)
 {
-	return PI / 2 - arctan(num);
+	return PIDiv2 - arctan(num);
 }
+
 
 //****************************************************************************
 // Internal functions
@@ -1088,13 +1187,13 @@ void BigDecimal::checkContextStatus(const DecNumber::decContext & context)
 		else if (context.status & DEC_Division_undefined)
 			throw DivisionUndefinedException();
 		else if (context.status & DEC_Insufficient_storage)
-			throw InsufficientStorageException();
+			throw std::bad_alloc();
 		else if (context.status & DEC_Invalid_context)
 			throw InvalidContextException();
 		else if (context.status & DEC_Invalid_operation)
 			throw InvalidOperationException();
 		else
-			throw BigDecimalException();
+			throw ArithmeticException();
 	}
 }
 
@@ -1126,16 +1225,16 @@ int BigDecimal::compare(const DecNumber::decNumber & n1, const DecNumber::decNum
 BigDecimal BigDecimal::pi()
 {
 	BigDecimal a = 1, a_old;
-	BigDecimal b = BigDecimal(1) / BigDecimal::sqrt(2);
+	BigDecimal b = BigDecimal(1) / sqrt(2);
 	BigDecimal t = BigDecimal("0.25");
 	BigDecimal p = 1;
 
-	while (BigDecimal::abs(a - b) > calculationPrecision)
+	while (abs(a - b) > BigDecimal(CALCULATION_PRECISION))
 	{
 		a_old = a;
 		a = (a + b) / 2;
-		b = BigDecimal::sqrt(a_old * b);
-		t = t - p * sqr(a_old - a);
+		b = sqrt(a_old * b);
+		t -= p * sqr(a_old - a);
 		p *= 2;
 	}
 

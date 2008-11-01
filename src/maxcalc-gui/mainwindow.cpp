@@ -17,17 +17,29 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
-#ifndef PCH_H
-#define PCH_H
+#include "mainwindow.h"
 
-// Local
-#include "decNumber/decContext.h"
+MainWindow::MainWindow() : QWidget()
+{
+	setWindowTitle(tr("MaxCalc"));
+	setMinimumSize(400, 300);
+	resize(600, 400);
 
-// STL
-#include <string>
-#include <locale>
-#include <cassert>
-#include <exception>
-#include <sstream>
+	variablesList.setMaximumWidth(150);
+	variablesList.setMinimumWidth(150);
+	layout.setSpacing(3);
 
-#endif // PCH_H
+	layout.addWidget(&variablesList, 0, 0);
+	layout.addWidget(&historyBox, 0, 1);
+
+	okButton.setText(tr("OK"));
+	okButton.setMinimumWidth(30);
+	okButton.setMaximumWidth(30);
+
+	bottomLayout.addWidget(&inputBox);
+	bottomLayout.addWidget(&okButton);
+
+	layout.addLayout(&bottomLayout, 1, 0, 1, 2);
+	
+	setLayout(&layout);
+}

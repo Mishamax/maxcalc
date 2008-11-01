@@ -259,7 +259,7 @@ static void        decSetSubnormal(decNumber *, decContext *, Int *, uInt *);
 static Int         decShiftToLeast(Unit *, Int, Int);
 static Int         decShiftToMost(Unit *, Int, Int);
 static void        decStatus(decNumber *, uInt, decContext *);
-static void        decToString(const decNumber *, char[], Flag);
+static void        decToString(const decNumber *, char[], size_t, Flag);
 static decNumber * decTrim(decNumber *, decContext *, Flag, Flag, Int *);
 static Int         decUnitAddSub(const Unit *, Int, const Unit *, Int, Int,
                               Unit *, Int);
@@ -448,13 +448,13 @@ uInt decNumberToUInt32(const decNumber *dn, decContext *set) {
 /*                                                                    */
 /*  No error is possible, and no status can be set.                   */
 /* ------------------------------------------------------------------ */
-char * decNumberToString(const decNumber *dn, char *string){
-  decToString(dn, string, 0);
+char * decNumberToString(const decNumber *dn, char *string, size_t string_size){
+  decToString(dn, string, string_size, 0);
   return string;
   } // DecNumberToString
 
-char * decNumberToEngString(const decNumber *dn, char *string){
-  decToString(dn, string, 1);
+char * decNumberToEngString(const decNumber *dn, char *string, size_t string_size){
+  decToString(dn, string, string_size, 1);
   return string;
   } // DecNumberToEngString
 
@@ -3604,7 +3604,7 @@ decNumber * decNumberZero(decNumber *dn) {
 /* ------------------------------------------------------------------ */
 // If DECCHECK is enabled the string "?" is returned if a number is
 // invalid.
-static void decToString(const decNumber *dn, char *string, Flag eng) {
+static void decToString(const decNumber *dn, char *string, size_t string_size, Flag eng) {
   Int exp=dn->exponent;       // local copy
   Int e;                      // E-part value
   Int pre;                    // digits before the '.'
@@ -3625,15 +3625,24 @@ static void decToString(const decNumber *dn, char *string, Flag eng) {
     }
   if (dn->bits&DECSPECIAL) {       // Is a special value
     if (decNumberIsInfinite(dn)) {
+#if _MSC_VER > 1400
+      strcpy_s(c, string_size,   "Inf");
+      strcpy_s(c+3, string_size, "inity");
+#else
       strcpy(c,   "Inf");
       strcpy(c+3, "inity");
+#endif
       return;}
     // a NaN
     if (dn->bits&DECSNAN) {        // signalling NaN
       *c='s';
       c++;
       }
+#if _MSC_VER > 1400
+    strcpy_s(c, string_size, "NaN");
+#else
     strcpy(c, "NaN");
+#endif
     c+=3;                          // step past
     // if not a clean non-zero coefficient, that's all there is in a
     // NaN string

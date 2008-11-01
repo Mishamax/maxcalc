@@ -5,7 +5,8 @@ unix:TARGET = maxcalc-gui
 CONFIG += qt debug_and_release warn_on precompile_header
 win32:CONFIG += windows
 
-SOURCES += main.cpp
+HEADERS += mainwindow.h
+SOURCES += main.cpp mainwindow.cpp
 
 PRECOMPILED_HEADER = pch.h
 

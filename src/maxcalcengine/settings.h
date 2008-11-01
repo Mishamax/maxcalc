@@ -50,6 +50,17 @@ namespace MaxCalcEngine {
 static const int WORKING_PRECISION = DECNUMDIGITS;
 
 /*!
+	Calculation precision.
+
+	The default value is 1E-<WORKING_PRECISION>.
+	This is used internally in BigDecimal.
+
+	\sa BigDecimal, WORKING_PRECISION
+	\ingroup MaxCalcEngine
+*/
+static const char * CALCULATION_PRECISION = "1E-136";
+
+/*!
 	Default precision used to rounding during conversion from BigDecimal to string
 	and from string to BigDecimal.
 

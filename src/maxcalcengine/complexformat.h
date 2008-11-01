@@ -36,7 +36,7 @@ class ComplexFormat : public BigDecimalFormat
 public:
 
 	// Constructor
-	ComplexFormat(
+	explicit ComplexFormat(
 		const int precision = MAX_IO_PRECISION,
 		const NumberFormat numberFormat = ScientificFormat,
 		const ExponentCase exponentCase = UpperCaseExponent,

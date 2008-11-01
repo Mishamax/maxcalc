@@ -23,6 +23,7 @@ private slots:
 	void fromBigDecimal();
 	void fromInt();
 	void fromUInt();
+	void fromDouble();
 
 	// Conversions
 	void toString();
@@ -37,6 +38,11 @@ private slots:
 	void comparisonOperators();
 
 	// Functions
+	void round();
+	void integer();
+	void fractional();
+	void floor();
+	void ceil();
 	void abs();
 	void exp();
 	void ln();
@@ -51,7 +57,7 @@ private slots:
 	void sin();
 	void cos();
 	void tan();
-	void ctan();
+	void cot();
 	void arcsin();
 	void arccos();
 	void arctan();

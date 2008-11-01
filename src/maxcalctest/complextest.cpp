@@ -1,7 +1,7 @@
 
 // Local
 #include "complextest.h"
-#include "bigdecimalcompare.h"
+#include "utility.h"
 // MaxCalcEngine
 #include "complex.h"
 // STL
@@ -14,32 +14,32 @@ void ComplexTest::complexFormatDefault()
 	ComplexFormat actual;
 	ComplexFormat expected = ComplexFormat::getDefault();
 
-	QCOMPARE(actual.precision(), expected.precision());
-	QCOMPARE(actual.numberFormat(), expected.numberFormat());
-	QCOMPARE(actual.exponentCase(), expected.exponentCase());
-	QCOMPARE(actual.imaginaryOne(), expected.imaginaryOne());
+	COMPARE(actual.precision(), expected.precision());
+	COMPARE(actual.numberFormat(), expected.numberFormat());
+	COMPARE(actual.exponentCase(), expected.exponentCase());
+	COMPARE(actual.imaginaryOne(), expected.imaginaryOne());
 
-	QCOMPARE(actual.precision(), MAX_IO_PRECISION);
-	QCOMPARE(actual.numberFormat(), ComplexFormat::ScientificFormat);
-	QCOMPARE(actual.exponentCase(), ComplexFormat::UpperCaseExponent);
-	QCOMPARE(actual.imaginaryOne(), 'i');
+	COMPARE(actual.precision(), MAX_IO_PRECISION);
+	COMPARE(actual.numberFormat(), ComplexFormat::ScientificFormat);
+	COMPARE(actual.exponentCase(), ComplexFormat::UpperCaseExponent);
+	COMPARE(actual.imaginaryOne(), 'i');
 }
 
 void ComplexTest::complexFormatCustom()
 {
 	ComplexFormat actual(MAX_IO_PRECISION, ComplexFormat::EngineeringFormat, ComplexFormat::LowerCaseExponent, 'j');
 
-	QCOMPARE(actual.precision(), MAX_IO_PRECISION);
-	QCOMPARE(actual.numberFormat(), ComplexFormat::EngineeringFormat);
-	QCOMPARE(actual.exponentCase(), ComplexFormat::LowerCaseExponent);
-	QCOMPARE(actual.imaginaryOne(), 'j');
+	COMPARE(actual.precision(), MAX_IO_PRECISION);
+	COMPARE(actual.numberFormat(), ComplexFormat::EngineeringFormat);
+	COMPARE(actual.exponentCase(), ComplexFormat::LowerCaseExponent);
+	COMPARE(actual.imaginaryOne(), 'j');
 
 	actual = ComplexFormat(1, ComplexFormat::ScientificFormat, ComplexFormat::UpperCaseExponent, 'i');
 
-	QCOMPARE(actual.precision(), 1);
-	QCOMPARE(actual.numberFormat(), ComplexFormat::ScientificFormat);
-	QCOMPARE(actual.exponentCase(), ComplexFormat::UpperCaseExponent);
-	QCOMPARE(actual.imaginaryOne(), 'i');
+	COMPARE(actual.precision(), 1);
+	COMPARE(actual.numberFormat(), ComplexFormat::ScientificFormat);
+	COMPARE(actual.exponentCase(), ComplexFormat::UpperCaseExponent);
+	COMPARE(actual.imaginaryOne(), 'i');
 }
 
 void ComplexTest::complexFormatAccessors()
@@ -50,18 +50,18 @@ void ComplexTest::complexFormatAccessors()
 	actual.setNumberFormat(ComplexFormat::EngineeringFormat);
 	actual.setExponentCase(ComplexFormat::LowerCaseExponent);
 
-	QCOMPARE(actual.precision(), MAX_IO_PRECISION / 2);
-	QCOMPARE(actual.numberFormat(), ComplexFormat::EngineeringFormat);
-	QCOMPARE(actual.exponentCase(), ComplexFormat::LowerCaseExponent);
+	COMPARE(actual.precision(), MAX_IO_PRECISION / 2);
+	COMPARE(actual.numberFormat(), ComplexFormat::EngineeringFormat);
+	COMPARE(actual.exponentCase(), ComplexFormat::LowerCaseExponent);
 
 	actual.setPrecision(MAX_IO_PRECISION);
-	QCOMPARE(actual.precision(), MAX_IO_PRECISION);
+	COMPARE(actual.precision(), MAX_IO_PRECISION);
 
 	actual.setPrecision(1);
-	QCOMPARE(actual.precision(), 1);
+	COMPARE(actual.precision(), 1);
 
 	actual.setImaginaryOne('j');
-	QCOMPARE(actual.imaginaryOne(), 'j');
+	COMPARE(actual.imaginaryOne(), 'j');
 }
 
 
@@ -69,16 +69,16 @@ void ComplexTest::fromString()
 {
 	Complex num(std::string("1e-5"), std::string("-1e+2"));
 
-	QCOMPARE(num.re, BigDecimal("0.00001"));
-	QCOMPARE(num.im, BigDecimal(-100));
+	COMPARE_BIGDECIMAL(num.re, BigDecimal("0.00001"));
+	COMPARE_BIGDECIMAL(num.im, BigDecimal(-100));
 }
 
 void ComplexTest::fromCharStr()
 {
 	Complex num("1e-5", "-1e+2");
 
-	QCOMPARE(num.re, BigDecimal(std::string("0.00001")));
-	QCOMPARE(num.im, BigDecimal(-100));
+	COMPARE_BIGDECIMAL(num.re, BigDecimal(std::string("0.00001")));
+	COMPARE_BIGDECIMAL(num.im, BigDecimal(-100));
 }
 
 
@@ -86,145 +86,86 @@ void ComplexTest::fromWideString()
 {
 	Complex num(std::wstring(L"1e-5"), std::wstring(L"-1e+2"));
 
-	QCOMPARE(num.re, BigDecimal("0.00001"));
-	QCOMPARE(num.im, BigDecimal(-100));
+	COMPARE_BIGDECIMAL(num.re, BigDecimal("0.00001"));
+	COMPARE_BIGDECIMAL(num.im, BigDecimal(-100));
 }
 
 void ComplexTest::fromWideCharStr()
 {
 	Complex num(L"1e-5", L"-1e+2");
 
-	QCOMPARE(num.re, BigDecimal(std::string("0.00001")));
-	QCOMPARE(num.im, BigDecimal(-100));
+	COMPARE_BIGDECIMAL(num.re, BigDecimal(std::string("0.00001")));
+	COMPARE_BIGDECIMAL(num.im, BigDecimal(-100));
 }
 
 void ComplexTest::fromBigDecimal()
 {
 	Complex num(BigDecimal(10), BigDecimal(-5));
 
-	QCOMPARE(num.re, BigDecimal(10));
-	QCOMPARE(num.im, BigDecimal(-5));
+	COMPARE_BIGDECIMAL(num.re, BigDecimal(10));
+	COMPARE_BIGDECIMAL(num.im, BigDecimal(-5));
 }
 
 void ComplexTest::fromInt()
 {
 	Complex num;
-	QCOMPARE(num.re, BigDecimal(0));
-	QCOMPARE(num.im, BigDecimal(0));
+	COMPARE_BIGDECIMAL(num.re, BigDecimal(0));
+	COMPARE_BIGDECIMAL(num.im, BigDecimal(0));
 
 	num = Complex(10);
-	QCOMPARE(num.re, BigDecimal(10));
+	COMPARE_BIGDECIMAL(num.re, BigDecimal(10));
 
 	num = Complex(20, 10);
-	QCOMPARE(num.re, BigDecimal(20));
-	QCOMPARE(num.im, BigDecimal(10));
+	COMPARE_BIGDECIMAL(num.re, BigDecimal(20));
+	COMPARE_BIGDECIMAL(num.im, BigDecimal(10));
 }
 
 void ComplexTest::fromUInt()
 {
 	Complex num = Complex(20u, 10u);
 
-	QCOMPARE(num.re, BigDecimal(20));
-	QCOMPARE(num.im, BigDecimal(10));
+	COMPARE_BIGDECIMAL(num.re, BigDecimal(20));
+	COMPARE_BIGDECIMAL(num.im, BigDecimal(10));
 }
 
 void ComplexTest::toString()
 {
-	Complex num;
-	QCOMPARE(num.toString().c_str(), "0");
-
-	num = 1;
-	QCOMPARE(num.toString().c_str(), "1");
-
-	num = -1;
-	QCOMPARE(num.toString().c_str(), "-1");
-
-	num = -10000;
-	QCOMPARE(num.toString().c_str(), "-1E+4");
-
-	num = 1000;
-	QCOMPARE(num.toString().c_str(), "1E+3");
-
-	num = Complex(0, 1);
-	QCOMPARE(num.toString().c_str(), "1i");
-
-	num = Complex(0, -1);
-	QCOMPARE(num.toString().c_str(), "-1i");
-
-	num = Complex(0, -1000);
-	QCOMPARE(num.toString().c_str(), "-1E+3i");
-
-	num = Complex(0, 10000);
-	QCOMPARE(num.toString().c_str(), "1E+4i");
-
-	num = "0.512";
-	QCOMPARE(num.toString().c_str(), "0.512");
-
-	num = "-0.0246";
-	QCOMPARE(num.toString().c_str(), "-0.0246");
-
-	num = Complex("0", "0.512");
-	QCOMPARE(num.toString().c_str(), "0.512i");
-
-	num = Complex("0", "-0.0246");
-	QCOMPARE(num.toString().c_str(), "-0.0246i");
-
-	num = Complex(1, 1);
-	QCOMPARE(num.toString().c_str(), "1+1i");
-
-	num = Complex(1, -1);
-	QCOMPARE(num.toString().c_str(), "1-1i");
-
-	num = Complex(1000, 1);
-	QCOMPARE(num.toString().c_str(), "1E+3+1i");
-
-	num = Complex(1, 10000);
-	QCOMPARE(num.toString().c_str(), "1+1E+4i");
-
-	num = Complex(-1, 1000);
-	QCOMPARE(num.toString().c_str(), "-1+1E+3i");
-
-	num = Complex(100000, -1);
-	QCOMPARE(num.toString().c_str(), "1E+5-1i");
-
-	num = Complex(100000, 1000000);
-	QCOMPARE(num.toString().c_str(), "1E+5+1E+6i");
-
-	num = Complex(-1, -1);
-	QCOMPARE(num.toString().c_str(), "-1-1i");
-
-	num = Complex("0.512", "0.256");
-	QCOMPARE(num.toString().c_str(), "0.512+0.256i");
-
-	num = Complex("-0.512", "0.256");
-	QCOMPARE(num.toString().c_str(), "-0.512+0.256i");
-
-	num = Complex("0.512", "-0.256");
-	QCOMPARE(num.toString().c_str(), "0.512-0.256i");
-
-	num = Complex("-0.512", "-0.256");
-	QCOMPARE(num.toString().c_str(), "-0.512-0.256i");
+	COMPARE(Complex().toString().c_str(), "0");
+	COMPARE(Complex::i.toString().c_str(), "1i");
+	COMPARE(Complex(1).toString().c_str(), "1");
+	COMPARE(Complex(-1).toString().c_str(), "-1");
+	COMPARE(Complex(-10000).toString().c_str(), "-1E+4");
+	COMPARE(Complex(1000).toString().c_str(), "1E+3");
+	COMPARE(Complex(0, 1).toString().c_str(), "1i");
+	COMPARE(Complex(0, -1).toString().c_str(), "-1i");
+	COMPARE(Complex(0, -1000).toString().c_str(), "-1E+3i");
+	COMPARE(Complex(0, 10000).toString().c_str(), "1E+4i");
+	COMPARE(Complex("0.512").toString().c_str(), "0.512");
+	COMPARE(Complex("-0.0246").toString().c_str(), "-0.0246");
+	COMPARE(Complex("0", "0.512").toString().c_str(), "0.512i");
+	COMPARE(Complex("0", "-0.0246").toString().c_str(), "-0.0246i");
+	COMPARE(Complex(1, 1).toString().c_str(), "1+1i");
+	COMPARE(Complex(1, -1).toString().c_str(), "1-1i");
+	COMPARE(Complex(1000, 1).toString().c_str(), "1E+3+1i");
+	COMPARE(Complex(1, 10000).toString().c_str(), "1+1E+4i");
+	COMPARE(Complex(-1, 1000).toString().c_str(), "-1+1E+3i");
+	COMPARE(Complex(100000, -1).toString().c_str(), "1E+5-1i");
+	COMPARE(Complex(100000, 1000000).toString().c_str(), "1E+5+1E+6i");
+	COMPARE(Complex(-1, -1).toString().c_str(), "-1-1i");
+	COMPARE(Complex("0.512", "0.256").toString().c_str(), "0.512+0.256i");
+	COMPARE(Complex("-0.512", "0.256").toString().c_str(), "-0.512+0.256i");
+	COMPARE(Complex("0.512", "-0.256").toString().c_str(), "0.512-0.256i");
+	COMPARE(Complex("-0.512", "-0.256").toString().c_str(), "-0.512-0.256i");
 }
 
 void ComplexTest::toWideString()
 {
-	Complex num = "0.512";
-	QCOMPARE(num.toWideString(), std::wstring(L"0.512"));
-
-	num = L"-0.0246";
-	QCOMPARE(num.toWideString(), std::wstring(L"-0.0246"));
-
-	num = Complex("0.512", "0.256");
-	QCOMPARE(num.toWideString(), std::wstring(L"0.512+0.256i"));
-
-	num = Complex(L"-0.512", L"0.256");
-	QCOMPARE(num.toWideString(), std::wstring(L"-0.512+0.256i"));
-
-	num = Complex("0.512", "-0.256");
-	QCOMPARE(num.toWideString(), std::wstring(L"0.512-0.256i"));
-
-	num = Complex(L"-0.512", L"-0.256");
-	QCOMPARE(num.toWideString(), std::wstring(L"-0.512-0.256i"));
+	COMPARE(Complex("0.512").toWideString(), std::wstring(L"0.512"));
+	COMPARE(Complex(L"-0.0246").toWideString(), std::wstring(L"-0.0246"));
+	COMPARE(Complex("0.512", "0.256").toWideString(), std::wstring(L"0.512+0.256i"));
+	COMPARE(Complex(L"-0.512", L"0.256").toWideString(), std::wstring(L"-0.512+0.256i"));
+	COMPARE(Complex("0.512", "-0.256").toWideString(), std::wstring(L"0.512-0.256i"));
+	COMPARE(Complex(L"-0.512", L"-0.256").toWideString(), std::wstring(L"-0.512-0.256i"));
 }
 
 void ComplexTest::unaryOperators()
@@ -232,12 +173,12 @@ void ComplexTest::unaryOperators()
 	Complex num(1, 1);
 
 	num = +num;
-	QCOMPARE(num.re, BigDecimal(1));
-	QCOMPARE(num.im, BigDecimal(1));
+	COMPARE_BIGDECIMAL(num.re, BigDecimal(1));
+	COMPARE_BIGDECIMAL(num.im, BigDecimal(1));
 
 	num = -num;
-	QCOMPARE(num.re, BigDecimal(-1));
-	QCOMPARE(num.im, BigDecimal(-1));
+	COMPARE_BIGDECIMAL(num.re, BigDecimal(-1));
+	COMPARE_BIGDECIMAL(num.im, BigDecimal(-1));
 }
 
 void ComplexTest::binaryOperators()
@@ -245,20 +186,20 @@ void ComplexTest::binaryOperators()
 	Complex num1(1, 2), num2(3, 4);
 	Complex result = num1 + num2;
 
-	QCOMPARE(result.re, BigDecimal(4));
-	QCOMPARE(result.im, BigDecimal(6));
+	COMPARE_BIGDECIMAL(result.re, BigDecimal(4));
+	COMPARE_BIGDECIMAL(result.im, BigDecimal(6));
 
 	result = num1 - num2;
-	QCOMPARE(result.re, BigDecimal(-2));
-	QCOMPARE(result.im, BigDecimal(-2));
+	COMPARE_BIGDECIMAL(result.re, BigDecimal(-2));
+	COMPARE_BIGDECIMAL(result.im, BigDecimal(-2));
 
 	result = num1 * num2;
-	QCOMPARE(result.re, BigDecimal(-5));
-	QCOMPARE(result.im, BigDecimal(10));
+	COMPARE_BIGDECIMAL(result.re, BigDecimal(-5));
+	COMPARE_BIGDECIMAL(result.im, BigDecimal(10));
 
 	result = num1 / num2;
-	QCOMPARE(result.re.toString().c_str(), "0.44");
-	QCOMPARE(result.im.toString().c_str(), "0.08");
+	COMPARE_BIGDECIMAL(result.re.toString().c_str(), "0.44");
+	COMPARE_BIGDECIMAL(result.im.toString().c_str(), "0.08");
 
 	try
 	{
@@ -273,47 +214,60 @@ void ComplexTest::binaryOperators()
 void ComplexTest::comparisonOperators()
 {
 	Complex num1(1, 2), num2(1, 2);
-	QVERIFY(num1 == num2);
+	VERIFY(num1 == num2);
 
 	num2 = 1;
-	QVERIFY(num1 != num2);
+	VERIFY(num1 != num2);
 
 	num2 = Complex(0, 2);
-	QVERIFY(num1 != num2);
+	VERIFY(num1 != num2);
 }
 
-void ComplexTest::abs()
+void ComplexTest::isZero()
 {
-	Complex num(3, 4);
-	QCOMPARE(Complex::abs(num), BigDecimal(5));
-
-	num = -3;
-	QCOMPARE(Complex::abs(num), BigDecimal(3));
-
-	num = 3;
-	QCOMPARE(Complex::abs(num), BigDecimal(3));
-
-	num = Complex(-3, -4);
-	QCOMPARE(Complex::abs(num), BigDecimal(5));
-
-	num = Complex(3, -4);
-	QCOMPARE(Complex::abs(num), BigDecimal(5));
+	VERIFY(Complex().isZero());
+	VERIFY(!Complex(1).isZero());
+	VERIFY(!Complex(0, 1).isZero());
+	VERIFY(!Complex::i.isZero());
+	VERIFY(!Complex(-1, -1).isZero());
+	VERIFY(Complex(0, 0).isZero());
 }
 
 void ComplexTest::sqr()
 {
-	Complex num(3, 4);
-	QCOMPARE(Complex::sqr(num), BigDecimal(25));
+	COMPARE_BIGDECIMAL(Complex::sqr(Complex(3, 4)), BigDecimal(25));
+	COMPARE_BIGDECIMAL(Complex::sqr(Complex(-3)), BigDecimal(9));
+	COMPARE_BIGDECIMAL(Complex::sqr(Complex(3)), BigDecimal(9));
+	COMPARE_BIGDECIMAL(Complex::sqr(Complex(-3, -4)), BigDecimal(25));
+	COMPARE_BIGDECIMAL(Complex::sqr(Complex(3, -4)), BigDecimal(25));
+}
 
-	num = -3;
-	QCOMPARE(Complex::sqr(num), BigDecimal(9));
+void ComplexTest::abs()
+{
+	COMPARE_BIGDECIMAL(Complex::abs(Complex(3, 4)), BigDecimal(5));
+	COMPARE_BIGDECIMAL(Complex::abs(Complex(-3)), BigDecimal(3));
+	COMPARE_BIGDECIMAL(Complex::abs(Complex(3)), BigDecimal(3));
+	COMPARE_BIGDECIMAL(Complex::abs(Complex(-3, -4)), BigDecimal(5));
+	COMPARE_BIGDECIMAL(Complex::abs(Complex(3, -4)), BigDecimal(5));
+}
 
-	num = 3;
-	QCOMPARE(Complex::sqr(num), BigDecimal(9));
+void ComplexTest::arg()
+{
+	COMPARE_BIGDECIMAL(Complex::arg(Complex()), BigDecimal(0));
+	COMPARE_BIGDECIMAL(Complex::arg(Complex(-3)), BigDecimal::PI);
+	COMPARE_BIGDECIMAL(Complex::arg(Complex(3)), BigDecimal(0));
+	COMPARE_BIGDECIMAL(Complex::arg(Complex(0, -4)), -BigDecimal::PIDiv2);
+	COMPARE_BIGDECIMAL(Complex::arg(Complex(0, 4)), BigDecimal::PIDiv2);
 
-	num = Complex(-3, -4);
-	QCOMPARE(Complex::sqr(num), BigDecimal(25));
+	COMPARE_BIGDECIMAL(Complex::arg(Complex("2.56", "2.56")), BigDecimal::PIDiv2 / 2);
+	COMPARE_BIGDECIMAL(Complex::arg(Complex("-2.56", "2.56")), BigDecimal::PI * 3 / 4);
+	COMPARE_BIGDECIMAL(Complex::arg(Complex("2.56", "-2.56")), -BigDecimal::PIDiv2 / 2);
+	COMPARE_BIGDECIMAL(Complex::arg(Complex("-2.56", "-2.56")), -BigDecimal::PI * 3 / 4);
+}
 
-	num = Complex(3, -4);
-	QCOMPARE(Complex::sqr(num), BigDecimal(25));
+void ComplexTest::ln()
+{
+	COMPARE_COMPLEX(Complex::ln(Complex(BigDecimal::E)), Complex(1));
+	COMPARE_COMPLEX(Complex::ln(Complex(BigDecimal::sqr(BigDecimal::E))), Complex(2));
+	COMPARE_COMPLEX(Complex::ln(Complex(BigDecimal::sqrt(BigDecimal::E))), Complex("0.5"));
 }

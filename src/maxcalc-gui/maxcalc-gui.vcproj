@@ -28,7 +28,7 @@
 				BuildCommandLine="del ..\$(ConfigurationName)\maxcalc-win.exe &amp;&amp; nmake $(ConfigurationName)"
 				ReBuildCommandLine="del ..\$(ConfigurationName)\maxcalc-win.exe &amp;&amp; qmake &amp;&amp; nmake $(ConfigurationName)"
 				CleanCommandLine="nmake $(ConfigurationName)-clean"
-				Output="..\$(ConfigurationName)\maxcalc.exe"
+				Output="..\$(ConfigurationName)\maxcalc-win.exe"
 				PreprocessorDefinitions="WIN32;_DEBUG;UNICODE"
 				IncludeSearchPath="..\maxcalcengine"
 				ForcedIncludes=""
@@ -49,7 +49,7 @@
 				BuildCommandLine="del ..\$(ConfigurationName)\maxcalc-win.exe &amp;&amp; nmake $(ConfigurationName)"
 				ReBuildCommandLine="del ..\$(ConfigurationName)\maxcalc-win.exe &amp;&amp; qmake &amp;&amp; nmake $(ConfigurationName)"
 				CleanCommandLine="nmake $(ConfigurationName)-clean"
-				Output="..\$(ConfigurationName)\maxcalc.exe"
+				Output="..\$(ConfigurationName)\maxcalc-win.exe"
 				PreprocessorDefinitions="WIN32;NDEBUG;UNICODE"
 				IncludeSearchPath="..\maxcalcengine"
 				ForcedIncludes=""
@@ -71,12 +71,20 @@
 				RelativePath=".\main.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\mainwindow.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\mainwindow.h"
+				>
+			</File>
 			<File
 				RelativePath=".\pch.h"
 				>

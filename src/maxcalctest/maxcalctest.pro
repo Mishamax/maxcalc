@@ -4,7 +4,7 @@ TARGET = maxcalctest
 CONFIG += qt qtestlib debug_and_release warn_on console
 QT = core
 
-HEADERS += bigdecimaltest.h complextest.h
+HEADERS += utility.h bigdecimaltest.h complextest.h
 SOURCES += main.cpp bigdecimaltest.cpp complextest.cpp
 
 INCLUDEPATH += ../maxcalcengine

@@ -17,17 +17,29 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
-#ifndef PCH_H
-#define PCH_H
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
 
-// Local
-#include "decNumber/decContext.h"
+#include <QWidget>
+#include <QLineEdit>
+#include <QTextEdit>
+#include <QListView>
+#include <QGridLayout>
+#include <QHBoxLayout>
+#include <QPushButton>
 
-// STL
-#include <string>
-#include <locale>
-#include <cassert>
-#include <exception>
-#include <sstream>
+class MainWindow : public QWidget
+{
+public:
+	MainWindow();
 
-#endif // PCH_H
+private:
+	QGridLayout layout;
+	QHBoxLayout bottomLayout;
+	QLineEdit inputBox;
+	QTextEdit historyBox;
+	QListView variablesList;
+	QPushButton okButton;
+};
+
+#endif // MAINWINDOW_H

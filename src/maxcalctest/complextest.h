@@ -33,9 +33,14 @@ private slots:
 	void binaryOperators();
 	void comparisonOperators();
 
-	// Functions
-	void abs();
+	// Misc functions
+	void isZero();
+
+	// Math functions
 	void sqr();
+	void abs();
+	void arg();
+	void ln();
 };
 
 #endif // COMPLEXTEST_H

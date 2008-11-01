@@ -85,15 +85,15 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\bigdecimalcompare.h"
-				>
-			</File>
-			<File
 				RelativePath=".\bigdecimaltest.h"
 				>
 			</File>
 			<File
 				RelativePath=".\complextest.h"
+				>
+			</File>
+			<File
+				RelativePath=".\utility.h"
 				>
 			</File>
 		</Filter>

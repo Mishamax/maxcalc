@@ -83,6 +83,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\parser.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\parsercontext.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\tstring.cpp"
 				>
 			</File>
@@ -118,6 +126,18 @@
 			</File>
 			<File
 				RelativePath=".\complexformat.h"
+				>
+			</File>
+			<File
+				RelativePath=".\exceptions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\parser.h"
+				>
+			</File>
+			<File
+				RelativePath=".\parsercontext.h"
 				>
 			</File>
 			<File

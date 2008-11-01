@@ -48,7 +48,7 @@ public:
 	///////////////////////////////////////////////////////////////////////////
 	// Constructors
 
-	BigDecimalFormat(
+	explicit BigDecimalFormat(
 		const int precision = MAX_IO_PRECISION,
 		const NumberFormat numberFormat = ScientificFormat,
 		const ExponentCase exponentCase = UpperCaseExponent);

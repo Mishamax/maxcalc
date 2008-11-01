@@ -7,8 +7,8 @@ CONFIG += staticlib debug_and_release warn_on precompile_header
 HEADERS += decNumber/decContext.h decNumber/decNumber.h decNumber/decNumberLocal.h decNumber/stdint.h
 SOURCES += decNumber/decContext.cpp decNumber/decNumber.cpp
 
-HEADERS += bigdecimal.h complex.h settings.h bigdecimalformat.h complexformat.h tstring.h
-SOURCES += bigdecimal.cpp complex.cpp bigdecimalformat.cpp complexformat.cpp tstring.cpp
+HEADERS += bigdecimal.h complex.h settings.h bigdecimalformat.h complexformat.h tstring.h parsercontext.h parser.h
+SOURCES += bigdecimal.cpp complex.cpp bigdecimalformat.cpp complexformat.cpp tstring.cpp parsercontext.cpp parser.cpp
 
 PRECOMPILED_HEADER = pch.h
 
