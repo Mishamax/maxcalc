@@ -352,7 +352,7 @@ void BigDecimalTest::binaryLogicalOperators()
 	COMPARE_BIGDECIMAL(dec <<= 2, BigDecimal(0));
 	COMPARE_BIGDECIMAL(dec >>= 2, BigDecimal(0));
 
-	COMPARE_BIGDECIMAL(~dec & 0 + 1, BigDecimal(1));
+	COMPARE_BIGDECIMAL((~dec & 0) + 1, BigDecimal(1));
 
 	FAIL_TEST(dec | 1.1, "dec | 1.1", LogicalOperationOnFractionalNumberException);
 	FAIL_TEST(dec & 1.1, "dec & 1.1", LogicalOperationOnFractionalNumberException);

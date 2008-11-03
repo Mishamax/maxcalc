@@ -20,7 +20,9 @@
 #ifndef TSTRING_H
 #define TSTRING_H
 
+// STL
 #include <string>
+#include <locale>
 
 namespace MaxCalcEngine {
 
