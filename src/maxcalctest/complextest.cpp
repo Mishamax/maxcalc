@@ -256,12 +256,12 @@ void ComplexTest::arg()
 	COMPARE_BIGDECIMAL(Complex::arg(Complex()), BigDecimal(0));
 	COMPARE_BIGDECIMAL(Complex::arg(Complex(-3)), BigDecimal::PI);
 	COMPARE_BIGDECIMAL(Complex::arg(Complex(3)), BigDecimal(0));
-	COMPARE_BIGDECIMAL(Complex::arg(Complex(0, -4)), -BigDecimal::PIDiv2);
-	COMPARE_BIGDECIMAL(Complex::arg(Complex(0, 4)), BigDecimal::PIDiv2);
+	COMPARE_BIGDECIMAL(Complex::arg(Complex(0, -4)), -BigDecimal::PI / 2);
+	COMPARE_BIGDECIMAL(Complex::arg(Complex(0, 4)), BigDecimal::PI / 2);
 
-	COMPARE_BIGDECIMAL(Complex::arg(Complex("2.56", "2.56")), BigDecimal::PIDiv2 / 2);
+	COMPARE_BIGDECIMAL(Complex::arg(Complex("2.56", "2.56")), BigDecimal::PI / 4);
 	COMPARE_BIGDECIMAL(Complex::arg(Complex("-2.56", "2.56")), BigDecimal::PI * 3 / 4);
-	COMPARE_BIGDECIMAL(Complex::arg(Complex("2.56", "-2.56")), -BigDecimal::PIDiv2 / 2);
+	COMPARE_BIGDECIMAL(Complex::arg(Complex("2.56", "-2.56")), -BigDecimal::PI / 4);
 	COMPARE_BIGDECIMAL(Complex::arg(Complex("-2.56", "-2.56")), -BigDecimal::PI * 3 / 4);
 }
 

@@ -40,9 +40,6 @@ public:
 	// Math constants
 	static const BigDecimal E;
 	static const BigDecimal PI;
-	static const BigDecimal PIDiv2;
-	static const BigDecimal PIDiv4;
-	static const BigDecimal PIMul2;
 
 
 	///////////////////////////////////////////////////////////////////////////
@@ -68,6 +65,8 @@ public:
 #if defined(UNICODE)
 	std::wstring toWideString(const BigDecimalFormat & format = BigDecimalFormat::getDefault()) const;
 #endif
+	inline tstring toTString(const BigDecimalFormat & format = BigDecimalFormat::getDefault()) const;
+
 	int toInt() const;
 	unsigned toUInt() const;
 
@@ -172,6 +171,28 @@ private:
 	static BigDecimal pi();
 	static BigDecimal FMA(const BigDecimal & multiplier1, const BigDecimal & multiplier2, const BigDecimal & summand);
 };
+
+
+///////////////////////////////////////////////////////////////////////////
+// Inline functions
+
+
+/*!
+	Converts this number to tstring using given BigDecimalFormat.
+
+	If \a format is not specified, the default BigDecimalFormat is used.
+
+	\sa BigDecimalFormat, InvalidOperationException, tstring
+*/
+inline tstring BigDecimal::toTString(const BigDecimalFormat & format) const
+{
+#if defined (UNICODE)
+		return toWideString(format);
+#else
+		return toString(format);
+#endif
+}
+
 
 } // namespace MaxCalcEngine
 

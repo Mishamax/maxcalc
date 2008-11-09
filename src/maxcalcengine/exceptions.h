@@ -12,12 +12,14 @@ namespace MaxCalcEngine {
 //****************************************************************************
 
 
+/// General MaxCalc engine exception
+class MaxCalcEngineException : public std::exception {};
 /// General arithmetic exception.
-class ArithmeticException : public std::exception {};
+class ArithmeticException : public MaxCalcEngineException {};
 
 
 ///////////////////////////////////////////////////////////////////////////
-// BigDecimal exceptions
+// BigDecimal / Complex exceptions
 
 
 // TODO: better exception handling for BigDecimal
@@ -48,8 +50,8 @@ class InvalidOperationException : public ArithmeticException {};
 /// Logical operation on fractional number exception.
 class LogicalOperationOnFractionalNumberException : public ArithmeticException {};
 
-// Invalid argument exceptions
 
+// Invalid argument exceptions
 
 /// Invalid argument in function.
 class InvalidArgumentException : public ArithmeticException {};

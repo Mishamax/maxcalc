@@ -91,19 +91,9 @@ const BigDecimal BigDecimal::E = BigDecimal::exp(1);
 	PI number.
 */
 const BigDecimal BigDecimal::PI = BigDecimal::pi();
-/*!
-	PI / 2 number.
-*/
-const BigDecimal BigDecimal::PIDiv2 = BigDecimal::PI / 2;
-/*!
-	PI / 4 number.
-*/
-const BigDecimal BigDecimal::PIDiv4 = BigDecimal::PI / 4;
-/*!
-	PI * 2 number.
-*/
-const BigDecimal BigDecimal::PIMul2 = BigDecimal::PI * 2;
 
+
+#pragma region Constructors
 
 //****************************************************************************
 // Constructors
@@ -194,6 +184,10 @@ BigDecimal::BigDecimal(const double num)
 	stream << num;
 	construct(stream.str().c_str());
 }
+
+#pragma endregion
+
+#pragma region Conversion functions
 
 //****************************************************************************
 // Conversion functions
@@ -300,6 +294,9 @@ unsigned BigDecimal::toUInt() const
 	return result;
 }
 
+#pragma endregion
+
+#pragma region Misc functions
 
 //****************************************************************************
 // Misc functions
@@ -353,9 +350,9 @@ BigDecimal BigDecimal::integer() const
 	BigDecimal rounded = round();
 
 	if (isPositive() && rounded > *this)
-		rounded--;
+		--rounded;
 	if (isNegative() && rounded < *this)
-		rounded++;
+		++rounded;
 
 	return rounded;
 }
@@ -389,10 +386,13 @@ BigDecimal BigDecimal::ceil() const
 	return ((*this - integral).isZero() || isNegative()) ? integral : integral + 1;
 }
 
+#pragma endregion
+
+#pragma region Operators
+
 //****************************************************************************
 // Operators
 //****************************************************************************
-
 
 /*!
 	Returns the same BigDecimal as this number.
@@ -793,6 +793,9 @@ bool BigDecimal::operator>=(const BigDecimal & num) const
 	return (compare(number, num.number) >= 0);
 }
 
+#pragma endregion
+
+#pragma region Math functions
 
 //****************************************************************************
 // Math functions
@@ -966,7 +969,7 @@ BigDecimal BigDecimal::factorial(const BigDecimal & num)
 	BigDecimal result = 1;
 	unsigned max = num.toUInt();
 
-	for (unsigned i = 1; i <= max; i++)
+	for (unsigned i = 1; i <= max; ++i)
 		result *= i;
 
 	return result;
@@ -978,7 +981,7 @@ BigDecimal BigDecimal::factorial(const BigDecimal & num)
 */
 BigDecimal BigDecimal::sin(const BigDecimal & num)
 {
-	BigDecimal angle = num % PIMul2;
+	BigDecimal angle = num % (PI * 2);
 	BigDecimal result = angle, fraction = angle, count = 2, numerator = angle, denominator = 1;
 	BigDecimal sqrNum = sqr(angle);
 
@@ -1012,7 +1015,7 @@ BigDecimal BigDecimal::sin(const BigDecimal & num)
 */
 BigDecimal BigDecimal::cos(const BigDecimal & num)
 {
-	BigDecimal angle = num % PIMul2;
+	BigDecimal angle = num % (PI * 2);
 	BigDecimal result = 1, fraction = 1, count = 1, numerator = 1, denominator = 1;
 	BigDecimal sqrNum = sqr(angle);
 
@@ -1046,7 +1049,7 @@ BigDecimal BigDecimal::cos(const BigDecimal & num)
 */
 BigDecimal BigDecimal::tan(const BigDecimal & num)
 {
-	BigDecimal angle = num % PIMul2;
+	BigDecimal angle = num % (PI * 2);
 	BigDecimal cosine = cos(angle);
 
 	if (cosine.isZero())
@@ -1061,7 +1064,7 @@ BigDecimal BigDecimal::tan(const BigDecimal & num)
 */
 BigDecimal BigDecimal::cot(const BigDecimal & num)
 {
-	BigDecimal angle = num % PIMul2;
+	BigDecimal angle = num % (PI * 2);
 	BigDecimal sine = sin(angle);
 
 	if (sine.isZero())
@@ -1076,10 +1079,10 @@ BigDecimal BigDecimal::cot(const BigDecimal & num)
 */
 BigDecimal BigDecimal::arcsin(const BigDecimal & num)
 {
-	if (num == BigDecimal(1))
-		return PIDiv2;
-	else if (num == BigDecimal(-1))
-		return -PIDiv2;
+	if (BigDecimal(1) == num)
+		return PI / 2;
+	else if (BigDecimal(-1) == num)
+		return -PI / 2;
 
 	if (abs(num) > BigDecimal(1))
 		throw InvalidArgumentInArcSinException();
@@ -1096,7 +1099,7 @@ BigDecimal BigDecimal::arccos(const BigDecimal & num)
 	if (abs(num) > BigDecimal(1))
 		throw InvalidArgumentInArcCosException();
 
-	return PIDiv2 - arcsin(num);
+	return PI / 2 - arcsin(num);
 }
 
 /*!
@@ -1133,9 +1136,12 @@ BigDecimal BigDecimal::arctan(const BigDecimal & num)
 */
 BigDecimal BigDecimal::arccot(const BigDecimal & num)
 {
-	return PIDiv2 - arctan(num);
+	return PI / 2 - arctan(num);
 }
 
+#pragma endregion
+
+#pragma region Internal functions
 
 //****************************************************************************
 // Internal functions
@@ -1252,5 +1258,7 @@ BigDecimal BigDecimal::FMA(const BigDecimal & multiplier1, const BigDecimal & mu
 	checkContextStatus(context);
 	return result;
 }
+
+#pragma endregion
 
 } // namespace MaxCalcEngine

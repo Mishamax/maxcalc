@@ -58,26 +58,26 @@ public:
 	// Functions
 
 	// Get default format
-	static BigDecimalFormat getDefault() { return BigDecimalFormat(); };
+	static inline BigDecimalFormat getDefault() { return BigDecimalFormat(); };
 
 
 	///////////////////////////////////////////////////////////////////////////
 	// Accessors
 
 	/// Gets output precision of BigDecimal number.
-	int precision() const { return m_precision; };
+	inline int precision() const { return m_precision; };
 	/// Sets output precision of BigDecimal number.
-	void setPrecision(int precision) { assert(precision >= 1 && precision <= MAX_IO_PRECISION); m_precision = precision; };
+	inline void setPrecision(int precision) { assert(precision >= 1 && precision <= MAX_IO_PRECISION); m_precision = precision; };
 
 	/// Gets format of BigDecimal number.
-	NumberFormat numberFormat() const { return m_numberFormat; };
+	inline NumberFormat numberFormat() const { return m_numberFormat; };
 	/// Sets format of BigDecimal number.
-	void setNumberFormat(NumberFormat numberFormat) { m_numberFormat = numberFormat; };
+	inline void setNumberFormat(NumberFormat numberFormat) { m_numberFormat = numberFormat; };
 
 	/// Gets case of 'E' letter in BigDecimal number when exponent is needed.
-	ExponentCase exponentCase() const { return m_exponentCase; };
+	inline ExponentCase exponentCase() const { return m_exponentCase; };
 	/// Sets case of 'E' letter in BigDecimal number when exponent is needed.
-	void setExponentCase(ExponentCase exponentCase) { m_exponentCase = exponentCase; };
+	inline void setExponentCase(ExponentCase exponentCase) { m_exponentCase = exponentCase; };
 
 private:
 

@@ -24,6 +24,8 @@
 #include "tstring.h"
 #include "parsercontext.h"
 #include "complex.h"
+// STL
+#include <list>
 
 namespace MaxCalcEngine {
 
@@ -36,14 +38,53 @@ class Parser
 public:
 	Parser(const tstring & expr, const ParserContext & context);
 
-	Complex parse();
+	ParserContext parse();
 
-	void setContext(const ParserContext & context);
-	ParserContext getContext() const;
+	inline void setExpression(const tstring & expr) { m_expr = expr; }
+	inline tstring getExpression() const { return m_expr; }
+
+	inline void setContext(const ParserContext & context) { m_context = context; }
+	inline ParserContext getContext() const { return m_context; }
 
 private:
+
+	///////////////////////////////////////////////////////////////////////////
+	// Private variables
 	tstring m_expr;
 	ParserContext m_context;
+
+
+	///////////////////////////////////////////////////////////////////////////
+	// Lexical analyzer
+
+	enum Tokens
+	{
+		NUMBER
+	};
+
+	struct Token
+	{
+		inline Token(const Tokens token_, const tstring & str_) { token = token_; str = str_; }
+
+		Tokens token;
+		tstring str;
+	};
+
+	std::list<Token> tokens;			// List of tokens
+	tstring::const_iterator curChar;	// Current char of expression
+
+	void lexicalAnalysis();
+	bool analizeNumbers();
+	bool skipSpaces();
+
+
+	///////////////////////////////////////////////////////////////////////////
+	// Syntax analyzer
+
+	std::list<Token>::const_iterator curToken;	// Current token in the list of tokens
+
+	void syntaxAnalysis();
+	BigDecimal parseNumbers();
 };
 
 } // namespace MaxCalcEngine

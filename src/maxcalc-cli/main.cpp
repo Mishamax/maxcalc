@@ -17,10 +17,11 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
+// Engine
+#include "parser.h"
+#include "parsercontext.h"
 // Local
-#include "bigdecimal.h"
-#include "complex.h"
-
+#include "unicode.h"
 // STL
 #include <iostream>
 #include <string>
@@ -30,8 +31,27 @@ using namespace MaxCalcEngine;
 
 int main()
 {
-	wcout << BigDecimal::sin(BigDecimal::PI).toString().c_str() << endl;
-	wcout << BigDecimal::sin(BigDecimal::PI * BigDecimal(L"99999999999999999999999999999999999999999999999999999999999999999999999999")).toString().c_str() << endl;
+	tstring expr = _T("");
+
+	ParserContext context;
+	while (true)
+	{
+		tcin >> expr;
+		
+		if (_T("exit") == expr)
+			break;
+
+		Parser parser(expr, context);
+
+		try
+		{
+			tcout << parser.parse().getResult().toString().c_str() << endl;
+		}
+		catch (...)
+		{
+			tcout << _T("Error!") << endl;
+		}
+	}
 
 	return 0;
 }

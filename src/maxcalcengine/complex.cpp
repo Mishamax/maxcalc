@@ -46,6 +46,8 @@ namespace MaxCalcEngine {
 */
 const Complex Complex::i = Complex(0, 1);
 
+#pragma region Constructors
+
 //****************************************************************************
 // Constructors
 //****************************************************************************
@@ -135,6 +137,10 @@ Complex::Complex(const Complex & num)
 	im = num.im;
 }
 
+#pragma endregion
+
+#pragma region Conversion functions
+
 //****************************************************************************
 // Conversion functions
 //****************************************************************************
@@ -198,6 +204,9 @@ std::wstring Complex::toWideString(const ComplexFormat & format) const
 
 #endif // #if defined(UNICODE)
 
+#pragma endregion
+
+#pragma region Operators
 
 //****************************************************************************
 // Operators
@@ -259,7 +268,7 @@ Complex Complex::operator/(const Complex & num) const
 */
 bool Complex::operator==(const Complex & num) const
 {
-	return (re == num.re) && (im == num.im);
+	return (num.re == re) && (num.im == im);
 }
 
 /*!
@@ -269,6 +278,10 @@ bool Complex::operator!=(const Complex & num) const
 {
 	return (re != num.re) || (im != num.im);
 }
+
+#pragma endregion
+
+#pragma region Misc functions
 
 //****************************************************************************
 // Misc functions
@@ -281,6 +294,10 @@ bool Complex::isZero() const
 {
 	return re.isZero() && im.isZero();
 }
+
+#pragma endregion
+
+#pragma region Math functions
 
 //****************************************************************************
 // Math functions
@@ -437,7 +454,7 @@ Complex Complex::arccos(const Complex & num)
 */
 Complex Complex::arctan(const Complex & num)
 {
-	// TODO: handle positive infinite when re(num) == 0 and abs(im(a) + im(i)) === 0
+	// TODO: handle positive infinite when re(num) == 0 and abs(im(a) + im(i)) == 0
 	if (num.im.isZero())
 		return BigDecimal::arctan(num.re);
 	return (i / 2) * ln((i + num) / (i - num));
@@ -456,7 +473,7 @@ Complex Complex::arctan(const Complex & num)
 Complex Complex::arccot(const Complex & num)
 {
 	// TODO: check this implementation again (see description)
-	return -arctan(num) + BigDecimal::PIDiv2;
+	return -arctan(num) + BigDecimal::PI / 2;
 }
 
 /*!
@@ -523,5 +540,7 @@ Complex Complex::arccoth(const Complex & num)
 {
 	return ln((num + 1) / (num - 1)) / 2;
 }
+
+#pragma endregion
 
 } // namespace MaxCalcEngine

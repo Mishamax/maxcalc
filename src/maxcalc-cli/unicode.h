@@ -17,19 +17,24 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
-// Local
-#include "parsercontext.h"
+#ifndef UNICODE_H
+#define UNICODE_H
 
-namespace MaxCalcEngine {
+// Engine
+#include "tstring.h"
+// STL
+#include <iostream>
 
-//****************************************************************************
-// ParserContext implementation
-//****************************************************************************
+#if defined (UNICODE)
 
-ParserContext::ParserContext()
-{
-	m_result = Complex();
-	m_resultExists = false;
-}
+#define tcout wcout
+#define tcin wcin
 
-} // namespace MaxCalcEngine
+#else // defined (UNICODE)
+
+#define tcout cout
+#define tcin cin
+
+#endif // defined (UNICODE)
+
+#endif // UNICODE_H

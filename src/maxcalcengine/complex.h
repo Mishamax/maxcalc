@@ -72,6 +72,7 @@ public:
 #if defined(UNICODE)
 	std::wstring toWideString(const ComplexFormat & format = ComplexFormat::getDefault()) const;
 #endif
+	inline tstring toTString(const ComplexFormat & format = ComplexFormat::getDefault()) const;
 
 
 	///////////////////////////////////////////////////////////////////////////
@@ -118,6 +119,26 @@ public:
 	static Complex arccoth(const Complex & num);
 
 };
+
+
+///////////////////////////////////////////////////////////////////////////
+// Inline functions
+
+/*!
+	Converts this number to tstring using given ComplexFormat.
+
+	If \a format is not specified, the default ComplexFormat is used.
+
+	\sa ComplexFormat, tstring
+*/
+inline tstring Complex::toTString(const ComplexFormat & format) const
+{
+#if defined(UNICODE)
+		return toWideString(format);
+#else
+		return toString(format);
+#endif
+}
 
 } // namespace MaxCalcEngine
 

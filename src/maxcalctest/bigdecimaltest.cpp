@@ -697,13 +697,13 @@ void BigDecimalTest::tan()
 {
 	COMPARE_BIGDECIMAL(BigDecimal::tan(0), BigDecimal(0));
 	COMPARE_BIGDECIMAL(BigDecimal::tan(BigDecimal::PI), BigDecimal(0));
-	COMPARE_BIGDECIMAL(BigDecimal::tan(BigDecimal::PIMul2), BigDecimal(0));
+	COMPARE_BIGDECIMAL(BigDecimal::tan(BigDecimal::PI * 2), BigDecimal(0));
 	COMPARE_BIGDECIMAL(BigDecimal::tan(-BigDecimal::PI), BigDecimal(0));
-	COMPARE_BIGDECIMAL(BigDecimal::tan(-BigDecimal::PIMul2), BigDecimal(0));
-	COMPARE_BIGDECIMAL(BigDecimal::tan(BigDecimal::PIDiv4), BigDecimal(1));
-	COMPARE_BIGDECIMAL(BigDecimal::tan(BigDecimal::PIDiv4 * 3), BigDecimal(-1));
-	COMPARE_BIGDECIMAL(BigDecimal::tan(-BigDecimal::PIDiv4), BigDecimal(-1));
-	COMPARE_BIGDECIMAL(BigDecimal::tan(-BigDecimal::PIDiv4 * 3), BigDecimal(1));
+	COMPARE_BIGDECIMAL(BigDecimal::tan(-BigDecimal::PI * 2), BigDecimal(0));
+	COMPARE_BIGDECIMAL(BigDecimal::tan(BigDecimal::PI / 4), BigDecimal(1));
+	COMPARE_BIGDECIMAL(BigDecimal::tan(BigDecimal::PI / 4 * 3), BigDecimal(-1));
+	COMPARE_BIGDECIMAL(BigDecimal::tan(-BigDecimal::PI / 4), BigDecimal(-1));
+	COMPARE_BIGDECIMAL(BigDecimal::tan(-BigDecimal::PI / 4 * 3), BigDecimal(1));
 	COMPARE_BIGDECIMAL(BigDecimal::tan(BigDecimal::PI / 6),
 		BigDecimal("0.57735026918962576450914878050195745564760175127012687601860232648397767230293334569371539558574952522520871380513556767665664836"));
 	COMPARE_BIGDECIMAL(BigDecimal::tan(BigDecimal::PI / 3),
@@ -713,11 +713,11 @@ void BigDecimalTest::tan()
 	COMPARE_BIGDECIMAL(BigDecimal::tan(-BigDecimal::PI / 3),
 		BigDecimal("-1.7320508075688772935274463415058723669428052538103806280558069794519330169088000370811461867572485756756261414154067030299699451"));
 
-	FAIL_TEST(BigDecimal::tan(-BigDecimal::PIDiv2), "tan(-pi/2)", InvalidArgumentInTanException);
-	FAIL_TEST(BigDecimal::tan(BigDecimal::PIDiv2), "tan(pi/2)", InvalidArgumentInTanException);
-	FAIL_TEST(BigDecimal::tan(BigDecimal::PIDiv2 * 3), "tan(3*pi/2)", InvalidArgumentInTanException);
-	FAIL_TEST(BigDecimal::tan(BigDecimal::PIDiv2 * 101), "tan(101*pi/2)", InvalidArgumentInTanException);
-	FAIL_TEST(BigDecimal::tan(BigDecimal::PIDiv2 * 10000001), "tan(10000001*pi/2)", InvalidArgumentInTanException);
+	FAIL_TEST(BigDecimal::tan(-BigDecimal::PI / 2), "tan(-pi/2)", InvalidArgumentInTanException);
+	FAIL_TEST(BigDecimal::tan(BigDecimal::PI / 2), "tan(pi/2)", InvalidArgumentInTanException);
+	FAIL_TEST(BigDecimal::tan(BigDecimal::PI / 2 * 3), "tan(3*pi/2)", InvalidArgumentInTanException);
+	FAIL_TEST(BigDecimal::tan(BigDecimal::PI / 2 * 101), "tan(101*pi/2)", InvalidArgumentInTanException);
+	FAIL_TEST(BigDecimal::tan(BigDecimal::PI / 2 * 10000001), "tan(10000001*pi/2)", InvalidArgumentInTanException);
 }
 
 void BigDecimalTest::cot()
@@ -726,10 +726,10 @@ void BigDecimalTest::cot()
 	COMPARE_BIGDECIMAL(BigDecimal::cot(BigDecimal::PI * 3 / 2), BigDecimal(0));
 	COMPARE_BIGDECIMAL(BigDecimal::cot(-BigDecimal::PI / 2), BigDecimal(0));
 	COMPARE_BIGDECIMAL(BigDecimal::cot(-BigDecimal::PI * 3 / 2), BigDecimal(0));
-	COMPARE_BIGDECIMAL(BigDecimal::cot(BigDecimal::PIDiv4), BigDecimal(1));
-	COMPARE_BIGDECIMAL(BigDecimal::cot(BigDecimal::PIDiv4 * 3), BigDecimal(-1));
-	COMPARE_BIGDECIMAL(BigDecimal::cot(-BigDecimal::PIDiv4), BigDecimal(-1));
-	COMPARE_BIGDECIMAL(BigDecimal::cot(-BigDecimal::PIDiv4 * 3), BigDecimal(1));
+	COMPARE_BIGDECIMAL(BigDecimal::cot(BigDecimal::PI / 4), BigDecimal(1));
+	COMPARE_BIGDECIMAL(BigDecimal::cot(BigDecimal::PI * 3/ 4), BigDecimal(-1));
+	COMPARE_BIGDECIMAL(BigDecimal::cot(-BigDecimal::PI / 4), BigDecimal(-1));
+	COMPARE_BIGDECIMAL(BigDecimal::cot(-BigDecimal::PI * 3 / 4), BigDecimal(1));
 	COMPARE_BIGDECIMAL(BigDecimal::cot(BigDecimal::PI / 3),
 		BigDecimal("0.57735026918962576450914878050195745564760175127012687601860232648397767230293334569371539558574952522520871380513556767665664836"));
 	COMPARE_BIGDECIMAL(BigDecimal::cot(BigDecimal::PI / 6),
@@ -818,15 +818,15 @@ void BigDecimalTest::consts()
 		BigDecimal("3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446"));
 
 	// Check PI / 2
-	COMPARE_BIGDECIMAL(BigDecimal::PIDiv2,
+	COMPARE_BIGDECIMAL(BigDecimal::PI / 2,
 		BigDecimal("1.5707963267948966192313216916397514420985846996875529104874722961539082031431044993140174126710585339910740432566411533235469223"));
 
 	// Check PI / 4
-	COMPARE_BIGDECIMAL(BigDecimal::PIDiv4,
+	COMPARE_BIGDECIMAL(BigDecimal::PI / 4,
 		BigDecimal("0.78539816339744830961566084581987572104929234984377645524373614807695410157155224965700870633552926699553702162832057666177346115"));
 
 	// Check PI * 2
-	COMPARE_BIGDECIMAL(BigDecimal::PIMul2,
+	COMPARE_BIGDECIMAL(BigDecimal::PI * 2,
 		BigDecimal("6.2831853071795864769252867665590057683943387987502116419498891846156328125724179972560696506842341359642961730265646132941876892"));
 
 	// Check E

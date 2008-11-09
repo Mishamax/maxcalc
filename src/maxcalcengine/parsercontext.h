@@ -20,6 +20,9 @@
 #ifndef PARSERCONTEXT_H
 #define PARSERCONTEXT_H
 
+// Local
+#include "complex.h"
+
 namespace MaxCalcEngine {
 
 //****************************************************************************
@@ -31,9 +34,14 @@ class ParserContext
 public:
 	ParserContext();
 
-
+	inline void setResult(const Complex & result) { m_result = result; m_resultExists = true; }
+	// TODO: throw right exception
+	inline Complex getResult() const { if (m_resultExists) return m_result; else throw std::exception(); }
+	inline void unsetResult() { m_resultExists = false; }
 
 private:
+	Complex m_result;
+	bool m_resultExists;
 };
 
 } // namespace MaxCalcEngine
