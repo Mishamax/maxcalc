@@ -86,6 +86,11 @@ public:
 	Complex operator*(const Complex & num) const;
 	Complex operator/(const Complex & num) const;
 
+	Complex operator+=(const Complex & num);
+	Complex operator-=(const Complex & num);
+	Complex operator*=(const Complex & num);
+	Complex operator/=(const Complex & num);
+
 	bool operator==(const Complex & num) const;
 	bool operator!=(const Complex & num) const;
 

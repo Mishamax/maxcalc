@@ -22,21 +22,25 @@
 #include "parsercontext.h"
 // Local
 #include "unicode.h"
-// STL
-#include <iostream>
-#include <string>
 
 using namespace std;
 using namespace MaxCalcEngine;
 
 int main()
 {
-	tstring expr = _T("");
+	const int exprLength = 1000;
+	tchar charExpr[exprLength];
+	tstring expr;
 
 	ParserContext context;
 	while (true)
 	{
-		tcin >> expr;
+#if _MSC_VER > 1400
+		_getts_s(charExpr, exprLength);
+#else
+		_getts(charExpr);
+#endif
+		expr = charExpr;
 		
 		if (_T("exit") == expr)
 			break;

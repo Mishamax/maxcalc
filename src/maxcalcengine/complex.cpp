@@ -264,6 +264,41 @@ Complex Complex::operator/(const Complex & num) const
 }
 
 /*!
+	Adds \a num to this.
+*/
+Complex Complex::operator+=(const Complex & num)
+{
+	return Complex(re += num.re, im += num.im);
+}
+
+/*!
+	Subtracts \a num from this.
+*/
+Complex Complex::operator-=(const Complex & num)
+{
+	return Complex(re -= num.re, im -= num.im);
+}
+
+/*!
+	Multiplies this by \a num.
+*/
+Complex Complex::operator*=(const Complex & num)
+{
+	return Complex(re = re * num.re - im * num.im, im = re * num.im + im * num.re);
+}
+
+/*!
+	Divides this by \a num.
+*/
+Complex Complex::operator/=(const Complex & num)
+{
+	BigDecimal sqrt = num.re * num.re + num.im * num.im;
+	if (sqrt.isZero())
+		throw DivisionByZeroException();
+	return Complex(re = (re * num.re + im * num.im) / sqrt, im = (im * num.re - re * num.im) / sqrt);
+}
+
+/*!
 	Returns \a true if two numbers are equal.
 */
 bool Complex::operator==(const Complex & num) const

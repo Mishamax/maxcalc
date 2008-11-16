@@ -78,6 +78,10 @@
 				RelativePath=".\main.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\parsertest.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -90,6 +94,10 @@
 			</File>
 			<File
 				RelativePath=".\complextest.h"
+				>
+			</File>
+			<File
+				RelativePath=".\parsertest.h"
 				>
 			</File>
 			<File

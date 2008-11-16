@@ -59,6 +59,10 @@ private:
 
 	enum Tokens
 	{
+		ADDITION,
+		SUBTRACTION,
+		MULTIPLICATION,
+		DIVISION,
 		NUMBER
 	};
 
@@ -74,7 +78,8 @@ private:
 	tstring::const_iterator curChar;	// Current char of expression
 
 	void lexicalAnalysis();
-	bool analizeNumbers();
+	bool analyzeBinaryOperators();
+	bool analyzeNumbers();
 	bool skipSpaces();
 
 
@@ -84,7 +89,9 @@ private:
 	std::list<Token>::const_iterator curToken;	// Current token in the list of tokens
 
 	void syntaxAnalysis();
-	BigDecimal parseNumbers();
+	Complex parseAddSub();
+	Complex parseMulDiv();
+	Complex parseNumbers();
 };
 
 } // namespace MaxCalcEngine

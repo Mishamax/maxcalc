@@ -209,6 +209,8 @@ void ComplexTest::binaryOperators()
 	catch (...)
 	{
 	}
+
+	// TODO: add tests for +=, -=, *=, /=
 }
 
 void ComplexTest::comparisonOperators()

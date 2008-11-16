@@ -20,6 +20,7 @@
 // Local
 #include "parser.h"
 // STL
+#include <iostream>
 #include <cctype>
 
 namespace MaxCalcEngine {
@@ -30,13 +31,18 @@ namespace MaxCalcEngine {
 //****************************************************************************
 
 
+/*!
+	Constructs a new instance of Parser with specified \a expr and \a context.
+*/
 Parser::Parser(const tstring & expr, const ParserContext & context)
 {
 	m_expr = expr;
 	m_context = context;
 }
 
-
+/*!
+	Performs calculation of given expression.
+*/
 ParserContext Parser::parse()
 {
 	lexicalAnalysis();
@@ -46,13 +52,18 @@ ParserContext Parser::parse()
 
 #pragma region Lexical analyzer
 
+/*!
+	Performs lexical analysis of given expression.
+*/
 void Parser::lexicalAnalysis()
 {
 	curChar = m_expr.begin();
 
 	while (curChar != m_expr.end())
 	{
-		if (analizeNumbers())
+		if (analyzeBinaryOperators())
+			continue;
+		if (analyzeNumbers())
 			continue;
 		if (skipSpaces())
 			continue;
@@ -62,12 +73,33 @@ void Parser::lexicalAnalysis()
 }
 
 /*!
-	Lexical analisys of numbers (including decimal point, exponents and complex numbers).
+	Lexical analysis of binary arithmetic operators (+, -, *, /).
 */
-bool Parser::analizeNumbers()
+bool Parser::analyzeBinaryOperators()
+{
+	if (_T('+') == *curChar)
+		tokens.push_back(Token(ADDITION, _T("+")));
+	else if (_T('-') == *curChar)
+		tokens.push_back(Token(SUBTRACTION, _T("-")));
+	else if (_T('*') == *curChar)
+		tokens.push_back(Token(MULTIPLICATION, _T("*")));
+	else if (_T('/') == *curChar)
+		tokens.push_back(Token(DIVISION, _T("/")));
+	else
+		return false;
+
+	++curChar;
+	return true;
+}
+
+/*!
+	Lexical analysis of numbers (including decimal point, exponents and complex numbers).
+*/
+bool Parser::analyzeNumbers()
 {
 	// TODO: add exponents support
 	// TODO: add complex numbers support
+	// TODO: support for spaces in exponential part of the number
 
 	tstring number = _T("");
 	bool thereIsPoint = false;
@@ -132,6 +164,9 @@ bool Parser::analizeNumbers()
 	return true;
 }
 
+/*!
+	Skip spaces in given expression during lexical analysis.
+*/
 bool Parser::skipSpaces()
 {
 	// Check if it is a space
@@ -149,18 +184,80 @@ bool Parser::skipSpaces()
 
 #pragma region Syntax analyzer
 
+/*!
+	Performs syntax analysis of given expression and calculates the result.
+*/
 void Parser::syntaxAnalysis()
 {
 	curToken = tokens.begin();
 
-	m_context.setResult(parseNumbers());
+	m_context.setResult(parseAddSub());
 }
 
-BigDecimal Parser::parseNumbers()
+/*!
+	Parses addition and subtraction.
+*/
+Complex Parser::parseAddSub()
 {
-	if (NUMBER == curToken->token)
+	Complex result = parseMulDiv();
+
+	while (curToken != tokens.end())
 	{
-		return BigDecimal(curToken->str);
+		if (ADDITION == curToken->token)
+		{
+			++curToken;
+			result += parseMulDiv();
+		}
+		else if (SUBTRACTION == curToken->token)
+		{
+			++curToken;
+			result -= parseMulDiv();
+		}
+		else
+		{
+			break;
+		}
+	}
+	return result;
+}
+
+/*!
+	Parses multiplication and division.
+*/
+Complex Parser::parseMulDiv()
+{
+	Complex result = parseNumbers();
+
+	while (curToken != tokens.end())
+	{
+		if (MULTIPLICATION == curToken->token)
+		{
+			++curToken;
+			result *= parseNumbers();
+		}
+		else if (DIVISION == curToken->token)
+		{
+			++curToken;
+			result /= parseNumbers();
+		}
+		else
+		{
+			break;
+		}
+	}
+	return result;
+}
+
+/*!
+	Parses numbers (including complex numbers and exponential notation).
+*/
+Complex Parser::parseNumbers()
+{
+	if (curToken != tokens.end() && NUMBER == curToken->token)
+	{
+		BigDecimal result = BigDecimal(curToken->str);
+		++curToken;
+		return result;
 	}
 
 	// TODO: throw right exception
