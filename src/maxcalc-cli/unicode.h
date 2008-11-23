@@ -31,19 +31,14 @@
 #define tcout wcout
 #define tcin wcin
 
-#define _getts _getws
-#if _MSC_VER > 1400
-#define _getts_s _getws_s
-#endif
+#define fgetts fgetws
 
 #else // defined (UNICODE)
 
 #define tcout cout
 #define tcin cin
-#define _getts gets
-#if _MSC_VER > 1400
-#define _getts_s _gets_s
-#endif
+
+#define fgetts fgets
 
 #endif // defined (UNICODE)
 

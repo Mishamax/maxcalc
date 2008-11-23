@@ -35,12 +35,12 @@ int main()
 	ParserContext context;
 	while (true)
 	{
-#if _MSC_VER > 1400
-		_getts_s(charExpr, exprLength);
-#else
-		_getts(charExpr);
-#endif
+		if (fgetts(charExpr, exprLength, stdin) == NULL)
+			continue;
 		expr = charExpr;
+		// Remove '\n'
+		if (expr.length() > 0)
+			expr.erase(expr.length() - 1, 1);
 		
 		if (_T("exit") == expr)
 			break;
