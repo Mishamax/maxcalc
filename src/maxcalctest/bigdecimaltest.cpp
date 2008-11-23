@@ -18,25 +18,31 @@ void BigDecimalTest::bigDecimalFormatDefault()
 	COMPARE(actual.precision(), expected.precision());
 	COMPARE(actual.numberFormat(), expected.numberFormat());
 	COMPARE(actual.exponentCase(), expected.exponentCase());
+	COMPARE(actual.decimalSeparator(), expected.decimalSeparator());
 
 	COMPARE(actual.precision(), MAX_IO_PRECISION);
 	COMPARE(actual.numberFormat(), BigDecimalFormat::ScientificFormat);
 	COMPARE(actual.exponentCase(), BigDecimalFormat::UpperCaseExponent);
+	COMPARE(actual.decimalSeparator(), BigDecimalFormat::PointDecimalSeparator);
 }
 
 void BigDecimalTest::bigDecimalFormatCustom()
 {
-	BigDecimalFormat actual(MAX_IO_PRECISION, BigDecimalFormat::EngineeringFormat, BigDecimalFormat::LowerCaseExponent);
+	BigDecimalFormat actual(MAX_IO_PRECISION, BigDecimalFormat::EngineeringFormat, BigDecimalFormat::LowerCaseExponent,
+		BigDecimalFormat::CommaDecimalSeparator);
 
 	COMPARE(actual.precision(), MAX_IO_PRECISION);
 	COMPARE(actual.numberFormat(), BigDecimalFormat::EngineeringFormat);
 	COMPARE(actual.exponentCase(), BigDecimalFormat::LowerCaseExponent);
+	COMPARE(actual.decimalSeparator(), BigDecimalFormat::CommaDecimalSeparator);
 
-	actual = BigDecimalFormat(1, BigDecimalFormat::ScientificFormat, BigDecimalFormat::UpperCaseExponent);
+	actual = BigDecimalFormat(1, BigDecimalFormat::ScientificFormat, BigDecimalFormat::UpperCaseExponent,
+		BigDecimalFormat::PointDecimalSeparator);
 
 	COMPARE(actual.precision(), 1);
 	COMPARE(actual.numberFormat(), BigDecimalFormat::ScientificFormat);
 	COMPARE(actual.exponentCase(), BigDecimalFormat::UpperCaseExponent);
+	COMPARE(actual.decimalSeparator(), BigDecimalFormat::PointDecimalSeparator);
 }
 
 void BigDecimalTest::bigDecimalFormatAccessors()

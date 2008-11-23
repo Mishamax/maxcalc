@@ -49,7 +49,7 @@ int main()
 
 		try
 		{
-			tcout << parser.parse().getResult().toString().c_str() << endl;
+			tcout << parser.parse().result().toString().c_str() << endl;
 		}
 		catch (...)
 		{

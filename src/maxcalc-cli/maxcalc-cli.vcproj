@@ -92,6 +92,26 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 		</Filter>
+		<Filter
+			Name="decNumber"
+			>
+			<File
+				RelativePath="..\maxcalcengine\decNumber\decContext.h"
+				>
+			</File>
+			<File
+				RelativePath="..\maxcalcengine\decNumber\decNumber.h"
+				>
+			</File>
+			<File
+				RelativePath="..\maxcalcengine\decNumber\decNumberLocal.h"
+				>
+			</File>
+			<File
+				RelativePath="..\maxcalcengine\decNumber\stdint.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\maxcalc-cli.pro"
 			>

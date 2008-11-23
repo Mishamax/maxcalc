@@ -23,6 +23,7 @@
 
 // Local
 #include "settings.h"
+#include "tstring.h"
 
 // STL
 #include <cassert>
@@ -43,6 +44,8 @@ public:
 	enum NumberFormat { ScientificFormat, EngineeringFormat };
 	/// Specifies case of 'E' letter when exponent is needed.
 	enum ExponentCase { UpperCaseExponent, LowerCaseExponent };
+	/// Specifies decimal separator.
+	enum DecimalSeparator { PointDecimalSeparator, CommaDecimalSeparator };
 
 
 	///////////////////////////////////////////////////////////////////////////
@@ -51,7 +54,8 @@ public:
 	explicit BigDecimalFormat(
 		const int precision = MAX_IO_PRECISION,
 		const NumberFormat numberFormat = ScientificFormat,
-		const ExponentCase exponentCase = UpperCaseExponent);
+		const ExponentCase exponentCase = UpperCaseExponent,
+		const DecimalSeparator decimalSeparator = PointDecimalSeparator);
 
 
 	///////////////////////////////////////////////////////////////////////////
@@ -65,28 +69,41 @@ public:
 	// Accessors
 
 	/// Gets output precision of BigDecimal number.
-	inline int precision() const { return m_precision; };
+	inline int precision() const { return precision_; };
 	/// Sets output precision of BigDecimal number.
-	inline void setPrecision(int precision) { assert(precision >= 1 && precision <= MAX_IO_PRECISION); m_precision = precision; };
+	inline void setPrecision(int precision) { assert(precision >= 1 && precision <= MAX_IO_PRECISION); precision_ = precision; };
 
 	/// Gets format of BigDecimal number.
-	inline NumberFormat numberFormat() const { return m_numberFormat; };
+	inline NumberFormat numberFormat() const { return numberFormat_; };
 	/// Sets format of BigDecimal number.
-	inline void setNumberFormat(NumberFormat numberFormat) { m_numberFormat = numberFormat; };
+	inline void setNumberFormat(NumberFormat numberFormat) { numberFormat_ = numberFormat; };
 
 	/// Gets case of 'E' letter in BigDecimal number when exponent is needed.
-	inline ExponentCase exponentCase() const { return m_exponentCase; };
+	inline ExponentCase exponentCase() const { return exponentCase_; };
 	/// Sets case of 'E' letter in BigDecimal number when exponent is needed.
-	inline void setExponentCase(ExponentCase exponentCase) { m_exponentCase = exponentCase; };
+	inline void setExponentCase(ExponentCase exponentCase) { exponentCase_ = exponentCase; };
+
+	/// Gets decimal separator.
+	inline DecimalSeparator decimalSeparator() const { return decimalSeparator_; };
+	/// Sets decimal separator.
+	inline void setdecimalSeparator(DecimalSeparator decimalSeparator) { decimalSeparator_ = decimalSeparator; };
+
+	/// Gets decimal separator as char.
+	inline char decimalSeparatorChar() const { if (decimalSeparator_ == PointDecimalSeparator) return '.'; else return ','; };
+	/// Gets decimal separator as wchar_t.
+	inline wchar_t decimalSeparatorWideChar() const { if (decimalSeparator_ == PointDecimalSeparator) return L'.'; else return L','; };
+	/// Gets decimal separator as tchar.
+	inline tchar decimalSeparatorTChar() const { if (decimalSeparator_ == PointDecimalSeparator) return _T('.'); else return _T(','); };
 
 private:
 
 	///////////////////////////////////////////////////////////////////////////
 	// Properties
 
-	int m_precision;				///< Output precision of BigDecimal number.
-	NumberFormat m_numberFormat;	///< Format of BigDecimal Number (scientific or engineering)
-	ExponentCase m_exponentCase;	///< Case of 'E' letter in BigDecimal number when exponent is needed.
+	int precision_;				///< Output precision of BigDecimal number.
+	NumberFormat numberFormat_;	///< Format of BigDecimal Number (scientific or engineering)
+	ExponentCase exponentCase_;	///< Case of 'E' letter in BigDecimal number when exponent is needed.
+	DecimalSeparator decimalSeparator_;		///< Decimal separator.
 };
 
 } // namespace MaxCalcEngine

@@ -53,10 +53,11 @@ namespace MaxCalcEngine {
 	Constructs a new instance of ComplexFormat.
 */
 ComplexFormat::ComplexFormat(const int precision, const NumberFormat numberFormat,
-							 const ExponentCase exponentCase, const char imaginaryOne)
-							 : BigDecimalFormat(precision, numberFormat, exponentCase)
+							 const ExponentCase exponentCase, const DecimalSeparator decimalSeparator,
+							 const ImaginaryOne imaginaryOne)
+							 : BigDecimalFormat(precision, numberFormat, exponentCase, decimalSeparator)
 {
-	m_imaginaryOne = imaginaryOne;
+	imaginaryOne_ = imaginaryOne;
 }
 
 } // namespace MaxCalcEngine

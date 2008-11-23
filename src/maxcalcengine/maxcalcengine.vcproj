@@ -152,26 +152,6 @@
 				RelativePath=".\tstring.h"
 				>
 			</File>
-			<Filter
-				Name="decNumber"
-				>
-				<File
-					RelativePath=".\decNumber\decContext.h"
-					>
-				</File>
-				<File
-					RelativePath=".\decNumber\decNumber.h"
-					>
-				</File>
-				<File
-					RelativePath=".\decNumber\decNumberLocal.h"
-					>
-				</File>
-				<File
-					RelativePath=".\decNumber\stdint.h"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"

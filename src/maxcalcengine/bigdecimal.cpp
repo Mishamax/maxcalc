@@ -104,25 +104,25 @@ const BigDecimal BigDecimal::PI = BigDecimal::pi();
 */
 BigDecimal::BigDecimal()
 {
-	decNumberFromInt32(&number, 0);
+	decNumberFromInt32(&number_, 0);
 }
 
 /*!
 	Constructs a new instance of BigDecimal class from given \a str.
 */
-BigDecimal::BigDecimal(const std::string & str)
+BigDecimal::BigDecimal(const std::string & str, const BigDecimalFormat & format)
 {
-	construct(str.c_str());
+	construct(str, format);
 }
 
 /*!
 	Constructs a new instance of BigDecimal class from given \a str.
 */
-BigDecimal::BigDecimal(const char * str)
+BigDecimal::BigDecimal(const char * str, const BigDecimalFormat & format)
 {
 	assert(str);
 
-	construct(str);
+	construct(str, format);
 }
 
 #if defined(UNICODE)
@@ -130,23 +130,23 @@ BigDecimal::BigDecimal(const char * str)
 /*!
 	Constructs a new instance of BigDecimal class from given \a str.
 */
-BigDecimal::BigDecimal(const std::wstring & str)
+BigDecimal::BigDecimal(const std::wstring & str, const BigDecimalFormat & format)
 {
 	std::string s;
 	wideStringToString(str, s);
-	construct(s.c_str());
+	construct(s, format);
 }
 
 /*!
 	Constructs a new instance of BigDecimal class from given \a str.
 */
-BigDecimal::BigDecimal(const wchar_t * str)
+BigDecimal::BigDecimal(const wchar_t * str, const BigDecimalFormat & format)
 {
 	assert(str);
 
 	std::string s;
 	wideStringToString(std::wstring(str), s);
-	construct(s.c_str());
+	construct(s, format);
 }
 
 #endif // #if defined(UNICODE)
@@ -156,7 +156,7 @@ BigDecimal::BigDecimal(const wchar_t * str)
 */
 BigDecimal::BigDecimal(const BigDecimal & num)
 {
-	decNumberCopy(&number, &num.number);
+	decNumberCopy(&number_, &num.number_);
 }
 
 /*!
@@ -164,7 +164,7 @@ BigDecimal::BigDecimal(const BigDecimal & num)
 */
 BigDecimal::BigDecimal(const int num)
 {
-	decNumberFromInt32(&number, num);
+	decNumberFromInt32(&number_, num);
 }
 
 /*!
@@ -172,7 +172,7 @@ BigDecimal::BigDecimal(const int num)
 */
 BigDecimal::BigDecimal(const unsigned num)
 {
-	decNumberFromUInt32(&number, num);
+	decNumberFromUInt32(&number_, num);
 }
 
 /*!
@@ -182,7 +182,7 @@ BigDecimal::BigDecimal(const double num)
 {
 	std::stringstream stream;
 	stream << num;
-	construct(stream.str().c_str());
+	construct(stream.str().c_str(), BigDecimalFormat::getDefault());
 }
 
 #pragma endregion
@@ -208,7 +208,7 @@ std::string BigDecimal::toString(const BigDecimalFormat & format) const
 	decNumber num;
 
 	// Remove trailing zeros and round to needed precision
-	decNumberReduce(&num, &number, &context);
+	decNumberReduce(&num, &number_, &context);
 	checkContextStatus(context);
 
 	// To prevent "-0" output
@@ -273,7 +273,7 @@ std::wstring BigDecimal::toWideString(const BigDecimalFormat & format) const
 int BigDecimal::toInt() const
 {
 	NEW_IO_CONTEXT(context);
-	int result = decNumberToInt32(&number, &context);
+	int result = decNumberToInt32(&number_, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -289,7 +289,7 @@ int BigDecimal::toInt() const
 unsigned BigDecimal::toUInt() const
 {
 	NEW_IO_CONTEXT(context);
-	unsigned result = decNumberToUInt32(&number, &context);
+	unsigned result = decNumberToUInt32(&number_, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -308,7 +308,7 @@ unsigned BigDecimal::toUInt() const
 */
 bool BigDecimal::isZero() const
 {
-	return decNumberIsZero(&number);
+	return decNumberIsZero(&number_);
 }
 
 /*!
@@ -316,7 +316,7 @@ bool BigDecimal::isZero() const
 */
 bool BigDecimal::isNegative() const
 {
-	return decNumberIsNegative(&number);
+	return decNumberIsNegative(&number_);
 }
 
 /*!
@@ -324,7 +324,7 @@ bool BigDecimal::isNegative() const
 */
 bool BigDecimal::isPositive() const
 {
-	return (!decNumberIsZero(&number) && !decNumberIsNegative(&number));
+	return (!decNumberIsZero(&number_) && !decNumberIsNegative(&number_));
 }
 
 
@@ -337,7 +337,7 @@ BigDecimal BigDecimal::round() const
 {
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberToIntegralValue(&result, &number, &context);
+	decNumberToIntegralValue(&result, &number_, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -409,7 +409,7 @@ BigDecimal BigDecimal::operator-() const
 {
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberMinus(&result, &number, &context);
+	decNumberMinus(&result, &number_, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -459,7 +459,7 @@ BigDecimal BigDecimal::operator+(const BigDecimal & num) const
 {
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberAdd(&result, &number, &num.number, &context);
+	decNumberAdd(&result, &number_, &num.number_, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -471,7 +471,7 @@ BigDecimal BigDecimal::operator-(const BigDecimal & num) const
 {
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberSubtract(&result, &number, &num.number, &context);
+	decNumberSubtract(&result, &number_, &num.number_, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -483,7 +483,7 @@ BigDecimal BigDecimal::operator*(const BigDecimal & num) const
 {
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberMultiply(&result, &number, &num.number, &context);
+	decNumberMultiply(&result, &number_, &num.number_, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -498,7 +498,7 @@ BigDecimal BigDecimal::operator/(const BigDecimal & num) const
 
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberDivide(&result, &number, &num.number, &context);
+	decNumberDivide(&result, &number_, &num.number_, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -513,7 +513,7 @@ BigDecimal BigDecimal::operator%(const BigDecimal & num) const
 
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberRemainder(&result, &number, &num.number, &context);
+	decNumberRemainder(&result, &number_, &num.number_, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -524,7 +524,7 @@ BigDecimal BigDecimal::operator%(const BigDecimal & num) const
 BigDecimal BigDecimal::operator+=(const BigDecimal & num)
 {
 	NEW_CONTEXT(context);
-	decNumberAdd(&number, &number, &num.number, &context);
+	decNumberAdd(&number_, &number_, &num.number_, &context);
 	checkContextStatus(context);
 	return *this;
 }
@@ -535,7 +535,7 @@ BigDecimal BigDecimal::operator+=(const BigDecimal & num)
 BigDecimal BigDecimal::operator-=(const BigDecimal & num)
 {
 	NEW_CONTEXT(context);
-	decNumberSubtract(&number, &number, &num.number, &context);
+	decNumberSubtract(&number_, &number_, &num.number_, &context);
 	checkContextStatus(context);
 	return *this;
 }
@@ -546,7 +546,7 @@ BigDecimal BigDecimal::operator-=(const BigDecimal & num)
 BigDecimal BigDecimal::operator*=(const BigDecimal & num)
 {
 	NEW_CONTEXT(context);
-	decNumberMultiply(&number, &number, &num.number, &context);
+	decNumberMultiply(&number_, &number_, &num.number_, &context);
 	checkContextStatus(context);
 	return *this;
 }
@@ -560,7 +560,7 @@ BigDecimal BigDecimal::operator/=(const BigDecimal & num)
 		throw DivisionByZeroException();
 
 	NEW_CONTEXT(context);
-	decNumberDivide(&number, &number, &num.number, &context);
+	decNumberDivide(&number_, &number_, &num.number_, &context);
 	checkContextStatus(context);
 	return *this;
 }
@@ -574,7 +574,7 @@ BigDecimal BigDecimal::operator%=(const BigDecimal & num)
 		throw DivisionByZeroException();
 
 	NEW_CONTEXT(context);
-	decNumberRemainder(&number, &number, &num.number, &context);
+	decNumberRemainder(&number_, &number_, &num.number_, &context);
 	checkContextStatus(context);
 	return *this;
 }
@@ -589,7 +589,7 @@ BigDecimal BigDecimal::operator~() const
 
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberInvert(&result, &number, &context);
+	decNumberInvert(&result, &number_, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -604,7 +604,7 @@ BigDecimal BigDecimal::operator|(const BigDecimal & num) const
 
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberOr(&result, &number, &num.number, &context);
+	decNumberOr(&result, &number_, &num.number_, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -619,7 +619,7 @@ BigDecimal BigDecimal::operator&(const BigDecimal & num) const
 
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberAnd(&result, &number, &num.number, &context);
+	decNumberAnd(&result, &number_, &num.number_, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -634,7 +634,7 @@ BigDecimal BigDecimal::operator^(const BigDecimal & num) const
 
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberXor(&result, &number, &num.number, &context);
+	decNumberXor(&result, &number_, &num.number_, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -649,7 +649,7 @@ BigDecimal BigDecimal::operator<<(const BigDecimal & shift) const
 
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberShift(&result, &number, &shift.number, &context);
+	decNumberShift(&result, &number_, &shift.number_, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -665,9 +665,9 @@ BigDecimal BigDecimal::operator>>(const BigDecimal & shift) const
 	NEW_CONTEXT(context);
 	decNumber result;
 	decNumber negativeShift;
-	decNumberMinus(&negativeShift, &shift.number, &context);
+	decNumberMinus(&negativeShift, &shift.number_, &context);
 	checkContextStatus(context);
-	decNumberShift(&result, &number, &negativeShift, &context);
+	decNumberShift(&result, &number_, &negativeShift, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -681,7 +681,7 @@ BigDecimal BigDecimal::operator|=(const BigDecimal & num)
 		throw LogicalOperationOnFractionalNumberException();
 
 	NEW_CONTEXT(context);
-	decNumberOr(&number, &number, &num.number, &context);
+	decNumberOr(&number_, &number_, &num.number_, &context);
 	checkContextStatus(context);
 	return *this;
 }
@@ -695,7 +695,7 @@ BigDecimal BigDecimal::operator&=(const BigDecimal & num)
 		throw LogicalOperationOnFractionalNumberException();
 
 	NEW_CONTEXT(context);
-	decNumberAnd(&number, &number, &num.number, &context);
+	decNumberAnd(&number_, &number_, &num.number_, &context);
 	checkContextStatus(context);
 	return *this;
 }
@@ -709,7 +709,7 @@ BigDecimal BigDecimal::operator^=(const BigDecimal & num)
 		throw LogicalOperationOnFractionalNumberException();
 
 	NEW_CONTEXT(context);
-	decNumberXor(&number, &number, &num.number, &context);
+	decNumberXor(&number_, &number_, &num.number_, &context);
 	checkContextStatus(context);
 	return *this;
 }
@@ -723,7 +723,7 @@ BigDecimal BigDecimal::operator<<=(const BigDecimal & shift)
 		throw LogicalOperationOnFractionalNumberException();
 
 	NEW_CONTEXT(context);
-	decNumberShift(&number, &number, &shift.number, &context);
+	decNumberShift(&number_, &number_, &shift.number_, &context);
 	checkContextStatus(context);
 	return *this;
 }
@@ -738,9 +738,9 @@ BigDecimal BigDecimal::operator>>=(const BigDecimal & shift)
 
 	NEW_CONTEXT(context);
 	decNumber negativeShift;
-	decNumberMinus(&negativeShift, &shift.number, &context);
+	decNumberMinus(&negativeShift, &shift.number_, &context);
 	checkContextStatus(context);
-	decNumberShift(&number, &number, &negativeShift, &context);
+	decNumberShift(&number_, &number_, &negativeShift, &context);
 	checkContextStatus(context);
 	return *this;
 }
@@ -750,7 +750,7 @@ BigDecimal BigDecimal::operator>>=(const BigDecimal & shift)
 */
 bool BigDecimal::operator==(const BigDecimal & num) const
 {
-	return (compare(number, num.number) == 0);
+	return (compare(number_, num.number_) == 0);
 }
 
 /*!
@@ -758,7 +758,7 @@ bool BigDecimal::operator==(const BigDecimal & num) const
 */
 bool BigDecimal::operator!=(const BigDecimal & num) const
 {
-	return (compare(number, num.number) != 0);
+	return (compare(number_, num.number_) != 0);
 }
 
 /*!
@@ -766,7 +766,7 @@ bool BigDecimal::operator!=(const BigDecimal & num) const
 */
 bool BigDecimal::operator<(const BigDecimal & num) const
 {
-	return (compare(number, num.number) < 0);
+	return (compare(number_, num.number_) < 0);
 }
 
 /*!
@@ -774,7 +774,7 @@ bool BigDecimal::operator<(const BigDecimal & num) const
 */
 bool BigDecimal::operator>(const BigDecimal & num) const
 {
-	return (compare(number, num.number) > 0);
+	return (compare(number_, num.number_) > 0);
 }
 
 /*!
@@ -782,7 +782,7 @@ bool BigDecimal::operator>(const BigDecimal & num) const
 */
 bool BigDecimal::operator<=(const BigDecimal & num) const
 {
-	return (compare(number, num.number) <= 0);
+	return (compare(number_, num.number_) <= 0);
 }
 
 /*!
@@ -790,7 +790,7 @@ bool BigDecimal::operator<=(const BigDecimal & num) const
 */
 bool BigDecimal::operator>=(const BigDecimal & num) const
 {
-	return (compare(number, num.number) >= 0);
+	return (compare(number_, num.number_) >= 0);
 }
 
 #pragma endregion
@@ -808,7 +808,7 @@ BigDecimal BigDecimal::abs(const BigDecimal & num)
 {
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberAbs(&result, &num.number, &context);
+	decNumberAbs(&result, &num.number_, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -820,7 +820,7 @@ BigDecimal BigDecimal::exp(const BigDecimal & num)
 {
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberExp(&result, &num.number, &context);
+	decNumberExp(&result, &num.number_, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -837,7 +837,7 @@ BigDecimal BigDecimal::ln(const BigDecimal & num)
 
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberLn(&result, &num.number, &context);
+	decNumberLn(&result, &num.number_, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -854,7 +854,7 @@ BigDecimal BigDecimal::log10(const BigDecimal & num)
 
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberLog10(&result, &num.number, &context);
+	decNumberLog10(&result, &num.number_, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -866,7 +866,7 @@ BigDecimal BigDecimal::sqr(const BigDecimal & num)
 {
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberMultiply(&result, &num.number, &num.number, &context);
+	decNumberMultiply(&result, &num.number_, &num.number_, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -883,7 +883,7 @@ BigDecimal BigDecimal::sqrt(const BigDecimal & num)
 
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberSquareRoot(&result, &num.number, &context);
+	decNumberSquareRoot(&result, &num.number_, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -903,7 +903,7 @@ BigDecimal BigDecimal::pow(const BigDecimal & num, const BigDecimal & power)
 
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberPower(&result, &num.number, &power.number, &context);
+	decNumberPower(&result, &num.number_, &power.number_, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -920,7 +920,7 @@ BigDecimal BigDecimal::div(const BigDecimal & dividend, const BigDecimal & divis
 
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberDivideInteger(&result, &dividend.number, &divisor.number, &context);
+	decNumberDivideInteger(&result, &dividend.number_, &divisor.number_, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -932,7 +932,7 @@ BigDecimal BigDecimal::max(const BigDecimal & num, const BigDecimal & decimal)
 {
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberMax(&result, &num.number, &decimal.number, &context);
+	decNumberMax(&result, &num.number_, &decimal.number_, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -944,7 +944,7 @@ BigDecimal BigDecimal::min(const BigDecimal & num, const BigDecimal & decimal)
 {
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberMin(&result, &num.number, &decimal.number, &context);
+	decNumberMin(&result, &num.number_, &decimal.number_, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -1002,7 +1002,7 @@ BigDecimal BigDecimal::sin(const BigDecimal & num)
 
 	NEW_IO_CONTEXT(context);
 	decNumber reduced;
-	decNumberReduce(&reduced, &result.number, &context);
+	decNumberReduce(&reduced, &result.number_, &context);
 	if (reduced.exponent < -MAX_IO_PRECISION)
 		result = 0;
 
@@ -1036,7 +1036,7 @@ BigDecimal BigDecimal::cos(const BigDecimal & num)
 
 	NEW_IO_CONTEXT(context);
 	decNumber reduced;
-	decNumberReduce(&reduced, &result.number, &context);
+	decNumberReduce(&reduced, &result.number_, &context);
 	if (reduced.exponent < -MAX_IO_PRECISION)
 		result = 0;
 
@@ -1152,24 +1152,30 @@ BigDecimal BigDecimal::arccot(const BigDecimal & num)
 */
 BigDecimal::BigDecimal(const DecNumber::decNumber & num)
 {
-	decNumberCopy(&number, &num);
+	decNumberCopy(&number_, &num);
 }
 
 /*!
 	Constructs a new instance of BigDecimal class from given \a str.
 */
-void BigDecimal::construct(const char * str)
+void BigDecimal::construct(const std::string & str, const BigDecimalFormat & format)
 {
-	assert(str);
-
 	NEW_CONTEXT(context);
-	
+
+	std::string s = str;
+	if (format.decimalSeparator() != BigDecimalFormat::PointDecimalSeparator)
+	{
+		size_t pos = str.find(format.decimalSeparatorChar());
+		if (pos != std::string::npos)
+			s.replace(pos, 1, ".");
+	}
+
 	// Construct number
-	decNumberFromString(&number, str, &context);
+	decNumberFromString(&number_, s.c_str(), &context);
 	checkContextStatus(context);
 	
 	// Remove trailing zeros
-	decNumberReduce(&number, &number, &context);
+	decNumberReduce(&number_, &number_, &context);
 	checkContextStatus(context);
 }
 
@@ -1254,7 +1260,7 @@ BigDecimal BigDecimal::FMA(const BigDecimal & multiplier1, const BigDecimal & mu
 {
 	NEW_CONTEXT(context);
 	decNumber result;
-	decNumberFMA(&result, &multiplier1.number, &multiplier2.number, &summand.number, &context);
+	decNumberFMA(&result, &multiplier1.number_, &multiplier2.number_, &summand.number_, &context);
 	checkContextStatus(context);
 	return result;
 }

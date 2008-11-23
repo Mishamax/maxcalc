@@ -10,8 +10,12 @@ class ParserTest : public QObject
 	Q_OBJECT
 
 private slots:
+	void basic();
+	void numbers();
+	void complexNumbers();
 	void addSub();
 	void mulDiv();
+	void fails();
 };
 
 #endif // PARSERTEST_H

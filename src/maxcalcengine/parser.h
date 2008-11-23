@@ -40,18 +40,23 @@ public:
 
 	ParserContext parse();
 
-	inline void setExpression(const tstring & expr) { m_expr = expr; }
-	inline tstring getExpression() const { return m_expr; }
+	inline tstring expression() const { return expr_; }
+	inline void setExpression(const tstring & expr) { expr_ = expr; }
 
-	inline void setContext(const ParserContext & context) { m_context = context; }
-	inline ParserContext getContext() const { return m_context; }
+	inline ParserContext context() const { return context_; }
+	inline void setContext(const ParserContext & context) { context_ = context; }
 
 private:
 
 	///////////////////////////////////////////////////////////////////////////
 	// Private variables
-	tstring m_expr;
-	ParserContext m_context;
+	tstring expr_;
+	ParserContext context_;
+
+
+	///////////////////////////////////////////////////////////////////////////
+	// Utility functions
+	void reset();
 
 
 	///////////////////////////////////////////////////////////////////////////
@@ -63,19 +68,21 @@ private:
 		SUBTRACTION,
 		MULTIPLICATION,
 		DIVISION,
-		NUMBER
+		NUMBER,
+		IMAGINARY_ONE
 	};
 
 	struct Token
 	{
 		inline Token(const Tokens token_, const tstring & str_) { token = token_; str = str_; }
+		inline Token(const Tokens token_, const tchar char_) { token = token_; str = char_; }
 
 		Tokens token;
 		tstring str;
 	};
 
-	std::list<Token> tokens;			// List of tokens
-	tstring::const_iterator curChar;	// Current char of expression
+	std::list<Token> tokens_;			// List of tokens
+	tstring::const_iterator curChar_;	// Current char of expression
 
 	void lexicalAnalysis();
 	bool analyzeBinaryOperators();
@@ -86,7 +93,7 @@ private:
 	///////////////////////////////////////////////////////////////////////////
 	// Syntax analyzer
 
-	std::list<Token>::const_iterator curToken;	// Current token in the list of tokens
+	std::list<Token>::const_iterator curToken_;	// Current token in the list of tokens
 
 	void syntaxAnalysis();
 	Complex parseAddSub();

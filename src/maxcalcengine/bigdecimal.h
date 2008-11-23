@@ -46,11 +46,11 @@ public:
 	// Constructors
 	
 	BigDecimal();
-	BigDecimal(const std::string & str);
-	BigDecimal(const char * str);
+	BigDecimal(const std::string & str, const BigDecimalFormat & format = BigDecimalFormat::getDefault());
+	BigDecimal(const char * str, const BigDecimalFormat & format = BigDecimalFormat::getDefault());
 #if defined(UNICODE)
-	BigDecimal(const std::wstring & str);
-	BigDecimal(const wchar_t * str);
+	BigDecimal(const std::wstring & str, const BigDecimalFormat & format = BigDecimalFormat::getDefault());
+	BigDecimal(const wchar_t * str, const BigDecimalFormat & format = BigDecimalFormat::getDefault());
 #endif
 	BigDecimal(const BigDecimal & num);
 	BigDecimal(const int num);
@@ -157,13 +157,13 @@ public:
 private:
 
 	// Decimal number
-	DecNumber::decNumber number;
+	DecNumber::decNumber number_;
 
 	///////////////////////////////////////////////////////////////////////////
 	// Internal functions
 	
 	BigDecimal(const DecNumber::decNumber & num);
-	void construct(const char * str);
+	void construct(const std::string & str, const BigDecimalFormat & format);
 
 	static void checkContextStatus(const DecNumber::decContext & context);
 	static int compare(const DecNumber::decNumber & n1, const DecNumber::decNumber & n2);

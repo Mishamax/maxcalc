@@ -26,10 +26,11 @@ namespace MaxCalcEngine {
 // ParserContext implementation
 //****************************************************************************
 
-ParserContext::ParserContext()
+ParserContext::ParserContext(const ComplexFormat & numberFormat)
 {
-	m_result = Complex();
-	m_resultExists = false;
+	result_ = Complex();
+	resultExists_ = false;
+	numberFormat_ = numberFormat;
 }
 
 } // namespace MaxCalcEngine

@@ -34,26 +34,36 @@ namespace MaxCalcEngine {
 class ComplexFormat : public BigDecimalFormat
 {
 public:
+	///
+	enum ImaginaryOne { iImaginaryOne, jImaginaryOne };
 
 	// Constructor
 	explicit ComplexFormat(
 		const int precision = MAX_IO_PRECISION,
 		const NumberFormat numberFormat = ScientificFormat,
 		const ExponentCase exponentCase = UpperCaseExponent,
-		const char imaginaryOne = 'i');
+		const DecimalSeparator decimalSeparator = PointDecimalSeparator,
+		const ImaginaryOne imaginaryOne = iImaginaryOne);
 
 	// Get default format
-	static ComplexFormat getDefault() { return ComplexFormat(); };
+	static inline ComplexFormat getDefault() { return ComplexFormat(); };
 
 	// Accessors
 	/// Gets letter used to represent imaginary one in Complex number.
-	char imaginaryOne() const { return m_imaginaryOne; };
+	inline ImaginaryOne imaginaryOne() const { return imaginaryOne_; };
 	/// Sets letter used to represent imaginary one in Complex number.
-	void setImaginaryOne(const char imaginaryOne) { m_imaginaryOne = imaginaryOne; };
+	inline void setImaginaryOne(const ImaginaryOne imaginaryOne) { imaginaryOne_ = imaginaryOne; };
+
+	/// Gets letter used to represent imaginary one in Complex number as char.
+	inline char imaginaryOneChar() const { if (imaginaryOne_ == iImaginaryOne) return 'i'; else return 'j'; };
+	/// Gets letter used to represent imaginary one in Complex number as wchar_t.
+	inline wchar_t imaginaryOneWideChar() const { if (imaginaryOne_ == iImaginaryOne) return L'i'; else return L'j'; };
+	/// Gets letter used to represent imaginary one in Complex number as tchar.
+	inline tchar imaginaryOneTChar() const { if (imaginaryOne_ == iImaginaryOne) return _T('i'); else return _T('j'); };
 
 private:
 	// Properties
-	char m_imaginaryOne;		///< Letter used to represent imaginary one in Complex number.
+	ImaginaryOne imaginaryOne_;	///< Letter used to represent imaginary one in Complex number.
 };
 
 } // namespace MaxCalcEngine

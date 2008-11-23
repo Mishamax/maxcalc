@@ -53,11 +53,11 @@ public:
 	// Constructors
 
 	Complex();
-	Complex(const char * real, const char * imaginary = "0");
-	Complex(const std::string & real, const std::string & imaginary = "0");
+	Complex(const char * real, const char * imaginary = "0", const ComplexFormat & format = ComplexFormat::getDefault());
+	Complex(const std::string & real, const std::string & imaginary = "0", const ComplexFormat & format = ComplexFormat::getDefault());
 #if defined(UNICODE)
-	Complex(const wchar_t * real, const wchar_t * imaginary = L"0");
-	Complex(const std::wstring & real, const std::wstring & imaginary = L"0");
+	Complex(const wchar_t * real, const wchar_t * imaginary = L"0", const ComplexFormat & format = ComplexFormat::getDefault());
+	Complex(const std::wstring & real, const std::wstring & imaginary = L"0", const ComplexFormat & format = ComplexFormat::getDefault());
 #endif
 	Complex(const BigDecimal & real, const BigDecimal & imaginary = 0);
 	Complex(const int real, const int imaginary = 0);

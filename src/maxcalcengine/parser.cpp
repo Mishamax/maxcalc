@@ -36,8 +36,10 @@ namespace MaxCalcEngine {
 */
 Parser::Parser(const tstring & expr, const ParserContext & context)
 {
-	m_expr = expr;
-	m_context = context;
+	expr_ = expr;
+	context_ = context;
+	curChar_ = expr_.begin();
+	curToken_ = tokens_.begin();
 }
 
 /*!
@@ -45,9 +47,29 @@ Parser::Parser(const tstring & expr, const ParserContext & context)
 */
 ParserContext Parser::parse()
 {
-	lexicalAnalysis();
-	syntaxAnalysis();
-	return m_context;
+	try
+	{
+		lexicalAnalysis();
+		syntaxAnalysis();
+	}
+	catch (std::exception & ex)
+	{
+		reset();
+		throw;
+	}
+
+	reset();
+	return context_;
+}
+
+/*!
+	Resets the state of the parser (but keeps the expression and the context).
+*/
+void Parser::reset()
+{
+	curChar_ = expr_.begin();
+	curToken_ = tokens_.begin();
+	tokens_.clear();
 }
 
 #pragma region Lexical analyzer
@@ -57,9 +79,9 @@ ParserContext Parser::parse()
 */
 void Parser::lexicalAnalysis()
 {
-	curChar = m_expr.begin();
+	curChar_ = expr_.begin();
 
-	while (curChar != m_expr.end())
+	while (curChar_ != expr_.end())
 	{
 		if (analyzeBinaryOperators())
 			continue;
@@ -77,18 +99,18 @@ void Parser::lexicalAnalysis()
 */
 bool Parser::analyzeBinaryOperators()
 {
-	if (_T('+') == *curChar)
-		tokens.push_back(Token(ADDITION, _T("+")));
-	else if (_T('-') == *curChar)
-		tokens.push_back(Token(SUBTRACTION, _T("-")));
-	else if (_T('*') == *curChar)
-		tokens.push_back(Token(MULTIPLICATION, _T("*")));
-	else if (_T('/') == *curChar)
-		tokens.push_back(Token(DIVISION, _T("/")));
+	if (_T('+') == *curChar_)
+		tokens_.push_back(Token(ADDITION, _T("+")));
+	else if (_T('-') == *curChar_)
+		tokens_.push_back(Token(SUBTRACTION, _T("-")));
+	else if (_T('*') == *curChar_)
+		tokens_.push_back(Token(MULTIPLICATION, _T("*")));
+	else if (_T('/') == *curChar_)
+		tokens_.push_back(Token(DIVISION, _T("/")));
 	else
 		return false;
 
-	++curChar;
+	++curChar_;
 	return true;
 }
 
@@ -97,34 +119,44 @@ bool Parser::analyzeBinaryOperators()
 */
 bool Parser::analyzeNumbers()
 {
-	// TODO: add exponents support
-	// TODO: add complex numbers support
 	// TODO: support for spaces in exponential part of the number
 
 	tstring number = _T("");
 	bool thereIsPoint = false;
+	bool thereIsImaginaryOne = false;
+
+	const tchar decimalSeparator = context_.numberFormat().decimalSeparatorTChar();
+	const tchar imaginaryOne = context_.numberFormat().imaginaryOneTChar();
 
 	// Check if it is a number
-	if (!isdigit(*curChar) && *curChar != _T('.'))
+	if (!isdigit(*curChar_) && *curChar_ != decimalSeparator && *curChar_ != imaginaryOne)
 		return false;
 
-	// Process decimal point at the beginning of the number
-	if (_T('.') == *curChar)
+	// Process imaginary one at the beginning of the number
+	if (imaginaryOne == *curChar_)
 	{
-		number += *curChar++;
+		++curChar_;
+		tokens_.push_back(Token(IMAGINARY_ONE, imaginaryOne));
+		thereIsImaginaryOne = true;
+	}
+
+	// Process decimal point at the beginning of the number
+	if (expr_.end() != curChar_ && decimalSeparator == *curChar_)
+	{
+		number += *curChar_++;
 		thereIsPoint = true;
 
 		// TODO: throw right exception
-		if (m_expr.end() == curChar)
+		if (expr_.end() == curChar_)
 			throw std::exception();
 	}
 
 	// Process digits
-	while (m_expr.end() != curChar && isdigit(*curChar))
-		number += *curChar++;
+	while (expr_.end() != curChar_ && isdigit(*curChar_))
+		number += *curChar_++;
 
 	// Process decimal point in the middle or at the end of the number
-	if (m_expr.end() != curChar && _T('.') == *curChar)
+	if (expr_.end() != curChar_ && decimalSeparator == *curChar_)
 	{
 		// Throw an exception if there was a decimal point already
 		if (thereIsPoint)
@@ -132,34 +164,46 @@ bool Parser::analyzeNumbers()
 			// TODO: throw right exception
 			throw std::exception();
 		}
-		else
-		{
-			number += *curChar++;
-			thereIsPoint = true;
-		}
+
+		number += *curChar_++;
 
 		// Process digits
-		while(m_expr.end() != curChar && isdigit(*curChar))
-			number += *curChar++;
+		while(expr_.end() != curChar_ && isdigit(*curChar_))
+			number += *curChar_++;
 	}
 
 	// Process exponential part
-	if (m_expr.end() != curChar && (_T('e') == *curChar || _T('E') == *curChar))
+	if (expr_.end() != curChar_ && (_T('e') == *curChar_ || _T('E') == *curChar_))
 	{
 		// Add 'e'
-		number += *curChar++;
+		number += *curChar_++;
 		// Add sign after 'e' if it exists
-		if (m_expr.end() != curChar && (_T('-') == *curChar || _T('+') == *curChar))
-			number += *curChar++;
+		if (expr_.end() != curChar_ && (_T('-') == *curChar_ || _T('+') == *curChar_))
+			number += *curChar_++;
 		// TODO: throw right exception
-		if (m_expr.end() == curChar)
+		if (expr_.end() == curChar_)
 			throw std::exception();
 		// Process exponent digits
-		while(m_expr.end() != curChar && isdigit(*curChar))
-			number += *curChar++;
+		while(expr_.end() != curChar_ && isdigit(*curChar_))
+			number += *curChar_++;
 	}
 
-	tokens.push_back(Token(NUMBER, number));
+	// Process imaginary one at the end of the number
+	if (expr_.end() != curChar_ && imaginaryOne == *curChar_)
+	{
+		// Throw an exception if there was an imaginary one already
+		if (thereIsImaginaryOne)
+		{
+			// TODO: throw right exception
+			throw std::exception();
+		}
+
+		++curChar_;
+		tokens_.push_back(Token(IMAGINARY_ONE, imaginaryOne));
+	}
+
+	if (number != _T(""))
+		tokens_.push_back(Token(NUMBER, number));
 
 	return true;
 }
@@ -170,12 +214,12 @@ bool Parser::analyzeNumbers()
 bool Parser::skipSpaces()
 {
 	// Check if it is a space
-	if (!isspace(*curChar))
+	if (!isspace(*curChar_))
 		return false;
 
 	// Skip spaces
-	while (m_expr.end() != curChar && isspace(*curChar))
-		++curChar;
+	while (expr_.end() != curChar_ && isspace(*curChar_))
+		++curChar_;
 
 	return true;
 }
@@ -189,9 +233,9 @@ bool Parser::skipSpaces()
 */
 void Parser::syntaxAnalysis()
 {
-	curToken = tokens.begin();
+	curToken_ = tokens_.begin();
 
-	m_context.setResult(parseAddSub());
+	context_.setResult(parseAddSub());
 }
 
 /*!
@@ -201,16 +245,16 @@ Complex Parser::parseAddSub()
 {
 	Complex result = parseMulDiv();
 
-	while (curToken != tokens.end())
+	while (curToken_ != tokens_.end())
 	{
-		if (ADDITION == curToken->token)
+		if (ADDITION == curToken_->token)
 		{
-			++curToken;
+			++curToken_;
 			result += parseMulDiv();
 		}
-		else if (SUBTRACTION == curToken->token)
+		else if (SUBTRACTION == curToken_->token)
 		{
-			++curToken;
+			++curToken_;
 			result -= parseMulDiv();
 		}
 		else
@@ -228,16 +272,16 @@ Complex Parser::parseMulDiv()
 {
 	Complex result = parseNumbers();
 
-	while (curToken != tokens.end())
+	while (curToken_ != tokens_.end())
 	{
-		if (MULTIPLICATION == curToken->token)
+		if (MULTIPLICATION == curToken_->token)
 		{
-			++curToken;
+			++curToken_;
 			result *= parseNumbers();
 		}
-		else if (DIVISION == curToken->token)
+		else if (DIVISION == curToken_->token)
 		{
-			++curToken;
+			++curToken_;
 			result /= parseNumbers();
 		}
 		else
@@ -253,12 +297,42 @@ Complex Parser::parseMulDiv()
 */
 Complex Parser::parseNumbers()
 {
-	if (curToken != tokens.end() && NUMBER == curToken->token)
+	BigDecimal result;
+	bool thereIsResult = false;
+	bool isComplex = false;
+
+	if (curToken_ != tokens_.end() && IMAGINARY_ONE == curToken_->token)
 	{
-		BigDecimal result = BigDecimal(curToken->str);
-		++curToken;
-		return result;
+		result = 1;
+		isComplex = true;
+		thereIsResult = true;
+		++curToken_;
 	}
+
+	if (curToken_ != tokens_.end() && NUMBER == curToken_->token)
+	{
+		result = BigDecimal(curToken_->str);
+		thereIsResult = true;
+		++curToken_;
+	}
+	
+	if (curToken_ != tokens_.end() && IMAGINARY_ONE == curToken_->token)
+	{
+		if (!isComplex)
+		{
+			isComplex = true;
+			thereIsResult = true;
+			++curToken_;
+		}
+		else
+		{
+			// TODO: throw right exception
+			throw std::exception();
+		}
+	}
+	
+	if (thereIsResult)
+		return isComplex ? Complex(0, result) : result;
 
 	// TODO: throw right exception
 	throw std::exception();

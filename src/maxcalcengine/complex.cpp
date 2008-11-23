@@ -64,19 +64,17 @@ Complex::Complex()
 /*!
 	Constructs a new instance of Complex class from given \a real and \a imaginary parts.
 */
-Complex::Complex(const char * real, const char * imaginary)
+Complex::Complex(const char * real, const char * imaginary, const ComplexFormat & format) :
+	re(real, format), im(imaginary, format)
 {
-	re = real;
-	im = imaginary;
 }
 
 /*!
 	Constructs a new instance of Complex class from given \a real and \a imaginary parts.
 */
-Complex::Complex(const std::string & real, const std::string & imaginary)
+Complex::Complex(const std::string & real, const std::string & imaginary, const ComplexFormat & format) :
+	re(real, format), im(imaginary, format)
 {
-	re = real;
-	im = imaginary;
 }
 
 #if defined(UNICODE)
@@ -84,19 +82,17 @@ Complex::Complex(const std::string & real, const std::string & imaginary)
 /*!
 	Constructs a new instance of Complex class from given \a real and \a imaginary parts.
 */
-Complex::Complex(const wchar_t * real, const wchar_t * imaginary)
+Complex::Complex(const wchar_t * real, const wchar_t * imaginary, const ComplexFormat & format) :
+	re(real, format), im(imaginary, format)
 {
-	re = real;
-	im = imaginary;
 }
 
 /*!
 	Constructs a new instance of Complex class from given \a real and \a imaginary parts.
 */
-Complex::Complex(const std::wstring & real, const std::wstring & imaginary)
+Complex::Complex(const std::wstring & real, const std::wstring & imaginary, const ComplexFormat & format) :
+	re(real, format), im(imaginary, format)
 {
-	re = real;
-	im = imaginary;
 }
 
 #endif // #if defined(UNICODE)
@@ -179,7 +175,7 @@ std::string Complex::toString(const ComplexFormat & format) const
 			result += '-';
 		}
 
-		result += imPart + format.imaginaryOne();
+		result += imPart + format.imaginaryOneChar();
 	}
 
 	return result;

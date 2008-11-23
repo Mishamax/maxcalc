@@ -64,13 +64,15 @@ namespace MaxCalcEngine {
 /*!
 	Contructs a new instance of BigDecimalFormat.
 */
-BigDecimalFormat::BigDecimalFormat(const int precision, const NumberFormat numberFormat, const ExponentCase exponentCase)
+BigDecimalFormat::BigDecimalFormat(const int precision, const NumberFormat numberFormat,
+								   const ExponentCase exponentCase, const DecimalSeparator decimalSeparator)
 {
 	assert(precision >= 1 && precision <= MAX_IO_PRECISION);
 
-	m_precision = precision;
-	m_numberFormat = numberFormat;
-	m_exponentCase = exponentCase;
+	precision_ = precision;
+	numberFormat_ = numberFormat;
+	exponentCase_ = exponentCase;
+	decimalSeparator_ = decimalSeparator;
 }
 
 } // namespace MaxCalcEngine
