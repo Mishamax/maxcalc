@@ -15,6 +15,12 @@ private slots:
 	void complexNumbers();
 	void addSub();
 	void mulDiv();
+	void unaryPlusMinus();
+	void power();
+	void powerAndUnaryPlusMinus();
+	void brackets();
+	void constsAndVars();
+	void functions();
 	void fails();
 };
 

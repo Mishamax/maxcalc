@@ -205,6 +205,8 @@ void ComplexTest::binaryOperators()
 	COMPARE_BIGDECIMAL(result.re.toString().c_str(), "0.44");
 	COMPARE_BIGDECIMAL(result.im.toString().c_str(), "0.08");
 
+	COMPARE_COMPLEX(Complex(1) / Complex::i, -Complex::i);
+
 	try
 	{
 		result = num1 / Complex();
@@ -214,7 +216,24 @@ void ComplexTest::binaryOperators()
 	{
 	}
 
-	// TODO: add tests for +=, -=, *=, /=
+	// TODO: add more tests for +=, -=, *=, /=
+	result = 1;
+	result += Complex::i;
+	COMPARE_COMPLEX(result, Complex(1, 1));
+
+	result -= Complex::i;
+	COMPARE_COMPLEX(result, 1);
+
+	result = 1;
+	result /= Complex::i;
+	COMPARE_COMPLEX(result, -Complex::i);
+
+	result = 1;
+	result *= 2;
+	COMPARE_COMPLEX(result, 2);
+
+	result *= Complex::i;
+	COMPARE_COMPLEX(result, Complex::i * 2);
 }
 
 void ComplexTest::comparisonOperators()

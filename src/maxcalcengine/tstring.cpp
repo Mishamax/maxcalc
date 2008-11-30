@@ -20,6 +20,8 @@
 // Local
 #include "tstring.h"
 
+namespace MaxCalcEngine {
+
 #if defined(UNICODE)
 
 // STL
@@ -28,7 +30,6 @@
 
 using namespace std;
 
-namespace MaxCalcEngine {
 
 typedef codecvt<wchar_t, char, mbstate_t> CodeCvt;
 
@@ -120,6 +121,30 @@ codecvt_base::result wideCharToChar(const wchar_t * from, size_t fromLength, cha
 	return res;
 }
 
-} // namespace MaxCalcEngine
-
 #endif // #if defined(UNICODE)
+
+void strToLower(tchar * str)
+{
+	for (tchar * pos = str; pos; ++pos)
+		*pos = totlower(*pos);
+}
+
+void strToLower(tstring & str)
+{
+	for (tstring::iterator pos = str.begin(); pos != str.end(); ++pos)
+		*pos = totlower(*pos);
+}
+
+void strToUpper(tchar * str)
+{
+	for (tchar * pos = str; pos; ++pos)
+		*pos = totupper(*pos);
+}
+
+void strToUpper(tstring & str)
+{
+	for (tstring::iterator pos = str.begin(); pos != str.end(); ++pos)
+		*pos = totupper(*pos);
+}
+
+} // namespace MaxCalcEngine

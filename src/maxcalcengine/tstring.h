@@ -23,6 +23,7 @@
 // STL
 #include <string>
 #include <locale>
+#include <cctype>
 
 namespace MaxCalcEngine {
 
@@ -42,6 +43,15 @@ std::codecvt_base::result wideStringToString(const std::wstring & from, std::str
 std::codecvt_base::result charToWideChar(const char * from, size_t fromLength, wchar_t * to, size_t toLength, const char * localeName = "");
 std::codecvt_base::result wideCharToChar(const wchar_t * from, size_t fromLength, char * to, size_t toLength, const char * localeName = "");
 
+// Character case conversion functions
+#define totlower(str) towlower(str)
+#define totupper(str) towupper(str)
+
+// Character handling functions
+#define istdigit(c) iswdigit(c)
+#define istalpha(c) iswalpha(c)
+
+
 #else // #if defined(UNICODE)
 
 // String literal
@@ -51,7 +61,20 @@ std::codecvt_base::result wideCharToChar(const wchar_t * from, size_t fromLength
 typedef char tchar;
 typedef std::string tstring;
 
+// Character case conversion functions
+#define totlower(str) tolower(str)
+#define totupper(str) toupper(str)
+
+// Character handling functions
+#define istdigit(c) isdigit(c)
+#define istalpha(c) isalpha(c)
+
 #endif // #if defined(UNICODE)
+
+void strToLower(tchar * str);
+void strToLower(tstring & str);
+void strToUpper(tchar * str);
+void strToUpper(tstring & str);
 
 } // namespace MaxCalcEngine
 

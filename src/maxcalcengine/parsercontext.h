@@ -38,6 +38,7 @@ public:
 	// TODO: throw right exception
 	inline Complex result() const { if (resultExists_) return result_; else throw std::exception(); }
 	inline void setResult(const Complex & result) { result_ = result; resultExists_ = true; }
+	inline bool resultExists() const { return resultExists_; }
 
 	inline ComplexFormat numberFormat() { return numberFormat_; }
 	inline void setNumberFormat(const ComplexFormat & numberFormat) { numberFormat_ = numberFormat; }

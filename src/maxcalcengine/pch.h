@@ -29,5 +29,8 @@
 #include <cassert>
 #include <exception>
 #include <sstream>
+#include <cctype>
+#include <list>
+#include <vector>
 
 #endif // PCH_H

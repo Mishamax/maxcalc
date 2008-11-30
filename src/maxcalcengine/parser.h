@@ -26,6 +26,7 @@
 #include "complex.h"
 // STL
 #include <list>
+#include <vector>
 
 namespace MaxCalcEngine {
 
@@ -36,12 +37,13 @@ namespace MaxCalcEngine {
 class Parser
 {
 public:
+	Parser();
 	Parser(const tstring & expr, const ParserContext & context);
 
 	ParserContext parse();
 
 	inline tstring expression() const { return expr_; }
-	inline void setExpression(const tstring & expr) { expr_ = expr; }
+	inline void setExpression(const tstring & expr) { expr_ = expr; strToLower(expr_); }
 
 	inline ParserContext context() const { return context_; }
 	inline void setContext(const ParserContext & context) { context_ = context; }
@@ -64,12 +66,17 @@ private:
 
 	enum Tokens
 	{
-		ADDITION,
-		SUBTRACTION,
-		MULTIPLICATION,
-		DIVISION,
+		PLUS,
+		MINUS,
+		MULTIPLY,
+		DIVIDE,
+		POWER,
+		OPENING_BRACKET,
+		CLOSING_BRACKET,
+		COMMA,
 		NUMBER,
-		IMAGINARY_ONE
+		IMAGINARY_ONE,
+		IDENTIFIER
 	};
 
 	struct Token
@@ -85,8 +92,9 @@ private:
 	tstring::const_iterator curChar_;	// Current char of expression
 
 	void lexicalAnalysis();
-	bool analyzeBinaryOperators();
+	bool analyzeOperators();
 	bool analyzeNumbers();
+	bool analyzeIdentifiers();
 	bool skipSpaces();
 
 
@@ -98,7 +106,14 @@ private:
 	void syntaxAnalysis();
 	Complex parseAddSub();
 	Complex parseMulDiv();
+	Complex parsePower();
+	Complex parseUnaryPlusMinus();
+	Complex parseBrackets();
+	Complex parseFunctions();
+	Complex parseConstsVars();
 	Complex parseNumbers();
+
+	bool parseFunctionArguments(std::vector<Complex> & args);
 };
 
 } // namespace MaxCalcEngine

@@ -46,7 +46,6 @@ namespace MaxCalcEngine {
 */
 const Complex Complex::i = Complex(0, 1);
 
-#pragma region Constructors
 
 //****************************************************************************
 // Constructors
@@ -133,9 +132,6 @@ Complex::Complex(const Complex & num)
 	im = num.im;
 }
 
-#pragma endregion
-
-#pragma region Conversion functions
 
 //****************************************************************************
 // Conversion functions
@@ -200,9 +196,6 @@ std::wstring Complex::toWideString(const ComplexFormat & format) const
 
 #endif // #if defined(UNICODE)
 
-#pragma endregion
-
-#pragma region Operators
 
 //****************************************************************************
 // Operators
@@ -280,7 +273,10 @@ Complex Complex::operator-=(const Complex & num)
 */
 Complex Complex::operator*=(const Complex & num)
 {
-	return Complex(re = re * num.re - im * num.im, im = re * num.im + im * num.re);
+	Complex result = Complex(re * num.re - im * num.im, re * num.im + im * num.re);
+	re = result.re;
+	im = result.im;
+	return result;
 }
 
 /*!
@@ -291,7 +287,10 @@ Complex Complex::operator/=(const Complex & num)
 	BigDecimal sqrt = num.re * num.re + num.im * num.im;
 	if (sqrt.isZero())
 		throw DivisionByZeroException();
-	return Complex(re = (re * num.re + im * num.im) / sqrt, im = (im * num.re - re * num.im) / sqrt);
+	Complex result = Complex((re * num.re + im * num.im) / sqrt, (im * num.re - re * num.im) / sqrt);
+	re = result.re;
+	im = result.im;
+	return result;
 }
 
 /*!
@@ -310,9 +309,6 @@ bool Complex::operator!=(const Complex & num) const
 	return (re != num.re) || (im != num.im);
 }
 
-#pragma endregion
-
-#pragma region Misc functions
 
 //****************************************************************************
 // Misc functions
@@ -326,9 +322,6 @@ bool Complex::isZero() const
 	return re.isZero() && im.isZero();
 }
 
-#pragma endregion
-
-#pragma region Math functions
 
 //****************************************************************************
 // Math functions
@@ -379,6 +372,26 @@ Complex Complex::ln(const Complex & num)
 	if (num.im.isZero() && num.re >= 0)
 		return BigDecimal::ln(num.re);
 	return Complex(0, arg(num)) + BigDecimal::ln(abs(num));
+}
+
+/*!
+	Calculates base-2 logarithm of \a num.
+
+	log2(num) = ln(num) / ln(2)
+*/
+Complex Complex::log2(const Complex & num)
+{
+	return ln(num) / ln(2);
+}
+
+/*!
+	Calculates base-10 logarithm of \a num.
+
+	log10(num) = ln(num) / ln(10)
+*/
+Complex Complex::log10(const Complex & num)
+{
+	return ln(num) / ln(10);
 }
 
 /*!
@@ -444,6 +457,32 @@ Complex Complex::cos(const Complex & num)
 }
 
 /*!
+	Calculates tangent of \a num.
+
+	tan(num) = sin(num) / cos(num)
+*/
+Complex Complex::tan(const Complex & num)
+{
+	Complex cosine = cos(num);
+	if (cosine.isZero())
+		throw InvalidArgumentInTanException();
+	return sin(num) / cosine;
+}
+
+/*!
+	Calculates cotangent of \a num.
+
+	cot(num) = cos(num) / sin(num)
+*/
+Complex Complex::cot(const Complex & num)
+{
+	Complex sine = sin(num);
+	if (sine.isZero())
+		throw InvalidArgumentInTanException();
+	return cos(num) / sine;
+}
+
+/*!
 	Calculates arcsine of \a num.
 
 	arcsin(num) = -i * ln(i * (num + sqrt(num^2 - 1)))
@@ -486,6 +525,7 @@ Complex Complex::arccos(const Complex & num)
 Complex Complex::arctan(const Complex & num)
 {
 	// TODO: handle positive infinite when re(num) == 0 and abs(im(a) + im(i)) == 0
+	// TODO: maybe is is better to calculate through arcsin (http://en.wikipedia.org/wiki/Arctangent)
 	if (num.im.isZero())
 		return BigDecimal::arctan(num.re);
 	return (i / 2) * ln((i + num) / (i - num));
@@ -533,6 +573,32 @@ Complex Complex::cosh(const Complex & num)
 }
 
 /*!
+	Calculates hyperbolical tangent of \a num.
+
+	tanh(num) = sinh(num) / cosh(num)
+*/
+Complex Complex::tanh(const Complex & num)
+{
+	Complex cosineh = cosh(num);
+	if (cosineh.isZero())
+		throw InvalidArgumentInTanException();
+	return sinh(num) / cosineh;
+}
+
+/*!
+	Calculates hyperbolical cotangent of \a num.
+
+	coth(num) = cosh(num) / sinh(num)
+*/
+Complex Complex::coth(const Complex & num)
+{
+	Complex sineh = sinh(num);
+	if (sineh.isZero())
+		throw InvalidArgumentInTanException();
+	return cosh(num) / sineh;
+}
+
+/*!
 	Calculates hyperbolical arcsine of \a num.
 
 	arcsinh(num) = ln(num + sqrt(num^2 + 1))
@@ -572,6 +638,5 @@ Complex Complex::arccoth(const Complex & num)
 	return ln((num + 1) / (num - 1)) / 2;
 }
 
-#pragma endregion
 
 } // namespace MaxCalcEngine

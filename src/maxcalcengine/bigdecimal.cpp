@@ -93,8 +93,6 @@ const BigDecimal BigDecimal::E = BigDecimal::exp(1);
 const BigDecimal BigDecimal::PI = BigDecimal::pi();
 
 
-#pragma region Constructors
-
 //****************************************************************************
 // Constructors
 //****************************************************************************
@@ -185,9 +183,6 @@ BigDecimal::BigDecimal(const double num)
 	construct(stream.str().c_str(), BigDecimalFormat::getDefault());
 }
 
-#pragma endregion
-
-#pragma region Conversion functions
 
 //****************************************************************************
 // Conversion functions
@@ -294,9 +289,6 @@ unsigned BigDecimal::toUInt() const
 	return result;
 }
 
-#pragma endregion
-
-#pragma region Misc functions
 
 //****************************************************************************
 // Misc functions
@@ -386,9 +378,6 @@ BigDecimal BigDecimal::ceil() const
 	return ((*this - integral).isZero() || isNegative()) ? integral : integral + 1;
 }
 
-#pragma endregion
-
-#pragma region Operators
 
 //****************************************************************************
 // Operators
@@ -793,9 +782,6 @@ bool BigDecimal::operator>=(const BigDecimal & num) const
 	return (compare(number_, num.number_) >= 0);
 }
 
-#pragma endregion
-
-#pragma region Math functions
 
 //****************************************************************************
 // Math functions
@@ -1139,9 +1125,6 @@ BigDecimal BigDecimal::arccot(const BigDecimal & num)
 	return PI / 2 - arctan(num);
 }
 
-#pragma endregion
-
-#pragma region Internal functions
 
 //****************************************************************************
 // Internal functions
@@ -1265,6 +1248,5 @@ BigDecimal BigDecimal::FMA(const BigDecimal & multiplier1, const BigDecimal & mu
 	return result;
 }
 
-#pragma endregion
 
 } // namespace MaxCalcEngine

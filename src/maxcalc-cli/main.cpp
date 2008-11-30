@@ -26,6 +26,15 @@
 using namespace std;
 using namespace MaxCalcEngine;
 
+bool parseCommand(const tstring & expr)
+{
+	tstring cmd = expr;
+	strToLower(cmd);
+
+	if (cmd == _T("exit") || cmd == _T("quit") || cmd == _T("#exit") || cmd == _T("#quit"))
+		exit(0);
+}
+
 int main()
 {
 	const int exprLength = 1000;
@@ -33,6 +42,8 @@ int main()
 	tstring expr;
 
 	ParserContext context;
+	Parser parser;
+	parser.setContext(context);
 	while (true)
 	{
 		if (fgetts(charExpr, exprLength, stdin) == NULL)
@@ -41,11 +52,15 @@ int main()
 		// Remove '\n'
 		if (expr.length() > 0)
 			expr.erase(expr.length() - 1, 1);
-		
-		if (_T("exit") == expr)
-			break;
 
-		Parser parser(expr, context);
+		if (parseCommand(expr))
+			continue;
+
+		// TODO: better check for empty expression
+		if (expr.empty())
+			continue;
+
+		parser.setExpression(expr);
 
 		try
 		{
