@@ -22,6 +22,9 @@
 #include "parsercontext.h"
 // Local
 #include "unicode.h"
+// STL
+#include <clocale>
+#include <cstdlib>
 
 using namespace std;
 using namespace MaxCalcEngine;
@@ -33,6 +36,8 @@ bool parseCommand(const tstring & expr)
 
 	if (cmd == _T("exit") || cmd == _T("quit") || cmd == _T("#exit") || cmd == _T("#quit"))
 		exit(0);
+
+	return false;
 }
 
 int main()
@@ -40,6 +45,9 @@ int main()
 	const int exprLength = 1000;
 	tchar charExpr[exprLength];
 	tstring expr;
+
+	// Without that locale may be set incorrecly on Linux (non-latic characters may not work)
+	setlocale(LC_ALL, "");
 
 	ParserContext context;
 	Parser parser;
@@ -64,7 +72,7 @@ int main()
 
 		try
 		{
-			tcout << parser.parse().result().toString().c_str() << endl;
+			tcout << _T("  ") << parser.parse().result().toString().c_str() << endl;
 		}
 		catch (...)
 		{

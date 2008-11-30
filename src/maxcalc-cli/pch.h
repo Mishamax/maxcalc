@@ -22,5 +22,7 @@
 
 // STL
 #include <iostream>
+#include <clocale>
+#include <cstdlib>
 
 #endif // PCH_H

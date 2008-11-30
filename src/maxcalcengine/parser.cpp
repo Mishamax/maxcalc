@@ -156,8 +156,6 @@ bool Parser::analyzeIdentifiers()
 */
 bool Parser::analyzeNumbers()
 {
-	// TODO: support for spaces in exponential part of the number
-
 	tstring number = _T("");
 	bool thereIsPoint = false;
 	bool thereIsImaginaryOne = false;
@@ -175,6 +173,7 @@ bool Parser::analyzeNumbers()
 		++curChar_;
 		tokens_.push_back(Token(IMAGINARY_ONE, imaginaryOne));
 		thereIsImaginaryOne = true;
+		skipSpaces();
 	}
 
 	// Process decimal point at the beginning of the number
@@ -205,25 +204,31 @@ bool Parser::analyzeNumbers()
 		number += *curChar_++;
 
 		// Process digits
-		while(expr_.end() != curChar_ && isdigit(*curChar_))
+		while(expr_.end() != curChar_ && istdigit(*curChar_))
 			number += *curChar_++;
 	}
+
+	skipSpaces();
 
 	// Process exponential part
 	if (expr_.end() != curChar_ && (_T('e') == *curChar_ || _T('E') == *curChar_))
 	{
 		// Add 'e'
 		number += *curChar_++;
+		skipSpaces();
 		// Add sign after 'e' if it exists
 		if (expr_.end() != curChar_ && (_T('-') == *curChar_ || _T('+') == *curChar_))
 			number += *curChar_++;
+		skipSpaces();
 		// TODO: throw right exception
 		if (expr_.end() == curChar_)
 			throw std::exception();
 		// Process exponent digits
-		while(expr_.end() != curChar_ && isdigit(*curChar_))
+		while(expr_.end() != curChar_ && istdigit(*curChar_))
 			number += *curChar_++;
 	}
+
+	skipSpaces();
 
 	// Process imaginary one at the end of the number
 	if (expr_.end() != curChar_ && imaginaryOne == *curChar_)
@@ -251,7 +256,7 @@ bool Parser::analyzeNumbers()
 bool Parser::skipSpaces()
 {
 	// Check if it is a space
-	if (!isspace(*curChar_))
+	if (expr_.end() == curChar_ || !isspace(*curChar_))
 		return false;
 
 	// Skip spaces

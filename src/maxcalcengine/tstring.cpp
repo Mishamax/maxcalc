@@ -25,7 +25,7 @@ namespace MaxCalcEngine {
 #if defined(UNICODE)
 
 // STL
-#include <locale>
+#include <clocale>
 #include <cassert>
 
 using namespace std;

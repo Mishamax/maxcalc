@@ -25,7 +25,7 @@
 
 // STL
 #include <string>
-#include <locale>
+#include <clocale>
 #include <cassert>
 #include <exception>
 #include <sstream>

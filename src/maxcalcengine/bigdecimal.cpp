@@ -23,7 +23,7 @@
 #include "exceptions.h"
 
 // STL
-#include <locale>
+#include <clocale>
 #include <cassert>
 #include <sstream>
 
