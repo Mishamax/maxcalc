@@ -21,7 +21,11 @@ private slots:
 	void brackets();
 	void constsAndVars();
 	void functions();
+	void functionsBasic();
+	void functionsTrig();
+	void functionsLog();
 	void fails();
+	void realWorld();
 };
 
 #endif // PARSERTEST_H

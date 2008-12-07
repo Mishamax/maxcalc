@@ -501,7 +501,7 @@ Complex Parser::parseConstsVars()
 			++curToken_;
 			return BigDecimal::E;
 		}
-		else if (_T("res") == curToken_->str)
+		else if (_T("res") == curToken_->str || _T("result") == curToken_->str)
 		{
 			++curToken_;
 			if (context_.resultExists())
