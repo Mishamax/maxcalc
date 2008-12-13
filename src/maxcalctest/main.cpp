@@ -9,7 +9,7 @@
 int main()
 {
 	BigDecimalTest bigDecimalTest;
-//	QTest::qExec(&bigDecimalTest);
+	QTest::qExec(&bigDecimalTest);
 
 	ComplexTest complexTest;
 	QTest::qExec(&complexTest);

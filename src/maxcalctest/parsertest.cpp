@@ -15,9 +15,7 @@ void ParserTest::basic()
 	FAIL_TEST(context.result(), "No result", std::exception);
 
 	PARSER_TEST(parser, _T("0"), 0);
-
 	PARSER_FAIL_TEST(parser, _T("     "), "Empty expression", std::exception);
-
 	PARSER_TEST(parser, _T("  0 "), 0);
 }
 
@@ -40,117 +38,41 @@ void ParserTest::numbers()
 
 void ParserTest::complexNumbers()
 {
-	ParserContext context;
-	Parser parser(_T("i"), context);
-	context = parser.parse();
-	Complex result = context.result();
-	COMPARE_COMPLEX(context.result(), Complex::i);
+	Parser parser;
 
-	parser.setExpression(_T("1i"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), Complex::i);
-
-	parser.setExpression(_T("i1"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), Complex::i);
-
-	parser.setExpression(_T("0i"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), 0);
-
-	parser.setExpression(_T("2.56i"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), Complex("0", "2.56"));
-
-	parser.setExpression(_T("2e-3i"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), Complex("0", "0.002"));
-
-	parser.setExpression(_T("3e+4i"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), Complex(0, 30000));
-
-	parser.setExpression(_T("2.546e-3i"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), Complex("0", "0.002546"));
-
-	parser.setExpression(_T("2.11e+1i"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), Complex("0", "21.1"));
-
-	parser.setExpression(_T("i0"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), 0);
-
-	parser.setExpression(_T("i2.56"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), Complex("0", "2.56"));
-
-	parser.setExpression(_T("i2e-3"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), Complex("0", "0.002"));
-
-	parser.setExpression(_T("i3e+4"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), Complex(0, 30000));
-
-	parser.setExpression(_T("i2.546e-3"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), Complex("0", "0.002546"));
-
-	parser.setExpression(_T("i2.11e+1"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), Complex("0", "21.1"));
-
-	parser.setExpression(_T(".0i"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), 0);
-
-	parser.setExpression(_T("0.i"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), 0);
-
-	parser.setExpression(_T(".1i"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), Complex("0", "0.1"));
-
-	parser.setExpression(_T("i.1"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), Complex("0", "0.1"));
-
-	parser.setExpression(_T("1.i"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), Complex(0, 1));
-
-	parser.setExpression(_T("i1."));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), Complex(0, 1));
-
-	parser.setExpression(_T(".27863e-2i"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), Complex("0", "0.0027863"));
+	PARSER_TEST(parser, _T("i"), Complex::i);
+	PARSER_TEST(parser, _T("1i"), Complex::i);
+	PARSER_TEST(parser, _T("i1"), Complex::i);
+	PARSER_TEST(parser, _T("0i"), 0);
+	PARSER_TEST(parser, _T("2.56i"), Complex("0", "2.56"));
+	PARSER_TEST(parser, _T("2e-3i"), Complex("0", "0.002"));
+	PARSER_TEST(parser, _T("3e+4i"), Complex(0, 30000));
+	PARSER_TEST(parser, _T("2.546e-3i"), Complex("0", "0.002546"));
+	PARSER_TEST(parser, _T("2.11e+1i"), Complex("0", "21.1"));
+	PARSER_TEST(parser, _T("i0"), 0);
+	PARSER_TEST(parser, _T("i2.56"), Complex("0", "2.56"));
+	PARSER_TEST(parser, _T("i2e-3"), Complex("0", "0.002"));
+	PARSER_TEST(parser, _T("i3e+4"), Complex(0, 30000));
+	PARSER_TEST(parser, _T("i2.546e-3"), Complex("0", "0.002546"));
+	PARSER_TEST(parser, _T("i2.11e+1"), Complex("0", "21.1"));
+	PARSER_TEST(parser, _T(".0i"), 0);
+	PARSER_TEST(parser, _T("0.i"), 0);
+	PARSER_TEST(parser, _T(".1i"), Complex("0", "0.1"));
+	PARSER_TEST(parser, _T("i.1"), Complex("0", "0.1"));
+	PARSER_TEST(parser, _T("1.i"), Complex(0, 1));
+	PARSER_TEST(parser, _T("i1."), Complex(0, 1));
+	PARSER_TEST(parser, _T(".27863e-2i"), Complex("0", "0.0027863"));
+	PARSER_FAIL_TEST(parser, _T("ii"), "Incorrect expression", std::exception);
 }
 
 void ParserTest::addSub()
 {
-	ParserContext context;
-	Parser parser(_T("1-2+1"), context);
-	context = parser.parse();
-	Complex result = context.result();
-	COMPARE_COMPLEX(context.result(), 0);
+	Parser parser;
 
-	parser.setExpression(_T("  1  +  2  "));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), 3);
-
-	parser.setExpression(_T("  .1  +  2e-1 - i.1 + 2e-1i  "));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), Complex("0.3", "0.1"));
-
-	parser.setExpression(_T("1-2i+1e-2-.2"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), Complex("0.81", "-2"));
-
+	PARSER_TEST(parser, _T("1-2+1"), 0);
+	PARSER_TEST(parser, _T("  1  +  2  "), 3);
+	PARSER_TEST(parser, _T("  .1  +  2e-1 - i.1 + 2e-1i  "), Complex("0.3", "0.1"));
+	PARSER_TEST(parser, _T("1-2i+1e-2-.2"), Complex("0.81", "-2"));
 	PARSER_TEST(parser, _T("0+0"), "0");
 	PARSER_TEST(parser, _T("0+1"), "1");
 	PARSER_TEST(parser, _T("1+0"), "1");
@@ -159,19 +81,12 @@ void ParserTest::addSub()
 
 void ParserTest::mulDiv()
 {
-	ParserContext context;
-	Parser parser(_T("1/2"), context);
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), "0.5");
+	Parser parser;
 
-	parser.setExpression(_T("1 / 0"));
-	FAIL_TEST(parser.parse(), "Division by zero", std::exception);
+	PARSER_TEST(parser, _T("1/2"), "0.5");
+	PARSER_FAIL_TEST(parser, _T("1 / 0"), "Division by zero", std::exception);
 	COMPARE_COMPLEX(parser.context().result(), "0.5");
-
-	parser.setExpression(_T("1 / i"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), -Complex::i);
-
+	PARSER_TEST(parser, _T("1 / i"), -Complex::i);
 	PARSER_FAIL_TEST(parser, _T("1 / sin(0)"), "Division by zero", std::exception);
 	PARSER_FAIL_TEST(parser, _T("1/sin(pi)"), "Division by zero", std::exception);
 	PARSER_FAIL_TEST(parser, _T(" 1 / cos ( pi / 2 ) "), "Division by zero", std::exception);
@@ -181,31 +96,14 @@ void ParserTest::mulDiv()
 
 void ParserTest::unaryPlusMinus()
 {
-	ParserContext context;
-	Parser parser(_T("-1"), context);
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), "-1");
+	Parser parser;
 
-	parser.setExpression(_T("+1"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), "1");
-
-	parser.setExpression(_T("+++++1"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), "1");
-
-	parser.setExpression(_T("-----1"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), "-1");
-
-	parser.setExpression(_T("------1"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), "1");
-
-	parser.setExpression(_T("+-+-+-+-1"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), "1");
-
+	PARSER_TEST(parser, _T("-1"), "-1");
+	PARSER_TEST(parser, _T("+1"), "1");
+	PARSER_TEST(parser, _T("+++++1"), "1");
+	PARSER_TEST(parser, _T("-----1"), "-1");
+	PARSER_TEST(parser, _T("------1"), "1");
+	PARSER_TEST(parser, _T("+-+-+-+-1"), "1");
 	PARSER_TEST(parser, _T("-0"), 0);
 	PARSER_TEST(parser, _T("--1"), 1);
 	PARSER_TEST(parser, _T("---1"), -1);
@@ -218,24 +116,17 @@ void ParserTest::unaryPlusMinus()
 
 void ParserTest::power()
 {
-	ParserContext context;
-	Parser parser(_T("2^4"), context);
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), "16");
+	Parser parser;
+
+	PARSER_TEST(parser, _T("2^4"), "16");
 
 	// SpeedCrunch fails this test
-	parser.setExpression(_T("2^2^3"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), "64");
+	PARSER_TEST(parser, _T("2^2^3"), "64");
 
 	// SpeedCrunch fails this test
-	parser.setExpression(_T("2^3^2"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), "64");
+	PARSER_TEST(parser, _T("2^3^2"), "64");
 
-	parser.setExpression(_T("4 ^ 0.5"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), "2");
+	PARSER_TEST(parser, _T("4 ^ 0.5"), "2");
 
 	PARSER_TEST(parser, _T("0^0"), 1);
 	PARSER_TEST(parser, _T("1^0"), "1" );
@@ -278,132 +169,59 @@ void ParserTest::power()
 
 void ParserTest::powerAndUnaryPlusMinus()
 {
-	ParserContext context;
-	Parser parser(_T("2^+4"), context);
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), "16");
+	Parser parser;
 
-	parser.setExpression(_T("+2^+2^+3"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), "64");
-
-	parser.setExpression(_T("2^-1"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), "0.5");
-
-	parser.setExpression(_T("-2^-1"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), "-0.5");
-
-	parser.setExpression(_T("2^-2"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), "0.25");
-
-	parser.setExpression(_T("-4 ^ 2"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), "16");
-
-	parser.setExpression(_T("-1^0.5"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), Complex(0, 1));
-
-	parser.setExpression(_T(" - -+- 1 ^ +  ++- - 0.5"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), Complex(0, 1));
-
-	parser.setExpression(_T("-1^0.5^2"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), -1);
-
-	parser.setExpression(_T("-1^-0.5^-2"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), -1);
+	PARSER_TEST(parser, _T("2^+4"), "16");
+	PARSER_TEST(parser, _T("+2^+2^+3"), "64");
+	PARSER_TEST(parser, _T("2^-1"), "0.5");
+	PARSER_TEST(parser, _T("-2^-1"), "-0.5");
+	PARSER_TEST(parser, _T("2^-2"), "0.25");
+	PARSER_TEST(parser, _T("-4 ^ 2"), "16");
+	PARSER_TEST(parser, _T("-1^0.5"), Complex(0, 1));
+	PARSER_TEST(parser, _T(" - -+- 1 ^ +  ++- - 0.5"), Complex(0, 1));
+	PARSER_TEST(parser, _T("-1^0.5^2"), -1);
+	PARSER_TEST(parser, _T("-1^-0.5^-2"), -1);
 }
 
 void ParserTest::brackets()
 {
-	ParserContext context;
-	Parser parser(_T("(1)"), context);
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), 1);
+	Parser parser;
 
-	parser.setExpression(_T("2*(1+3)"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), 8);
-
-	parser.setExpression(_T("2^(3^2)"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), 512);
-
-	parser.setExpression(_T("2^-(2)"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), "0.25");
-
-	parser.setExpression(_T("(1)(2)"));
-	FAIL_TEST(parser.parse(), "Incorrect expression", std::exception);
+	PARSER_TEST(parser, _T("(1)"), 1);
+	PARSER_TEST(parser, _T("2*(1+3)"), 8);
+	PARSER_TEST(parser, _T("2^(3^2)"), 512);
+	PARSER_TEST(parser, _T("2^-(2)"), "0.25");
+	PARSER_FAIL_TEST(parser, _T("(1)(2)"), "Incorrect expression", std::exception);
 }
 
 void ParserTest::constsAndVars()
 {
-	ParserContext context;
-	Parser parser(_T("res"), context);
-	FAIL_TEST(parser.parse(), "No res", std::exception);
+	Parser parser;
 
-	parser.setExpression(_T("e"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), BigDecimal::E);
-
-	parser.setExpression(_T("pi"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), BigDecimal::PI);
-
-	parser.setExpression(_T("res"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), BigDecimal::PI);
+	PARSER_FAIL_TEST(parser, _T("res"), "No result", std::exception);
+	PARSER_FAIL_TEST(parser, _T("result"), "No result", std::exception);
+	PARSER_TEST(parser, _T("e"), BigDecimal::E);
+	PARSER_TEST(parser, _T("pi"), BigDecimal::PI);
+	PARSER_TEST(parser, _T("res"), BigDecimal::PI);
+	PARSER_TEST(parser, _T("result"), BigDecimal::PI);
 }
 
 void ParserTest::functions()
 {
-	ParserContext context;
-	Parser parser(_T("abs(-1)"), context);
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), 1);
+	Parser parser;
 
-	parser.setExpression(_T("abs(1"));
-	FAIL_TEST(parser.parse(), "Incorrect expression", std::exception);
-
-	parser.setExpression(_T("sqr(-2)"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), 4);
-
-	parser.setExpression(_T("sqrt(-4)"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), Complex::i * 2);
-
-	parser.setExpression(_T("pow(2, -2)"));
-	context = parser.parse();
-	COMPARE_COMPLEX(context.result(), "0.25");
-
-	parser.setExpression(_T("pow(2 -2)"));
-	FAIL_TEST(parser.parse(), "Incorrect expression", std::exception);
-
-	parser.setExpression(_T("pow(2,, -2)"));
-	FAIL_TEST(parser.parse(), "Incorrect expression", std::exception);
-
-	parser.setExpression(_T("pow(2, -2, 3)"));
-	FAIL_TEST(parser.parse(), "Incorrect expression", std::exception);
-
-	parser.setExpression(_T("pow(2, 3"));
-	FAIL_TEST(parser.parse(), "Incorrect expression", std::exception);
-
-	parser.setExpression(_T("sin 3"));
-	FAIL_TEST(parser.parse(), "Incorrect expression", std::exception);
-
-	parser.setExpression(_T("sin3)"));
-	FAIL_TEST(parser.parse(), "Incorrect expression", std::exception);
-
-	parser.setExpression(_T("sin 3)"));
-	FAIL_TEST(parser.parse(), "Incorrect expression", std::exception);
+	PARSER_TEST(parser, _T("abs(-1)"), 1);
+	PARSER_FAIL_TEST(parser, _T("abs(1"), "Incorrect expression", std::exception);
+	PARSER_TEST(parser, _T("sqr(-2)"), 4);
+	PARSER_TEST(parser, _T("sqrt(-4)"), Complex::i * 2);
+	PARSER_TEST(parser, _T("pow(2, -2)"), "0.25");
+	PARSER_FAIL_TEST(parser, _T("pow(2 -2)"), "Incorrect expression", std::exception);
+	PARSER_FAIL_TEST(parser, _T("pow(2,, -2)"), "Incorrect expression", std::exception);
+	PARSER_FAIL_TEST(parser, _T("pow(2, -2, 3)"), "Incorrect expression", std::exception);
+	PARSER_FAIL_TEST(parser, _T("pow(2, 3"), "Incorrect expression", std::exception);
+	PARSER_FAIL_TEST(parser, _T("sin 3"), "Incorrect expression", std::exception);
+	PARSER_FAIL_TEST(parser, _T("sin3)"), "Incorrect expression", std::exception);
+	PARSER_FAIL_TEST(parser, _T("sin 3)"), "Incorrect expression", std::exception);
 }
 
 void ParserTest::functionsBasic()
@@ -470,16 +288,11 @@ void ParserTest::functionsLog()
 
 void ParserTest::fails()
 {
-	ParserContext context;
-	Parser parser(_T("/"), context);
-	FAIL_TEST(parser.parse(), "Incorrect expression", std::exception);
+	Parser parser;
+	PARSER_FAIL_TEST(parser, _T("/"), "Incorrect expression", std::exception);
 	FAIL_TEST(parser.context().result(), "No result", std::exception);
-
-	parser.setExpression(_T("1+"));
-	FAIL_TEST(parser.parse(), "Incorrect expression", std::exception);
-
-	parser.setExpression(_T(" 1 * "));
-	FAIL_TEST(parser.parse(), "Incorrect expression", std::exception);
+	PARSER_FAIL_TEST(parser, _T("1+"), "Incorrect expression", std::exception);
+	PARSER_FAIL_TEST(parser, _T(" 1 * "), "Incorrect expression", std::exception);
 }
 
 void ParserTest::realWorld()

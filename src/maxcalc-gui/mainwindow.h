@@ -20,16 +20,21 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+// MaxCalcEngine
+#include "parser.h"
+// Qt
 #include <QWidget>
 #include <QLineEdit>
 #include <QTextEdit>
-#include <QListView>
+#include <QListWidget>
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
 
 class MainWindow : public QWidget
 {
+	Q_OBJECT
+
 public:
 	MainWindow();
 
@@ -38,8 +43,20 @@ private:
 	QHBoxLayout bottomLayout;
 	QLineEdit inputBox;
 	QTextEdit historyBox;
-	QListView variablesList;
 	QPushButton okButton;
+	QListWidget variablesList;
+	QListWidget functionsList;
+
+	MaxCalcEngine::Parser parser;
+
+	void initUi();
+	void initVariablesList();
+	void initFunctionsList();
+
+private slots:
+	void onExpressionEntered();
+	void onVariableClicked(QListWidgetItem * item);
+	void onFunctionClicked(QListWidgetItem * item);
 };
 
 #endif // MAINWINDOW_H
