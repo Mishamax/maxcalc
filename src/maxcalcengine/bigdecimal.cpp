@@ -971,7 +971,7 @@ BigDecimal BigDecimal::sin(const BigDecimal & num)
 	BigDecimal result = angle, fraction = angle, count = 2, numerator = angle, denominator = 1;
 	BigDecimal sqrNum = sqr(angle);
 
-	while (abs(fraction) > BigDecimal(CALCULATION_PRECISION))
+	while (abs(fraction) > WORKING_PRECISION_STRING)
 	{
 		numerator *= sqrNum;
 		denominator *= FMA(count, count, count);
@@ -989,7 +989,7 @@ BigDecimal BigDecimal::sin(const BigDecimal & num)
 	NEW_IO_CONTEXT(context);
 	decNumber reduced;
 	decNumberReduce(&reduced, &result.number_, &context);
-	if (reduced.exponent < -MAX_IO_PRECISION)
+	if (BigDecimal::abs(reduced) < MAX_IO_PRECISION_STRING)
 		result = 0;
 
 	return result;
@@ -1005,7 +1005,7 @@ BigDecimal BigDecimal::cos(const BigDecimal & num)
 	BigDecimal result = 1, fraction = 1, count = 1, numerator = 1, denominator = 1;
 	BigDecimal sqrNum = sqr(angle);
 
-	while (abs(fraction) > BigDecimal(CALCULATION_PRECISION))
+	while (abs(fraction) > WORKING_PRECISION_STRING)
 	{
 		numerator *= sqrNum;
 		denominator *= FMA(count, count, count);
@@ -1023,7 +1023,7 @@ BigDecimal BigDecimal::cos(const BigDecimal & num)
 	NEW_IO_CONTEXT(context);
 	decNumber reduced;
 	decNumberReduce(&reduced, &result.number_, &context);
-	if (reduced.exponent < -MAX_IO_PRECISION)
+	if (BigDecimal::abs(reduced) < MAX_IO_PRECISION_STRING)
 		result = 0;
 
 	return result;
@@ -1104,7 +1104,7 @@ BigDecimal BigDecimal::arctan(const BigDecimal & num)
 		BigDecimal fraction = num, result = num;
 		BigDecimal numerator = num, denominator = 1;
 
-		while (abs(fraction) > BigDecimal(CALCULATION_PRECISION))
+		while (abs(fraction) > WORKING_PRECISION_STRING)
 		{
 			numerator *= -num * num;
 			denominator += 2;
@@ -1224,7 +1224,7 @@ BigDecimal BigDecimal::pi()
 	BigDecimal t = BigDecimal("0.25");
 	BigDecimal p = 1;
 
-	while (abs(a - b) > BigDecimal(CALCULATION_PRECISION))
+	while (abs(a - b) > WORKING_PRECISION_STRING)
 	{
 		a_old = a;
 		a = (a + b) / 2;

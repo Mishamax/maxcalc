@@ -22,7 +22,7 @@
 
 // STL
 #include <string>
-#include <clocale>
+#include <locale>
 #include <cctype>
 
 namespace MaxCalcEngine {

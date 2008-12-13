@@ -32,8 +32,8 @@ MainWindow::MainWindow() : QWidget()
 void MainWindow::initUi()
 {
 	setWindowTitle(tr("MaxCalc"));
-	setMinimumSize(400, 300);
-	resize(600, 400);
+	setMinimumSize(500, 350);
+	resize(750, 550);
 
 	variablesList.setMaximumWidth(150);
 	variablesList.setMinimumWidth(150);
@@ -47,9 +47,12 @@ void MainWindow::initUi()
 	historyBox.setReadOnly(true);
 
 	font = inputBox.font();
-	font.setPixelSize(14);
+	font.setPixelSize(16);
 	inputBox.setFont(font);
 
+	font = okButton.font();
+	font.setPixelSize(14);
+	okButton.setFont(font);
 	okButton.setText(tr("OK"));
 	okButton.setMinimumWidth(30);
 	okButton.setMaximumWidth(30);
@@ -134,6 +137,7 @@ void MainWindow::onExpressionEntered()
 		variablesList.takeItem(2);
 	variablesList.addItem(tr("res = ") + QString::fromStdWString(parser.context().result().toWideString()));
 	inputBox.clear();
+	inputBox.setFocus();
 }
 
 void MainWindow::onVariableClicked(QListWidgetItem * item)
