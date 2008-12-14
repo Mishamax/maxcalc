@@ -68,6 +68,7 @@ void MainWindow::initUi()
 	
 	setLayout(&layout);
 
+	QObject::connect(this, SIGNAL(expressionCalculated()), &inputBox, SLOT(onExpressionCalculated()));
 	QObject::connect(&okButton, SIGNAL(clicked()), this, SLOT(onExpressionEntered()));
 	QObject::connect(&inputBox, SIGNAL(returnPressed()), this, SLOT(onExpressionEntered()));
 	QObject::connect(&variablesList, SIGNAL(itemActivated(QListWidgetItem *)), this, SLOT(onVariableClicked(QListWidgetItem *)));
@@ -128,6 +129,8 @@ void MainWindow::onExpressionEntered()
 		inputBox.setFocus();
 		return;
 	}
+
+	emit expressionCalculated();
 
 	historyBox.setTextColor(Qt::blue);
 	historyBox.append(inputBox.text());

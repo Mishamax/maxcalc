@@ -17,51 +17,38 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef INPUTBOX_H
+#define INPUTBOX_H
 
-// Local
-#include "inputbox.h"
-// MaxCalcEngine
-#include "parser.h"
 // Qt
-#include <QWidget>
-#include <QTextEdit>
-#include <QListWidget>
-#include <QGridLayout>
-#include <QHBoxLayout>
-#include <QPushButton>
-#include <QList>
+#include <QLineEdit>
+#include <QKeyEvent>
 
-class MainWindow : public QWidget
+class InputBox : public QLineEdit
 {
 	Q_OBJECT
 
 public:
-	MainWindow();
+	InputBox();
 
-signals:
-	void expressionCalculated();
+public slots:
+	void onExpressionCalculated();
+
+protected:
+	virtual void keyPressEvent(QKeyEvent * event);
 
 private:
-	QGridLayout layout;
-	QHBoxLayout bottomLayout;
-	InputBox inputBox;
-	QTextEdit historyBox;
-	QPushButton okButton;
-	QListWidget variablesList;
-	QListWidget functionsList;
+	QList<QString> history;
+	QList<QString>::iterator currentHistoryEntry;
 
-	MaxCalcEngine::Parser parser;
-
-	void initUi();
-	void initVariablesList();
-	void initFunctionsList();
+private:
+	void onKeyUpPressed();
+	void onKeyDownPressed();
+	void onKeyEscapePressed();
 
 private slots:
-	void onExpressionEntered();
-	void onVariableClicked(QListWidgetItem * item);
-	void onFunctionClicked(QListWidgetItem * item);
+	void onTextEdited(const QString & text);
 };
 
-#endif // MAINWINDOW_H
+
+#endif // INPUTBOX_H
