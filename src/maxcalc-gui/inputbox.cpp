@@ -57,7 +57,7 @@ void InputBox::onKeyUpPressed()
 	else
 	{
 		setText(*currentHistoryEntry);
-		selectAll();
+		setCursorPosition(text().length());
 	}
 }
 
@@ -67,7 +67,7 @@ void InputBox::onKeyDownPressed()
 	{
 		currentHistoryEntry--;
 		setText(*currentHistoryEntry);
-		selectAll();
+		setCursorPosition(text().length());
 	}
 }
 

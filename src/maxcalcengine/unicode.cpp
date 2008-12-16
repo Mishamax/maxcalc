@@ -18,7 +18,7 @@
  *****************************************************************************/
 
 // Local
-#include "tstring.h"
+#include "unicode.h"
 
 namespace MaxCalcEngine {
 

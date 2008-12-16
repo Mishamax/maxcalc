@@ -23,7 +23,7 @@
 
 // Local
 #include "bigdecimalformat.h"
-#include "tstring.h"
+#include "unicode.h"
 
 namespace MaxCalcEngine {
 

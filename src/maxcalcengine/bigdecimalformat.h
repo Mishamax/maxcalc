@@ -23,7 +23,7 @@
 
 // Local
 #include "settings.h"
-#include "tstring.h"
+#include "unicode.h"
 
 // STL
 #include <cassert>

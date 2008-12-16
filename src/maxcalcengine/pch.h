@@ -26,6 +26,8 @@
 // STL
 #include <string>
 #include <clocale>
+#include <iostream>
+#include <cwchar>
 #include <cassert>
 #include <exception>
 #include <sstream>

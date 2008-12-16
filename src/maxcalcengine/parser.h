@@ -21,7 +21,7 @@
 #define PARSER_H
 
 // Local
-#include "tstring.h"
+#include "unicode.h"
 #include "parsercontext.h"
 #include "complex.h"
 // STL

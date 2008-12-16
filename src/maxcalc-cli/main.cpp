@@ -20,8 +20,9 @@
 // Engine
 #include "parser.h"
 #include "parsercontext.h"
-// Local
+#include "settings.h"
 #include "unicode.h"
+#include "version.h"
 // STL
 #include <clocale>
 #include <cstdlib>
@@ -29,7 +30,7 @@
 using namespace std;
 using namespace MaxCalcEngine;
 
-const tchar * indent = _T("    ");
+static const tchar * indent = _T("    ");
 
 void printFunctions()
 {
@@ -57,9 +58,10 @@ void printFunctions()
 	tcout << indent << _T("log2") << endl;
 	tcout << indent << _T("log10") << endl;
 	tcout << indent << _T("exp") << endl;
+	tcout << endl;
 }
 
-void printConstants(ParserContext & context)
+void printConstants(const ParserContext & context)
 {
 	tcout << indent << _T("e = ") << BigDecimal::E.toTString() << endl;
 	tcout << indent << _T("pi = ") << BigDecimal::PI.toTString() << endl;
@@ -67,13 +69,37 @@ void printConstants(ParserContext & context)
 		tcout << indent << _T("res = ") << context.result().toTString() << endl;
 }
 
-void printVariables(ParserContext & context)
+void printVariables(const ParserContext & context)
 {
 	if (context.resultExists())
 		tcout << indent << _T("res = ") << context.result().toTString() << endl;
 }
 
-bool parseCommand(const tstring & expr, ParserContext & context)
+void printVersion(bool displayCopyright)
+{
+	tcout << _T("MaxCalc v") << VERSION << _T(" (");
+	if (VERSION_LABEL[0] != 0)
+		tcout << VERSION_LABEL << _T(", ");
+	tcout << _T("built: ") << __DATE__ << _T(")") << endl;
+	if (displayCopyright)
+		tcout << COPYRIGHT << endl << endl;
+	tcout << WEBSITE << endl;
+	tcout << endl;
+}
+
+void printHelp()
+{
+	tcout <<  _T("Commands:") << endl;
+	tcout << indent << _T("#funcs - Display list of built-in functions.") << endl;
+	tcout << indent << _T("#consts - Display list of build-in constants.") << endl;
+	tcout << indent << _T("#vars - Display list of variables.") << endl;
+	tcout << indent << _T("#help - Get this help.") << endl;
+	tcout << indent << _T("#ver - Display version information.") << endl;
+	tcout << indent << _T("exit") << endl;
+	tcout << endl;
+}
+
+bool parseCommand(const tstring & expr, const ParserContext & context)
 {
 	tstring cmd = expr;
 	strToLower(cmd);
@@ -81,7 +107,7 @@ bool parseCommand(const tstring & expr, ParserContext & context)
 	if (cmd == _T("exit") || cmd == _T("quit") || cmd == _T("#exit") || cmd == _T("#quit"))
 		exit(0);
 
-	if (cmd[0] != _T('#'))
+	if (cmd[0] != _T('#') && cmd != _T("help"))
 		return false;
 
 	if (cmd == _T("#funcs"))
@@ -90,6 +116,10 @@ bool parseCommand(const tstring & expr, ParserContext & context)
 		printConstants(context);
 	else if (cmd == _T("#vars"))
 		printVariables(context);
+	else if (cmd == _T("#ver") || cmd == _T("#version"))
+		printVersion(true);
+	else if (cmd == _T("#help") || cmd == _T("help"))
+		printHelp();
 	else
 		tcout << indent << _T("Unknown command") << endl;
 
@@ -104,6 +134,8 @@ int main()
 
 	// Without that locale may be set incorrecly on Linux (non-latic characters may not work)
 	setlocale(LC_ALL, "");
+
+	printVersion(false);
 
 	Parser parser;
 	while (true)

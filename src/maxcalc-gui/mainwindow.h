@@ -26,14 +26,17 @@
 #include "parser.h"
 // Qt
 #include <QWidget>
+#include <QMainWindow>
 #include <QTextEdit>
 #include <QListWidget>
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QList>
+#include <QMenuBar>
+#include <QMenu>
 
-class MainWindow : public QWidget
+class MainWindow : public QMainWindow
 {
 	Q_OBJECT
 
@@ -44,6 +47,7 @@ signals:
 	void expressionCalculated();
 
 private:
+	QWidget centralWidget;
 	QGridLayout layout;
 	QHBoxLayout bottomLayout;
 	InputBox inputBox;
@@ -51,10 +55,12 @@ private:
 	QPushButton okButton;
 	QListWidget variablesList;
 	QListWidget functionsList;
+	QMenuBar mainMenu;
 
 	MaxCalcEngine::Parser parser;
 
 	void initUi();
+	void initMainMenu();
 	void initVariablesList();
 	void initFunctionsList();
 
@@ -62,6 +68,7 @@ private slots:
 	void onExpressionEntered();
 	void onVariableClicked(QListWidgetItem * item);
 	void onFunctionClicked(QListWidgetItem * item);
+	void onHelpAbout();
 };
 
 #endif // MAINWINDOW_H

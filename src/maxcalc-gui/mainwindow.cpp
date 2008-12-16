@@ -19,12 +19,14 @@
 
 // Local
 #include "mainwindow.h"
+#include "aboutbox.h"
 // MaxCalcEngine
 #include "bigdecimal.h"
 
-MainWindow::MainWindow() : QWidget()
+MainWindow::MainWindow() : QMainWindow()
 {
 	initUi();
+	initMainMenu();
 	initVariablesList();
 	initFunctionsList();
 }
@@ -34,6 +36,8 @@ void MainWindow::initUi()
 	setWindowTitle(tr("MaxCalc"));
 	setMinimumSize(500, 350);
 	resize(750, 550);
+
+	setCentralWidget(&centralWidget);
 
 	variablesList.setMaximumWidth(150);
 	variablesList.setMinimumWidth(150);
@@ -66,7 +70,7 @@ void MainWindow::initUi()
 	layout.addWidget(&functionsList, 0, 2);
 	layout.addLayout(&bottomLayout, 1, 0, 1, 3);
 	
-	setLayout(&layout);
+	centralWidget.setLayout(&layout);
 
 	QObject::connect(this, SIGNAL(expressionCalculated()), &inputBox, SLOT(onExpressionCalculated()));
 	QObject::connect(&okButton, SIGNAL(clicked()), this, SLOT(onExpressionEntered()));
@@ -75,6 +79,17 @@ void MainWindow::initUi()
 	QObject::connect(&functionsList, SIGNAL(itemActivated(QListWidgetItem *)), this, SLOT(onFunctionClicked(QListWidgetItem *)));
 
 	inputBox.setFocus();
+}
+
+void MainWindow::initMainMenu()
+{
+	setMenuBar(&mainMenu);
+
+	QMenu * file = mainMenu.addMenu(tr("&File"));
+	file->addAction(tr("&Exit"), this, SLOT(close()));
+
+	QMenu * help = mainMenu.addMenu(tr("&Help"));
+	help->addAction(tr("&About"), this, SLOT(onHelpAbout()));
 }
 
 void MainWindow::initVariablesList()
@@ -158,4 +173,10 @@ void MainWindow::onFunctionClicked(QListWidgetItem * item)
 	inputBox.insert("()");
 	inputBox.setCursorPosition(inputBox.cursorPosition() - 1);
 	inputBox.setFocus();
+}
+
+void MainWindow::onHelpAbout()
+{
+	AboutBox aboutBox(this);
+	aboutBox.exec();
 }

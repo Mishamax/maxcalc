@@ -17,29 +17,26 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
-#ifndef UNICODE_H
-#define UNICODE_H
+#ifndef ABOUTBOX_H
+#define ABOUTBOX_H
 
-// Engine
-#include "tstring.h"
-// STL
-#include <iostream>
-#include <cwchar>
+// Qt
+#include <QDialog>
+#include <QTextBrowser>
+#include <QPushButton>
+#include <QGridLayout>
 
-#if defined (UNICODE)
+class AboutBox : public QDialog
+{
+	Q_OBJECT
 
-#define tcout wcout
-#define tcin wcin
+public:
+	AboutBox(QWidget * parent);
 
-#define fgetts fgetws
+private:
+	QGridLayout layout;
+	QTextBrowser label;
+	QPushButton closeButton;
+};
 
-#else // defined (UNICODE)
-
-#define tcout cout
-#define tcin cin
-
-#define fgetts fgets
-
-#endif // defined (UNICODE)
-
-#endif // UNICODE_H
+#endif // ABOUTBOX_H

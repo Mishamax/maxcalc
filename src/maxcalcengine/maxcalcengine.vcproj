@@ -91,7 +91,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\tstring.cpp"
+				RelativePath=".\unicode.cpp"
 				>
 			</File>
 			<Filter
@@ -149,7 +149,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\tstring.h"
+				RelativePath=".\unicode.h"
+				>
+			</File>
+			<File
+				RelativePath=".\version.h"
 				>
 			</File>
 			<Filter

@@ -81,10 +81,6 @@
 				RelativePath=".\pch.h"
 				>
 			</File>
-			<File
-				RelativePath=".\unicode.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"

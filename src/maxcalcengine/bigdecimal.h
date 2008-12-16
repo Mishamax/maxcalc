@@ -24,7 +24,7 @@
 #include "settings.h" // settings.h must be included before decNumber.h
 #include "decNumber/decNumber.h"
 #include "bigdecimalformat.h"
-#include "tstring.h"
+#include "unicode.h"
 
 namespace MaxCalcEngine {
 

@@ -17,13 +17,15 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
-#ifndef TSTRING_H
-#define TSTRING_H
+#ifndef UNICODE_H
+#define UNICODE_H
 
 // STL
 #include <string>
 #include <locale>
 #include <cctype>
+#include <iostream>
+#include <cwchar>
 
 namespace MaxCalcEngine {
 
@@ -51,6 +53,10 @@ std::codecvt_base::result wideCharToChar(const wchar_t * from, size_t fromLength
 #define istdigit(c) iswdigit(c)
 #define istalpha(c) iswalpha(c)
 
+// IO
+#define tcout wcout
+#define tcin wcin
+#define fgetts fgetws
 
 #else // #if defined(UNICODE)
 
@@ -69,6 +75,11 @@ typedef std::string tstring;
 #define istdigit(c) isdigit(c)
 #define istalpha(c) isalpha(c)
 
+// IO
+#define tcout cout
+#define tcin cin
+#define fgetts fgets
+
 #endif // #if defined(UNICODE)
 
 void strToLower(tchar * str);
@@ -78,4 +89,4 @@ void strToUpper(tstring & str);
 
 } // namespace MaxCalcEngine
 
-#endif // TSTRING_H
+#endif // UNICODE_H

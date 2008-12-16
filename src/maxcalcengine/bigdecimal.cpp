@@ -19,7 +19,7 @@
 
 // Local
 #include "bigdecimal.h"
-#include "tstring.h"
+#include "unicode.h"
 #include "exceptions.h"
 
 // STL

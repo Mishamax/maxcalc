@@ -17,23 +17,34 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
-#ifndef PCH_H
-#define PCH_H
+#ifndef VERSION_H
+#define VERSION_H
 
-// Qt
-#include <QApplication>
-#include <QWidget>
-#include <QLineEdit>
-#include <QKeyEvent>
-#include <QWidget>
-#include <QMainWindow>
-#include <QTextEdit>
-#include <QListWidget>
-#include <QGridLayout>
-#include <QHBoxLayout>
-#include <QPushButton>
-#include <QList>
-#include <QMenuBar>
-#include <QMenu>
+#include "unicode.h"
 
-#endif // PCH_H
+namespace MaxCalcEngine {
+
+/*!
+	Version number.
+*/
+static const tchar * VERSION = _T("1.9.0");
+/*!
+	Version label.
+*/
+static const tchar * VERSION_LABEL = _T("Milestone 1");
+/*!
+	Developer.
+*/
+static const tchar * DEVELOPER = _T("Michael Maximov");
+/*!
+	Web site.
+*/
+static const tchar * WEBSITE = _T("http://code.google.com/p/maxcalc/");
+/*!
+	Copyright.
+*/
+static const tchar * COPYRIGHT = _T("Copyright (c) 2005-2008 Michael Maximov");
+
+} // namespace MaxCalcEngine
+
+#endif // VERSION_H
