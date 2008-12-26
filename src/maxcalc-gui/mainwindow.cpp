@@ -23,6 +23,8 @@
 // MaxCalcEngine
 #include "bigdecimal.h"
 
+static const QString indent = "    ";
+
 MainWindow::MainWindow() : QMainWindow()
 {
 	initUi();
@@ -128,7 +130,13 @@ void MainWindow::initFunctionsList()
 
 void MainWindow::onExpressionEntered()
 {
-	parser.setExpression(inputBox.text().toStdWString());
+	QString expr = inputBox.text();
+	expr = expr.trimmed();
+
+	if (expr.isEmpty())
+		return;
+
+	parser.setExpression(expr.toStdWString());
 
 	try
 	{
@@ -139,7 +147,7 @@ void MainWindow::onExpressionEntered()
 		historyBox.setTextColor(Qt::blue);
 		historyBox.append(inputBox.text());
 		historyBox.setTextColor(Qt::red);
-		historyBox.append(tr("    Error"));
+		historyBox.append(indent + tr("Error"));
 		inputBox.selectAll();
 		inputBox.setFocus();
 		return;
@@ -150,7 +158,7 @@ void MainWindow::onExpressionEntered()
 	historyBox.setTextColor(Qt::blue);
 	historyBox.append(inputBox.text());
 	historyBox.setTextColor(Qt::darkGreen);
-	historyBox.append(QString("    ") + QString::fromStdWString(parser.context().result().toWideString()));
+	historyBox.append(indent + QString::fromStdWString(parser.context().result().toWideString()));
 	if (variablesList.count() > 2)
 		variablesList.takeItem(2);
 	variablesList.addItem(tr("res = ") + QString::fromStdWString(parser.context().result().toWideString()));

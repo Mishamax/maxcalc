@@ -147,4 +147,30 @@ void strToUpper(tstring & str)
 		*pos = totupper(*pos);
 }
 
+static const tchar * space = _T(" \t\f\v\n\r");
+
+void ltrim(tstring & str)
+{
+	size_t found = str.find_first_not_of(space);
+	if (found != string::npos)
+		str.erase(0, found);
+	else
+		str.clear();
+}
+
+void rtrim(tstring & str)
+{
+	size_t found = str.find_last_not_of(space);
+	if (found != string::npos)
+		str.erase(found + 1);
+	else
+		str.clear();
+}
+
+void trim(tstring & str)
+{
+	ltrim(str);
+	rtrim(str);
+}
+
 } // namespace MaxCalcEngine

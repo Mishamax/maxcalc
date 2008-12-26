@@ -91,11 +91,11 @@ void printHelp()
 {
 	tcout <<  _T("Commands:") << endl;
 	tcout << indent << _T("#funcs - Display list of built-in functions.") << endl;
-	tcout << indent << _T("#consts - Display list of build-in constants.") << endl;
+	tcout << indent << _T("#consts - Display list of built-in constants.") << endl;
 	tcout << indent << _T("#vars - Display list of variables.") << endl;
 	tcout << indent << _T("#help - Get this help.") << endl;
 	tcout << indent << _T("#ver - Display version information.") << endl;
-	tcout << indent << _T("exit") << endl;
+	tcout << indent << _T("exit - Close the program.") << endl;
 	tcout << endl;
 }
 
@@ -144,15 +144,12 @@ int main()
 		if (fgetts(charExpr, exprLength, stdin) == NULL)
 			continue;
 		expr = charExpr;
-		// Remove '\n'
-		if (expr.length() > 0)
-			expr.erase(expr.length() - 1, 1);
 
-		if (parseCommand(expr, parser.context()))
-			continue;
+		trim(expr);
 
-		// TODO: better check for empty expression
 		if (expr.empty())
+			continue;
+		if (parseCommand(expr, parser.context()))
 			continue;
 
 		parser.setExpression(expr);

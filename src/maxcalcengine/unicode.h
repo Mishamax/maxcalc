@@ -52,6 +52,7 @@ std::codecvt_base::result wideCharToChar(const wchar_t * from, size_t fromLength
 // Character handling functions
 #define istdigit(c) iswdigit(c)
 #define istalpha(c) iswalpha(c)
+#define istspace(c) iswspace(c)
 
 // IO
 #define tcout wcout
@@ -74,6 +75,7 @@ typedef std::string tstring;
 // Character handling functions
 #define istdigit(c) isdigit(c)
 #define istalpha(c) isalpha(c)
+#define istspace(c) isspace(c)
 
 // IO
 #define tcout cout
@@ -86,6 +88,11 @@ void strToLower(tchar * str);
 void strToLower(tstring & str);
 void strToUpper(tchar * str);
 void strToUpper(tstring & str);
+
+// Trim
+void ltrim(tstring & str);
+void rtrim(tstring & str);
+void trim(tstring & str);
 
 } // namespace MaxCalcEngine
 

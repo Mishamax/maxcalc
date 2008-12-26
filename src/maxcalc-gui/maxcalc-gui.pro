@@ -25,3 +25,5 @@ CONFIG(release, debug|release) {
 
 DEFINES += UNICODE
 win32:DEFINES += WIN32
+
+RC_FILE = resources.rc
