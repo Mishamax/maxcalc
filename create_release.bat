@@ -1,8 +1,23 @@
 @echo off
 
 rem Variables
-set QT_DIR=D:\Programming\Qt4.4.3-msvc2008\bin
+set QT_DIR=D:\Programming\Qt4.4.3-msvc2008-static\bin
 set MAXCALC_VERSION=1.9.0-m1
+
+rem Build static binaries
+
+set PATH=%QT_DIR%;%PATH%
+pushd src
+pushd maxcalcengine
+nmake clean && qmake -config release && nmake release
+popd
+pushd maxcalc-cli
+nmake clean && qmake -config release && nmake release
+popd
+pushd maxcalc-gui
+nmake clean && qmake -config release && nmake release
+popd
+popd
 
 rem CLI version
 
@@ -10,10 +25,11 @@ mkdir release\tmp
 
 copy src\release\maxcalc.exe release\tmp
 copy doc\Changelog.txt release\tmp
-copy LICENSE.GPL2 release\tmp
-copy LICENSE.ICU release\tmp
+copy LICENSE.GPL2 release\tmp\LICENSE-GPL2.txt
+copy LICENSE.ICU release\tmp\LICENSE-ICU.txt
 
 pushd release
+del \Q maxcalc-%MAXCALC_VERSION%.zip
 pushd tmp
 7z a -tzip ..\maxcalc-%MAXCALC_VERSION%.zip * -mx7
 popd
@@ -30,13 +46,12 @@ rem GUI version
 mkdir release\tmp
 
 copy src\release\maxcalc-win.exe release\tmp
-copy %QT_DIR%\QtGui4.dll release\tmp
-copy %QT_DIR%\QtCore4.dll release\tmp
 copy doc\Changelog.txt release\tmp
-copy LICENSE.GPL2 release\tmp
-copy LICENSE.ICU release\tmp
+copy LICENSE.GPL2 release\tmp\LICENSE-GPL2.txt
+copy LICENSE.ICU release\tmp\LICENSE-ICU.txt
 
 pushd release
+del \Q maxcalc-win-%MAXCALC_VERSION%.zip
 pushd tmp
 7z a -tzip ..\maxcalc-win-%MAXCALC_VERSION%.zip * -mx7
 popd
@@ -47,3 +62,5 @@ popd
 @echo.
 @echo GUI VERSION CREATED
 @echo.
+
+pause
