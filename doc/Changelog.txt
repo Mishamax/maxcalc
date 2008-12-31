@@ -1,0 +1,16 @@
+﻿v1.9.0 Milestone-1 (31.12.2008).
+
+    First public release.
+    
+    Includes graphical (Qt 4) and console versions which can be build on Windows and Linux
+    without changes (binaries are currently available only for Windows).
+    
+    Main features:
+      - Expressions are inputed as strings from keyboard.
+      - 50 digits precision of calculations.
+      - Complex numbers support.
+      - Collection of built-in functions (abs, sqr, sqrt, pow, exp, trigonometric, inverse
+            trigonometric and hyperbolic functions, logarithms).
+      - Built-in E and PI constants, and RES variable which saves last calculated result.
+      - Internal parser and console version are written on pure C++ and use STL only.
+      - Graphical version is based on Qt 4 library.
