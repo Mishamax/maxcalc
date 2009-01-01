@@ -435,28 +435,23 @@ uInt decNumberToUInt32(const decNumber *dn, decContext *set) {
   } // decNumberToUInt32
 
 /* ------------------------------------------------------------------ */
-/* to-scientific-string -- conversion to numeric string               */
-/* to-engineering-string -- conversion to numeric string              */
+/* to-string -- conversion to numeric string                          */
 /*                                                                    */
-/*   decNumberToString(dn, string);                                   */
-/*   decNumberToEngString(dn, string);                                */
+/*   decNumberToString(dn, string, string_size, format);              */
 /*                                                                    */
 /*  dn is the decNumber to convert                                    */
 /*  string is the string where the result will be laid out            */
+/*  string_size is the maximum size of the string                     */
+/*  format is 0 if General, 1 if Scientific and 2 if Engineering      */
 /*                                                                    */
 /*  string must be at least dn->digits+14 characters long             */
 /*                                                                    */
 /*  No error is possible, and no status can be set.                   */
 /* ------------------------------------------------------------------ */
-char * decNumberToString(const decNumber *dn, char *string, size_t string_size){
-  decToString(dn, string, string_size, 0);
+char * decNumberToString(const decNumber *dn, char *string, size_t string_size, uint8_t format){
+  decToString(dn, string, string_size, format);
   return string;
   } // DecNumberToString
-
-char * decNumberToEngString(const decNumber *dn, char *string, size_t string_size){
-  decToString(dn, string, string_size, 1);
-  return string;
-  } // DecNumberToEngString
 
 /* ------------------------------------------------------------------ */
 /* to-number -- conversion from numeric string                        */
@@ -3593,7 +3588,7 @@ decNumber * decNumberZero(decNumber *dn) {
 /*                                                                    */
 /*   dn     is the number to lay out                                  */
 /*   string is where to lay out the number                            */
-/*   eng    is 1 if Engineering, 0 if Scientific                      */
+/*   format is 0 if General, 1 if Scientific and 2 if Engineering     */
 /*                                                                    */
 /* string must be at least dn->digits+14 characters long              */
 /* No error is possible.                                              */
@@ -3604,7 +3599,7 @@ decNumber * decNumberZero(decNumber *dn) {
 /* ------------------------------------------------------------------ */
 // If DECCHECK is enabled the string "?" is returned if a number is
 // invalid.
-static void decToString(const decNumber *dn, char *string, size_t string_size, Flag eng) {
+static void decToString(const decNumber *dn, char *string, size_t string_size, Flag format) {
   Int exp=dn->exponent;       // local copy
   Int e;                      // E-part value
   Int pre;                    // digits before the '.'
@@ -3666,21 +3661,32 @@ static void decToString(const decNumber *dn, char *string, size_t string_size, F
   /* non-0 exponent -- assume plain form */
   pre=dn->digits+exp;              // digits before '.'
   e=0;                             // no E
-  if ((exp>0) || (pre<-5)) {       // need exponential form
+  if ((exp>0) || (pre<=-5)) {       // need exponential form
     e=exp+dn->digits-1;            // calculate E value
     pre=1;                         // assume one digit before '.'
-    if (eng && (e!=0)) {           // engineering: may need to adjust
+    if (format!=1 && (e!=0)) {     // general or engineering: may need to adjust
       Int adj;                     // adjustment
-      // The C remainder operator is undefined for negative numbers, so
-      // a positive remainder calculation must be used here
-      if (e<0) {
-        adj=(-e)%3;
-        if (adj!=0) adj=3-adj;
+      if (format == 2) {           // engineering format
+        // The C remainder operator is undefined for negative numbers, so
+        // a positive remainder calculation must be used here
+        if (e<0) {
+          adj=(-e)%3;
+          if (adj!=0) adj=3-adj;
+          }
+        else { // e>0
+          adj=e%3;
+          }
+        e=e-adj;
         }
-       else { // e>0
-        adj=e%3;
+	  else {                       // general format
+        if (e <= 5 && e >= -5) {
+          adj = e;
+          e=e-adj;
+         }
+        else {
+          adj = 0;
+          }
         }
-      e=e-adj;
       // if dealing with zero still produce an exponent which is a
       // multiple of three, as expected, but there will only be the
       // one zero before the E, still.  Otherwise note the padding.

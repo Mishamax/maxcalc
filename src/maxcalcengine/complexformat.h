@@ -40,7 +40,7 @@ public:
 	// Constructor
 	explicit ComplexFormat(
 		const int precision = MAX_IO_PRECISION,
-		const NumberFormat numberFormat = ScientificFormat,
+		const NumberFormat numberFormat = GeneralFormat,
 		const ExponentCase exponentCase = UpperCaseExponent,
 		const DecimalSeparator decimalSeparator = PointDecimalSeparator,
 		const ImaginaryOne imaginaryOne = iImaginaryOne);

@@ -20,7 +20,7 @@ void ComplexTest::complexFormatDefault()
 	COMPARE(actual.imaginaryOne(), expected.imaginaryOne());
 
 	COMPARE(actual.precision(), MAX_IO_PRECISION);
-	COMPARE(actual.numberFormat(), ComplexFormat::ScientificFormat);
+	COMPARE(actual.numberFormat(), ComplexFormat::GeneralFormat);
 	COMPARE(actual.exponentCase(), ComplexFormat::UpperCaseExponent);
 	COMPARE(actual.imaginaryOneChar(), 'i');
 }
@@ -138,23 +138,23 @@ void ComplexTest::toString()
 	COMPARE(Complex::i.toString().c_str(), "1i");
 	COMPARE(Complex(1).toString().c_str(), "1");
 	COMPARE(Complex(-1).toString().c_str(), "-1");
-	COMPARE(Complex(-10000).toString().c_str(), "-1E+4");
-	COMPARE(Complex(1000).toString().c_str(), "1E+3");
+	COMPARE(Complex(-10000).toString().c_str(), "-10000");
+	COMPARE(Complex(1000).toString().c_str(), "1000");
 	COMPARE(Complex(0, 1).toString().c_str(), "1i");
 	COMPARE(Complex(0, -1).toString().c_str(), "-1i");
-	COMPARE(Complex(0, -1000).toString().c_str(), "-1E+3i");
-	COMPARE(Complex(0, 10000).toString().c_str(), "1E+4i");
+	COMPARE(Complex(0, -1000).toString().c_str(), "-1000i");
+	COMPARE(Complex(0, 10000).toString().c_str(), "10000i");
 	COMPARE(Complex("0.512").toString().c_str(), "0.512");
 	COMPARE(Complex("-0.0246").toString().c_str(), "-0.0246");
 	COMPARE(Complex("0", "0.512").toString().c_str(), "0.512i");
 	COMPARE(Complex("0", "-0.0246").toString().c_str(), "-0.0246i");
 	COMPARE(Complex(1, 1).toString().c_str(), "1+1i");
 	COMPARE(Complex(1, -1).toString().c_str(), "1-1i");
-	COMPARE(Complex(1000, 1).toString().c_str(), "1E+3+1i");
-	COMPARE(Complex(1, 10000).toString().c_str(), "1+1E+4i");
-	COMPARE(Complex(-1, 1000).toString().c_str(), "-1+1E+3i");
-	COMPARE(Complex(100000, -1).toString().c_str(), "1E+5-1i");
-	COMPARE(Complex(100000, 1000000).toString().c_str(), "1E+5+1E+6i");
+	COMPARE(Complex(1000, 1).toString().c_str(), "1000+1i");
+	COMPARE(Complex(1, 10000).toString().c_str(), "1+10000i");
+	COMPARE(Complex(-1, 1000).toString().c_str(), "-1+1000i");
+	COMPARE(Complex(100000, -1).toString().c_str(), "100000-1i");
+	COMPARE(Complex(100000, 1000000).toString().c_str(), "100000+1E+6i");
 	COMPARE(Complex(-1, -1).toString().c_str(), "-1-1i");
 	COMPARE(Complex("0.512", "0.256").toString().c_str(), "0.512+0.256i");
 	COMPARE(Complex("-0.512", "0.256").toString().c_str(), "-0.512+0.256i");

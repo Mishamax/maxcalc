@@ -34,17 +34,19 @@ namespace MaxCalcEngine {
 	\brief Represents format settings used for convertion from BigDecimal to string.
 
 	Format of BigDecimal number includes precision used for rounding, format
-	(scientific or engineering) and case of 'E' letter when exponent is needed.
+	(general, scientific or engineering) and case of 'E' letter when exponent is needed.
 
 	Precision may not be less than 1 and more than MAX_IO_PRECISION.
 	Default value is MAX_IO_PRECISION.
 
+	In general format exponential form is used when exponent is more than 5 by absolute
+	value, otherwise it is not used.
 	Scientific format means that there is just one digit before decimal point when
 	exponent is needed.
 	In engineering format the exponent is multiple of three and there may be up to
 	three digits before decimal point.
-	When exponent is not needed scientific and engineering formats are the same.
-	By default scientific format is used.
+	When exponent is not needed all the formats are the same.
+	By default general format is used.
 
 	When exponent is needed, it can be represented as lower or upper case 'E' letter.
 	By default upper case 'E' is used.
@@ -58,7 +60,7 @@ namespace MaxCalcEngine {
 	\fn BigDecimalFormat::getDefault()
 	\brief Returns BigDecimalFormat with default settings.
 
-	The defaults are: precision = MAX_IO_PRECISION, numberFormat = ScientificFormat, exponentCase = UpperCaseExponent.
+	The defaults are: precision = MAX_IO_PRECISION, numberFormat = GeneralFormat, exponentCase = UpperCaseExponent.
 */
 
 /*!

@@ -156,7 +156,7 @@ int main()
 
 		try
 		{
-			tcout << indent << parser.parse().result().toString().c_str() << endl;
+			tcout << indent << parser.parse().result().toTString().c_str() << endl;
 		}
 		catch (...)
 		{

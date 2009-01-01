@@ -45,7 +45,7 @@ namespace MaxCalcEngine {
 	\fn ComplexFormat::getDefault()
 	\brief Returns ComplexFormat with default settings.
 	
-	The defaults are: precision = MAX_IO_PRECISION, numberFormat = ScientificFormat,
+	The defaults are: precision = MAX_IO_PRECISION, numberFormat = GeneralFormat,
 	exponentCase = UpperCaseExponent, imaginaryOne = 'i'.
 */
 

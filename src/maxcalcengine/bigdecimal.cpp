@@ -216,11 +216,8 @@ std::string BigDecimal::toString(const BigDecimalFormat & format) const
 	size_t size = format.precision() + 14;
 	char * str = new char[size];
 
-	// Make conversion to engineering or scientific format
-	if (format.numberFormat() == BigDecimalFormat::EngineeringFormat)
-		decNumberToEngString(&num, str, size);
-	else
-		decNumberToString(&num, str, size);
+	// Make conversion
+	decNumberToString(&num, str, size, (uint8_t)format.numberFormat());
 
 	// Convert char* to std::string
 	std::string s(str);

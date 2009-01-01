@@ -21,7 +21,7 @@ void BigDecimalTest::bigDecimalFormatDefault()
 	COMPARE(actual.decimalSeparator(), expected.decimalSeparator());
 
 	COMPARE(actual.precision(), MAX_IO_PRECISION);
-	COMPARE(actual.numberFormat(), BigDecimalFormat::ScientificFormat);
+	COMPARE(actual.numberFormat(), BigDecimalFormat::GeneralFormat);
 	COMPARE(actual.exponentCase(), BigDecimalFormat::UpperCaseExponent);
 	COMPARE(actual.decimalSeparator(), BigDecimalFormat::PointDecimalSeparator);
 }
@@ -238,23 +238,47 @@ void BigDecimalTest::fromDouble()
 void BigDecimalTest::toString()
 {
 	BigDecimal dec = 100;
-	COMPARE(dec.toString(), std::string("1E+2"));
+	COMPARE(dec.toString(), std::string("100"));
 	COMPARE(dec.toString(BigDecimalFormat(MAX_IO_PRECISION, BigDecimalFormat::ScientificFormat)), std::string("1E+2"));
 	COMPARE(dec.toString(BigDecimalFormat(MAX_IO_PRECISION, BigDecimalFormat::EngineeringFormat)), std::string("100"));
 	COMPARE(dec.toString(BigDecimalFormat(MAX_IO_PRECISION, BigDecimalFormat::EngineeringFormat, BigDecimalFormat::UpperCaseExponent)), std::string("100"));
 	COMPARE(dec.toString(BigDecimalFormat(MAX_IO_PRECISION, BigDecimalFormat::ScientificFormat, BigDecimalFormat::LowerCaseExponent)).c_str(), std::string("1e+2").c_str());
+
+	dec = 100000;
+	COMPARE(dec.toString(), std::string("100000"));
+	COMPARE(dec.toString(BigDecimalFormat(MAX_IO_PRECISION, BigDecimalFormat::ScientificFormat)), std::string("1E+5"));
+	COMPARE(dec.toString(BigDecimalFormat(MAX_IO_PRECISION, BigDecimalFormat::EngineeringFormat)), std::string("100E+3"));
+
+	dec = 1000000;
+	COMPARE(dec.toString(), std::string("1E+6"));
+	COMPARE(dec.toString(BigDecimalFormat(MAX_IO_PRECISION, BigDecimalFormat::ScientificFormat)), std::string("1E+6"));
+	COMPARE(dec.toString(BigDecimalFormat(MAX_IO_PRECISION, BigDecimalFormat::EngineeringFormat)), std::string("1E+6"));
+
+	dec = "1E-5";
+	COMPARE(dec.toString(), std::string("0.00001"));
+	COMPARE(dec.toString(BigDecimalFormat(MAX_IO_PRECISION, BigDecimalFormat::ScientificFormat)), std::string("0.00001"));
+	COMPARE(dec.toString(BigDecimalFormat(MAX_IO_PRECISION, BigDecimalFormat::EngineeringFormat)), std::string("0.00001"));
+
+	dec = "1E-6";
+	COMPARE(dec.toString(), std::string("1E-6"));
+	COMPARE(dec.toString(BigDecimalFormat(MAX_IO_PRECISION, BigDecimalFormat::ScientificFormat)), std::string("1E-6"));
+	COMPARE(dec.toString(BigDecimalFormat(MAX_IO_PRECISION, BigDecimalFormat::EngineeringFormat)), std::string("1E-6"));
 
 	dec = "123.456";
 	COMPARE(dec.toString(BigDecimalFormat(4)), BigDecimal("123.5").toString());
 	COMPARE_BIGDECIMAL(BigDecimal(dec.toString(BigDecimalFormat(2))), BigDecimal("1.2E+2"));
 
 	COMPARE(BigDecimal("1E-4378").toString(), std::string("1E-4378"));
+
+	dec = 1000;
+	dec -= 1000;
+	COMPARE(dec.toString(), std::string("0"));
 }
 
 void BigDecimalTest::toWideString()
 {
 	BigDecimal dec = 100;
-	COMPARE(dec.toWideString(), std::wstring(L"1E+2"));
+	COMPARE(dec.toWideString(), std::wstring(L"100"));
 	COMPARE(dec.toWideString(BigDecimalFormat(MAX_IO_PRECISION, BigDecimalFormat::ScientificFormat)), std::wstring(L"1E+2"));
 	COMPARE(dec.toWideString(BigDecimalFormat(MAX_IO_PRECISION, BigDecimalFormat::EngineeringFormat)), std::wstring(L"100"));
 	COMPARE(dec.toWideString(BigDecimalFormat(MAX_IO_PRECISION, BigDecimalFormat::EngineeringFormat, BigDecimalFormat::UpperCaseExponent)), std::wstring(L"100"));

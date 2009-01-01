@@ -29,9 +29,9 @@ copy LICENSE.GPL2 release\tmp\LICENSE-GPL2.txt
 copy LICENSE.ICU release\tmp\LICENSE-ICU.txt
 
 pushd release
-del \Q maxcalc-%MAXCALC_VERSION%.zip
+del \Q maxcalc-win-console-%MAXCALC_VERSION%.zip
 pushd tmp
-7z a -tzip ..\maxcalc-%MAXCALC_VERSION%.zip * -mx7
+7z a -tzip ..\maxcalc-win-console-%MAXCALC_VERSION%.zip * -mx7
 popd
 del /Q tmp\*
 rmdir /Q tmp
@@ -51,9 +51,9 @@ copy LICENSE.GPL2 release\tmp\LICENSE-GPL2.txt
 copy LICENSE.ICU release\tmp\LICENSE-ICU.txt
 
 pushd release
-del \Q maxcalc-win-%MAXCALC_VERSION%.zip
+del \Q maxcalc-win-gui-%MAXCALC_VERSION%.zip
 pushd tmp
-7z a -tzip ..\maxcalc-win-%MAXCALC_VERSION%.zip * -mx7
+7z a -tzip ..\maxcalc-win-gui-%MAXCALC_VERSION%.zip * -mx7
 popd
 del /Q tmp\*
 rmdir /Q tmp

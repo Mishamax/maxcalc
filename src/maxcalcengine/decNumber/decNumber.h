@@ -102,8 +102,7 @@ namespace MaxCalcEngine {
   decNumber * decNumberFromInt32(decNumber *, int32_t);
   decNumber * decNumberFromUInt32(decNumber *, uint32_t);
   decNumber * decNumberFromString(decNumber *, const char *, decContext *);
-  char      * decNumberToString(const decNumber *, char *, size_t);
-  char      * decNumberToEngString(const decNumber *, char *, size_t);
+  char      * decNumberToString(const decNumber *, char *, size_t, uint8_t format);
   uint32_t    decNumberToUInt32(const decNumber *, decContext *);
   int32_t     decNumberToInt32(const decNumber *, decContext *);
   uint8_t   * decNumberGetBCD(const decNumber *, uint8_t *);
