@@ -301,6 +301,12 @@ void BigDecimalTest::toInt()
 
 	dec = 2147483647;
 	COMPARE(dec.toInt(), 2147483647);
+
+	dec = "100";
+	COMPARE(dec.toInt(), 100);
+
+	dec = "-200";
+	COMPARE(dec.toInt(), -200);
 }
 
 void BigDecimalTest::toUInt()
@@ -313,6 +319,9 @@ void BigDecimalTest::toUInt()
 
 	dec = 4294967295u;
 	COMPARE(dec.toUInt(), 4294967295u);
+
+	dec = "100";
+	COMPARE(dec.toUInt(), 100u);
 }
 
 void BigDecimalTest::unaryOperators()
@@ -623,6 +632,9 @@ void BigDecimalTest::factorial()
 	COMPARE_BIGDECIMAL(BigDecimal::factorial(5), BigDecimal(120));
 	COMPARE_BIGDECIMAL(BigDecimal::factorial(9), BigDecimal(362880));
 	COMPARE_BIGDECIMAL(BigDecimal::factorial(10), BigDecimal(3628800));
+	COMPARE_BIGDECIMAL(BigDecimal::factorial(20), BigDecimal("2.43290200817664000000000000000000000000000000000000e18"));
+	COMPARE_BIGDECIMAL(BigDecimal::factorial("10"), BigDecimal(3628800));
+	COMPARE_BIGDECIMAL(BigDecimal::factorial("20"), BigDecimal("2.43290200817664000000000000000000000000000000000000e18"));
 	COMPARE_BIGDECIMAL(BigDecimal::factorial(25), BigDecimal("15511210043330985984000000"));
 
 	// Stress test

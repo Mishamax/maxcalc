@@ -106,6 +106,7 @@ public:
 	static BigDecimal sqr(const Complex & num);
 	static BigDecimal abs(const Complex & num);
 	static BigDecimal arg(const Complex & num);
+	static BigDecimal factorial(const Complex & num);
 	static Complex ln(const Complex & num);
 	static Complex log2(const Complex & num);
 	static Complex log10(const Complex & num);

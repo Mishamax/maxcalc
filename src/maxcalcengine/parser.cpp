@@ -434,6 +434,8 @@ Complex Parser::parseFunctions()
 				return Complex::sqrt(args[0]);
 			else if (name == _T("pow") && args.size() == 2)
 				return Complex::pow(args[0], args[1]);
+			else if ((name == _T("fact") || name == _T("factorial")) && args.size() == 1)
+				return Complex::factorial(args[0]);
 			else if (name == _T("sin") && args.size() == 1)
 				return Complex::sin(args[0]);
 			else if (name == _T("cos") && args.size() == 1)

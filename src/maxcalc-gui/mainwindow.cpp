@@ -106,6 +106,7 @@ void MainWindow::initFunctionsList()
 	functionsList.addItem(tr("sqr"));
 	functionsList.addItem(tr("sqrt"));
 	functionsList.addItem(tr("pow"));
+	functionsList.addItem(tr("fact"));
 	functionsList.addItem(tr("sin"));
 	functionsList.addItem(tr("cos"));
 	functionsList.addItem(tr("tan"));

@@ -363,6 +363,19 @@ BigDecimal Complex::arg(const Complex & num)
 }
 
 /*!
+	Calculates factorial of \a num.
+
+	\a num must be integer and >= 0.
+*/
+BigDecimal Complex::factorial(const Complex & num)
+{
+	if (!num.im.isZero())
+		throw InvalidArgumentInFactorialException();
+
+	return BigDecimal::factorial(num.re);
+}
+
+/*!
 	Calculates natural logarithm of \a num.
 
 	Ln(num) = ln(|num|) + i*arg(num) + 2*Pi*k*i (k = 0).

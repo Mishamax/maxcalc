@@ -265,7 +265,18 @@ std::wstring BigDecimal::toWideString(const BigDecimalFormat & format) const
 int BigDecimal::toInt() const
 {
 	NEW_IO_CONTEXT(context);
-	int result = decNumberToInt32(&number_, &context);
+	decNumber num;
+	decNumberCopy(&num, &number_);
+
+	// Rescale if needed, because decNumberToInt32() requires exponent == 0
+	if (number_.exponent != 0)
+	{
+		decNumber zero;
+		decNumberFromInt32(&zero, 0);
+		decNumberRescale(&num, &num, &zero, &context);
+		checkContextStatus(context);
+	}
+	int result = decNumberToInt32(&num, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -281,7 +292,19 @@ int BigDecimal::toInt() const
 unsigned BigDecimal::toUInt() const
 {
 	NEW_IO_CONTEXT(context);
-	unsigned result = decNumberToUInt32(&number_, &context);
+	decNumber num;
+	decNumberCopy(&num, &number_);
+
+	// Rescale if needed, because decNumberToUInt32() requires exponent == 0
+	if (number_.exponent != 0)
+	{
+		decNumber zero;
+		decNumberFromInt32(&zero, 0);
+		decNumberRescale(&num, &num, &zero, &context);
+		checkContextStatus(context);
+	}
+
+	unsigned result = decNumberToUInt32(&num, &context);
 	checkContextStatus(context);
 	return result;
 }
@@ -949,20 +972,27 @@ BigDecimal BigDecimal::factorial(const BigDecimal & num)
 	if (num.isNegative() || !num.fractional().isZero())
 		throw InvalidArgumentInFactorialException();
 
-	const unsigned split = 10;
-
-	BigDecimal result = 1;
-	BigDecimal tmp;
 	unsigned max = num.toUInt();
+	BigDecimal result = 1;
+	BigDecimal group;
 
-	for (unsigned i = 0; i < max / split; ++i) 
+	// For better performance split calculation by
+	// groups of 10 numbers, multiply numbers
+	// within groups and then multiply groups.
+
+	const unsigned split = 10;
+	unsigned limit = max / split;
+	for (unsigned i = 0; i < limit; ++i) 
 	{
-		tmp = 1;
+		group = 1;
 		for (unsigned j = i * split + 1; j <= (i+1) * split; ++j)
-			tmp *= j;
-		result *= tmp;
+			group *= j;
+		result *= group;
 	}
-	for (unsigned i = (max / split) * split + 1; i <= max; ++i)
+
+	// Multiply last numbers which are not in any group
+	limit = limit * split + 1;
+	for (unsigned i = limit; i <= max; ++i)
 	{
 		result *= i;
 	}

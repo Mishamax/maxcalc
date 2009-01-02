@@ -38,6 +38,7 @@ void printFunctions()
 	tcout << indent << _T("sqr") << endl;
 	tcout << indent << _T("sqrt") << endl;
 	tcout << indent << _T("pow") << endl;
+	tcout << indent << _T("fact") << endl;
 	tcout << indent << _T("sin") << endl;
 	tcout << indent << _T("cos") << endl;
 	tcout << indent << _T("tan") << endl;
