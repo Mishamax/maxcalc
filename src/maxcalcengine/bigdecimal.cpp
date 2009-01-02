@@ -949,11 +949,23 @@ BigDecimal BigDecimal::factorial(const BigDecimal & num)
 	if (num.isNegative() || !num.fractional().isZero())
 		throw InvalidArgumentInFactorialException();
 
+	const unsigned split = 10;
+
 	BigDecimal result = 1;
+	BigDecimal tmp;
 	unsigned max = num.toUInt();
 
-	for (unsigned i = 1; i <= max; ++i)
+	for (unsigned i = 0; i < max / split; ++i) 
+	{
+		tmp = 1;
+		for (unsigned j = i * split + 1; j <= (i+1) * split; ++j)
+			tmp *= j;
+		result *= tmp;
+	}
+	for (unsigned i = (max / split) * split + 1; i <= max; ++i)
+	{
 		result *= i;
+	}
 
 	return result;
 }

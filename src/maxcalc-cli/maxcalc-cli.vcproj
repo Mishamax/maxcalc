@@ -26,7 +26,7 @@
 			<Tool
 				Name="VCNMakeTool"
 				BuildCommandLine="del ..\$(ConfigurationName)\maxcalc.exe &amp;&amp; nmake $(ConfigurationName)"
-				ReBuildCommandLine="del ..\$(ConfigurationName)\maxcalc.exe &amp;&amp; qmake &amp;&amp; nmake $(ConfigurationName)"
+				ReBuildCommandLine="del ..\$(ConfigurationName)\maxcalc.exe &amp;&amp; nmake $(ConfigurationName)-clean &amp;&amp; qmake &amp;&amp; nmake $(ConfigurationName)"
 				CleanCommandLine="nmake $(ConfigurationName)-clean"
 				Output="..\$(ConfigurationName)\maxcalc.exe"
 				PreprocessorDefinitions="WIN32;_DEBUG;UNICODE"
@@ -47,7 +47,7 @@
 			<Tool
 				Name="VCNMakeTool"
 				BuildCommandLine="del ..\$(ConfigurationName)\maxcalc.exe &amp;&amp; nmake $(ConfigurationName)"
-				ReBuildCommandLine="del ..\$(ConfigurationName)\maxcalc.exe &amp;&amp; qmake &amp;&amp; nmake $(ConfigurationName)"
+				ReBuildCommandLine="del ..\$(ConfigurationName)\maxcalc.exe &amp;&amp; nmake $(ConfigurationName)-clean &amp;&amp; qmake &amp;&amp; nmake $(ConfigurationName)"
 				CleanCommandLine="nmake $(ConfigurationName)-clean"
 				Output="..\$(ConfigurationName)\maxcalc.exe"
 				PreprocessorDefinitions="WIN32;NDEBUG;UNICODE"

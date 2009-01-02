@@ -27,11 +27,11 @@ namespace MaxCalcEngine {
 /*!
 	Version number.
 */
-static const tchar * VERSION = _T("1.9.0");
+static const tchar * VERSION = _T("1.9.1");
 /*!
 	Version label.
 */
-static const tchar * VERSION_LABEL = _T("Milestone 1");
+static const tchar * VERSION_LABEL = _T("Milestone 2");
 /*!
 	Developer.
 */
@@ -43,7 +43,7 @@ static const tchar * WEBSITE = _T("http://code.google.com/p/maxcalc/");
 /*!
 	Copyright.
 */
-static const tchar * COPYRIGHT = _T("Copyright (c) 2005-2008 Michael Maximov");
+static const tchar * COPYRIGHT = _T("Copyright (c) 2005-2009 Michael Maximov");
 
 } // namespace MaxCalcEngine
 

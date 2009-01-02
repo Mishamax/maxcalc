@@ -621,6 +621,7 @@ void BigDecimalTest::factorial()
 	COMPARE_BIGDECIMAL(BigDecimal::factorial(3), BigDecimal(6));
 	COMPARE_BIGDECIMAL(BigDecimal::factorial(4), BigDecimal(24));
 	COMPARE_BIGDECIMAL(BigDecimal::factorial(5), BigDecimal(120));
+	COMPARE_BIGDECIMAL(BigDecimal::factorial(9), BigDecimal(362880));
 	COMPARE_BIGDECIMAL(BigDecimal::factorial(10), BigDecimal(3628800));
 	COMPARE_BIGDECIMAL(BigDecimal::factorial(25), BigDecimal("15511210043330985984000000"));
 

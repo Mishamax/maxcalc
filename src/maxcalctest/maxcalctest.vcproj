@@ -25,10 +25,10 @@
 			<Tool
 				Name="VCNMakeTool"
 				BuildCommandLine="del ..\$(ConfigurationName)\maxcalctest.exe &amp;&amp; nmake $(ConfigurationName)"
-				ReBuildCommandLine="del ..\$(ConfigurationName)\maxcalctest.exe &amp;&amp; qmake &amp;&amp; nmake $(ConfigurationName)"
+				ReBuildCommandLine="del ..\$(ConfigurationName)\maxcalctest.exe &amp;&amp; nmake $(ConfigurationName)-clean &amp;&amp; qmake &amp;&amp; nmake $(ConfigurationName)"
 				CleanCommandLine="nmake $(ConfigurationName)-clean"
 				Output="..\$(ConfigurationName)\maxcalctest.exe"
-				PreprocessorDefinitions="WIN32;_DEBUG;UNICODE"
+				PreprocessorDefinitions="WIN32;_DEBUG;UNICODE;QT_VERSION=0x040500"
 				IncludeSearchPath="..\maxcalcengine"
 				ForcedIncludes=""
 				AssemblySearchPath=""
@@ -46,10 +46,10 @@
 			<Tool
 				Name="VCNMakeTool"
 				BuildCommandLine="del ..\$(ConfigurationName)\maxcalctest.exe &amp;&amp; nmake $(ConfigurationName)"
-				ReBuildCommandLine="del ..\$(ConfigurationName)\maxcalctest.exe &amp;&amp; qmake &amp;&amp; nmake $(ConfigurationName)"
+				ReBuildCommandLine="del ..\$(ConfigurationName)\maxcalctest.exe &amp;&amp; nmake $(ConfigurationName)-clean &amp;&amp; qmake &amp;&amp; nmake $(ConfigurationName)"
 				CleanCommandLine="nmake $(ConfigurationName)-clean"
 				Output="..\$(ConfigurationName)\maxcalctest.exe"
-				PreprocessorDefinitions="WIN32;NDEBUG;UNICODE"
+				PreprocessorDefinitions="WIN32;NDEBUG;UNICODE;QT_VERSION=0x040500"
 				IncludeSearchPath="..\maxcalcengine"
 				ForcedIncludes=""
 				AssemblySearchPath=""
@@ -66,6 +66,10 @@
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
+			<File
+				RelativePath=".\bigdecimalbench.cpp"
+				>
+			</File>
 			<File
 				RelativePath=".\bigdecimaltest.cpp"
 				>
@@ -88,6 +92,10 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\bigdecimalbench.h"
+				>
+			</File>
 			<File
 				RelativePath=".\bigdecimaltest.h"
 				>

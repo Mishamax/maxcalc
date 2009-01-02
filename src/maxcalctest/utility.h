@@ -56,4 +56,10 @@ using namespace MaxCalcEngine;
 	parser.setExpression(expression); \
 	FAIL_TEST(parser.parse(), error_message, exception);
 
+#if QT_VERSION >= 0x040500
+#define BENCHMARK(expression) QBENCHMARK(expression)
+#else
+#define BENCHMARK(expression)
+#endif
+
 #endif // COMPARE_H
