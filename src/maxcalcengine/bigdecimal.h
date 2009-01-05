@@ -167,6 +167,7 @@ private:
 
 	static void checkContextStatus(const DecNumber::decContext & context);
 	static int compare(const DecNumber::decNumber & n1, const DecNumber::decNumber & n2);
+	static void rescale(DecNumber::decNumber & number, const int exp, DecNumber::decContext & context);
 	
 	static BigDecimal pi();
 	static BigDecimal FMA(const BigDecimal & multiplier1, const BigDecimal & multiplier2, const BigDecimal & summand);

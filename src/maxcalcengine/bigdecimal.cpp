@@ -73,8 +73,12 @@ using namespace DecNumber;
 
 	When converting to string, number format is specified by BigDecimalFormat class.
 
+	Note that many functions can throw ArithmeticException, OverflowException or
+	UnderflowException. These exceptions are not reflected in functions' comments.
+	Any other exceptions that can be thrown are noted in comments.
+
 	\sa BigDecimalFormat
-	\sa DECNUMDIGITS, FULL_PRECISION, WORKING_PRECISION, MAX_IO_PRECISION
+	\sa DECNUMDIGITS, WORKING_PRECISION, MAX_IO_PRECISION
 	\sa http://speleotrove.com/decimal/decnumber.html
 	\sa http://www.alphaworks.ibm.com/tech/decnumber
 	\sa http://speleotrove.com/decimal/
@@ -107,6 +111,8 @@ BigDecimal::BigDecimal()
 
 /*!
 	Constructs a new instance of BigDecimal class from given \a str.
+
+	\exception ConversionImpossibleException Given \a str is incorrect.
 */
 BigDecimal::BigDecimal(const std::string & str, const BigDecimalFormat & format)
 {
@@ -115,6 +121,8 @@ BigDecimal::BigDecimal(const std::string & str, const BigDecimalFormat & format)
 
 /*!
 	Constructs a new instance of BigDecimal class from given \a str.
+
+	\exception ConversionImpossibleException Given \a str is incorrect.
 */
 BigDecimal::BigDecimal(const char * str, const BigDecimalFormat & format)
 {
@@ -127,6 +135,8 @@ BigDecimal::BigDecimal(const char * str, const BigDecimalFormat & format)
 
 /*!
 	Constructs a new instance of BigDecimal class from given \a str.
+
+	\exception ConversionImpossibleException Given \a str is incorrect.
 */
 BigDecimal::BigDecimal(const std::wstring & str, const BigDecimalFormat & format)
 {
@@ -137,6 +147,8 @@ BigDecimal::BigDecimal(const std::wstring & str, const BigDecimalFormat & format
 
 /*!
 	Constructs a new instance of BigDecimal class from given \a str.
+
+	\exception ConversionImpossibleException Given \a str is incorrect.
 */
 BigDecimal::BigDecimal(const wchar_t * str, const BigDecimalFormat & format)
 {
@@ -194,7 +206,7 @@ BigDecimal::BigDecimal(const double num)
 
 	If \a format is not specified, the default BigDecimalFormat is used.
 
-	\sa BigDecimalFormat, InvalidOperationException
+	\sa BigDecimalFormat
 */
 std::string BigDecimal::toString(const BigDecimalFormat & format) const
 {
@@ -242,7 +254,7 @@ std::string BigDecimal::toString(const BigDecimalFormat & format) const
 	
 	If \a format is not specified, the default BigDecimalFormat is used.
 
-	\sa BigDecimalFormat, InvalidOperationException
+	\sa BigDecimalFormat
 */
 std::wstring BigDecimal::toWideString(const BigDecimalFormat & format) const
 {
@@ -257,26 +269,25 @@ std::wstring BigDecimal::toWideString(const BigDecimalFormat & format) const
 /*!
 	Converts this number to int.
 
-	Raises InvalidOperationException if the number cannot be represented as int
+	\exception ConversionImpossibleException The number cannot be represented as int
 		(does not have exponent of 0 or out-of-range).
-
-	\sa InvalidOperationException
 */
 int BigDecimal::toInt() const
 {
+	if (!fractional().isZero())
+		throw ConversionImpossibleException();
+
 	NEW_IO_CONTEXT(context);
 	decNumber num;
 	decNumberCopy(&num, &number_);
 
 	// Rescale if needed, because decNumberToInt32() requires exponent == 0
 	if (number_.exponent != 0)
-	{
-		decNumber zero;
-		decNumberFromInt32(&zero, 0);
-		decNumberRescale(&num, &num, &zero, &context);
-		checkContextStatus(context);
-	}
+		rescale(num, 0, context);
+
 	int result = decNumberToInt32(&num, &context);
+	if (context.status & DEC_Invalid_operation)
+		throw ConversionImpossibleException();
 	checkContextStatus(context);
 	return result;
 }
@@ -284,27 +295,25 @@ int BigDecimal::toInt() const
 /*!
 	Converts this number to unsigned.
 
-	Raises InvalidOperationException if the number cannot be represented as unsigned
+	\exception ConversionImpossibleException The number cannot be represented as int
 		(does not have exponent of 0 or out-of-range).
-
-	\sa InvalidOperationException
 */
 unsigned BigDecimal::toUInt() const
 {
+	if (!fractional().isZero())
+		throw ConversionImpossibleException();
+
 	NEW_IO_CONTEXT(context);
 	decNumber num;
 	decNumberCopy(&num, &number_);
 
 	// Rescale if needed, because decNumberToUInt32() requires exponent == 0
 	if (number_.exponent != 0)
-	{
-		decNumber zero;
-		decNumberFromInt32(&zero, 0);
-		decNumberRescale(&num, &num, &zero, &context);
-		checkContextStatus(context);
-	}
+		rescale(num, 0, context);
 
 	unsigned result = decNumberToUInt32(&num, &context);
+	if (context.status & DEC_Invalid_operation)
+		throw ConversionImpossibleException();
 	checkContextStatus(context);
 	return result;
 }
@@ -499,6 +508,8 @@ BigDecimal BigDecimal::operator*(const BigDecimal & num) const
 
 /*!
 	Divides two numbers.
+
+	\exception DivisionByZeroException Zero \a num is given.
 */
 BigDecimal BigDecimal::operator/(const BigDecimal & num) const
 {
@@ -514,6 +525,8 @@ BigDecimal BigDecimal::operator/(const BigDecimal & num) const
 
 /*!
 	Calculates remainder of division of two numbers.
+
+	\exception DivisionByZeroException Zero \a num is given.
 */
 BigDecimal BigDecimal::operator%(const BigDecimal & num) const
 {
@@ -562,6 +575,8 @@ BigDecimal BigDecimal::operator*=(const BigDecimal & num)
 
 /*!
 	Divides this number by \a num.
+
+	\exception DivisionByZeroException Zero \a num is given.
 */
 BigDecimal BigDecimal::operator/=(const BigDecimal & num)
 {
@@ -576,6 +591,8 @@ BigDecimal BigDecimal::operator/=(const BigDecimal & num)
 
 /*!
 	Calculates remainder of division of this number by \a num.
+
+	\exception DivisionByZeroException Zero \a num is given.
 */
 BigDecimal BigDecimal::operator%=(const BigDecimal & num)
 {
@@ -590,6 +607,8 @@ BigDecimal BigDecimal::operator%=(const BigDecimal & num)
 
 /*!
 	Calculates digit-wise invertion of this number.
+
+	\exception LogicalOperationOnFractionalNumberException Fractional number is given.
 */
 BigDecimal BigDecimal::operator~() const
 {
@@ -605,6 +624,8 @@ BigDecimal BigDecimal::operator~() const
 
 /*!
 	Calculates digit-wise logical OR of two numbers.
+
+	\exception LogicalOperationOnFractionalNumberException Fractional number is given.
 */
 BigDecimal BigDecimal::operator|(const BigDecimal & num) const
 {
@@ -620,6 +641,8 @@ BigDecimal BigDecimal::operator|(const BigDecimal & num) const
 
 /*!
 	Calculates digit-wise logical AND of two numbers.
+
+	\exception LogicalOperationOnFractionalNumberException Fractional number is given.
 */
 BigDecimal BigDecimal::operator&(const BigDecimal & num) const
 {
@@ -635,6 +658,8 @@ BigDecimal BigDecimal::operator&(const BigDecimal & num) const
 
 /*!
 	Calculates digit-wise logical XOR of two numbers.
+
+	\exception LogicalOperationOnFractionalNumberException Fractional number is given.
 */
 BigDecimal BigDecimal::operator^(const BigDecimal & num) const
 {
@@ -650,6 +675,8 @@ BigDecimal BigDecimal::operator^(const BigDecimal & num) const
 
 /*!
 	Shifts this number to the left by \a shift.
+
+	\exception LogicalOperationOnFractionalNumberException Fractional number is given.
 */
 BigDecimal BigDecimal::operator<<(const BigDecimal & shift) const
 {
@@ -665,6 +692,8 @@ BigDecimal BigDecimal::operator<<(const BigDecimal & shift) const
 
 /*!
 	Shifts this number to the right by \a shift.
+
+	\exception LogicalOperationOnFractionalNumberException Fractional number is given.
 */
 BigDecimal BigDecimal::operator>>(const BigDecimal & shift) const
 {
@@ -683,6 +712,8 @@ BigDecimal BigDecimal::operator>>(const BigDecimal & shift) const
 
 /*!
 	Calculates digit-wise logical OR of this number and \a num.
+
+	\exception LogicalOperationOnFractionalNumberException Fractional number is given.
 */
 BigDecimal BigDecimal::operator|=(const BigDecimal & num)
 {
@@ -697,6 +728,8 @@ BigDecimal BigDecimal::operator|=(const BigDecimal & num)
 
 /*!
 	Calculates digit-wise logical AND of this number and \a num.
+
+	\exception LogicalOperationOnFractionalNumberException Fractional number is given.
 */
 BigDecimal BigDecimal::operator&=(const BigDecimal & num)
 {
@@ -711,6 +744,8 @@ BigDecimal BigDecimal::operator&=(const BigDecimal & num)
 
 /*!
 	Calculates digit-wise logical XOR of this number and \a num.
+
+	\exception LogicalOperationOnFractionalNumberException Fractional number is given.
 */
 BigDecimal BigDecimal::operator^=(const BigDecimal & num)
 {
@@ -725,6 +760,8 @@ BigDecimal BigDecimal::operator^=(const BigDecimal & num)
 
 /*!
 	Shifts this number to the left by \a shift.
+
+	\exception LogicalOperationOnFractionalNumberException Fractional number is given.
 */
 BigDecimal BigDecimal::operator<<=(const BigDecimal & shift)
 {
@@ -739,6 +776,8 @@ BigDecimal BigDecimal::operator<<=(const BigDecimal & shift)
 
 /*!
 	Shifts this number to the right by \a shift.
+
+	\exception LogicalOperationOnFractionalNumberException Fractional number is given.
 */
 BigDecimal BigDecimal::operator>>=(const BigDecimal & shift)
 {
@@ -835,11 +874,13 @@ BigDecimal BigDecimal::exp(const BigDecimal & num)
 	Calculates natural logarithm of \a num.
 
 	\a num must be > 0.
+
+	\exception InvalidLogArgumentException Zero or negative number is given.
 */
 BigDecimal BigDecimal::ln(const BigDecimal & num)
 {
 	if (num.isZero() || num.isNegative())
-		throw InvalidArgumentInLogException();
+		throw InvalidLogArgumentException();
 
 	NEW_CONTEXT(context);
 	decNumber result;
@@ -852,11 +893,13 @@ BigDecimal BigDecimal::ln(const BigDecimal & num)
 	Calculates base-10 logarithm of \a num.
 
 	\a num must be > 0.
+
+	\exception InvalidLogArgumentException Zero or negative number is given.
 */
 BigDecimal BigDecimal::log10(const BigDecimal & num)
 {
 	if (num.isZero() || num.isNegative())
-		throw InvalidArgumentInLogException();
+		throw InvalidLogArgumentException();
 
 	NEW_CONTEXT(context);
 	decNumber result;
@@ -881,11 +924,13 @@ BigDecimal BigDecimal::sqr(const BigDecimal & num)
 	Calculates square root of \a num.
 
 	\a num must be >= 0.
+
+	\exception InvalidSqrtArgumentException Negative number is given.
 */
 BigDecimal BigDecimal::sqrt(const BigDecimal & num)
 {
 	if (num.isNegative())
-		throw InvalidArgumentInSqrtException();
+		throw InvalidSqrtArgumentException();
 
 	NEW_CONTEXT(context);
 	decNumber result;
@@ -897,15 +942,17 @@ BigDecimal BigDecimal::sqrt(const BigDecimal & num)
 /*!
 	Raises \a num to \a power.
 
-	Note: 0^0 = 1.
+	Note: pow(0, 0) = 1.
 	If \a num <= 0 then \a power must be >= 0.
+
+	\exception InvalidPowArgumentException \a num <= 0 and \a power <= 0.
 */
 BigDecimal BigDecimal::pow(const BigDecimal & num, const BigDecimal & power)
 {
 	if (num.isZero() && power.isZero())
 		return BigDecimal(1);
 	if ((num.isZero() || num.isNegative()) && power.isNegative())
-		throw InvalidArgumentInPowException();
+		throw InvalidPowArgumentException();
 
 	NEW_CONTEXT(context);
 	decNumber result;
@@ -918,6 +965,8 @@ BigDecimal BigDecimal::pow(const BigDecimal & num, const BigDecimal & power)
 	Calculates integer part of the result of dividing \a dividend by \a divisor.
 
 	\a divisor must be not zero.
+
+	\exception DivisionByZeroException Zero \a divisor is given.
 */
 BigDecimal BigDecimal::div(const BigDecimal & dividend, const BigDecimal & divisor)
 {
@@ -964,21 +1013,22 @@ BigDecimal BigDecimal::min(const BigDecimal & num, const BigDecimal & decimal)
 	Calculates factorial of \a num.
 
 	\a num must be integer and >= 0.
+
+		\exception InvalidFactorialArgumentException Fractional or negative \a num is given.
 */
 BigDecimal BigDecimal::factorial(const BigDecimal & num)
 {
 	if (num.isZero())
 		return 1;
 	if (num.isNegative() || !num.fractional().isZero())
-		throw InvalidArgumentInFactorialException();
+		throw InvalidFactorialArgumentException();
 
 	unsigned max = num.toUInt();
 	BigDecimal result = 1;
 	BigDecimal group;
 
-	// For better performance split calculation by
-	// groups of 10 numbers, multiply numbers
-	// within groups and then multiply groups.
+	// For better performance split calculation by groups of 10 numbers,
+	// multiply numbers within groups and then multiply groups.
 
 	const unsigned split = 10;
 	unsigned limit = max / split;
@@ -1071,6 +1121,8 @@ BigDecimal BigDecimal::cos(const BigDecimal & num)
 /*!
 	Calculates tangent of \a num (measured in radians).
 	This functions calculates tan(num) as sin(num) / cos(num).
+
+	\exception InvalidTanArgumentException cos(num) == 0
 */
 BigDecimal BigDecimal::tan(const BigDecimal & num)
 {
@@ -1078,7 +1130,7 @@ BigDecimal BigDecimal::tan(const BigDecimal & num)
 	BigDecimal cosine = cos(angle);
 
 	if (cosine.isZero())
-		throw InvalidArgumentInTanException();
+		throw InvalidTanArgumentException();
 
 	return sin(angle) / cosine;
 }
@@ -1086,6 +1138,8 @@ BigDecimal BigDecimal::tan(const BigDecimal & num)
 /*!
 	Calculates cotangent of \a num (measured in radians).
 	This functions calculates cot(num) as cos(num) / sin(num).
+
+	\exception InvalidCotArgumentException sin(num) == 0
 */
 BigDecimal BigDecimal::cot(const BigDecimal & num)
 {
@@ -1093,7 +1147,7 @@ BigDecimal BigDecimal::cot(const BigDecimal & num)
 	BigDecimal sine = sin(angle);
 
 	if (sine.isZero())
-		throw InvalidArgumentInCotException();
+		throw InvalidCotArgumentException();
 
 	return cos(angle) / sine;
 }
@@ -1101,6 +1155,8 @@ BigDecimal BigDecimal::cot(const BigDecimal & num)
 /*!
 	Calculates arcsine of \a num (measured in radians).
 	This function uses formula arcsin(x) = arctan(x / sqrt(1 - x*x)).
+
+	\exception InvalidArcSinArgumentException abs(num) > 1
 */
 BigDecimal BigDecimal::arcsin(const BigDecimal & num)
 {
@@ -1110,7 +1166,7 @@ BigDecimal BigDecimal::arcsin(const BigDecimal & num)
 		return -PI / 2;
 
 	if (abs(num) > BigDecimal(1))
-		throw InvalidArgumentInArcSinException();
+		throw InvalidArcSinArgumentException();
 
 	return arctan(num / sqrt(-sqr(num) + 1));
 }
@@ -1118,11 +1174,13 @@ BigDecimal BigDecimal::arcsin(const BigDecimal & num)
 /*!
 	Calculates arccosine of \a num (measured in radians).
 	This function uses formula arccos(x) = pi / 2 - arcsin(x).
+
+	\exception InvalidArcCosArgumentException abs(num) > 1
 */
 BigDecimal BigDecimal::arccos(const BigDecimal & num)
 {
 	if (abs(num) > BigDecimal(1))
-		throw InvalidArgumentInArcCosException();
+		throw InvalidArcCosArgumentException();
 
 	return PI / 2 - arcsin(num);
 }
@@ -1179,6 +1237,8 @@ BigDecimal::BigDecimal(const DecNumber::decNumber & num)
 
 /*!
 	Constructs a new instance of BigDecimal class from given \a str.
+
+	\exception ConversionImpossibleException Given \a str is incorrect.
 */
 void BigDecimal::construct(const std::string & str, const BigDecimalFormat & format)
 {
@@ -1202,30 +1262,29 @@ void BigDecimal::construct(const std::string & str, const BigDecimalFormat & for
 }
 
 /*!
-	Checks \a context.status and throws an exception is there is an error.
+	Checks \a context.status and throws an exception if there is an error.
 */
 void BigDecimal::checkContextStatus(const DecNumber::decContext & context)
 {
 	if (context.status & DEC_Errors)
 	{
-		if (context.status & DEC_Division_by_zero)
+		// DEC_Division_undefined is 0/0 division, so it is also division by zero
+		if (context.status & DEC_Division_by_zero || context.status & DEC_Division_undefined)
 			throw DivisionByZeroException();
+		else if (context.status & DEC_Division_impossible)
+			throw DivisionImpossibleException();
 		else if (context.status & DEC_Overflow)
 			throw OverflowException();
 		else if (context.status & DEC_Underflow)
 			throw UnderflowException();
 		else if (context.status & DEC_Conversion_syntax)
-			throw ConvertionSyntaxException();
-		else if (context.status & DEC_Division_impossible)
-			throw DivisionImpossibleException();
-		else if (context.status & DEC_Division_undefined)
-			throw DivisionUndefinedException();
+			throw ConversionImpossibleException();
 		else if (context.status & DEC_Insufficient_storage)
 			throw std::bad_alloc();
-		else if (context.status & DEC_Invalid_context)
-			throw InvalidContextException();
-		else if (context.status & DEC_Invalid_operation)
-			throw InvalidOperationException();
+		// DEC_Invalid_context, DEC_Invalid_operation or anything else
+		// DEC_Invalid_context should never occur so we just throw general arithmetic exception
+		// DEC_Invalid_operation is checked right after operations where it can occur;
+		//		when it is not checked it's OK to throw ArithmeticException.
 		else
 			throw ArithmeticException();
 	}
@@ -1242,6 +1301,17 @@ int BigDecimal::compare(const DecNumber::decNumber & n1, const DecNumber::decNum
 	checkContextStatus(context);
 	
 	return (decNumberIsZero(&result) ? 0 : (decNumberIsNegative(&result) ? -1 : 1));
+}
+
+/*!
+	Rescales \a number to have \a exp. \a context should be specified.
+*/
+void BigDecimal::rescale(decNumber & number, const int exp, decContext & context)
+{
+	decNumber exponent;
+	decNumberFromInt32(&exponent, exp);
+	decNumberRescale(&number, &number, &exponent, &context);
+	checkContextStatus(context);
 }
 
 /*!

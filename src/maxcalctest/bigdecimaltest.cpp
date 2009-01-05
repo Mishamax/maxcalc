@@ -307,6 +307,9 @@ void BigDecimalTest::toInt()
 
 	dec = "-200";
 	COMPARE(dec.toInt(), -200);
+
+	dec = "10.1";
+	FAIL_TEST(dec.toInt(), "(10.1).toInt()", ConversionImpossibleException);
 }
 
 void BigDecimalTest::toUInt()
@@ -524,7 +527,7 @@ void BigDecimalTest::exp()
 	COMPARE_BIGDECIMAL(BigDecimal::exp(-1234567), BigDecimal("2.31398291516872974457803107831416286758592836651656e-536166"));
 	
 	FAIL_TEST(BigDecimal::exp(12345678), "Exponent overflow", OverflowException);
-	FAIL_TEST(BigDecimal::exp(BigDecimal::ln(0)), "ln(0)", InvalidArgumentInLogException);
+	FAIL_TEST(BigDecimal::exp(BigDecimal::ln(0)), "ln(0)", InvalidLogArgumentException);
 }
 
 void BigDecimalTest::ln()
@@ -541,8 +544,8 @@ void BigDecimalTest::ln()
 	COMPARE_BIGDECIMAL(BigDecimal::ln(1234567), BigDecimal("14.02623085927966025643327828545583354742843395757568"));
 	COMPARE_BIGDECIMAL(BigDecimal::ln(BigDecimal("1234567e-100000")), BigDecimal("-230244.48306854528874154271219015096492656272042891972193"));
 
-	FAIL_TEST(BigDecimal::ln(0), "ln(0)", InvalidArgumentInLogException);
-	FAIL_TEST(BigDecimal::ln(-5), "ln(-5)", InvalidArgumentInLogException);
+	FAIL_TEST(BigDecimal::ln(0), "ln(0)", InvalidLogArgumentException);
+	FAIL_TEST(BigDecimal::ln(-5), "ln(-5)", InvalidLogArgumentException);
 }
 
 void BigDecimalTest::log10()
@@ -554,8 +557,8 @@ void BigDecimalTest::log10()
 	COMPARE_BIGDECIMAL(BigDecimal::log10(BigDecimal("1e123456")), BigDecimal(123456));
 	COMPARE_BIGDECIMAL(BigDecimal::log10(BigDecimal("12345678901234567890")), BigDecimal("19.09151497721269989570648733341528865609576842916003"));
 	
-	FAIL_TEST(BigDecimal::log10(0), "log10(0)", InvalidArgumentInLogException);
-	FAIL_TEST(BigDecimal::log10(-5), "log10(-5)", InvalidArgumentInLogException);
+	FAIL_TEST(BigDecimal::log10(0), "log10(0)", InvalidLogArgumentException);
+	FAIL_TEST(BigDecimal::log10(-5), "log10(-5)", InvalidLogArgumentException);
 }
 
 void BigDecimalTest::sqr()
@@ -576,7 +579,7 @@ void BigDecimalTest::sqrt()
 	COMPARE_BIGDECIMAL(BigDecimal::sqrt(BigDecimal::pow("534.123", 2)), BigDecimal("534.123"));
 	COMPARE_BIGDECIMAL(BigDecimal::sqrt(123456789), BigDecimal("11111.11106055555544054166614335346924587840986013435107"));
 
-	FAIL_TEST(BigDecimal::sqrt(-10), "sqrt(-10)", InvalidArgumentInSqrtException);
+	FAIL_TEST(BigDecimal::sqrt(-10), "sqrt(-10)", InvalidSqrtArgumentException);
 }
 
 void BigDecimalTest::pow()
@@ -590,8 +593,8 @@ void BigDecimalTest::pow()
 	COMPARE_BIGDECIMAL(BigDecimal::pow(BigDecimal("384.432786"), BigDecimal("283.1242")), BigDecimal("6.68672201644936322360548332196885485617596022166251e731"));
 	COMPARE_BIGDECIMAL(BigDecimal::pow(BigDecimal("384.432786"), BigDecimal("-283.1242")), BigDecimal("1.49550108040979713633149639757169963489036723785070e-732"));
 
-	FAIL_TEST(BigDecimal::pow(0, -437), "pow(0, -437)", InvalidArgumentInPowException);
-	FAIL_TEST(BigDecimal::pow(-12, -437), "pow(-12, -437)", InvalidArgumentInPowException);
+	FAIL_TEST(BigDecimal::pow(0, -437), "pow(0, -437)", InvalidPowArgumentException);
+	FAIL_TEST(BigDecimal::pow(-12, -437), "pow(-12, -437)", InvalidPowArgumentException);
 }
 
 void BigDecimalTest::div()
@@ -641,9 +644,9 @@ void BigDecimalTest::factorial()
 	COMPARE_BIGDECIMAL_PRECISION(BigDecimal::factorial(450), BigDecimal("1.73336873E+1000"), 9);
 	COMPARE_BIGDECIMAL(BigDecimal::factorial(200000), BigDecimal("1.4202253454703144049669463336823059760899653567464E+973350"));
 
-	FAIL_TEST(BigDecimal::factorial(-1), "factorial(-1)", InvalidArgumentInFactorialException);
-	FAIL_TEST(BigDecimal::factorial("1.2"), "factorial(1.2)", InvalidArgumentInFactorialException);
-	FAIL_TEST(BigDecimal::factorial("-1.2"), "factorial(-1.2)", InvalidArgumentInFactorialException);
+	FAIL_TEST(BigDecimal::factorial(-1), "factorial(-1)", InvalidFactorialArgumentException);
+	FAIL_TEST(BigDecimal::factorial("1.2"), "factorial(1.2)", InvalidFactorialArgumentException);
+	FAIL_TEST(BigDecimal::factorial("-1.2"), "factorial(-1.2)", InvalidFactorialArgumentException);
 }
 
 void BigDecimalTest::sin()
@@ -783,11 +786,11 @@ void BigDecimalTest::tan()
 	COMPARE_BIGDECIMAL(BigDecimal::tan(BigDecimal::PI / 2 - "1e-30"), "1e+30");
 	COMPARE_BIGDECIMAL(BigDecimal::tan(BigDecimal::PI / 2 - "1e-50"), "1e+50");
 
-	FAIL_TEST(BigDecimal::tan(-BigDecimal::PI / 2), "tan(-pi/2)", InvalidArgumentInTanException);
-	FAIL_TEST(BigDecimal::tan(BigDecimal::PI / 2), "tan(pi/2)", InvalidArgumentInTanException);
-	FAIL_TEST(BigDecimal::tan(BigDecimal::PI / 2 * 3), "tan(3*pi/2)", InvalidArgumentInTanException);
-	FAIL_TEST(BigDecimal::tan(BigDecimal::PI / 2 * 101), "tan(101*pi/2)", InvalidArgumentInTanException);
-	FAIL_TEST(BigDecimal::tan(BigDecimal::PI / 2 * 10000001), "tan(10000001*pi/2)", InvalidArgumentInTanException);
+	FAIL_TEST(BigDecimal::tan(-BigDecimal::PI / 2), "tan(-pi/2)", InvalidTanArgumentException);
+	FAIL_TEST(BigDecimal::tan(BigDecimal::PI / 2), "tan(pi/2)", InvalidTanArgumentException);
+	FAIL_TEST(BigDecimal::tan(BigDecimal::PI / 2 * 3), "tan(3*pi/2)", InvalidTanArgumentException);
+	FAIL_TEST(BigDecimal::tan(BigDecimal::PI / 2 * 101), "tan(101*pi/2)", InvalidTanArgumentException);
+	FAIL_TEST(BigDecimal::tan(BigDecimal::PI / 2 * 10000001), "tan(10000001*pi/2)", InvalidTanArgumentException);
 }
 
 void BigDecimalTest::cot()
@@ -816,12 +819,12 @@ void BigDecimalTest::cot()
 	COMPARE_BIGDECIMAL(BigDecimal::cot(BigDecimal::PI / 2 - "1e-30"), "1.000000000000000000000000000000000000000000000000000000000000333e-30");
 	COMPARE_BIGDECIMAL(BigDecimal::cot(BigDecimal::PI / 2 - "1e-50"), "1e-50");
 
-	FAIL_TEST(BigDecimal::cot(-BigDecimal::PI), "cot(-pi)", InvalidArgumentInCotException);
-	FAIL_TEST(BigDecimal::cot(0), "cot(0)", InvalidArgumentInCotException);
-	FAIL_TEST(BigDecimal::cot(BigDecimal::PI), "cot(pi)", InvalidArgumentInCotException);
-	FAIL_TEST(BigDecimal::cot(BigDecimal::PI * 3), "cot(3*pi)", InvalidArgumentInCotException);
-	FAIL_TEST(BigDecimal::cot(BigDecimal::PI * 101), "cot(101*pi)", InvalidArgumentInCotException);
-	FAIL_TEST(BigDecimal::cot(BigDecimal::PI * 10000001), "cot(10000001*pi)", InvalidArgumentInCotException);
+	FAIL_TEST(BigDecimal::cot(-BigDecimal::PI), "cot(-pi)", InvalidCotArgumentException);
+	FAIL_TEST(BigDecimal::cot(0), "cot(0)", InvalidCotArgumentException);
+	FAIL_TEST(BigDecimal::cot(BigDecimal::PI), "cot(pi)", InvalidCotArgumentException);
+	FAIL_TEST(BigDecimal::cot(BigDecimal::PI * 3), "cot(3*pi)", InvalidCotArgumentException);
+	FAIL_TEST(BigDecimal::cot(BigDecimal::PI * 101), "cot(101*pi)", InvalidCotArgumentException);
+	FAIL_TEST(BigDecimal::cot(BigDecimal::PI * 10000001), "cot(10000001*pi)", InvalidCotArgumentException);
 }
 
 void BigDecimalTest::arcsin()
@@ -841,8 +844,8 @@ void BigDecimalTest::arcsin()
 	COMPARE_BIGDECIMAL(BigDecimal::arcsin("1e-50"), "1e-50");
 	COMPARE_BIGDECIMAL(BigDecimal::arcsin("0.99"), "1.429256853470469400485532334664724427104601769147799717179321293");
 
-	FAIL_TEST(BigDecimal::arcsin("1.1"), "arcsin(1.1)", InvalidArgumentInArcSinException);
-	FAIL_TEST(BigDecimal::arcsin(-2), "arcsin(-2)", InvalidArgumentInArcSinException);
+	FAIL_TEST(BigDecimal::arcsin("1.1"), "arcsin(1.1)", InvalidArcSinArgumentException);
+	FAIL_TEST(BigDecimal::arcsin(-2), "arcsin(-2)", InvalidArcSinArgumentException);
 }
 
 void BigDecimalTest::arccos()
@@ -862,8 +865,8 @@ void BigDecimalTest::arccos()
 	COMPARE_BIGDECIMAL(BigDecimal::arccos("1e-50"), BigDecimal::PI / 2 - "1e-50");
 	COMPARE_BIGDECIMAL(BigDecimal::arccos("0.99"), "0.1415394733244272187457893569750270149939829305397531933081510031");
 
-	FAIL_TEST(BigDecimal::arccos("1.1"), "arccos(1.1)", InvalidArgumentInArcCosException);
-	FAIL_TEST(BigDecimal::arccos(-2), "arccos(-2)", InvalidArgumentInArcCosException);
+	FAIL_TEST(BigDecimal::arccos("1.1"), "arccos(1.1)", InvalidArcCosArgumentException);
+	FAIL_TEST(BigDecimal::arccos(-2), "arccos(-2)", InvalidArcCosArgumentException);
 }
 
 void BigDecimalTest::arctan()

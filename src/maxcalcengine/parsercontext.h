@@ -23,6 +23,7 @@
 // Local
 #include "complex.h"
 #include "complexformat.h"
+#include "exceptions.h"
 
 namespace MaxCalcEngine {
 
@@ -35,8 +36,7 @@ class ParserContext
 public:
 	explicit ParserContext(const ComplexFormat & numberFormat = ComplexFormat::getDefault());
 
-	// TODO: throw right exception
-	inline Complex result() const { if (resultExists_) return result_; else throw std::exception(); }
+	inline Complex result() const { if (resultExists_) return result_; else throw ResultDoesNotExistException(); }
 	inline void setResult(const Complex & result) { result_ = result; resultExists_ = true; }
 	inline bool resultExists() const { return resultExists_; }
 

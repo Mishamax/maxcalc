@@ -4,18 +4,19 @@
 #include "utility.h"
 // Engine
 #include "parser.h"
+#include "exceptions.h"
 
 void ParserTest::basic()
 {
 	ParserContext context;
 	Parser parser(_T(""), context);
-	FAIL_TEST(parser.parse(), "Empty expression", std::exception);
-	FAIL_TEST(parser.context().result(), "No result", std::exception);
+	FAIL_TEST(parser.parse(), "Empty expression", IncorrectExpressionException);
+	FAIL_TEST(parser.context().result(), "No result", ResultDoesNotExistException);
 	context = parser.context();
-	FAIL_TEST(context.result(), "No result", std::exception);
+	FAIL_TEST(context.result(), "No result", ResultDoesNotExistException);
 
 	PARSER_TEST(parser, _T("0"), 0);
-	PARSER_FAIL_TEST(parser, _T("     "), "Empty expression", std::exception);
+	PARSER_FAIL_TEST(parser, _T("     "), "Empty expression", IncorrectExpressionException);
 	PARSER_TEST(parser, _T("  0 "), 0);
 }
 
@@ -62,7 +63,7 @@ void ParserTest::complexNumbers()
 	PARSER_TEST(parser, _T("1.i"), Complex(0, 1));
 	PARSER_TEST(parser, _T("i1."), Complex(0, 1));
 	PARSER_TEST(parser, _T(".27863e-2i"), Complex("0", "0.0027863"));
-	PARSER_FAIL_TEST(parser, _T("ii"), "Incorrect expression", std::exception);
+	PARSER_FAIL_TEST(parser, _T("ii"), "Incorrect expression", IncorrectNumberException);
 }
 
 void ParserTest::addSub()
@@ -84,14 +85,14 @@ void ParserTest::mulDiv()
 	Parser parser;
 
 	PARSER_TEST(parser, _T("1/2"), "0.5");
-	PARSER_FAIL_TEST(parser, _T("1 / 0"), "Division by zero", std::exception);
+	PARSER_FAIL_TEST(parser, _T("1 / 0"), "Division by zero", DivisionByZeroException);
 	COMPARE_COMPLEX(parser.context().result(), "0.5");
 	PARSER_TEST(parser, _T("1 / i"), -Complex::i);
-	PARSER_FAIL_TEST(parser, _T("1 / sin(0)"), "Division by zero", std::exception);
-	PARSER_FAIL_TEST(parser, _T("1/sin(pi)"), "Division by zero", std::exception);
-	PARSER_FAIL_TEST(parser, _T(" 1 / cos ( pi / 2 ) "), "Division by zero", std::exception);
-	PARSER_FAIL_TEST(parser, _T("1 / tan(0)"), "Division by zero", std::exception);
-	PARSER_FAIL_TEST(parser, _T("1 / ctan(0)"), "Division by zero", std::exception);
+	PARSER_FAIL_TEST(parser, _T("1 / sin(0)"), "Division by zero", DivisionByZeroException);
+	PARSER_FAIL_TEST(parser, _T("1/sin(pi)"), "Division by zero", DivisionByZeroException);
+	PARSER_FAIL_TEST(parser, _T(" 1 / cos ( pi / 2 ) "), "Division by zero", DivisionByZeroException);
+	PARSER_FAIL_TEST(parser, _T("1 / tan(0)"), "Division by zero", DivisionByZeroException);
+	PARSER_FAIL_TEST(parser, _T("1 / cot(pi/2)"), "Division by zero", DivisionByZeroException);
 }
 
 void ParserTest::unaryPlusMinus()
@@ -191,15 +192,15 @@ void ParserTest::brackets()
 	PARSER_TEST(parser, _T("2*(1+3)"), 8);
 	PARSER_TEST(parser, _T("2^(3^2)"), 512);
 	PARSER_TEST(parser, _T("2^-(2)"), "0.25");
-	PARSER_FAIL_TEST(parser, _T("(1)(2)"), "Incorrect expression", std::exception);
+	PARSER_FAIL_TEST(parser, _T("(1)(2)"), "Incorrect expression", IncorrectExpressionException);
 }
 
 void ParserTest::constsAndVars()
 {
 	Parser parser;
 
-	PARSER_FAIL_TEST(parser, _T("res"), "No result", std::exception);
-	PARSER_FAIL_TEST(parser, _T("result"), "No result", std::exception);
+	PARSER_FAIL_TEST(parser, _T("res"), "No result", ResultDoesNotExistException);
+	PARSER_FAIL_TEST(parser, _T("result"), "No result", ResultDoesNotExistException);
 	PARSER_TEST(parser, _T("e"), BigDecimal::E);
 	PARSER_TEST(parser, _T("pi"), BigDecimal::PI);
 	PARSER_TEST(parser, _T("res"), BigDecimal::PI);
@@ -211,17 +212,17 @@ void ParserTest::functions()
 	Parser parser;
 
 	PARSER_TEST(parser, _T("abs(-1)"), 1);
-	PARSER_FAIL_TEST(parser, _T("abs(1"), "Incorrect expression", std::exception);
+	PARSER_FAIL_TEST(parser, _T("abs(1"), "Incorrect expression", NoClosingBracketException);
 	PARSER_TEST(parser, _T("sqr(-2)"), 4);
 	PARSER_TEST(parser, _T("sqrt(-4)"), Complex::i * 2);
 	PARSER_TEST(parser, _T("pow(2, -2)"), "0.25");
-	PARSER_FAIL_TEST(parser, _T("pow(2 -2)"), "Incorrect expression", std::exception);
-	PARSER_FAIL_TEST(parser, _T("pow(2,, -2)"), "Incorrect expression", std::exception);
-	PARSER_FAIL_TEST(parser, _T("pow(2, -2, 3)"), "Incorrect expression", std::exception);
-	PARSER_FAIL_TEST(parser, _T("pow(2, 3"), "Incorrect expression", std::exception);
-	PARSER_FAIL_TEST(parser, _T("sin 3"), "Incorrect expression", std::exception);
-	PARSER_FAIL_TEST(parser, _T("sin3)"), "Incorrect expression", std::exception);
-	PARSER_FAIL_TEST(parser, _T("sin 3)"), "Incorrect expression", std::exception);
+	PARSER_FAIL_TEST(parser, _T("pow(2 -2)"), "Incorrect expression", UnknownFunctionException);
+	PARSER_FAIL_TEST(parser, _T("pow(2,, -2)"), "Incorrect expression", IncorrectExpressionException);
+	PARSER_FAIL_TEST(parser, _T("pow(2, -2, 3)"), "Incorrect expression", UnknownFunctionException);
+	PARSER_FAIL_TEST(parser, _T("pow(2, 3"), "Incorrect expression", NoClosingBracketException);
+	PARSER_FAIL_TEST(parser, _T("sin 3"), "Incorrect expression", UnknownVariableException);
+	PARSER_FAIL_TEST(parser, _T("sin3)"), "Incorrect expression", UnknownVariableException);
+	PARSER_FAIL_TEST(parser, _T("sin 3)"), "Incorrect expression", UnknownVariableException);
 }
 
 void ParserTest::functionsBasic()
@@ -289,10 +290,10 @@ void ParserTest::functionsLog()
 void ParserTest::fails()
 {
 	Parser parser;
-	PARSER_FAIL_TEST(parser, _T("/"), "Incorrect expression", std::exception);
-	FAIL_TEST(parser.context().result(), "No result", std::exception);
-	PARSER_FAIL_TEST(parser, _T("1+"), "Incorrect expression", std::exception);
-	PARSER_FAIL_TEST(parser, _T(" 1 * "), "Incorrect expression", std::exception);
+	PARSER_FAIL_TEST(parser, _T("/"), "Incorrect expression", IncorrectExpressionException);
+	FAIL_TEST(parser.context().result(), "No result", ResultDoesNotExistException);
+	PARSER_FAIL_TEST(parser, _T("1+"), "Incorrect expression", IncorrectExpressionException);
+	PARSER_FAIL_TEST(parser, _T(" 1 * "), "Incorrect expression", IncorrectExpressionException);
 }
 
 void ParserTest::realWorld()

@@ -19,6 +19,7 @@
 
 // Local
 #include "parser.h"
+#include "exceptions.h"
 
 namespace MaxCalcEngine {
 
@@ -34,8 +35,7 @@ Parser::Parser()
 {
 	expr_ = _T("");
 	context_ = ParserContext();
-	curChar_ = expr_.begin();
-	curToken_ = tokens_.begin();
+	reset();
 }
 
 /*!
@@ -46,8 +46,7 @@ Parser::Parser(const tstring & expr, const ParserContext & context)
 	expr_ = expr;
 	strToLower(expr_);
 	context_ = context;
-	curChar_ = expr_.begin();
-	curToken_ = tokens_.begin();
+	reset();
 }
 
 /*!
@@ -60,7 +59,7 @@ ParserContext Parser::parse()
 		lexicalAnalysis();
 		syntaxAnalysis();
 	}
-	catch (std::exception)
+	catch (...)
 	{
 		reset();
 		throw;
@@ -98,8 +97,7 @@ void Parser::lexicalAnalysis()
 		if (skipSpaces())
 			continue;
 		// Token couldn't be parsed
-		// TODO: throw right exception
-		throw std::exception();
+		throw UnknownTokenException();
 	}
 }
 
@@ -182,9 +180,8 @@ bool Parser::analyzeNumbers()
 		number += *curChar_++;
 		thereIsPoint = true;
 
-		// TODO: throw right exception
 		if (expr_.end() == curChar_)
-			throw std::exception();
+			throw IncorrectNumberException();
 	}
 
 	// Process digits
@@ -196,10 +193,7 @@ bool Parser::analyzeNumbers()
 	{
 		// Throw an exception if there was a decimal point already
 		if (thereIsPoint)
-		{
-			// TODO: throw right exception
-			throw std::exception();
-		}
+			throw IncorrectNumberException();
 
 		number += *curChar_++;
 
@@ -220,9 +214,8 @@ bool Parser::analyzeNumbers()
 		if (expr_.end() != curChar_ && (_T('-') == *curChar_ || _T('+') == *curChar_))
 			number += *curChar_++;
 		skipSpaces();
-		// TODO: throw right exception
 		if (expr_.end() == curChar_)
-			throw std::exception();
+			throw IncorrectNumberException();
 		// Process exponent digits
 		while(expr_.end() != curChar_ && istdigit(*curChar_))
 			number += *curChar_++;
@@ -235,10 +228,7 @@ bool Parser::analyzeNumbers()
 	{
 		// Throw an exception if there was an imaginary one already
 		if (thereIsImaginaryOne)
-		{
-			// TODO: throw right exception
-			throw std::exception();
-		}
+			throw IncorrectNumberException();
 
 		++curChar_;
 		tokens_.push_back(Token(IMAGINARY_ONE, imaginaryOne));
@@ -278,8 +268,7 @@ void Parser::syntaxAnalysis()
 	if (tokens_.end() == curToken_)
 		context_.setResult(result);
 	else
-		// TODO: throw right exception
-		throw std::exception();
+		throw IncorrectExpressionException();
 }
 
 /*!
@@ -396,9 +385,8 @@ Complex Parser::parseBrackets()
 	{
 		++curToken_;
 		Complex result = parseAddSub();
-		// TODO: throw right exception
 		if (tokens_.end() == curToken_ || CLOSING_BRACKET != curToken_->token)
-			throw std::exception();
+			throw NoClosingBracketException();
 		++curToken_;
 		return result;
 	}
@@ -478,8 +466,7 @@ Complex Parser::parseFunctions()
 				return Complex::exp(args[0]);
 			else
 				// Unknown function
-				// TODO: throw right exception
-				throw std::exception();
+				throw UnknownFunctionException();
 		}
 	}
 
@@ -509,13 +496,11 @@ Complex Parser::parseConstsVars()
 			if (context_.resultExists())
 				return context_.result();
 			else
-				// TODO: throw right exception
-				throw std::exception();
+				throw ResultDoesNotExistException();
 		}
 		else
 		{
-			// TODO: throw right exception
-			throw std::exception();
+			throw UnknownVariableException();
 		}
 	}
 
@@ -556,16 +541,14 @@ Complex Parser::parseNumbers()
 		}
 		else
 		{
-			// TODO: throw right exception
-			throw std::exception();
+			throw IncorrectNumberException();
 		}
 	}
 	
 	if (thereIsResult)
 		return isComplex ? Complex(0, result) : result;
 
-	// TODO: throw right exception
-	throw std::exception();
+	throw IncorrectExpressionException();
 }
 
 /*!
@@ -586,9 +569,8 @@ bool Parser::parseFunctionArguments(std::vector<Complex> & args)
 		}
 
 		// Check for closing bracket
-		// TODO: throw right exception
 		if (curToken_ == tokens_.end() || curToken_->token != CLOSING_BRACKET)
-			throw std::exception();
+			throw NoClosingBracketException();
 
 		++curToken_;
 

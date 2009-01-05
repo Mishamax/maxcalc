@@ -243,6 +243,8 @@ Complex Complex::operator*(const Complex & num) const
 
 /*!
 	Divides two numbers.
+
+	\exception DivisionByZeroException \a num == (0, 0) is given.
 */
 Complex Complex::operator/(const Complex & num) const
 {
@@ -281,6 +283,8 @@ Complex Complex::operator*=(const Complex & num)
 
 /*!
 	Divides this by \a num.
+
+	\exception DivisionByZeroException \a num = (0, 0) is given.
 */
 Complex Complex::operator/=(const Complex & num)
 {
@@ -366,11 +370,13 @@ BigDecimal Complex::arg(const Complex & num)
 	Calculates factorial of \a num.
 
 	\a num must be integer and >= 0.
+
+	\exception InvalidFactorialArgumentException Fractional or negative \a num is given.
 */
 BigDecimal Complex::factorial(const Complex & num)
 {
 	if (!num.im.isZero())
-		throw InvalidArgumentInFactorialException();
+		throw InvalidFactorialArgumentException();
 
 	return BigDecimal::factorial(num.re);
 }
@@ -473,12 +479,14 @@ Complex Complex::cos(const Complex & num)
 	Calculates tangent of \a num.
 
 	tan(num) = sin(num) / cos(num)
+
+	\exception InvalidTanArgumentException cos(num) == 0
 */
 Complex Complex::tan(const Complex & num)
 {
 	Complex cosine = cos(num);
 	if (cosine.isZero())
-		throw InvalidArgumentInTanException();
+		throw InvalidTanArgumentException();
 	return sin(num) / cosine;
 }
 
@@ -486,12 +494,14 @@ Complex Complex::tan(const Complex & num)
 	Calculates cotangent of \a num.
 
 	cot(num) = cos(num) / sin(num)
+
+	\exception InvalidCotArgumentException sin(num) == 0
 */
 Complex Complex::cot(const Complex & num)
 {
 	Complex sine = sin(num);
 	if (sine.isZero())
-		throw InvalidArgumentInTanException();
+		throw InvalidCotArgumentException();
 	return cos(num) / sine;
 }
 
@@ -589,12 +599,14 @@ Complex Complex::cosh(const Complex & num)
 	Calculates hyperbolical tangent of \a num.
 
 	tanh(num) = sinh(num) / cosh(num)
+
+	\exception InvalidTanhArgumentException cosh(num) == 0
 */
 Complex Complex::tanh(const Complex & num)
 {
 	Complex cosineh = cosh(num);
 	if (cosineh.isZero())
-		throw InvalidArgumentInTanException();
+		throw InvalidTanhArgumentException();
 	return sinh(num) / cosineh;
 }
 
@@ -602,12 +614,14 @@ Complex Complex::tanh(const Complex & num)
 	Calculates hyperbolical cotangent of \a num.
 
 	coth(num) = cosh(num) / sinh(num)
+
+	\exception InvalidCothArgumentException sinh(num) == 0
 */
 Complex Complex::coth(const Complex & num)
 {
 	Complex sineh = sinh(num);
 	if (sineh.isZero())
-		throw InvalidArgumentInTanException();
+		throw InvalidCothArgumentException();
 	return cosh(num) / sineh;
 }
 

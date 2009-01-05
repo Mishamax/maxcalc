@@ -43,7 +43,7 @@ public:
 	ParserContext parse();
 
 	inline tstring expression() const { return expr_; }
-	inline void setExpression(const tstring & expr) { expr_ = expr; strToLower(expr_); }
+	inline void setExpression(const tstring & expr) { reset(); expr_ = expr; strToLower(expr_); }
 
 	inline ParserContext context() const { return context_; }
 	inline void setContext(const ParserContext & context) { context_ = context; }

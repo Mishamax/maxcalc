@@ -8,7 +8,7 @@ namespace MaxCalcEngine {
 
 
 //****************************************************************************
-// Arithmetic exceptions
+// MaxCalcEngine exceptions
 //****************************************************************************
 
 
@@ -16,61 +16,74 @@ namespace MaxCalcEngine {
 class MaxCalcEngineException : public std::exception {};
 /// General arithmetic exception.
 class ArithmeticException : public MaxCalcEngineException {};
+/// General parser exception
+class ParserException : public MaxCalcEngineException {};
 
 
 ///////////////////////////////////////////////////////////////////////////
-// BigDecimal / Complex exceptions
+// Arithmetic (BigDecimal / Complex) exceptions
 
 
-// TODO: better exception handling for BigDecimal
+// General exceptions
 
 
-
-// decNumber exceptions
-
-
-/// Division by zero exception. Represents \a DEC_Division_by_zero error in decNumber.
+/// Division by zero.
 class DivisionByZeroException : public ArithmeticException {};
-/// Overflow exception. Represents \a DEC_Overflow error in decNumber.
-class OverflowException : public ArithmeticException {};
-/// Underflow exception. Represents \a DEC_Underflow error in decNumber.
-class UnderflowException : public ArithmeticException {};
-/// Convertion syntax exception. Represents \a DEC_Conversion_syntax error in decNumber.
-class ConvertionSyntaxException : public ArithmeticException {};
-/// Division impossible exception. Represents \a DEC_Division_impossible error in decNumber.
+/// Division impossible.
 class DivisionImpossibleException : public ArithmeticException {};
-/// Division undefined exception. Represents \a DEC_Division_undefined error in decNumber.
-class DivisionUndefinedException : public ArithmeticException {};
-/// Invalid context exception. Represents \a DEC_Invalid_context error in decNumber.
-class InvalidContextException : public ArithmeticException {};
-/// Invalid operation exception. Represents \a DEC_Invalid_operation error in decNumber.
-class InvalidOperationException : public ArithmeticException {};
-
-
-/// Logical operation on fractional number exception.
+/// Arithmetic overflow.
+class OverflowException : public ArithmeticException {};
+/// Arithmetic underflow.
+class UnderflowException : public ArithmeticException {};
+/// Conversion from string or to int is impossible.
+class ConversionImpossibleException : public ArithmeticException {};
+/// Logical operation on fractional number.
 class LogicalOperationOnFractionalNumberException : public ArithmeticException {};
 
 
 // Invalid argument exceptions
 
-/// Invalid argument in function.
+/// Invalid argument of a function.
 class InvalidArgumentException : public ArithmeticException {};
-/// Invalid (non-integer or negative) argument in factorial() function.
-class InvalidArgumentInFactorialException : public InvalidArgumentException {};
-/// Invalid argument in arcsin() function.
-class InvalidArgumentInArcSinException : public InvalidArgumentException {};
-/// Invalid argument in arccos() function.
-class InvalidArgumentInArcCosException : public InvalidArgumentException {};
-/// Invalid argument in pow() function (zero or negative number in negative power).
-class InvalidArgumentInPowException : public InvalidArgumentException {};
-/// Invalid (negative or zero) argument in logarithm functions (ln() or log10()).
-class InvalidArgumentInLogException : public InvalidArgumentException {};
-/// Invalid (negative) argument in sqrt() function.
-class InvalidArgumentInSqrtException : public InvalidArgumentException {};
-/// Invalid (divisible by pi/2) argument in tan() function.
-class InvalidArgumentInTanException : public InvalidArgumentException {};
-/// Invalid (zero or divisible by pi) argument in cot() function.
-class InvalidArgumentInCotException : public InvalidArgumentException {};
+/// Invalid argument of factorial() function (non-integer or negative).
+class InvalidFactorialArgumentException : public InvalidArgumentException {};
+/// Invalid argument of arcsin() function (more than 1 by absolute value).
+class InvalidArcSinArgumentException : public InvalidArgumentException {};
+/// Invalid argument of arccos() function (more than 1 by absolute value).
+class InvalidArcCosArgumentException : public InvalidArgumentException {};
+/// Invalid argument of pow() function (zero or negative number raised in negative power).
+class InvalidPowArgumentException : public InvalidArgumentException {};
+/// Invalid argument of logarithm (ln() and log10()) functions (negative or zero).
+class InvalidLogArgumentException : public InvalidArgumentException {};
+/// Invalid argument of sqrt() function (negative).
+class InvalidSqrtArgumentException : public InvalidArgumentException {};
+/// Invalid argument of tan() function (cos() == 0).
+class InvalidTanArgumentException : public InvalidArgumentException {};
+/// Invalid argument of cot() function (sin() == 0).
+class InvalidCotArgumentException : public InvalidArgumentException {};
+/// Invalid argument of tanh() function (cosh() == 0).
+class InvalidTanhArgumentException : public InvalidArgumentException {};
+/// Invalid argument of coth() function (sinh() == 0).
+class InvalidCothArgumentException : public InvalidArgumentException {};
+
+
+///////////////////////////////////////////////////////////////////////////
+// Parser exceptions
+
+/// Result of previous calculation does not exist.
+class ResultDoesNotExistException : public ParserException {};
+/// Unknown token.
+class UnknownTokenException : public ParserException {};
+/// Incorrect number.
+class IncorrectNumberException : public ParserException {};
+/// Incorrect expression.
+class IncorrectExpressionException : public ParserException {};
+/// No closing bracket.
+class NoClosingBracketException : public ParserException {};
+/// Unknown function.
+class UnknownFunctionException : public ParserException {};
+/// Unknown variable.
+class UnknownVariableException : public ParserException {};
 
 
 }; // namespace MaxCalcEngine
