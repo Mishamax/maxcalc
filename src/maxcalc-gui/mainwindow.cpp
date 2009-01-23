@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2008 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,8 +23,19 @@
 // MaxCalcEngine
 #include "bigdecimal.h"
 
+/// Indentation used for output
 static const QString indent = "    ";
 
+/*!
+	\class MainWindow
+	\brief Main window of calculator.
+
+	\ingroup MaxCalcGui
+*/
+
+/*!
+	Constructs a new main window.
+*/
 MainWindow::MainWindow() : QMainWindow()
 {
 	initUi();
@@ -33,6 +44,9 @@ MainWindow::MainWindow() : QMainWindow()
 	initFunctionsList();
 }
 
+/*!
+	Inits UI elements.
+*/
 void MainWindow::initUi()
 {
 	setWindowTitle(tr("MaxCalc"));
@@ -74,15 +88,23 @@ void MainWindow::initUi()
 	
 	centralWidget.setLayout(&layout);
 
-	QObject::connect(this, SIGNAL(expressionCalculated()), &inputBox, SLOT(onExpressionCalculated()));
-	QObject::connect(&okButton, SIGNAL(clicked()), this, SLOT(onExpressionEntered()));
-	QObject::connect(&inputBox, SIGNAL(returnPressed()), this, SLOT(onExpressionEntered()));
-	QObject::connect(&variablesList, SIGNAL(itemActivated(QListWidgetItem *)), this, SLOT(onVariableClicked(QListWidgetItem *)));
-	QObject::connect(&functionsList, SIGNAL(itemActivated(QListWidgetItem *)), this, SLOT(onFunctionClicked(QListWidgetItem *)));
+	QObject::connect(this, SIGNAL(expressionCalculated()), &inputBox,
+		SLOT(addTextToHistory()));
+	QObject::connect(&okButton, SIGNAL(clicked()), this,
+		SLOT(onExpressionEntered()));
+	QObject::connect(&inputBox, SIGNAL(returnPressed()), this,
+		SLOT(onExpressionEntered()));
+	QObject::connect(&variablesList, SIGNAL(itemActivated(QListWidgetItem *)),
+		this, SLOT(onVariableClicked(QListWidgetItem *)));
+	QObject::connect(&functionsList, SIGNAL(itemActivated(QListWidgetItem *)),
+		this, SLOT(onFunctionClicked(QListWidgetItem *)));
 
 	inputBox.setFocus();
 }
 
+/*!
+	Creates main menu.
+*/
 void MainWindow::initMainMenu()
 {
 	setMenuBar(&mainMenu);
@@ -94,12 +116,20 @@ void MainWindow::initMainMenu()
 	help->addAction(tr("&About"), this, SLOT(onHelpAbout()));
 }
 
+/*!
+	Adds constants to varibables list.
+*/
 void MainWindow::initVariablesList()
 {
-	variablesList.addItem(tr("e = ") + QString::fromStdWString(MaxCalcEngine::BigDecimal::E.toWideString()));
-	variablesList.addItem(tr("pi = ") + QString::fromStdWString(MaxCalcEngine::BigDecimal::PI.toWideString()));
+	variablesList.addItem(tr("e = ") +
+		QString::fromStdWString(MaxCalcEngine::BigDecimal::E.toWideString()));
+	variablesList.addItem(tr("pi = ") +
+		QString::fromStdWString(MaxCalcEngine::BigDecimal::PI.toWideString()));
 }
 
+/*!
+	Adds supported functions to functions list.
+*/
 void MainWindow::initFunctionsList()
 {
 	functionsList.addItem(tr("abs"));
@@ -129,6 +159,9 @@ void MainWindow::initFunctionsList()
 	functionsList.addItem(tr("exp"));
 }
 
+/*!
+	Called when expression is entered.
+*/
 void MainWindow::onExpressionEntered()
 {
 	QString expr = inputBox.text();
@@ -159,14 +192,19 @@ void MainWindow::onExpressionEntered()
 	historyBox.setTextColor(Qt::blue);
 	historyBox.append(inputBox.text());
 	historyBox.setTextColor(Qt::darkGreen);
-	historyBox.append(indent + QString::fromStdWString(parser.context().result().toWideString()));
+	historyBox.append(indent +
+		QString::fromStdWString(parser.context().result().toWideString()));
 	if (variablesList.count() > 2)
 		variablesList.takeItem(2);
-	variablesList.addItem(tr("res = ") + QString::fromStdWString(parser.context().result().toWideString()));
+	variablesList.addItem(tr("res = ") +
+		QString::fromStdWString(parser.context().result().toWideString()));
 	inputBox.clear();
 	inputBox.setFocus();
 }
 
+/*!
+	Called when variable in the list is clicked.
+*/
 void MainWindow::onVariableClicked(QListWidgetItem * item)
 {
 	QString text = item->text();
@@ -176,6 +214,9 @@ void MainWindow::onVariableClicked(QListWidgetItem * item)
 	inputBox.setFocus();
 }
 
+/*!
+	Called when function in the list is clicked.
+*/
 void MainWindow::onFunctionClicked(QListWidgetItem * item)
 {
 	inputBox.insert(item->text());
@@ -184,6 +225,9 @@ void MainWindow::onFunctionClicked(QListWidgetItem * item)
 	inputBox.setFocus();
 }
 
+/*!
+	Help -> About command.
+*/
 void MainWindow::onHelpAbout()
 {
 	AboutBox aboutBox(this);

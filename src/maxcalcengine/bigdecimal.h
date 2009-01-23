@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2008 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,9 +28,6 @@
 
 namespace MaxCalcEngine {
 
-//****************************************************************************
-// BigDecimal definition
-//****************************************************************************
 
 class BigDecimal
 {
@@ -46,11 +43,15 @@ public:
 	// Constructors
 	
 	BigDecimal();
-	BigDecimal(const std::string & str, const BigDecimalFormat & format = BigDecimalFormat::getDefault());
-	BigDecimal(const char * str, const BigDecimalFormat & format = BigDecimalFormat::getDefault());
+	BigDecimal(const std::string & str, const BigDecimalFormat & format =
+		BigDecimalFormat::getDefault());
+	BigDecimal(const char * str, const BigDecimalFormat & format =
+		BigDecimalFormat::getDefault());
 #if defined(UNICODE)
-	BigDecimal(const std::wstring & str, const BigDecimalFormat & format = BigDecimalFormat::getDefault());
-	BigDecimal(const wchar_t * str, const BigDecimalFormat & format = BigDecimalFormat::getDefault());
+	BigDecimal(const std::wstring & str, const BigDecimalFormat & format =
+		BigDecimalFormat::getDefault());
+	BigDecimal(const wchar_t * str, const BigDecimalFormat & format =
+		BigDecimalFormat::getDefault());
 #endif
 	BigDecimal(const BigDecimal & num);
 	BigDecimal(const int num);
@@ -61,11 +62,14 @@ public:
 	///////////////////////////////////////////////////////////////////////////
 	// Conversion functions
 	
-	std::string toString(const BigDecimalFormat & format = BigDecimalFormat::getDefault()) const;
+	std::string toString(const BigDecimalFormat & format =
+		BigDecimalFormat::getDefault()) const;
 #if defined(UNICODE)
-	std::wstring toWideString(const BigDecimalFormat & format = BigDecimalFormat::getDefault()) const;
+	std::wstring toWideString(const BigDecimalFormat & format =
+		BigDecimalFormat::getDefault()) const;
 #endif
-	inline tstring toTString(const BigDecimalFormat & format = BigDecimalFormat::getDefault()) const;
+	inline tstring toTString(const BigDecimalFormat & format =
+		BigDecimalFormat::getDefault()) const;
 
 	int toInt() const;
 	unsigned toUInt() const;
@@ -166,11 +170,14 @@ private:
 	void construct(const std::string & str, const BigDecimalFormat & format);
 
 	static void checkContextStatus(const DecNumber::decContext & context);
-	static int compare(const DecNumber::decNumber & n1, const DecNumber::decNumber & n2);
-	static void rescale(DecNumber::decNumber & number, const int exp, DecNumber::decContext & context);
+	static int compare(const DecNumber::decNumber & n1,
+		const DecNumber::decNumber & n2);
+	static void rescale(DecNumber::decNumber & number, const int exp,
+		DecNumber::decContext & context);
 	
 	static BigDecimal pi();
-	static BigDecimal FMA(const BigDecimal & multiplier1, const BigDecimal & multiplier2, const BigDecimal & summand);
+	static BigDecimal FMA(const BigDecimal & multiplier1,
+		const BigDecimal & multiplier2, const BigDecimal & summand);
 };
 
 

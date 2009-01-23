@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2008 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ public:
 	InputBox();
 
 public slots:
-	void onExpressionCalculated();
+	void addTextToHistory();
 
 protected:
 	virtual void keyPressEvent(QKeyEvent * event);
@@ -41,7 +41,6 @@ private:
 	QList<QString> history;
 	QList<QString>::iterator currentHistoryEntry;
 
-private:
 	void onKeyUpPressed();
 	void onKeyDownPressed();
 	void onKeyEscapePressed();

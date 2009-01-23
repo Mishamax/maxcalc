@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2008 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,68 +31,90 @@ namespace MaxCalcEngine {
 
 #if defined(UNICODE)
 
-// String literal
-#define _T(x) L ## x
+///////////////////////////////////////////////////////////////////////////
+// Unicode identifiers
 
-// tchar and tstring definitions
-typedef wchar_t tchar;
-typedef std::wstring tstring;
+#define _T(x) L ## x				///< String literal
 
-// String conversion functions
-std::codecvt_base::result stringToWideString(const std::string & from, std::wstring & to, const char * localeName = "");
-std::codecvt_base::result wideStringToString(const std::wstring & from, std::string & to, const char * localeName = "");
-
-std::codecvt_base::result charToWideChar(const char * from, size_t fromLength, wchar_t * to, size_t toLength, const char * localeName = "");
-std::codecvt_base::result wideCharToChar(const wchar_t * from, size_t fromLength, char * to, size_t toLength, const char * localeName = "");
+typedef wchar_t tchar;				///< tchar definition
+typedef std::wstring tstring;		///< tstring definition
 
 // Character case conversion functions
-#define totlower(str) towlower(str)
-#define totupper(str) towupper(str)
+#define totlower(c) towlower(c)		///< Converts \a c to lower case
+#define totupper(c) towupper(c)		///< Converts \a c to upper case
 
 // Character handling functions
-#define istdigit(c) iswdigit(c)
-#define istalpha(c) iswalpha(c)
-#define istspace(c) iswspace(c)
+#define istdigit(c) iswdigit(c)		///< Determines if \a c is a digit
+#define istalpha(c) iswalpha(c)		///< Determines if \a c is a digit or letter
+#define istspace(c) iswspace(c)		///< Determines if \a c is a space char
 
 // IO
-#define tcout wcout
-#define tcin wcin
-#define fgetts fgetws
+#define tcout wcout					///< Standard output stream
+#define tcin wcin					///< Standard input stream
+#define fgetts fgetws				///< Gets string from stream
+
+
+// String conversion functions
+std::codecvt_base::result stringToWideString(const std::string & from,
+											 std::wstring & to,
+											 const char * localeName = "");
+std::codecvt_base::result wideStringToString(const std::wstring & from,
+											 std::string & to,
+											 const char * localeName = "");
+
+std::codecvt_base::result charToWideChar(const char * from,
+										 size_t fromLength,
+										 wchar_t * to,
+										 size_t toLength,
+										 const char * localeName = "");
+std::codecvt_base::result wideCharToChar(const wchar_t * from,
+										 size_t fromLength,
+										 char * to,
+										 size_t toLength,
+										 const char * localeName = "");
 
 #else // #if defined(UNICODE)
 
-// String literal
-#define _T(x) x
+///////////////////////////////////////////////////////////////////////////
+// Non-Unicode identifiers
 
-// tchar and tstring definitions
-typedef char tchar;
-typedef std::string tstring;
+#define _T(x) x						///< String literal
+
+typedef char tchar;					///< tchar definition
+typedef std::string tstring;		///< tstring definition
+
 
 // Character case conversion functions
-#define totlower(str) tolower(str)
-#define totupper(str) toupper(str)
+#define totlower(c) tolower(c)		///< Converts \a c to lower case
+#define totupper(c) toupper(c)		///< Converts \a c to upper case
 
 // Character handling functions
-#define istdigit(c) isdigit(c)
-#define istalpha(c) isalpha(c)
-#define istspace(c) isspace(c)
+#define istdigit(c) isdigit(c)		///< Determines if \a c is a digit
+#define istalpha(c) isalpha(c)		///< Determines if \a c is a digit or letter
+#define istspace(c) isspace(c)		///< Determines if \a c is a space char
 
 // IO
-#define tcout cout
-#define tcin cin
-#define fgetts fgets
+#define tcout cout					///< Standard output stream
+#define tcin cin					///< Standard input stream
+#define fgetts fgets				///< Gets string from stream
 
 #endif // #if defined(UNICODE)
 
+
+///////////////////////////////////////////////////////////////////////////
+// Common functions
+
+// Character case conversion functions
 void strToLower(tchar * str);
 void strToLower(tstring & str);
 void strToUpper(tchar * str);
 void strToUpper(tstring & str);
 
-// Trim
+// Trimming functions
 void ltrim(tstring & str);
 void rtrim(tstring & str);
 void trim(tstring & str);
+
 
 } // namespace MaxCalcEngine
 

@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2008 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,21 +20,40 @@
 // Local
 #include "inputbox.h"
 
+/*!
+	\class InputBox
+	\brief Input box used to input expression.
+
+	InputBox is based on QLineEdit and has history support.
+
+	\ingroup MaxCalcGui
+*/
+
+/*!
+	Constructs new instance of InputBox.
+*/
 InputBox::InputBox() : QLineEdit()
 {
 	history.append("");
 	currentHistoryEntry = history.begin();
 
-	QObject::connect(this, SIGNAL(textEdited(const QString &)), this, SLOT(onTextEdited(const QString &)));
+	QObject::connect(this, SIGNAL(textEdited(const QString &)), this,
+		SLOT(onTextEdited(const QString &)));
 }
 
-void InputBox::onExpressionCalculated()
+/*!
+	Adds current text to history.
+*/
+void InputBox::addTextToHistory()
 {
 	*history.begin() = text();
 	history.push_front("");
 	currentHistoryEntry = history.begin();
 }
 
+/*!
+	Processes key events used to work with history.
+*/
 void InputBox::keyPressEvent(QKeyEvent * event)
 {
 	if (event->key() == Qt::Key_Up)
@@ -47,6 +66,9 @@ void InputBox::keyPressEvent(QKeyEvent * event)
 		QLineEdit::keyPressEvent(event);
 }
 
+/*!
+	Displays previous history entry.
+*/
 void InputBox::onKeyUpPressed()
 {
 	currentHistoryEntry++;
@@ -61,6 +83,9 @@ void InputBox::onKeyUpPressed()
 	}
 }
 
+/*!
+	Displays next history entry.
+*/
 void InputBox::onKeyDownPressed()
 {
 	if (currentHistoryEntry != history.begin())
@@ -71,11 +96,17 @@ void InputBox::onKeyDownPressed()
 	}
 }
 
+/*!
+	Clears input box by Escape key.
+*/
 void InputBox::onKeyEscapePressed()
 {
 	clear();
 }
 
+/*!
+	Updates current history entry when text is edited.
+*/
 void InputBox::onTextEdited(const QString & text)
 {
 	*history.begin() = text;

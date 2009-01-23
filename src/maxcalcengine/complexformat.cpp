@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2008 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,14 +22,11 @@
 
 namespace MaxCalcEngine {
 
-//****************************************************************************
-// ComplexFormat implementation
-//****************************************************************************
-
 
 /*!
 	\class ComplexFormat
-	\brief Represents format settings used for convertion from Complex to string.
+	\brief Represents format settings used for convertion from Complex to
+	string.
 
 	ComplexFormat inherits BigDecimalFormat which is used to format real and
 	imaginary parts of the number.
@@ -45,17 +42,20 @@ namespace MaxCalcEngine {
 	\fn ComplexFormat::getDefault()
 	\brief Returns ComplexFormat with default settings.
 	
-	The defaults are: precision = MAX_IO_PRECISION, numberFormat = GeneralFormat,
-	exponentCase = UpperCaseExponent, imaginaryOne = 'i'.
+	The defaults are: precision = MAX_IO_PRECISION, numberFormat =
+	GeneralFormat, exponentCase = UpperCaseExponent, imaginaryOne = 'i'.
 */
 
 /*!
 	Constructs a new instance of ComplexFormat.
 */
-ComplexFormat::ComplexFormat(const int precision, const NumberFormat numberFormat,
-							 const ExponentCase exponentCase, const DecimalSeparator decimalSeparator,
+ComplexFormat::ComplexFormat(const int precision,
+							 const NumberFormat numberFormat,
+							 const ExponentCase exponentCase,
+							 const DecimalSeparator decimalSeparator,
 							 const ImaginaryOne imaginaryOne)
-							 : BigDecimalFormat(precision, numberFormat, exponentCase, decimalSeparator)
+							 : BigDecimalFormat(precision, numberFormat,
+								exponentCase, decimalSeparator)
 {
 	imaginaryOne_ = imaginaryOne;
 }

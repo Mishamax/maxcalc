@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2008 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,16 +23,13 @@
 
 namespace MaxCalcEngine {
 
-//****************************************************************************
-// Complex implementation
-//****************************************************************************
-
 	
 /*!
 	\class Complex
 	\brief Represents a complex number.
 
-	BigDecimal class is used to represent real and imaginary parts of the complex number.
+	BigDecimal class is used to represent real and imaginary parts of
+	the complex number.
 
 	When converting to string, number format is specified by ComplexFormat class.
 
@@ -61,17 +58,21 @@ Complex::Complex()
 }
 
 /*!
-	Constructs a new instance of Complex class from given \a real and \a imaginary parts.
+	Constructs a new instance of Complex class from given \a real and
+	\a imaginary parts.
 */
-Complex::Complex(const char * real, const char * imaginary, const ComplexFormat & format) :
+Complex::Complex(const char * real, const char * imaginary,
+				 const ComplexFormat & format) :
 	re(real, format), im(imaginary, format)
 {
 }
 
 /*!
-	Constructs a new instance of Complex class from given \a real and \a imaginary parts.
+	Constructs a new instance of Complex class from given \a real and
+	\a imaginary parts.
 */
-Complex::Complex(const std::string & real, const std::string & imaginary, const ComplexFormat & format) :
+Complex::Complex(const std::string & real, const std::string & imaginary,
+				 const ComplexFormat & format) :
 	re(real, format), im(imaginary, format)
 {
 }
@@ -79,17 +80,21 @@ Complex::Complex(const std::string & real, const std::string & imaginary, const 
 #if defined(UNICODE)
 
 /*!
-	Constructs a new instance of Complex class from given \a real and \a imaginary parts.
+	Constructs a new instance of Complex class from given \a real and
+	\a imaginary parts.
 */
-Complex::Complex(const wchar_t * real, const wchar_t * imaginary, const ComplexFormat & format) :
+Complex::Complex(const wchar_t * real, const wchar_t * imaginary,
+				 const ComplexFormat & format) :
 	re(real, format), im(imaginary, format)
 {
 }
 
 /*!
-	Constructs a new instance of Complex class from given \a real and \a imaginary parts.
+	Constructs a new instance of Complex class from given \a real and
+	\a imaginary parts.
 */
-Complex::Complex(const std::wstring & real, const std::wstring & imaginary, const ComplexFormat & format) :
+Complex::Complex(const std::wstring & real, const std::wstring & imaginary,
+				 const ComplexFormat & format) :
 	re(real, format), im(imaginary, format)
 {
 }
@@ -97,7 +102,8 @@ Complex::Complex(const std::wstring & real, const std::wstring & imaginary, cons
 #endif // #if defined(UNICODE)
 
 /*!
-	Constructs a new instance of Complex class from given \a real and \a imaginary parts.
+	Constructs a new instance of Complex class from given \a real and
+	\a imaginary parts.
 */
 Complex::Complex(const BigDecimal & real, const BigDecimal & imaginary)
 {
@@ -106,7 +112,8 @@ Complex::Complex(const BigDecimal & real, const BigDecimal & imaginary)
 }
 
 /*!
-	Constructs a new instance of Complex class from given \a real and \a imaginary parts.
+	Constructs a new instance of Complex class from given \a real and
+	\a imaginary parts.
 */
 Complex::Complex(const int real, const int imaginary)
 {
@@ -115,7 +122,8 @@ Complex::Complex(const int real, const int imaginary)
 }
 
 /*!
-	Constructs a new instance of Complex class from given \a real and \a imaginary parts.
+	Constructs a new instance of Complex class from given \a real and
+	\a imaginary parts.
 */
 Complex::Complex(const unsigned real, const unsigned imaginary)
 {
@@ -251,7 +259,8 @@ Complex Complex::operator/(const Complex & num) const
 	BigDecimal sqrt = num.re * num.re + num.im * num.im;
 	if (sqrt.isZero())
 		throw DivisionByZeroException();
-	return Complex((re * num.re + im * num.im) / sqrt, (im * num.re - re * num.im) / sqrt);
+	return Complex((re * num.re + im * num.im) / sqrt,
+		(im * num.re - re * num.im) / sqrt);
 }
 
 /*!
@@ -275,7 +284,8 @@ Complex Complex::operator-=(const Complex & num)
 */
 Complex Complex::operator*=(const Complex & num)
 {
-	Complex result = Complex(re * num.re - im * num.im, re * num.im + im * num.re);
+	Complex result = Complex(re * num.re - im * num.im,
+		re * num.im + im * num.re);
 	re = result.re;
 	im = result.im;
 	return result;
@@ -291,7 +301,8 @@ Complex Complex::operator/=(const Complex & num)
 	BigDecimal sqrt = num.re * num.re + num.im * num.im;
 	if (sqrt.isZero())
 		throw DivisionByZeroException();
-	Complex result = Complex((re * num.re + im * num.im) / sqrt, (im * num.re - re * num.im) / sqrt);
+	Complex result = Complex((re * num.re + im * num.im) / sqrt,
+		(im * num.re - re * num.im) / sqrt);
 	re = result.re;
 	im = result.im;
 	return result;
@@ -371,7 +382,8 @@ BigDecimal Complex::arg(const Complex & num)
 
 	\a num must be integer and >= 0.
 
-	\exception InvalidFactorialArgumentException Fractional or negative \a num is given.
+	\exception InvalidFactorialArgumentException Fractional or
+		negative \a num is given.
 */
 BigDecimal Complex::factorial(const Complex & num)
 {
@@ -423,7 +435,8 @@ Complex Complex::exp(const Complex & num)
 {
 	if (num.im.isZero())
 		return BigDecimal::exp(num.re);
-	return Complex(BigDecimal::cos(num.im), BigDecimal::sin(num.im)) * BigDecimal::exp(num.re);
+	return Complex(BigDecimal::cos(num.im),
+		BigDecimal::sin(num.im)) * BigDecimal::exp(num.re);
 }
 
 /*!
@@ -527,7 +540,8 @@ Complex Complex::arcsin(const Complex & num)
 
 	arccos(num) = -i * ln(num + sqrt(num^2 - 1))
 	
-	We use +sqrt() to achieve range 0..Pi (see arcsin() description for explanation)
+	We use +sqrt() to achieve range 0..Pi (see arcsin() description for
+	explanation)
 */
 Complex Complex::arccos(const Complex & num)
 {
@@ -542,13 +556,14 @@ Complex Complex::arccos(const Complex & num)
 	arctan(num) = (i / 2) * ln((i + num) / (i - num))
 	
 	We calculate logarithm as: ln(num) = ln(|num|) + i*arg(num) with k = 0
-	(for arctan() it will work and we will have correct range for real arguments -
-	see arccot() description for explanation)
+	(for arctan() it will work and we will have correct range for real
+	arguments - see arccot() description for explanation)
 */
 Complex Complex::arctan(const Complex & num)
 {
 	// TODO: handle positive infinite when re(num) == 0 and abs(im(a) + im(i)) == 0
-	// TODO: maybe is is better to calculate through arcsin (http://en.wikipedia.org/wiki/Arctangent)
+	// TODO: maybe is is better to calculate through arcsin
+	// (http://en.wikipedia.org/wiki/Arctangent)
 	if (num.im.isZero())
 		return BigDecimal::arctan(num.re);
 	return (i / 2) * ln((i + num) / (i - num));
@@ -561,7 +576,8 @@ Complex Complex::arctan(const Complex & num)
 
 	This formula doesn't work correctly for real arguments.
 	Maybe we should calculate logarithm as Ln(z) = ln(r) + i*arg(z) + 2*Pi*k*i
-	with correct 'k' but it's simpler to use formula arccot(num) = Pi/2 - arctan(num).
+	with correct 'k' but it's simpler to use formula
+	arccot(num) = Pi/2 - arctan(num).
 	This works fine for any argument.
 */
 Complex Complex::arccot(const Complex & num)

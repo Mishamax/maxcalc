@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2008 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,31 +24,30 @@
 
 namespace MaxCalcEngine {
 
-//****************************************************************************
-// BigDecimalFormat implementation
-//****************************************************************************
-
 
 /*!
 	\class BigDecimalFormat
-	\brief Represents format settings used for convertion from BigDecimal to string.
+	\brief Represents format settings used for convertion from BigDecimal
+	to string.
 
 	Format of BigDecimal number includes precision used for rounding, format
-	(general, scientific or engineering) and case of 'E' letter when exponent is needed.
+	(general, scientific or engineering) and case of 'E' letter when exponent
+	is needed.
 
 	Precision may not be less than 1 and more than MAX_IO_PRECISION.
 	Default value is MAX_IO_PRECISION.
 
-	In general format exponential form is used when exponent is more than 5 by absolute
-	value, otherwise it is not used.
-	Scientific format means that there is just one digit before decimal point when
-	exponent is needed.
-	In engineering format the exponent is multiple of three and there may be up to
-	three digits before decimal point.
+	In general format exponential form is used when exponent is more than 5
+	by absolute	value, otherwise it is not used.
+	Scientific format means that there is just one digit before decimal point
+	when exponent is needed.
+	In engineering format the exponent is multiple of three and there may be
+	up to three digits before decimal point.
 	When exponent is not needed all the formats are the same.
 	By default general format is used.
 
-	When exponent is needed, it can be represented as lower or upper case 'E' letter.
+	When exponent is needed, it can be represented as lower or upper case
+	'E' letter.
 	By default upper case 'E' is used.
 
 	\sa BigDecimal::toString()
@@ -60,14 +59,17 @@ namespace MaxCalcEngine {
 	\fn BigDecimalFormat::getDefault()
 	\brief Returns BigDecimalFormat with default settings.
 
-	The defaults are: precision = MAX_IO_PRECISION, numberFormat = GeneralFormat, exponentCase = UpperCaseExponent.
+	The defaults are: precision = MAX_IO_PRECISION, numberFormat =
+	GeneralFormat, exponentCase = UpperCaseExponent.
 */
 
 /*!
-	Contructs a new instance of BigDecimalFormat.
+	Contructs a new instance of BigDecimalFormat with given settings.
 */
-BigDecimalFormat::BigDecimalFormat(const int precision, const NumberFormat numberFormat,
-								   const ExponentCase exponentCase, const DecimalSeparator decimalSeparator)
+BigDecimalFormat::BigDecimalFormat(const int precision,
+								   const NumberFormat numberFormat,
+								   const ExponentCase exponentCase,
+								   const DecimalSeparator decimalSeparator)
 {
 	assert(precision >= 1 && precision <= MAX_IO_PRECISION);
 

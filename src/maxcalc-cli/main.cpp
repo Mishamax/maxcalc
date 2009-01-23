@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2008 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,8 +30,12 @@
 using namespace std;
 using namespace MaxCalcEngine;
 
+/// Indentation used for output
 static const tchar * indent = _T("    ");
 
+/*!
+	Prints list of supported functions.
+*/
 void printFunctions()
 {
 	tcout << indent << _T("abs") << endl;
@@ -62,6 +66,9 @@ void printFunctions()
 	tcout << endl;
 }
 
+/*!
+	Prints list of supported constants and res variable.
+*/
 void printConstants(const ParserContext & context)
 {
 	tcout << indent << _T("e = ") << BigDecimal::E.toTString() << endl;
@@ -70,12 +77,19 @@ void printConstants(const ParserContext & context)
 		tcout << indent << _T("res = ") << context.result().toTString() << endl;
 }
 
+/*!
+	Prints list of defined variables.
+*/
 void printVariables(const ParserContext & context)
 {
 	if (context.resultExists())
 		tcout << indent << _T("res = ") << context.result().toTString() << endl;
 }
 
+/*!
+	Prints version information and displays copyright information if
+	\a displayCopyright is true.
+*/
 void printVersion(bool displayCopyright)
 {
 	tcout << _T("MaxCalc v") << VERSION << _T(" (");
@@ -88,6 +102,9 @@ void printVersion(bool displayCopyright)
 	tcout << endl;
 }
 
+/*!
+	Prints help (list of supported command).
+*/
 void printHelp()
 {
 	tcout <<  _T("Commands:") << endl;
@@ -100,12 +117,19 @@ void printHelp()
 	tcout << endl;
 }
 
+/*!
+	Checks that \a expr contains a command and executes it. \a context is
+	used to get parser state for commands like printing list of variables.
+
+	Returns true if a command was found and parsed, false otherwise.
+*/
 bool parseCommand(const tstring & expr, const ParserContext & context)
 {
 	tstring cmd = expr;
 	strToLower(cmd);
 
-	if (cmd == _T("exit") || cmd == _T("quit") || cmd == _T("#exit") || cmd == _T("#quit"))
+	if (cmd == _T("exit") || cmd == _T("quit") ||
+		cmd == _T("#exit") || cmd == _T("#quit"))
 		exit(0);
 
 	if (cmd[0] != _T('#') && cmd != _T("help"))
@@ -132,13 +156,15 @@ int main()
 	const int exprLength = 1000;
 	tchar charExpr[exprLength];
 	tstring expr;
+	Parser parser;
 
-	// Without that locale may be set incorrecly on Linux (non-latic characters may not work)
+	// Without that locale may be set incorrecly on Linux
+	// (non-latic characters may not work)
 	setlocale(LC_ALL, "");
 
 	printVersion(false);
 
-	Parser parser;
+	// Main working loop
 	while (true)
 	{
 		tcout << _T("> ");

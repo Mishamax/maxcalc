@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2008 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -123,32 +123,62 @@ codecvt_base::result wideCharToChar(const wchar_t * from, size_t fromLength, cha
 
 #endif // #if defined(UNICODE)
 
+/*!
+	Converts all characters of \a str to lower case
+
+	\ingroup MaxCalcEngine
+*/
 void strToLower(tchar * str)
 {
+	assert(str);
+
 	for (tchar * pos = str; pos; ++pos)
 		*pos = totlower(*pos);
 }
 
+/*!
+	Converts all characters of \a str to lower case
+
+	\ingroup MaxCalcEngine
+*/
 void strToLower(tstring & str)
 {
 	for (tstring::iterator pos = str.begin(); pos != str.end(); ++pos)
 		*pos = totlower(*pos);
 }
 
+/*!
+	Converts all characters of \a str to upper case
+
+	\ingroup MaxCalcEngine
+*/
 void strToUpper(tchar * str)
 {
+	assert(str);
+
 	for (tchar * pos = str; pos; ++pos)
 		*pos = totupper(*pos);
 }
 
+/*!
+	Converts all characters of \a str to upper case
+
+	\ingroup MaxCalcEngine
+*/
 void strToUpper(tstring & str)
 {
 	for (tstring::iterator pos = str.begin(); pos != str.end(); ++pos)
 		*pos = totupper(*pos);
 }
 
+// Characters which are recognized as space
 static const tchar * space = _T(" \t\f\v\n\r");
 
+/*!
+	Removes all white spaces at the beginning of \a str.
+
+	\ingroup MaxCalcEngine
+*/
 void ltrim(tstring & str)
 {
 	size_t found = str.find_first_not_of(space);
@@ -158,6 +188,11 @@ void ltrim(tstring & str)
 		str.clear();
 }
 
+/*!
+	Removes all white spaces at the end of \a str.
+
+	\ingroup MaxCalcEngine
+*/
 void rtrim(tstring & str)
 {
 	size_t found = str.find_last_not_of(space);
@@ -167,6 +202,11 @@ void rtrim(tstring & str)
 		str.clear();
 }
 
+/*!
+	Removes all white spaces at the beginning and at the end of \a str.
+
+	\ingroup MaxCalcEngine
+*/
 void trim(tstring & str)
 {
 	ltrim(str);

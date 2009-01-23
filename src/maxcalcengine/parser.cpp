@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2008 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,12 +24,33 @@
 namespace MaxCalcEngine {
 
 
+/*!
+	\class Parser
+	\brief Main class of MaxCalcEngine which is used for parsing and
+	calculating expressions.
+
+	This is a recursive descendant parser. Parser grammar is described in
+	"doc/MaxCalc Parser specification.odt" document.
+
+	State of Parser including result of calculation is stored in ParserContext.
+	It also defines behavior of Parser like number format used for conversions.
+
+	Parser works with arbitrary-precision Complex numbers and uses Complex
+	class for storing numbers and making calculations. Number format is
+	determined by ComplexFormat class.
+
+	\sa ParserContext, Complex, ComplexFormat.
+	\ingroup MaxCalcEngine
+*/
+
+
 //****************************************************************************
-// Parser implementation
+// Constructors
 //****************************************************************************
 
 /*!
-	Constructs a new instance of Parser.
+	Constructs a new instance of Parser with empty expression and default
+	context.
 */
 Parser::Parser()
 {
@@ -48,6 +69,11 @@ Parser::Parser(const tstring & expr, const ParserContext & context)
 	context_ = context;
 	reset();
 }
+
+
+//****************************************************************************
+// Public functions
+//****************************************************************************
 
 /*!
 	Performs calculation of given expression.
@@ -69,6 +95,11 @@ ParserContext Parser::parse()
 	return context_;
 }
 
+
+//****************************************************************************
+// Utility functions
+//****************************************************************************
+
 /*!
 	Resets the state of the parser (but keeps the expression and the context).
 */
@@ -78,6 +109,11 @@ void Parser::reset()
 	curToken_ = tokens_.begin();
 	tokens_.clear();
 }
+
+
+//****************************************************************************
+// Lexical analyzer
+//****************************************************************************
 
 /*!
 	Performs lexical analysis of given expression.
@@ -130,7 +166,7 @@ bool Parser::analyzeOperators()
 }
 
 /*!
-	Lexical identifiers (function and variable names).
+	Lexical analysis of identifiers (function and variable names).
 */
 bool Parser::analyzeIdentifiers()
 {
@@ -255,6 +291,11 @@ bool Parser::skipSpaces()
 
 	return true;
 }
+
+
+//****************************************************************************
+// Syntax analyzer
+//****************************************************************************
 
 /*!
 	Performs syntax analysis of given expression and calculates the result.

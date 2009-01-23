@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2008 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,27 +27,87 @@
 
 namespace MaxCalcEngine {
 
-//****************************************************************************
-// ParserContext definition
-//****************************************************************************
 
 class ParserContext
 {
 public:
-	explicit ParserContext(const ComplexFormat & numberFormat = ComplexFormat::getDefault());
 
-	inline Complex result() const { if (resultExists_) return result_; else throw ResultDoesNotExistException(); }
-	inline void setResult(const Complex & result) { result_ = result; resultExists_ = true; }
-	inline bool resultExists() const { return resultExists_; }
+	///////////////////////////////////////////////////////////////////////////
+	// Constructors
 
-	inline ComplexFormat numberFormat() { return numberFormat_; }
-	inline void setNumberFormat(const ComplexFormat & numberFormat) { numberFormat_ = numberFormat; }
+	explicit ParserContext(const ComplexFormat & numberFormat =
+		ComplexFormat::getDefault());
+
+
+	///////////////////////////////////////////////////////////////////////////
+	// Accessors
+
+	inline Complex result() const;
+	inline void setResult(const Complex & result);
+	inline bool resultExists() const;
+
+	inline ComplexFormat numberFormat();
+	inline void setNumberFormat(const ComplexFormat & numberFormat);
 
 private:
-	Complex result_;
-	bool resultExists_;
-	ComplexFormat numberFormat_;
+
+	///////////////////////////////////////////////////////////////////////////
+	// Properties
+
+	Complex result_;				///< Result of last calculation.
+	bool resultExists_;				///< Determines if result exists.
+	ComplexFormat numberFormat_;	///< Number format used for conversions.
 };
+
+
+
+///////////////////////////////////////////////////////////////////////////
+// Inline functions
+
+/*!
+	Gets result of last calculation.
+	\exception ResultDoesNotExistException Result does not exist.
+*/
+inline Complex ParserContext::result() const
+{
+	if (resultExists_)
+		return result_;
+	else
+		throw ResultDoesNotExistException();
+}
+
+/*!
+	Sets result of last calculation.
+*/
+inline void ParserContext::setResult(const Complex & result)
+{
+	result_ = result;
+	resultExists_ = true;
+}
+
+/*!
+	Determines if result of last calculation exists.
+*/
+inline bool ParserContext::resultExists() const
+{
+	return resultExists_;
+}
+
+/*!
+	Gets number format.
+*/
+inline ComplexFormat ParserContext::numberFormat()
+{
+	return numberFormat_;
+}
+
+/*!
+	Sets number format.
+*/
+inline void ParserContext::setNumberFormat(const ComplexFormat & numberFormat)
+{
+	numberFormat_ = numberFormat;
+}
 
 } // namespace MaxCalcEngine
 

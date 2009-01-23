@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2008 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,40 +30,50 @@
 
 namespace MaxCalcEngine {
 
-//****************************************************************************
-// Parser definition
-//****************************************************************************
 
 class Parser
 {
 public:
+
+	///////////////////////////////////////////////////////////////////////////
+	// Constructors
+
 	Parser();
 	Parser(const tstring & expr, const ParserContext & context);
 
+	///////////////////////////////////////////////////////////////////////////
+	// Public functions
+
 	ParserContext parse();
 
-	inline tstring expression() const { return expr_; }
-	inline void setExpression(const tstring & expr) { reset(); expr_ = expr; strToLower(expr_); }
+	///////////////////////////////////////////////////////////////////////////
+	// Accessors
 
-	inline ParserContext context() const { return context_; }
-	inline void setContext(const ParserContext & context) { context_ = context; }
+	inline tstring expression() const;
+	inline void setExpression(const tstring & expr);
+
+	inline ParserContext context() const;
+	inline void setContext(const ParserContext & context);
 
 private:
 
 	///////////////////////////////////////////////////////////////////////////
 	// Private variables
-	tstring expr_;
-	ParserContext context_;
+
+	tstring expr_;						///< Expression to be parsed.
+	ParserContext context_;				///< Parser context.
 
 
 	///////////////////////////////////////////////////////////////////////////
 	// Utility functions
+
 	void reset();
 
 
 	///////////////////////////////////////////////////////////////////////////
 	// Lexical analyzer
 
+	/// Enum of tokens.
 	enum Tokens
 	{
 		PLUS,
@@ -79,17 +89,23 @@ private:
 		IDENTIFIER
 	};
 
+	/// Represents token with corresponding part of expression.
 	struct Token
 	{
-		inline Token(const Tokens token_, const tstring & str_) { token = token_; str = str_; }
-		inline Token(const Tokens token_, const tchar char_) { token = token_; str = char_; }
+		/// Constructs new Token from given \a token_ and \a str_
+		inline Token(const Tokens token_, const tstring & str_)
+		{ token = token_; str = str_; }
 
-		Tokens token;
-		tstring str;
+		/// Constructs new Token from given \a token_ and \a char_
+		inline Token(const Tokens token_, const tchar char_)
+		{ token = token_; str = char_; }
+
+		Tokens token;					///< Token.
+		tstring str;					///< String corresponding to token.
 	};
 
-	std::list<Token> tokens_;			// List of tokens
-	tstring::const_iterator curChar_;	// Current char of expression
+	std::list<Token> tokens_;			///< List of tokens
+	tstring::const_iterator curChar_;	///< Current char of expression
 
 	void lexicalAnalysis();
 	bool analyzeOperators();
@@ -101,7 +117,7 @@ private:
 	///////////////////////////////////////////////////////////////////////////
 	// Syntax analyzer
 
-	std::list<Token>::const_iterator curToken_;	// Current token in the list of tokens
+	std::list<Token>::const_iterator curToken_;	///< Current token in the list of tokens
 
 	void syntaxAnalysis();
 	Complex parseAddSub();
@@ -115,6 +131,44 @@ private:
 
 	bool parseFunctionArguments(std::vector<Complex> & args);
 };
+
+
+///////////////////////////////////////////////////////////////////////////
+// Inline functions
+
+/*!
+	Gets expression.
+*/
+inline tstring Parser::expression() const
+{
+	return expr_;
+}
+
+/*!
+	Sets expression and resets parser state to make new calculation.
+*/
+inline void Parser::setExpression(const tstring & expr)
+{
+	reset();
+	expr_ = expr;
+	strToLower(expr_);
+}
+
+/*!
+	Gets context.
+*/
+inline ParserContext Parser::context() const
+{
+	return context_;
+}
+
+/*!
+	Sets context.
+*/
+inline void Parser::setContext(const ParserContext & context)
+{
+	context_ = context;
+}
 
 } // namespace MaxCalcEngine
 

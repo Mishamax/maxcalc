@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2008 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,16 @@
 #include <QSpacerItem>
 #include <QPalette>
 
+/*!
+	\class AboutBox
+	\brief About box based on QDialog.
 
+	\ingroup MaxCalcGui
+*/
+
+/*!
+	Constructs new about box on top of given \a parent window.
+*/
 AboutBox::AboutBox(QWidget * parent) : QDialog(parent)
 {
 	setWindowTitle("MaxCalc");
@@ -64,10 +73,13 @@ AboutBox::AboutBox(QWidget * parent) : QDialog(parent)
 	closeButton.setText(tr("&Close"));
 
     layout.addWidget(&label, 1, 0, 1, -1);
-    layout.addItem(new QSpacerItem(20, 10, QSizePolicy::Minimum, QSizePolicy::Fixed), 2, 1, 1, 1);
-    layout.addItem(new QSpacerItem(20, 20, QSizePolicy::Expanding), 3, 0, 1, 1);
+    layout.addItem(new QSpacerItem(20, 10, QSizePolicy::Minimum,
+		QSizePolicy::Fixed), 2, 1, 1, 1);
+    layout.addItem(new QSpacerItem(20, 20,
+		QSizePolicy::Expanding), 3, 0, 1, 1);
     layout.addWidget(&closeButton, 3, 1, 1, 1);
-    layout.addItem(new QSpacerItem(20, 20, QSizePolicy::Expanding), 3, 2, 1, 1);    
+    layout.addItem(new QSpacerItem(20, 20,
+		QSizePolicy::Expanding), 3, 2, 1, 1);    
 
 	setLayout(&layout);
 
