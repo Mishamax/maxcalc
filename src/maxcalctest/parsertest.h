@@ -20,6 +20,7 @@ private slots:
 	void powerAndUnaryPlusMinus();
 	void brackets();
 	void constsAndVars();
+	void userVars();
 	void functions();
 	void functionsBasic();
 	void functionsTrig();

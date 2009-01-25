@@ -24,6 +24,7 @@
 #include "inputbox.h"
 // MaxCalcEngine
 #include "parser.h"
+#include "parsercontext.h"
 // Qt
 #include <QWidget>
 #include <QMainWindow>
@@ -62,7 +63,7 @@ private:
 
 	void initUi();
 	void initMainMenu();
-	void initVariablesList();
+	void updateVariablesList();
 	void initFunctionsList();
 
 private slots:
@@ -70,6 +71,7 @@ private slots:
 	void onVariableClicked(QListWidgetItem * item);
 	void onFunctionClicked(QListWidgetItem * item);
 	void onHelpAbout();
+	void onDeleteAllVariables();
 };
 
 #endif // MAINWINDOW_H

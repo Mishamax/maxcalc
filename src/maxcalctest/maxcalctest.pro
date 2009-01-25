@@ -4,8 +4,8 @@ TARGET = maxcalctest
 CONFIG += qt qtestlib debug_and_release warn_on console
 QT = core
 
-HEADERS += utility.h bigdecimaltest.h complextest.h parsertest.h bigdecimalbench.h
-SOURCES += main.cpp bigdecimaltest.cpp complextest.cpp parsertest.cpp bigdecimalbench.cpp
+HEADERS += utility.h bigdecimaltest.h complextest.h parsertest.h bigdecimalbench.h variablestest.h
+SOURCES += main.cpp bigdecimaltest.cpp complextest.cpp parsertest.cpp bigdecimalbench.cpp variablestest.cpp
 
 INCLUDEPATH += ../maxcalcengine
 
@@ -21,4 +21,4 @@ CONFIG(release, debug|release) {
 }
 
 DEFINES += UNICODE
-win32:DEFINES += WIN32
+win32:DEFINES += WIN32 _CRT_SECURE_NO_WARNINGS

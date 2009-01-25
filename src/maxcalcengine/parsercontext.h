@@ -24,6 +24,7 @@
 #include "complex.h"
 #include "complexformat.h"
 #include "exceptions.h"
+#include "variables.h"
 
 namespace MaxCalcEngine {
 
@@ -46,8 +47,11 @@ public:
 	inline void setResult(const Complex & result);
 	inline bool resultExists() const;
 
-	inline ComplexFormat numberFormat();
+	inline ComplexFormat & numberFormat();
 	inline void setNumberFormat(const ComplexFormat & numberFormat);
+
+	inline Variables & variables();
+	inline void setVariables(const Variables & vars);
 
 private:
 
@@ -57,6 +61,7 @@ private:
 	Complex result_;				///< Result of last calculation.
 	bool resultExists_;				///< Determines if result exists.
 	ComplexFormat numberFormat_;	///< Number format used for conversions.
+	Variables vars_;				///< Variables.
 };
 
 
@@ -96,7 +101,7 @@ inline bool ParserContext::resultExists() const
 /*!
 	Gets number format.
 */
-inline ComplexFormat ParserContext::numberFormat()
+inline ComplexFormat & ParserContext::numberFormat()
 {
 	return numberFormat_;
 }
@@ -107,6 +112,22 @@ inline ComplexFormat ParserContext::numberFormat()
 inline void ParserContext::setNumberFormat(const ComplexFormat & numberFormat)
 {
 	numberFormat_ = numberFormat;
+}
+
+/*!
+	Gets variables.
+*/
+inline Variables & ParserContext::variables()
+{
+	return vars_;
+}
+
+/*!
+	Sets variables.
+*/
+inline void ParserContext::setVariables(const Variables & vars)
+{
+	vars_ = vars;
 }
 
 } // namespace MaxCalcEngine

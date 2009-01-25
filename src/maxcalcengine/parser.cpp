@@ -106,7 +106,6 @@ ParserContext Parser::parse()
 void Parser::reset()
 {
 	curChar_ = expr_.begin();
-	curToken_ = tokens_.begin();
 	tokens_.clear();
 }
 
@@ -124,11 +123,14 @@ void Parser::lexicalAnalysis()
 
 	while (curChar_ != expr_.end())
 	{
+		// It is important to analyze identifiers before numbers
+		// to prevent recognizing of "i<something>" as number "i" and
+		// following identifier "<something>"
 		if (analyzeOperators())
 			continue;
-		if (analyzeNumbers())
-			continue;
 		if (analyzeIdentifiers())
+			continue;
+		if (analyzeNumbers())
 			continue;
 		if (skipSpaces())
 			continue;
@@ -158,6 +160,8 @@ bool Parser::analyzeOperators()
 		tokens_.push_back(Token(CLOSING_BRACKET, _T(")")));
 	else if (_T(',') == *curChar_)
 		tokens_.push_back(Token(COMMA, _T(",")));
+	else if (_T('=') == *curChar_)
+		tokens_.push_back(Token(ASSIGN, _T("=")));
 	else
 		return false;
 
@@ -170,12 +174,21 @@ bool Parser::analyzeOperators()
 */
 bool Parser::analyzeIdentifiers()
 {
-	if (_T('_') == *curChar_ || istalpha(*curChar_))
+	if (isIdentifierChar(*curChar_, true))
 	{
 		tstring identifier;
 		identifier = *curChar_++;
-		while (curChar_ != expr_.end() && (_T('_') == *curChar_ || istalpha(*curChar_) || istdigit(*curChar_)))
+		while (curChar_ != expr_.end() && isIdentifierChar(*curChar_, false))
 			identifier += *curChar_++;
+
+		tstring imaginaryOne = _T("");
+		imaginaryOne += context_.numberFormat().imaginaryOneTChar();
+		// Imaginary one is not an identifier
+		if (identifier == imaginaryOne)
+		{
+			--curChar_;
+			return false;
+		}
 
 		tokens_.push_back(Token(IDENTIFIER, identifier));
 
@@ -192,7 +205,6 @@ bool Parser::analyzeNumbers()
 {
 	tstring number = _T("");
 	bool thereIsPoint = false;
-	bool thereIsImaginaryOne = false;
 
 	const tchar decimalSeparator = context_.numberFormat().decimalSeparatorTChar();
 	const tchar imaginaryOne = context_.numberFormat().imaginaryOneTChar();
@@ -200,15 +212,6 @@ bool Parser::analyzeNumbers()
 	// Check if it is a number
 	if (!istdigit(*curChar_) && *curChar_ != decimalSeparator && *curChar_ != imaginaryOne)
 		return false;
-
-	// Process imaginary one at the beginning of the number
-	if (imaginaryOne == *curChar_)
-	{
-		++curChar_;
-		tokens_.push_back(Token(IMAGINARY_ONE, imaginaryOne));
-		thereIsImaginaryOne = true;
-		skipSpaces();
-	}
 
 	// Process decimal point at the beginning of the number
 	if (expr_.end() != curChar_ && decimalSeparator == *curChar_)
@@ -257,21 +260,17 @@ bool Parser::analyzeNumbers()
 			number += *curChar_++;
 	}
 
+	if (number != _T(""))
+		tokens_.push_back(Token(NUMBER, number));
+
 	skipSpaces();
 
 	// Process imaginary one at the end of the number
 	if (expr_.end() != curChar_ && imaginaryOne == *curChar_)
 	{
-		// Throw an exception if there was an imaginary one already
-		if (thereIsImaginaryOne)
-			throw IncorrectNumberException();
-
 		++curChar_;
 		tokens_.push_back(Token(IMAGINARY_ONE, imaginaryOne));
 	}
-
-	if (number != _T(""))
-		tokens_.push_back(Token(NUMBER, number));
 
 	return true;
 }
@@ -304,12 +303,44 @@ void Parser::syntaxAnalysis()
 {
 	curToken_ = tokens_.begin();
 
-	Complex result = parseAddSub();
+	Complex result = parseAssign();
 
 	if (tokens_.end() == curToken_)
 		context_.setResult(result);
 	else
 		throw IncorrectExpressionException();
+}
+
+/*!
+	Parses variable assignment.
+*/
+Complex Parser::parseAssign()
+{
+	if (curToken_ != tokens_.end() && curToken_->token == IDENTIFIER)
+	{
+		tstring name = curToken_->str;
+		++curToken_;
+		if (curToken_ != tokens_.end() && curToken_->token == ASSIGN)
+		{
+			if (name == _T("e") || name == _T("pi") || name == _T("res") ||
+				name == _T("result") || name == _T("i") || name == _T("j") ||
+				name == _T("exit") || name == _T("quit") ||
+				name == _T("help"))
+			{
+				throw IncorrectVariableNameException();
+			}
+			++curToken_;
+			Complex value = parseAssign();
+			context_.variables().add(name, value);
+			return value;
+		}
+		else
+		{
+			--curToken_;
+		}
+	}
+
+	return parseAddSub();
 }
 
 /*!
@@ -541,7 +572,11 @@ Complex Parser::parseConstsVars()
 		}
 		else
 		{
-			throw UnknownVariableException();
+			// Variables.operator[] will throw UnknownVariableException if
+			// curToken_->str doesn't exist
+			Complex value = context_.variables()[curToken_->str];
+			++curToken_;
+			return value;
 		}
 	}
 

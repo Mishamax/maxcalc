@@ -69,7 +69,7 @@ void printFunctions()
 /*!
 	Prints list of supported constants and res variable.
 */
-void printConstants(const ParserContext & context)
+void printConstants(ParserContext & context)
 {
 	tcout << indent << _T("e = ") << BigDecimal::E.toTString() << endl;
 	tcout << indent << _T("pi = ") << BigDecimal::PI.toTString() << endl;
@@ -80,10 +80,21 @@ void printConstants(const ParserContext & context)
 /*!
 	Prints list of defined variables.
 */
-void printVariables(const ParserContext & context)
+void printVariables(ParserContext & context)
 {
+	if (!context.resultExists() && context.variables().count() == 0)
+	{
+		tcout << indent << _T("No variables defined") << endl;
+		return;
+	}
+
 	if (context.resultExists())
 		tcout << indent << _T("res = ") << context.result().toTString() << endl;
+	Variables::const_iterator iter;
+	for (iter = context.variables().begin(); iter != context.variables().end(); ++iter)
+	{
+		tcout << indent << iter->name << _T(" = ") << iter->value.toTString() << endl;
+	}
 }
 
 /*!
@@ -111,10 +122,38 @@ void printHelp()
 	tcout << indent << _T("#funcs - Display list of built-in functions.") << endl;
 	tcout << indent << _T("#consts - Display list of built-in constants.") << endl;
 	tcout << indent << _T("#vars - Display list of variables.") << endl;
+	tcout << indent << _T("#del <variable> - Delete <variable>.") << endl;
+	tcout << indent << _T("#delall - Delete all variables.") << endl;
 	tcout << indent << _T("#help - Get this help.") << endl;
 	tcout << indent << _T("#ver - Display version information.") << endl;
 	tcout << indent << _T("exit - Close the program.") << endl;
 	tcout << endl;
+}
+
+void deleteVariable(ParserContext & context, tstring name)
+{
+	trim(name);
+	
+	if (name == _T(""))
+	{
+		tcout << indent << _T("Syntax: #del <variable>") << endl;
+		return;
+	}
+
+	if (context.resultExists() && (name == _T("res") || name == _T("result")))
+	{
+		tcout << indent << _T("Built-in variable '") << name << _T("' cannot be deleted.") << endl;
+		return;
+	}
+
+	try
+	{
+		context.variables().remove(name);
+	}
+	catch (...)
+	{
+		tcout << indent << _T("Unknown variable '") << name << _T("'.") << endl;
+	}
 }
 
 /*!
@@ -123,7 +162,7 @@ void printHelp()
 
 	Returns true if a command was found and parsed, false otherwise.
 */
-bool parseCommand(const tstring & expr, const ParserContext & context)
+bool parseCommand(const tstring & expr, ParserContext & context)
 {
 	tstring cmd = expr;
 	strToLower(cmd);
@@ -145,8 +184,12 @@ bool parseCommand(const tstring & expr, const ParserContext & context)
 		printVersion(true);
 	else if (cmd == _T("#help") || cmd == _T("help"))
 		printHelp();
+	else if (cmd == _T("#delall"))
+		context.variables().removeAll();
+	else if (cmd.substr(0, 4) == _T("#del"))
+		deleteVariable(context, cmd.substr(4, cmd.length()-4));
 	else
-		tcout << indent << _T("Unknown command") << endl;
+		tcout << indent << _T("Unknown command '") << cmd << _T("'.") << endl;
 
 	return true;
 }

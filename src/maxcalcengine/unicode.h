@@ -105,15 +105,15 @@ typedef std::string tstring;		///< tstring definition
 // Common functions
 
 // Character case conversion functions
-void strToLower(tchar * str);
-void strToLower(tstring & str);
-void strToUpper(tchar * str);
-void strToUpper(tstring & str);
+tchar *  strToLower(tchar * str);
+tstring & strToLower(tstring & str);
+tchar * strToUpper(tchar * str);
+tstring & strToUpper(tstring & str);
 
 // Trimming functions
-void ltrim(tstring & str);
-void rtrim(tstring & str);
-void trim(tstring & str);
+tstring & ltrim(tstring & str);
+tstring & rtrim(tstring & str);
+tstring & trim(tstring & str);
 
 
 } // namespace MaxCalcEngine

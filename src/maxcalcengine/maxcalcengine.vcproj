@@ -94,6 +94,10 @@
 				RelativePath=".\unicode.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\variables.cpp"
+				>
+			</File>
 			<Filter
 				Name="decNumber"
 				>
@@ -150,6 +154,10 @@
 			</File>
 			<File
 				RelativePath=".\unicode.h"
+				>
+			</File>
+			<File
+				RelativePath=".\variables.h"
 				>
 			</File>
 			<File

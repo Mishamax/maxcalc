@@ -124,51 +124,65 @@ codecvt_base::result wideCharToChar(const wchar_t * from, size_t fromLength, cha
 #endif // #if defined(UNICODE)
 
 /*!
-	Converts all characters of \a str to lower case
+	Converts all characters of \a str to lower case.
+
+	Returns \a str.
 
 	\ingroup MaxCalcEngine
 */
-void strToLower(tchar * str)
+tchar * strToLower(tchar * str)
 {
 	assert(str);
 
 	for (tchar * pos = str; pos; ++pos)
 		*pos = totlower(*pos);
+
+	return str;
 }
 
 /*!
-	Converts all characters of \a str to lower case
+	Converts all characters of \a str to lower case.
+
+	Returns \a str.
 
 	\ingroup MaxCalcEngine
 */
-void strToLower(tstring & str)
+tstring & strToLower(tstring & str)
 {
 	for (tstring::iterator pos = str.begin(); pos != str.end(); ++pos)
 		*pos = totlower(*pos);
+	return str;
 }
 
 /*!
-	Converts all characters of \a str to upper case
+	Converts all characters of \a str to upper case.
+
+	Returns \a str.
 
 	\ingroup MaxCalcEngine
 */
-void strToUpper(tchar * str)
+tchar * strToUpper(tchar * str)
 {
 	assert(str);
 
 	for (tchar * pos = str; pos; ++pos)
 		*pos = totupper(*pos);
+
+	return str;
 }
 
 /*!
-	Converts all characters of \a str to upper case
+	Converts all characters of \a str to upper case.
+
+	Returns \a str.
 
 	\ingroup MaxCalcEngine
 */
-void strToUpper(tstring & str)
+tstring & strToUpper(tstring & str)
 {
 	for (tstring::iterator pos = str.begin(); pos != str.end(); ++pos)
 		*pos = totupper(*pos);
+	return str;
 }
 
 // Characters which are recognized as space
@@ -177,40 +191,47 @@ static const tchar * space = _T(" \t\f\v\n\r");
 /*!
 	Removes all white spaces at the beginning of \a str.
 
+	Returns \a str.
+
 	\ingroup MaxCalcEngine
 */
-void ltrim(tstring & str)
+tstring & ltrim(tstring & str)
 {
 	size_t found = str.find_first_not_of(space);
 	if (found != string::npos)
 		str.erase(0, found);
 	else
 		str.clear();
+	return str;
 }
 
 /*!
 	Removes all white spaces at the end of \a str.
 
+	Returns \a str.
+
 	\ingroup MaxCalcEngine
 */
-void rtrim(tstring & str)
+tstring & rtrim(tstring & str)
 {
 	size_t found = str.find_last_not_of(space);
 	if (found != string::npos)
 		str.erase(found + 1);
 	else
 		str.clear();
+	return str;
 }
 
 /*!
 	Removes all white spaces at the beginning and at the end of \a str.
 
+	Returns \a str.
+
 	\ingroup MaxCalcEngine
 */
-void trim(tstring & str)
+tstring & trim(tstring & str)
 {
-	ltrim(str);
-	rtrim(str);
+	return rtrim(ltrim(str));
 }
 
 } // namespace MaxCalcEngine

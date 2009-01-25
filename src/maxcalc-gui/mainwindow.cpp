@@ -40,7 +40,7 @@ MainWindow::MainWindow() : QMainWindow()
 {
 	initUi();
 	initMainMenu();
-	initVariablesList();
+	updateVariablesList();
 	initFunctionsList();
 }
 
@@ -112,6 +112,10 @@ void MainWindow::initMainMenu()
 	QMenu * file = mainMenu.addMenu(tr("&File"));
 	file->addAction(tr("&Exit"), this, SLOT(close()));
 
+	QMenu * commands = mainMenu.addMenu(tr("&Commands"));
+	commands->addAction(tr("&Clear history"), &historyBox, SLOT(clear()));
+	commands->addAction(tr("&Delete all variables"), this, SLOT(onDeleteAllVariables()));
+
 	QMenu * help = mainMenu.addMenu(tr("&Help"));
 	help->addAction(tr("&About"), this, SLOT(onHelpAbout()));
 }
@@ -119,12 +123,28 @@ void MainWindow::initMainMenu()
 /*!
 	Adds constants to varibables list.
 */
-void MainWindow::initVariablesList()
+void MainWindow::updateVariablesList()
 {
+	variablesList.clear();
+
 	variablesList.addItem(tr("e = ") +
 		QString::fromStdWString(MaxCalcEngine::BigDecimal::E.toWideString()));
 	variablesList.addItem(tr("pi = ") +
 		QString::fromStdWString(MaxCalcEngine::BigDecimal::PI.toWideString()));
+
+	if (parser.context().resultExists())
+	{
+		variablesList.addItem(tr("res = ") +
+			QString::fromStdWString(parser.context().result().toWideString()));
+	}
+
+	MaxCalcEngine::Variables::const_iterator iter;
+	for (iter = parser.context().variables().begin();
+		iter != parser.context().variables().end(); ++iter)
+	{
+		variablesList.addItem(QString::fromStdWString(iter->name) + " = " +
+			QString::fromStdWString(iter->value.toWideString()));
+	}
 }
 
 /*!
@@ -194,12 +214,9 @@ void MainWindow::onExpressionEntered()
 	historyBox.setTextColor(Qt::darkGreen);
 	historyBox.append(indent +
 		QString::fromStdWString(parser.context().result().toWideString()));
-	if (variablesList.count() > 2)
-		variablesList.takeItem(2);
-	variablesList.addItem(tr("res = ") +
-		QString::fromStdWString(parser.context().result().toWideString()));
 	inputBox.clear();
 	inputBox.setFocus();
+	updateVariablesList();
 }
 
 /*!
@@ -232,4 +249,13 @@ void MainWindow::onHelpAbout()
 {
 	AboutBox aboutBox(this);
 	aboutBox.exec();
+}
+
+/*!
+	Commands -> Delete all variables command.
+*/
+void MainWindow::onDeleteAllVariables()
+{
+	parser.context().variables().removeAll();
+	updateVariablesList();
 }

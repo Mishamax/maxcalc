@@ -97,7 +97,8 @@ class NoClosingBracketException : public ParserException {};
 class UnknownFunctionException : public ParserException {};
 /// Unknown variable.
 class UnknownVariableException : public ParserException {};
-
+/// Incorrect variable name.
+class IncorrectVariableNameException : public ParserException {};
 
 }; // namespace MaxCalcEngine
 

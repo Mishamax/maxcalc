@@ -86,6 +86,10 @@
 				RelativePath=".\parsertest.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\variablestest.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -110,6 +114,10 @@
 			</File>
 			<File
 				RelativePath=".\utility.h"
+				>
+			</File>
+			<File
+				RelativePath=".\variablestest.h"
 				>
 			</File>
 		</Filter>

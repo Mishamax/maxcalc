@@ -52,7 +52,7 @@ public:
 	inline tstring expression() const;
 	inline void setExpression(const tstring & expr);
 
-	inline ParserContext context() const;
+	inline ParserContext & context();
 	inline void setContext(const ParserContext & context);
 
 private:
@@ -86,7 +86,8 @@ private:
 		COMMA,
 		NUMBER,
 		IMAGINARY_ONE,
-		IDENTIFIER
+		IDENTIFIER,
+		ASSIGN
 	};
 
 	/// Represents token with corresponding part of expression.
@@ -112,6 +113,7 @@ private:
 	bool analyzeNumbers();
 	bool analyzeIdentifiers();
 	bool skipSpaces();
+	inline bool isIdentifierChar(tchar c, bool firstChar);
 
 
 	///////////////////////////////////////////////////////////////////////////
@@ -120,6 +122,7 @@ private:
 	std::list<Token>::const_iterator curToken_;	///< Current token in the list of tokens
 
 	void syntaxAnalysis();
+	Complex parseAssign();
 	Complex parseAddSub();
 	Complex parseMulDiv();
 	Complex parsePower();
@@ -157,7 +160,7 @@ inline void Parser::setExpression(const tstring & expr)
 /*!
 	Gets context.
 */
-inline ParserContext Parser::context() const
+inline ParserContext & Parser::context()
 {
 	return context_;
 }
@@ -168,6 +171,14 @@ inline ParserContext Parser::context() const
 inline void Parser::setContext(const ParserContext & context)
 {
 	context_ = context;
+}
+
+/*!
+	Determines if \a c is a character which can be part of an identifier.
+*/
+inline bool Parser::isIdentifierChar(tchar c, bool firstChar)
+{
+	return (c == _T('_') || istalpha(c) || (!firstChar && istdigit(c)));
 }
 
 } // namespace MaxCalcEngine

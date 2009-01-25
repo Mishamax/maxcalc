@@ -67,16 +67,16 @@ public:
 	// Accessors
 
 	inline int precision() const;
-	inline void setPrecision(int precision);
+	inline void setPrecision(const int precision);
 
 	inline NumberFormat numberFormat() const;
-	inline void setNumberFormat(NumberFormat numberFormat);
+	inline void setNumberFormat(const NumberFormat numberFormat);
 
 	inline ExponentCase exponentCase() const;
-	inline void setExponentCase(ExponentCase exponentCase);
+	inline void setExponentCase(const ExponentCase exponentCase);
 
 	inline DecimalSeparator decimalSeparator() const;
-	inline void setDecimalSeparator(DecimalSeparator decimalSeparator);
+	inline void setDecimalSeparator(const DecimalSeparator decimalSeparator);
 
 	inline char decimalSeparatorChar() const;
 	inline wchar_t decimalSeparatorWideChar() const;
@@ -116,7 +116,7 @@ inline int BigDecimalFormat::precision() const
 /*!
 	Sets output precision of BigDecimal number.
 */
-inline void BigDecimalFormat::setPrecision(int precision)
+inline void BigDecimalFormat::setPrecision(const int precision)
 {
 	assert(precision >= 1 && precision <= MAX_IO_PRECISION);
 	precision_ = precision;
@@ -133,7 +133,7 @@ inline BigDecimalFormat::NumberFormat BigDecimalFormat::numberFormat() const
 /*!
 	Sets format of BigDecimal number.
 */
-inline void BigDecimalFormat::setNumberFormat(NumberFormat numberFormat)
+inline void BigDecimalFormat::setNumberFormat(const NumberFormat numberFormat)
 {
 	numberFormat_ = numberFormat;
 }
@@ -149,7 +149,7 @@ inline BigDecimalFormat::ExponentCase BigDecimalFormat::exponentCase() const
 /*!
 	Sets case of 'E' letter in BigDecimal number when exponent is needed.
 */
-inline void BigDecimalFormat::setExponentCase(ExponentCase exponentCase)
+inline void BigDecimalFormat::setExponentCase(const ExponentCase exponentCase)
 {
 	exponentCase_ = exponentCase;
 }
@@ -166,7 +166,7 @@ inline BigDecimalFormat::DecimalSeparator BigDecimalFormat::decimalSeparator() c
 	Sets decimal separator.
 */
 inline void BigDecimalFormat::setDecimalSeparator(
-	DecimalSeparator decimalSeparator)
+	const DecimalSeparator decimalSeparator)
 {
 	decimalSeparator_ = decimalSeparator;
 }
