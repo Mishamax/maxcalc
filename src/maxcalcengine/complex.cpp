@@ -77,7 +77,7 @@ Complex::Complex(const std::string & real, const std::string & imaginary,
 {
 }
 
-#if defined(UNICODE)
+#if defined(MAXCALC_UNICODE)
 
 /*!
 	Constructs a new instance of Complex class from given \a real and
@@ -99,7 +99,7 @@ Complex::Complex(const std::wstring & real, const std::wstring & imaginary,
 {
 }
 
-#endif // #if defined(UNICODE)
+#endif // #if defined(MAXCALC_UNICODE)
 
 /*!
 	Constructs a new instance of Complex class from given \a real and
@@ -185,7 +185,7 @@ std::string Complex::toString(const ComplexFormat & format) const
 	return result;
 }
 
-#if defined(UNICODE)
+#if defined(MAXCALC_UNICODE)
 
 /*!
 	Converts this number to std::wstring using given ComplexFormat.
@@ -202,7 +202,7 @@ std::wstring Complex::toWideString(const ComplexFormat & format) const
 	return wstr;
 }
 
-#endif // #if defined(UNICODE)
+#endif // #if defined(MAXCALC_UNICODE)
 
 
 //****************************************************************************

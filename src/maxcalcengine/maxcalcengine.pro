@@ -21,5 +21,5 @@ CONFIG(release, debug|release) {
 	DESTDIR = ../release
 }
 
-DEFINES += UNICODE
+DEFINES += MAXCALC_UNICODE
 win32:DEFINES += WIN32

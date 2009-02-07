@@ -108,12 +108,12 @@ inline size_t Variables::count()
 
 inline Variables::const_iterator Variables::begin()
 {
-	return vars_.begin();
+    return const_iterator(vars_.begin());
 }
 
 inline Variables::const_iterator Variables::end()
 {
-	return vars_.end();
+    return const_iterator(vars_.end());
 }
 
 } // namespace MaxCalcEngine

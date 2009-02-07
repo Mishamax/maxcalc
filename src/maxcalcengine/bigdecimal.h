@@ -47,7 +47,7 @@ public:
 		BigDecimalFormat::getDefault());
 	BigDecimal(const char * str, const BigDecimalFormat & format =
 		BigDecimalFormat::getDefault());
-#if defined(UNICODE)
+#if defined(MAXCALC_UNICODE)
 	BigDecimal(const std::wstring & str, const BigDecimalFormat & format =
 		BigDecimalFormat::getDefault());
 	BigDecimal(const wchar_t * str, const BigDecimalFormat & format =
@@ -64,7 +64,7 @@ public:
 	
 	std::string toString(const BigDecimalFormat & format =
 		BigDecimalFormat::getDefault()) const;
-#if defined(UNICODE)
+#if defined(MAXCALC_UNICODE)
 	std::wstring toWideString(const BigDecimalFormat & format =
 		BigDecimalFormat::getDefault()) const;
 #endif
@@ -194,7 +194,7 @@ private:
 */
 inline tstring BigDecimal::toTString(const BigDecimalFormat & format) const
 {
-#if defined (UNICODE)
+#if defined (MAXCALC_UNICODE)
 		return toWideString(format);
 #else
 		return toString(format);

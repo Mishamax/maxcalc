@@ -126,7 +126,7 @@ BigDecimal::BigDecimal(const char * str,
 	construct(str, format);
 }
 
-#if defined(UNICODE)
+#if defined(MAXCALC_UNICODE)
 
 /*!
 	Constructs a new instance of BigDecimal class from given \a str.
@@ -156,7 +156,7 @@ BigDecimal::BigDecimal(const wchar_t * str,
 	construct(s, format);
 }
 
-#endif // #if defined(UNICODE)
+#endif // #if defined(MAXCALC_UNICODE)
 
 /*!
 	Constructs a copy of \a num.
@@ -244,7 +244,7 @@ std::string BigDecimal::toString(const BigDecimalFormat & format) const
 	return s;
 }
 
-#if defined(UNICODE)
+#if defined(MAXCALC_UNICODE)
 
 /*!
 	Converts this number to std::wstring using given BigDecimalFormat.
@@ -261,7 +261,7 @@ std::wstring BigDecimal::toWideString(const BigDecimalFormat & format) const
 	return wstr;
 }
 
-#endif // #if defined(UNICODE)
+#endif // #if defined(MAXCALC_UNICODE)
 
 /*!
 	Converts this number to int.

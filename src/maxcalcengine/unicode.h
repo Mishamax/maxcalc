@@ -29,7 +29,7 @@
 
 namespace MaxCalcEngine {
 
-#if defined(UNICODE)
+#if defined(MAXCALC_UNICODE)
 
 ///////////////////////////////////////////////////////////////////////////
 // Unicode identifiers
@@ -73,7 +73,7 @@ std::codecvt_base::result wideCharToChar(const wchar_t * from,
 										 size_t toLength,
 										 const char * localeName = "");
 
-#else // #if defined(UNICODE)
+#else // #if defined(MAXCALC_UNICODE)
 
 ///////////////////////////////////////////////////////////////////////////
 // Non-Unicode identifiers
@@ -98,7 +98,7 @@ typedef std::string tstring;		///< tstring definition
 #define tcin cin					///< Standard input stream
 #define fgetts fgets				///< Gets string from stream
 
-#endif // #if defined(UNICODE)
+#endif // #if defined(MAXCALC_UNICODE)
 
 
 ///////////////////////////////////////////////////////////////////////////

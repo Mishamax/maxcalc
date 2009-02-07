@@ -23,5 +23,5 @@ CONFIG(release, debug|release) {
 	LIBS += -L../release -lmaxcalcengine
 }
 
-DEFINES += UNICODE
+DEFINES += MAXCALC_UNICODE
 win32:DEFINES += WIN32

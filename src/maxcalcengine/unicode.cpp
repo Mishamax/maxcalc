@@ -22,7 +22,9 @@
 
 namespace MaxCalcEngine {
 
-#if defined(UNICODE)
+using namespace std;
+
+#if defined(MAXCALC_UNICODE)
 
 // STL
 #include <clocale>
@@ -121,7 +123,7 @@ codecvt_base::result wideCharToChar(const wchar_t * from, size_t fromLength, cha
 	return res;
 }
 
-#endif // #if defined(UNICODE)
+#endif // #if defined(MAXCALC_UNICODE)
 
 /*!
 	Converts all characters of \a str to lower case.

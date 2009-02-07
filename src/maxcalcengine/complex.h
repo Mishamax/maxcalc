@@ -54,7 +54,7 @@ public:
 		const ComplexFormat & format = ComplexFormat::getDefault());
 	Complex(const std::string & real, const std::string & imaginary = "0",
 		const ComplexFormat & format = ComplexFormat::getDefault());
-#if defined(UNICODE)
+#if defined(MAXCALC_UNICODE)
 	Complex(const wchar_t * real, const wchar_t * imaginary = L"0",
 		const ComplexFormat & format = ComplexFormat::getDefault());
 	Complex(const std::wstring & real, const std::wstring & imaginary = L"0",
@@ -71,7 +71,7 @@ public:
 
 	std::string toString(const ComplexFormat & format =
 		ComplexFormat::getDefault()) const;
-#if defined(UNICODE)
+#if defined(MAXCALC_UNICODE)
 	std::wstring toWideString(const ComplexFormat & format =
 		ComplexFormat::getDefault()) const;
 #endif
@@ -149,7 +149,7 @@ public:
 */
 inline tstring Complex::toTString(const ComplexFormat & format) const
 {
-#if defined(UNICODE)
+#if defined(MAXCALC_UNICODE)
 		return toWideString(format);
 #else
 		return toString(format);
