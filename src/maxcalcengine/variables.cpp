@@ -26,8 +26,8 @@ namespace MaxCalcEngine {
 using namespace std;
 
 /*!
-	\class Variable
-	\brief Represents a variable with name and value.
+	\struct Variable
+	\brief Represents a variable as a (name, value) pair.
 	\ingroup MaxCalcEngine
 */
 

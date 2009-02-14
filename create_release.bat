@@ -9,13 +9,13 @@ rem Build static binaries
 set PATH=%QT_DIR%;%PATH%
 pushd src
 pushd maxcalcengine
-nmake clean && qmake -config release && nmake release
+qmake -config release && nmake clean && nmake release
 popd
 pushd maxcalc-cli
-nmake clean && qmake -config release && nmake release
+qmake -config release && nmake clean && nmake release
 popd
 pushd maxcalc-gui
-nmake clean && qmake -config release && nmake release
+qmake -config release && nmake clean && nmake release
 popd
 popd
 
