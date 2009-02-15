@@ -1,8 +1,9 @@
 @echo off
 
 rem Variables
-set QT_DIR=D:\Programming\Qt4.4.3-msvc2008-static\bin
-set MAXCALC_VERSION=1.9.0-m1
+call "%VS90COMNTOOLS%\vsvars32.bat"
+set QT_DIR=D:\Programming\qt-4.4.3-msvc2008-static\bin
+set MAXCALC_VERSION=1.9.1-m2
 
 rem Build static binaries
 
@@ -61,6 +62,17 @@ popd
 
 @echo.
 @echo GUI VERSION CREATED
+@echo.
+
+rem Create folder for new version
+
+pushd release
+mkdir v%MAXCALC_VERSION%
+move *.zip v%MAXCALC_VERSION%\
+popd
+
+@echo.
+@echo RELEASE CREATED
 @echo.
 
 pause

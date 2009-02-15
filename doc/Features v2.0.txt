@@ -1,0 +1,32 @@
+﻿Features to be implemented for version 2.0
+=========================================
+
+Versions:
+ - Windows / Qt4.
+ - Windows / console.
+ - Linux / Qt4.
+ - Linux / console.
+ - Windows Mobile / Qt4.
+
+Localizations:
+ - English.
+ - Russian.
+
+Engine features:
+    Numbers:
+        - Up to 50 digits of IO precision (desktop) / double precision (mobile).
+        - Exponential notation support.
+        - Complex numbers support.
+        - Standard operators (+, -, *, /, ^).
+    
+    Features:
+        - Functions: common (abs, sqr, sqrt, pow, fact, sgn), logarithmic (exp, ln, log2, log10),
+            trigonometric (sin, cos, tan, ctan; inverse, hyperbolic, inverse hyperbolic).
+        - Unlimited variables support; C-like assignment operators (=, +=, -=, /=, *=, ^=).
+        - Unit conversions.
+
+    Settings:
+        - Radians / degrees.
+        - Dot / comma decimal separator.
+        - Number output precision.
+        - Number format (general / scientific / engineering).

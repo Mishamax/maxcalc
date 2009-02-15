@@ -1,4 +1,13 @@
-﻿v1.9.0 Milestone-1 (January 1, 2009).
+﻿v1.9.1 Milestone-2.
+
+    - Added: Unlimited variables support.
+    - Added: factorial function.
+    - Changed: General number format is now used instead of scientific.
+    - Changed: Complex numbers like 'i1' are no longer supported; use '1i' instead.
+    - Fixed: number scaling bugs.
+    - Internal: Overhauled exception handling in engine.
+
+v1.9.0 Milestone-1 (31-Dec-2008).
 
     First public release.
     
