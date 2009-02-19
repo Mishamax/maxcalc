@@ -11,11 +11,11 @@ Milestone 1 (v1.9.0) - December 2008 (RELEASED)
  * Built-in constants (e, pi) and res variable.
  * Only English version available.
 
-Milestone 2 (v1.9.1) - February 2009 (IN PROGRESS)
+Milestone 2 (v1.9.1) - February 2009 (RELEASED)
 
  * Unlimited variables support.
 
-Milestone 3 (v1.9.2) - February 2009
+Milestone 3 (v1.9.2) - February 2009 (IN PROGRESS)
 
  * Support for standard unit conversions.
  * C-like assignment operators support.
