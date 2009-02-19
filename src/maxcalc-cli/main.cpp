@@ -22,6 +22,8 @@
 #include "parsercontext.h"
 #include "settings.h"
 #include "unicode.h"
+// STL
+#include <cstdlib>
 #include "version.h"
 // STL
 #include <clocale>

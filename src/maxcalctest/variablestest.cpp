@@ -6,6 +6,8 @@
 #include "variables.h"
 // STL
 #include <string>
+#include <cstdlib>
+#include <sstream>
 
 using namespace MaxCalcEngine;
 using namespace std;
@@ -31,7 +33,7 @@ void VariablesTest::stress()
 
 	for (int i = 0; i < 10000; ++i)
 	{
-		_itow(i, stri, 10);
+		swprintf(stri, 6, L"%d", i);
 		name = L"Variable#";
 		name += stri;
 		vars.add(Variable(name, Complex(1 / rand(), 1 / rand())));
@@ -40,7 +42,7 @@ void VariablesTest::stress()
 
 	for (int i = 2500; i < 7500; ++i)
 	{
-		_itow(i, stri, 10);
+		swprintf(stri, 6, L"%d", i);
 		name = L"Variable#";
 		name += stri;
 		vars.remove(name);
@@ -58,7 +60,7 @@ void VariablesTest::iterators()
 
 	for (int i = 0; i < 1000; ++i)
 	{
-		_itow(i, stri, 10);
+		swprintf(stri, 6, L"%d", i);
 		vars.add(stri, Complex(i, 1000-i));
 	}
 
@@ -66,7 +68,8 @@ void VariablesTest::iterators()
 	int i;
 	for (iter = vars.begin(); iter != vars.end(); ++iter)
 	{
-		i = _wtoi((*iter).name.c_str());
+		wstringstream ss(iter->name.c_str());
+		ss >> i;
 		COMPARE_COMPLEX((*iter).value, Complex(i, 1000-i));
 		COMPARE_COMPLEX(iter->value, Complex(i, 1000-i));
 	}

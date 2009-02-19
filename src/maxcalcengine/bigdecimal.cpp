@@ -25,7 +25,6 @@
 // STL
 #include <clocale>
 #include <cassert>
-#include <sstream>
 
 namespace MaxCalcEngine {
 
