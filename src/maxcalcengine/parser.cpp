@@ -125,7 +125,11 @@ void Parser::lexicalAnalysis()
 	{
 		// It is important to analyze identifiers before numbers
 		// to prevent recognizing of "i<something>" as number "i" and
-		// following identifier "<something>"
+		// following identifier "<something>".
+		// Also assignment operators need to be analyzed before
+		// other operators to correctly recognize operators like "+=".
+		if (analyzeAssignment())
+			continue;
 		if (analyzeOperators())
 			continue;
 		if (analyzeIdentifiers())
@@ -137,6 +141,36 @@ void Parser::lexicalAnalysis()
 		// Token couldn't be parsed
 		throw UnknownTokenException();
 	}
+}
+
+/*!
+	Lexical analysis of assignment operators (=, +=, -=, *=, /=, ^=).
+*/
+bool Parser::analyzeAssignment()
+{
+	if (_T('=') == *curChar_)
+	{
+		tokens_.push_back(Token(ASSIGN, _T("=")));
+	}
+	else
+	{
+		tchar prevChar = *curChar_++;
+		if (curChar_ != expr_.end() && _T('=') == *curChar_ &&
+			(_T('+') == prevChar || _T('-') == prevChar ||
+			 _T('*') == prevChar || _T('/') == prevChar ||
+			 _T('^') == prevChar))
+		{
+			tokens_.push_back(Token(ASSIGN, prevChar + tstring(_T("="))));
+		}
+		else
+		{
+			--curChar_;
+			return false;
+		}
+	}
+
+	++curChar_;
+	return true;
 }
 
 /*!
@@ -158,10 +192,8 @@ bool Parser::analyzeOperators()
 		tokens_.push_back(Token(OPENING_BRACKET, _T("(")));
 	else if (_T(')') == *curChar_)
 		tokens_.push_back(Token(CLOSING_BRACKET, _T(")")));
-	else if (_T(',') == *curChar_)
-		tokens_.push_back(Token(COMMA, _T(",")));
-	else if (_T('=') == *curChar_)
-		tokens_.push_back(Token(ASSIGN, _T("=")));
+	else if (_T(';') == *curChar_)
+		tokens_.push_back(Token(SEMICOLON, _T(";")));
 	else
 		return false;
 
@@ -329,15 +361,38 @@ Complex Parser::parseAssign()
 			{
 				throw IncorrectVariableNameException();
 			}
+
+			tchar op = curToken_->str[0];
+			Complex var;
+			if (op != _T('='))
+				var = context_.variables()[name];
 			++curToken_;
 			Complex value = parseAssign();
-			context_.variables().add(name, value);
-			return value;
+			switch (op)
+			{
+			case _T('='):
+				var = value;
+				break;
+			case _T('+'):
+				var += value;
+				break;
+			case _T('-'):
+				var -= value;
+				break;
+			case _T('*'):
+				var *= value;
+				break;
+			case _T('/'):
+				var /= value;
+				break;
+			case _T('^'):
+				var = Complex::pow(var, value);
+				break;
+			}
+			context_.variables().add(name, var);
+			return var;
 		}
-		else
-		{
-			--curToken_;
-		}
+		--curToken_;
 	}
 
 	return parseAddSub();
@@ -638,7 +693,7 @@ bool Parser::parseFunctionArguments(std::vector<Complex> & args)
 		
 		// Parse arguments
 		args.push_back(parseAddSub());
-		while (curToken_ != tokens_.end() && curToken_->token == COMMA)
+		while (curToken_ != tokens_.end() && curToken_->token == SEMICOLON)
 		{
 			++curToken_;
 			args.push_back(parseAddSub());

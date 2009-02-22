@@ -30,12 +30,13 @@
 #include <QMainWindow>
 #include <QTextEdit>
 #include <QListWidget>
-#include <QGridLayout>
+#include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QList>
 #include <QMenuBar>
 #include <QMenu>
+#include <QDockWidget>
 
 class MainWindow : public QMainWindow
 {
@@ -43,6 +44,7 @@ class MainWindow : public QMainWindow
 
 public:
 	MainWindow();
+	~MainWindow();
 
 signals:
 	/// Emitted when expression is calculated by parser.
@@ -50,13 +52,15 @@ signals:
 
 private:
 	QWidget centralWidget;
-	QGridLayout layout;
+	QVBoxLayout layout;
 	QHBoxLayout bottomLayout;
 	InputBox inputBox;
 	QTextEdit historyBox;
 	QPushButton okButton;
-	QListWidget variablesList;
-	QListWidget functionsList;
+	QListWidget * variablesList;
+	QDockWidget variablesListWrapper;
+	QListWidget * functionsList;
+	QDockWidget functionsListWrapper;
 	QMenuBar mainMenu;
 
 	MaxCalcEngine::Parser parser;

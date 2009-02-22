@@ -83,7 +83,7 @@ private:
 		POWER,
 		OPENING_BRACKET,
 		CLOSING_BRACKET,
-		COMMA,
+		SEMICOLON,
 		NUMBER,
 		IMAGINARY_ONE,
 		IDENTIFIER,
@@ -109,6 +109,7 @@ private:
 	tstring::const_iterator curChar_;	///< Current char of expression
 
 	void lexicalAnalysis();
+	bool analyzeAssignment();
 	bool analyzeOperators();
 	bool analyzeNumbers();
 	bool analyzeIdentifiers();

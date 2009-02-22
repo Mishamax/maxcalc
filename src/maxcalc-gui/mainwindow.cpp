@@ -36,7 +36,9 @@ static const QString indent = "    ";
 /*!
 	Constructs a new main window.
 */
-MainWindow::MainWindow() : QMainWindow()
+MainWindow::MainWindow() : QMainWindow(),
+		variablesListWrapper(tr("Variables"), this),
+		functionsListWrapper(tr("Functions"), this)
 {
 	initUi();
 	initMainMenu();
@@ -49,17 +51,14 @@ MainWindow::MainWindow() : QMainWindow()
 */
 void MainWindow::initUi()
 {
+	variablesList = new QListWidget();
+	functionsList = new QListWidget();
+
 	setWindowTitle(tr("MaxCalc"));
 	setMinimumSize(500, 350);
 	resize(750, 550);
 
 	setCentralWidget(&centralWidget);
-
-	variablesList.setMaximumWidth(150);
-	variablesList.setMinimumWidth(150);
-
-	functionsList.setMaximumWidth(100);
-	functionsList.setMinimumWidth(100);
 
 	QFont font = historyBox.currentFont();
 	font.setPixelSize(12);
@@ -80,12 +79,16 @@ void MainWindow::initUi()
 	bottomLayout.addWidget(&inputBox);
 	bottomLayout.addWidget(&okButton);
 
-	layout.setSpacing(3);
-	layout.addWidget(&variablesList, 0, 0);
-	layout.addWidget(&historyBox, 0, 1);
-	layout.addWidget(&functionsList, 0, 2);
-	layout.addLayout(&bottomLayout, 1, 0, 1, 3);
+	variablesListWrapper.setWidget(variablesList);
+	functionsListWrapper.setWidget(functionsList);
+
+	layout.addWidget(&historyBox);
+	layout.addLayout(&bottomLayout);
 	
+	addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, &variablesListWrapper);
+	tabifyDockWidget(&variablesListWrapper, &functionsListWrapper);
+	variablesListWrapper.raise();
+
 	centralWidget.setLayout(&layout);
 
 	QObject::connect(this, SIGNAL(expressionCalculated()), &inputBox,
@@ -94,12 +97,18 @@ void MainWindow::initUi()
 		SLOT(onExpressionEntered()));
 	QObject::connect(&inputBox, SIGNAL(returnPressed()), this,
 		SLOT(onExpressionEntered()));
-	QObject::connect(&variablesList, SIGNAL(itemActivated(QListWidgetItem *)),
+	QObject::connect(variablesList, SIGNAL(itemActivated(QListWidgetItem *)),
 		this, SLOT(onVariableClicked(QListWidgetItem *)));
-	QObject::connect(&functionsList, SIGNAL(itemActivated(QListWidgetItem *)),
+	QObject::connect(functionsList, SIGNAL(itemActivated(QListWidgetItem *)),
 		this, SLOT(onFunctionClicked(QListWidgetItem *)));
 
 	inputBox.setFocus();
+}
+
+MainWindow::~MainWindow()
+{
+	delete variablesList;
+	delete functionsList;
 }
 
 /*!
@@ -116,6 +125,14 @@ void MainWindow::initMainMenu()
 	commands->addAction(tr("&Clear history"), &historyBox, SLOT(clear()));
 	commands->addAction(tr("&Delete all variables"), this, SLOT(onDeleteAllVariables()));
 
+	QMenu * view = mainMenu.addMenu(tr("&View"));
+	QAction * action = view->addAction(tr("&Variables"), &variablesListWrapper, SLOT(setVisible(bool)));
+	action->setCheckable(true);
+	action->setChecked(true);
+	action = view->addAction(tr("&Functions"), &functionsListWrapper, SLOT(setVisible(bool)));
+	action->setCheckable(true);
+	action->setChecked(true);
+
 	QMenu * help = mainMenu.addMenu(tr("&Help"));
 	help->addAction(tr("&About"), this, SLOT(onHelpAbout()));
 }
@@ -125,16 +142,16 @@ void MainWindow::initMainMenu()
 */
 void MainWindow::updateVariablesList()
 {
-	variablesList.clear();
+	variablesList->clear();
 
-	variablesList.addItem(tr("e = ") +
+	variablesList->addItem(tr("e = ") +
 		QString::fromStdWString(MaxCalcEngine::BigDecimal::E.toWideString()));
-	variablesList.addItem(tr("pi = ") +
+	variablesList->addItem(tr("pi = ") +
 		QString::fromStdWString(MaxCalcEngine::BigDecimal::PI.toWideString()));
 
 	if (parser.context().resultExists())
 	{
-		variablesList.addItem(tr("res = ") +
+		variablesList->addItem(tr("res = ") +
 			QString::fromStdWString(parser.context().result().toWideString()));
 	}
 
@@ -142,7 +159,7 @@ void MainWindow::updateVariablesList()
 	for (iter = parser.context().variables().begin();
 		iter != parser.context().variables().end(); ++iter)
 	{
-		variablesList.addItem(QString::fromStdWString(iter->name) + " = " +
+		variablesList->addItem(QString::fromStdWString(iter->name) + " = " +
 			QString::fromStdWString(iter->value.toWideString()));
 	}
 }
@@ -152,31 +169,31 @@ void MainWindow::updateVariablesList()
 */
 void MainWindow::initFunctionsList()
 {
-	functionsList.addItem(tr("abs"));
-	functionsList.addItem(tr("sqr"));
-	functionsList.addItem(tr("sqrt"));
-	functionsList.addItem(tr("pow"));
-	functionsList.addItem(tr("fact"));
-	functionsList.addItem(tr("sin"));
-	functionsList.addItem(tr("cos"));
-	functionsList.addItem(tr("tan"));
-	functionsList.addItem(tr("cot"));
-	functionsList.addItem(tr("asin"));
-	functionsList.addItem(tr("acos"));
-	functionsList.addItem(tr("atan"));
-	functionsList.addItem(tr("acot"));
-	functionsList.addItem(tr("sinh"));
-	functionsList.addItem(tr("cosh"));
-	functionsList.addItem(tr("tanh"));
-	functionsList.addItem(tr("coth"));
-	functionsList.addItem(tr("asinh"));
-	functionsList.addItem(tr("acosh"));
-	functionsList.addItem(tr("atanh"));
-	functionsList.addItem(tr("acoth"));
-	functionsList.addItem(tr("ln"));
-	functionsList.addItem(tr("log2"));
-	functionsList.addItem(tr("log10"));
-	functionsList.addItem(tr("exp"));
+	functionsList->addItem(tr("abs"));
+	functionsList->addItem(tr("sqr"));
+	functionsList->addItem(tr("sqrt"));
+	functionsList->addItem(tr("pow"));
+	functionsList->addItem(tr("fact"));
+	functionsList->addItem(tr("sin"));
+	functionsList->addItem(tr("cos"));
+	functionsList->addItem(tr("tan"));
+	functionsList->addItem(tr("cot"));
+	functionsList->addItem(tr("asin"));
+	functionsList->addItem(tr("acos"));
+	functionsList->addItem(tr("atan"));
+	functionsList->addItem(tr("acot"));
+	functionsList->addItem(tr("sinh"));
+	functionsList->addItem(tr("cosh"));
+	functionsList->addItem(tr("tanh"));
+	functionsList->addItem(tr("coth"));
+	functionsList->addItem(tr("asinh"));
+	functionsList->addItem(tr("acosh"));
+	functionsList->addItem(tr("atanh"));
+	functionsList->addItem(tr("acoth"));
+	functionsList->addItem(tr("ln"));
+	functionsList->addItem(tr("log2"));
+	functionsList->addItem(tr("log10"));
+	functionsList->addItem(tr("exp"));
 }
 
 /*!
