@@ -254,11 +254,11 @@ void ParserTest::functions()
 	PARSER_FAIL_TEST(parser, _T("abs(1"), "Incorrect expression", NoClosingBracketException);
 	PARSER_TEST(parser, _T("sqr(-2)"), 4);
 	PARSER_TEST(parser, _T("sqrt(-4)"), Complex::i * 2);
-	PARSER_TEST(parser, _T("pow(2, -2)"), "0.25");
+	PARSER_TEST(parser, _T("pow(2; -2)"), "0.25");
 	PARSER_FAIL_TEST(parser, _T("pow(2 -2)"), "Incorrect expression", UnknownFunctionException);
-	PARSER_FAIL_TEST(parser, _T("pow(2,, -2)"), "Incorrect expression", IncorrectExpressionException);
-	PARSER_FAIL_TEST(parser, _T("pow(2, -2, 3)"), "Incorrect expression", UnknownFunctionException);
-	PARSER_FAIL_TEST(parser, _T("pow(2, 3"), "Incorrect expression", NoClosingBracketException);
+	PARSER_FAIL_TEST(parser, _T("pow(2;; -2)"), "Incorrect expression", IncorrectExpressionException);
+	PARSER_FAIL_TEST(parser, _T("pow(2; -2; 3)"), "Incorrect expression", UnknownFunctionException);
+	PARSER_FAIL_TEST(parser, _T("pow(2; 3"), "Incorrect expression", NoClosingBracketException);
 	PARSER_FAIL_TEST(parser, _T("sin 3"), "Incorrect expression", UnknownVariableException);
 	PARSER_FAIL_TEST(parser, _T("sin3)"), "Incorrect expression", UnknownVariableException);
 	PARSER_FAIL_TEST(parser, _T("sin 3)"), "Incorrect expression", UnknownVariableException);
@@ -360,4 +360,13 @@ void ParserTest::realWorld()
 	PARSER_TEST(parser, _T("(0.02+9*0.01+0.1)/19"), "0.01105263157894736842105263157894736842105263157894736842105263158");
 	PARSER_TEST(parser, _T("((492-0.25*1000)^2)/(0.25*1000)"), "234.25600000000000000000000000000000000000000000000000");
 	PARSER_TEST(parser, _T("0.6396*ln(0.9784)^2*(0.9784)^(3*10) - 0.121*ln(0.911)^2*(0.911)^(3*10) - 0.7423*ln(0.9048)^2*(0.9048)^(3*10) + 0.4112*ln(0.5778)^2*(0.5778)^(3*10) - 0.187*ln(0.4351)^2*(0.4351)^(3*10) - 0.0004501*ln(0.1583)^2*(0.1583)^(3*10)"), "-2.751631655951235923961285515679582556626416401198469537065650108e-4");
+}
+
+void ParserTest::unitConversions()
+{
+	Parser parser;
+
+//	PARSER_FAIL_TEST(parser, _T("1[qwe]"), "Incorrect conversion", IncorrectExpressionException);
+	PARSER_FAIL_TEST(parser, _T("1[qwe"), "Incorrect conversion", IncorrectUnitConversionSyntaxException);
+	PARSER_FAIL_TEST(parser, _T("1["), "Incorrect conversion", IncorrectUnitConversionSyntaxException);
 }

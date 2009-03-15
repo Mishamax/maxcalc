@@ -85,7 +85,7 @@ void MainWindow::initUi()
 	layout.addWidget(&historyBox);
 	layout.addLayout(&bottomLayout);
 	
-	addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, &variablesListWrapper);
+	addDockWidget(Qt::RightDockWidgetArea, &variablesListWrapper);
 	tabifyDockWidget(&variablesListWrapper, &functionsListWrapper);
 	variablesListWrapper.raise();
 

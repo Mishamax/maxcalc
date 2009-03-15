@@ -87,7 +87,8 @@ private:
 		NUMBER,
 		IMAGINARY_ONE,
 		IDENTIFIER,
-		ASSIGN
+		ASSIGN,
+		UNIT_CONVERSION
 	};
 
 	/// Represents token with corresponding part of expression.
@@ -113,6 +114,7 @@ private:
 	bool analyzeOperators();
 	bool analyzeNumbers();
 	bool analyzeIdentifiers();
+	bool analyzeUnitConversion();
 	bool skipSpaces();
 	inline bool isIdentifierChar(tchar c, bool firstChar);
 

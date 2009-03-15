@@ -99,6 +99,8 @@ class UnknownFunctionException : public ParserException {};
 class UnknownVariableException : public ParserException {};
 /// Incorrect variable name.
 class IncorrectVariableNameException : public ParserException {};
+/// Incorrect unit conversion syntax.
+class IncorrectUnitConversionSyntaxException : public ParserException {};
 
 }; // namespace MaxCalcEngine
 

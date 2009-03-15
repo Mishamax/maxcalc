@@ -27,6 +27,7 @@ private slots:
 	void functionsLog();
 	void fails();
 	void realWorld();
+	void unitConversions();
 };
 
 #endif // PARSERTEST_H

@@ -136,6 +136,8 @@ void Parser::lexicalAnalysis()
 			continue;
 		if (analyzeNumbers())
 			continue;
+		if (analyzeUnitConversion())
+			continue;
 		if (skipSpaces())
 			continue;
 		// Token couldn't be parsed
@@ -305,6 +307,33 @@ bool Parser::analyzeNumbers()
 	}
 
 	return true;
+}
+
+/*!
+	Lexical analysis of unit conversion.
+
+	Looks for expressions like "[<conv>]" (limited by square brackets).
+	Only "<conv>" (without brackets) is written to \a tokens_ list.
+
+	\exception IncorrectUnitConversionSyntaxException Thrown when closing bracket ']' not found.
+*/
+bool Parser::analyzeUnitConversion()
+{
+	if (*curChar_ == _T('['))
+	{
+		++curChar_;
+		tstring conv = _T("");
+		for (; curChar_ != expr_.end() && *curChar_ != _T(']'); ++curChar_)
+		{
+			conv += *curChar_;
+		}
+		if (curChar_ == expr_.end() || *curChar_ != _T(']'))
+			throw IncorrectUnitConversionSyntaxException();
+		tokens_.push_back(Token(UNIT_CONVERSION, conv));
+		return true;
+	}
+
+	return false;
 }
 
 /*!
