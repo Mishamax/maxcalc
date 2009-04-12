@@ -24,6 +24,8 @@
 #include "unicode.h"
 #include "parsercontext.h"
 #include "complex.h"
+#include "unitconversion.h"
+
 // STL
 #include <list>
 #include <vector>
@@ -62,6 +64,7 @@ private:
 
 	tstring expr_;						///< Expression to be parsed.
 	ParserContext context_;				///< Parser context.
+	UnitConversion unitConversion_;		///< Unit conversion.
 
 
 	///////////////////////////////////////////////////////////////////////////
@@ -140,7 +143,6 @@ private:
 	Complex parseNumbers();
 
 	bool parseFunctionArguments(std::vector<Complex> & args);
-	Complex unitConversion(const Complex arg, const tstring & unit1, const tstring & unit2);
 };
 
 

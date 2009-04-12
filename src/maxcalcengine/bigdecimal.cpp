@@ -42,7 +42,7 @@ using namespace DecNumber;
 	implementation of General Decimal Arithmetic (http://speleotrove.com/decimal/).
 	Package from Internation Components for Unicode is used (http://icu-project.org/).
 	
-	Precision settings of BigDecimal are hard-written and defined in settings.h,
+	Precision settings of BigDecimal are hard-written and defined in precision.h,
 	so MaxCalcEngine has to be recompiled in order to change precision.
 
 	When converting to string, number format is specified by BigDecimalFormat class.

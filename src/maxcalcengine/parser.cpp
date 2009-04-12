@@ -517,7 +517,10 @@ Complex Parser::parseUnitConversions()
 				throw IncorrectUnitConversionSyntaxException();
 			++curToken_;
 
-			return unitConversion(result, unit1, unit2);
+			if (!result.im.isZero())
+				throw InvalidUnitConversionArgumentException();
+
+			result = unitConversion_.convert(result.re, unit1, unit2);
 		}
 		else
 		{
@@ -763,16 +766,6 @@ bool Parser::parseFunctionArguments(std::vector<Complex> & args)
 	{
 		return false;
 	}
-}
-
-/*!
-	Performs unit conversion of \a arg from \a unit1 to \a unit2 and returns conversion result.
-*/
-Complex Parser::unitConversion(const Complex arg, const tstring & unit1, const tstring & unit2)
-{
-	if (unit1 == _T("test") && unit2 == _T("test"))
-		return arg * 2;
-	return arg;
 }
 
 } // namespace MaxCalcEngine

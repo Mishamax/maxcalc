@@ -17,8 +17,8 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
-#ifndef SETTINGS_H
-#define SETTINGS_H
+#ifndef PRECISION_H
+#define PRECISION_H
 
 namespace MaxCalcEngine {
 
@@ -27,7 +27,7 @@ namespace MaxCalcEngine {
 
 	The maximum precision of decNumber and thus BigDecimal is hard-written by
 	this macro and cannot be changed at runtime.
-	This macro is used in decNumber.h, so settings.h must always be included
+	This macro is used in decNumber.h, so precision.h must always be included
 	before decNumber.h.
 
 	The default value is 136 to use 512 bits (32 bytes) of data
@@ -87,4 +87,4 @@ static const char * MAX_IO_PRECISION_STRING = "1E-50";
 
 } // namespace MaxCalcEngine
 
-#endif // SETTINGS_H
+#endif // PRECISION_H

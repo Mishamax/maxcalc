@@ -20,7 +20,7 @@
 // Engine
 #include "parser.h"
 #include "parsercontext.h"
-#include "settings.h"
+#include "precision.h"
 #include "unicode.h"
 // STL
 #include <cstdlib>

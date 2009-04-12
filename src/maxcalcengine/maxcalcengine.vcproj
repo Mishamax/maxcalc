@@ -95,6 +95,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\unitconversion.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\variables.cpp"
 				>
 			</File>
@@ -149,11 +153,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\settings.h"
+				RelativePath=".\precision.h"
 				>
 			</File>
 			<File
 				RelativePath=".\unicode.h"
+				>
+			</File>
+			<File
+				RelativePath=".\unitconversion.h"
 				>
 			</File>
 			<File

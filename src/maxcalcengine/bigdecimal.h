@@ -21,7 +21,7 @@
 #define BIGDECIMAL_H
 
 // Local
-#include "settings.h" // settings.h must be included before decNumber.h
+#include "precision.h" // precision.h must be included before decNumber.h
 #include "decNumber/decNumber.h"
 #include "bigdecimalformat.h"
 #include "unicode.h"

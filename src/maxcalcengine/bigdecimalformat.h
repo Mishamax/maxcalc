@@ -22,7 +22,7 @@
 #define BIGDECIMALFORMAT_H
 
 // Local
-#include "settings.h"
+#include "precision.h"
 #include "unicode.h"
 
 // STL

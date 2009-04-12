@@ -78,6 +78,8 @@ class InvalidCotArgumentException : public InvalidArgumentException {};
 class InvalidTanhArgumentException : public InvalidArgumentException {};
 /// Invalid argument of coth() function (sinh() == 0).
 class InvalidCothArgumentException : public InvalidArgumentException {};
+/// Invalid argument of unit conversion (complex number).
+class InvalidUnitConversionArgumentException : public InvalidArgumentException {};
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -101,6 +103,8 @@ class UnknownVariableException : public ParserException {};
 class IncorrectVariableNameException : public ParserException {};
 /// Incorrect unit conversion syntax.
 class IncorrectUnitConversionSyntaxException : public ParserException {};
+/// Unknown unit conversion.
+class UnknownUnitConversionException : public ParserException {};
 
 }; // namespace MaxCalcEngine
 
