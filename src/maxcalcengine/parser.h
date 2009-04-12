@@ -88,7 +88,11 @@ private:
 		IMAGINARY_ONE,
 		IDENTIFIER,
 		ASSIGN,
-		UNIT_CONVERSION
+
+		// Unit conversion
+		OPENING_SQUARE_BRACKET,
+		CLOSING_SQUARE_BRACKET,
+		ARROW,
 	};
 
 	/// Represents token with corresponding part of expression.
@@ -114,7 +118,6 @@ private:
 	bool analyzeOperators();
 	bool analyzeNumbers();
 	bool analyzeIdentifiers();
-	bool analyzeUnitConversion();
 	bool skipSpaces();
 	inline bool isIdentifierChar(tchar c, bool firstChar);
 
@@ -129,6 +132,7 @@ private:
 	Complex parseAddSub();
 	Complex parseMulDiv();
 	Complex parsePower();
+	Complex parseUnitConversions();
 	Complex parseUnaryPlusMinus();
 	Complex parseBrackets();
 	Complex parseFunctions();
@@ -136,6 +140,7 @@ private:
 	Complex parseNumbers();
 
 	bool parseFunctionArguments(std::vector<Complex> & args);
+	Complex unitConversion(const Complex arg, const tstring & unit1, const tstring & unit2);
 };
 
 

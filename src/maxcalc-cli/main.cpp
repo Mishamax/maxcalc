@@ -196,16 +196,38 @@ bool parseCommand(const tstring & expr, ParserContext & context)
 	return true;
 }
 
-int main()
+bool parseCmdLineArgs(int argc, tchar ** argv)
 {
+	if (argc < 2)
+		return false;
+
+	if (argc >= 3 && tstrcmp(argv[1], _T("-c")) == 0)
+	{
+		tchar * expr = argv[2];
+
+		Parser parser;
+		parser.setExpression(expr);
+		tcout << parser.parse().result().toString().c_str();
+
+		return true;
+	}
+
+	return false;
+}
+
+int tmain(int argc, tchar ** argv)
+{
+	// Without that locale may be set incorrecly on Linux
+	// (non-latic characters may not work)
+	setlocale(LC_ALL, "");
+
+	if (parseCmdLineArgs(argc, argv))
+		return 0;
+
 	const int exprLength = 1000;
 	tchar charExpr[exprLength];
 	tstring expr;
 	Parser parser;
-
-	// Without that locale may be set incorrecly on Linux
-	// (non-latic characters may not work)
-	setlocale(LC_ALL, "");
 
 	printVersion(false);
 

@@ -43,12 +43,19 @@ using namespace std;
 	name 'helloworld' or 'HELLOWORLD').
 
 	To retrieve value of a variable you can use operator[](name).
-	To retrieve all variables there is const_iterator class and begin()
+	To retrieve all variables there is const_iterator class and begin(),
 	and end() functions which return const_iterator.
 
 	\ingroup MaxCalcEngine
 */
 
+/*!
+	\class Variables::const_iterator
+	\brief Constant iterator for Variables class.
+	
+	This iterator is used to retrieve variables. It can be done by using
+	begin() and end() functions in Variables class.
+*/
 
 /*!
 	Adds new variable with specified \a name and \a value.

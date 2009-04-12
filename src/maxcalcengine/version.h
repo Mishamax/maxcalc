@@ -27,11 +27,11 @@ namespace MaxCalcEngine {
 /*!
 	Version number.
 */
-static const tchar * VERSION = _T("1.9.1");
+static const tchar * VERSION = _T("1.9.2");
 /*!
 	Version label.
 */
-static const tchar * VERSION_LABEL = _T("Milestone 2");
+static const tchar * VERSION_LABEL = _T("Milestone 3");
 /*!
 	Developer.
 */

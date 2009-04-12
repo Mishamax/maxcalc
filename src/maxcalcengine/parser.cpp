@@ -136,8 +136,6 @@ void Parser::lexicalAnalysis()
 			continue;
 		if (analyzeNumbers())
 			continue;
-		if (analyzeUnitConversion())
-			continue;
 		if (skipSpaces())
 			continue;
 		// Token couldn't be parsed
@@ -176,14 +174,24 @@ bool Parser::analyzeAssignment()
 }
 
 /*!
-	Lexical analysis of operators (+, -, *, /, ^) and brackets.
+	Lexical analysis of operators (+, -, *, /, ^), brackets and arrow (->).
 */
 bool Parser::analyzeOperators()
 {
 	if (_T('+') == *curChar_)
 		tokens_.push_back(Token(PLUS, _T("+")));
 	else if (_T('-') == *curChar_)
-		tokens_.push_back(Token(MINUS, _T("-")));
+	{
+		++curChar_;
+		if (curChar_ != expr_.end() && _T('>') == *curChar_)
+		{
+			tokens_.push_back(Token(ARROW, _T("->")));
+			++curChar_;
+		}
+		else
+			tokens_.push_back(Token(MINUS, _T("-")));
+		return true;
+	}
 	else if (_T('*') == *curChar_)
 		tokens_.push_back(Token(MULTIPLY, _T("*")));
 	else if (_T('/') == *curChar_)
@@ -196,6 +204,10 @@ bool Parser::analyzeOperators()
 		tokens_.push_back(Token(CLOSING_BRACKET, _T(")")));
 	else if (_T(';') == *curChar_)
 		tokens_.push_back(Token(SEMICOLON, _T(";")));
+	else if (_T('[') == *curChar_)
+		tokens_.push_back(Token(OPENING_SQUARE_BRACKET, _T("[")));
+	else if (_T(']') == *curChar_)
+		tokens_.push_back(Token(CLOSING_SQUARE_BRACKET, _T("]")));
 	else
 		return false;
 
@@ -307,33 +319,6 @@ bool Parser::analyzeNumbers()
 	}
 
 	return true;
-}
-
-/*!
-	Lexical analysis of unit conversion.
-
-	Looks for expressions like "[<conv>]" (limited by square brackets).
-	Only "<conv>" (without brackets) is written to \a tokens_ list.
-
-	\exception IncorrectUnitConversionSyntaxException Thrown when closing bracket ']' not found.
-*/
-bool Parser::analyzeUnitConversion()
-{
-	if (*curChar_ == _T('['))
-	{
-		++curChar_;
-		tstring conv = _T("");
-		for (; curChar_ != expr_.end() && *curChar_ != _T(']'); ++curChar_)
-		{
-			conv += *curChar_;
-		}
-		if (curChar_ == expr_.end() || *curChar_ != _T(']'))
-			throw IncorrectUnitConversionSyntaxException();
-		tokens_.push_back(Token(UNIT_CONVERSION, conv));
-		return true;
-	}
-
-	return false;
 }
 
 /*!
@@ -487,14 +472,52 @@ Complex Parser::parseMulDiv()
 */
 Complex Parser::parsePower()
 {
-	Complex result = parseUnaryPlusMinus();
+	Complex result = parseUnitConversions();
 
 	while (curToken_ != tokens_.end())
 	{
 		if (POWER == curToken_->token)
 		{
 			++curToken_;
-			result = Complex::pow(result, parseUnaryPlusMinus());
+			result = Complex::pow(result, parseUnitConversions());
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	return result;
+}
+
+/*!
+	Parses unit conversions.
+*/
+Complex Parser::parseUnitConversions()
+{
+	Complex result = parseUnaryPlusMinus();
+
+	while (curToken_ != tokens_.end())
+	{
+		if (OPENING_SQUARE_BRACKET == curToken_->token)
+		{
+			++curToken_;
+			if (curToken_ == tokens_.end() || curToken_->token != IDENTIFIER)
+				throw IncorrectUnitConversionSyntaxException();
+			tstring unit1 = curToken_->str;
+			++curToken_;
+			if (curToken_ == tokens_.end() || curToken_->token != ARROW)
+				throw IncorrectUnitConversionSyntaxException();
+			++curToken_;
+			if (curToken_ == tokens_.end() || curToken_->token != IDENTIFIER)
+				throw IncorrectUnitConversionSyntaxException();
+			tstring unit2 = curToken_->str;
+			++curToken_;
+			if (curToken_ == tokens_.end() || curToken_->token != CLOSING_SQUARE_BRACKET)
+				throw IncorrectUnitConversionSyntaxException();
+			++curToken_;
+
+			return unitConversion(result, unit1, unit2);
 		}
 		else
 		{
@@ -740,6 +763,16 @@ bool Parser::parseFunctionArguments(std::vector<Complex> & args)
 	{
 		return false;
 	}
+}
+
+/*!
+	Performs unit conversion of \a arg from \a unit1 to \a unit2 and returns conversion result.
+*/
+Complex Parser::unitConversion(const Complex arg, const tstring & unit1, const tstring & unit2)
+{
+	if (unit1 == _T("test") && unit2 == _T("test"))
+		return arg * 2;
+	return arg;
 }
 
 } // namespace MaxCalcEngine

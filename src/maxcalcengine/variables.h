@@ -65,20 +65,24 @@ public:
 	class const_iterator : public VarsMap::const_iterator
 	{
 	public:
+		/// Default constructor.
 		const_iterator() : VarsMap::const_iterator()
 		{
 		}
 
+		/// Constructs const_iterator from std::map<tstring, Variable> iterator.
 		const_iterator(const VarsMap::const_iterator & iter) :
 			VarsMap::const_iterator(iter)
 		{
 		}
 
+		/// Gets Variable associated with current value.
 		const Variable & operator* ()
 		{
 			return (VarsMap::const_iterator::operator*()).second;
 		}
 
+		/// Gets Variable associated with current value.
 		const Variable * operator-> ()
 		{
 			return &((VarsMap::const_iterator::operator*()).second);
@@ -106,11 +110,18 @@ inline size_t Variables::count()
 	return vars_.size();
 }
 
+/*!
+	Returns const_iterator pointing to the beginning of variables' map.
+*/
 inline Variables::const_iterator Variables::begin()
 {
     return const_iterator(vars_.begin());
 }
 
+/*!
+	Returns const_iterator pointing to the next element after the end of
+	variables' map.
+*/
 inline Variables::const_iterator Variables::end()
 {
     return const_iterator(vars_.end());

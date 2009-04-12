@@ -22,8 +22,8 @@ int main()
 	VariablesTest variablesTest;
 	QTest::qExec(&variablesTest);
 
-	BigDecimalBench bigDecimalBench;
-	QTest::qExec(&bigDecimalBench);
+//	BigDecimalBench bigDecimalBench;
+//	QTest::qExec(&bigDecimalBench);
 
 	return 0;
 }

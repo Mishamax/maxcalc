@@ -366,7 +366,10 @@ void ParserTest::unitConversions()
 {
 	Parser parser;
 
-//	PARSER_FAIL_TEST(parser, _T("1[qwe]"), "Incorrect conversion", IncorrectExpressionException);
+	PARSER_FAIL_TEST(parser, _T("1[qwe]"), "Incorrect conversion", IncorrectUnitConversionSyntaxException);
 	PARSER_FAIL_TEST(parser, _T("1[qwe"), "Incorrect conversion", IncorrectUnitConversionSyntaxException);
 	PARSER_FAIL_TEST(parser, _T("1["), "Incorrect conversion", IncorrectUnitConversionSyntaxException);
+	PARSER_FAIL_TEST(parser, _T("1[in->]"), "Incorrect conversion", IncorrectUnitConversionSyntaxException);
+	PARSER_FAIL_TEST(parser, _T("1[in-]"), "Incorrect conversion", IncorrectUnitConversionSyntaxException);
+	PARSER_FAIL_TEST(parser, _T("[in->ft]"), "Incorrect expression", IncorrectExpressionException);
 }

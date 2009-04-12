@@ -53,6 +53,9 @@ typedef std::wstring tstring;		///< tstring definition
 #define tcin wcin					///< Standard input stream
 #define fgetts fgetws				///< Gets string from stream
 
+// String functions
+#define tstrcmp wcscmp
+#define tmain wmain
 
 // String conversion functions
 std::codecvt_base::result stringToWideString(const std::string & from,
@@ -97,6 +100,10 @@ typedef std::string tstring;		///< tstring definition
 #define tcout cout					///< Standard output stream
 #define tcin cin					///< Standard input stream
 #define fgetts fgets				///< Gets string from stream
+
+// String functions
+#define tstrcmp strcmp
+#define tmain main
 
 #endif // #if defined(MAXCALC_UNICODE)
 
