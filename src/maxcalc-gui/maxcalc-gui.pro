@@ -1,6 +1,6 @@
 TEMPLATE = app
-win32:TARGET = maxcalc-win
-unix:TARGET = maxcalc-gui
+win32:TARGET = maxcalcwin
+unix:TARGET = maxcalcgui
 
 CONFIG += qt debug_and_release warn_on precompile_header
 win32:CONFIG += windows

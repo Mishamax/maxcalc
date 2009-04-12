@@ -30,7 +30,6 @@ class UnitConversion
 public:
 	static BigDecimal convert(const BigDecimal arg, const tstring & unit1, const tstring & unit2);
 
-	// TODO: improve precision
 	static BigDecimal ctof(BigDecimal arg)
 	{
 		return arg * 1.8 + 32;
@@ -41,11 +40,11 @@ public:
 	}
 	static BigDecimal ftoc(BigDecimal arg)
 	{
-		return arg * 0.55555555555555555556 - 17.77777777777777777778;;
+		return (arg + 459.67) * 5.0 / 9.0 - 273.15;
 	}
 	static BigDecimal ftok(BigDecimal arg)
 	{
-		return arg * 0.55555555555555555556 + 255.37222222222222222222;
+		return (arg + 459.67) * 5.0 / 9.0;
 	}
 	static BigDecimal ktoc(BigDecimal arg)
 	{

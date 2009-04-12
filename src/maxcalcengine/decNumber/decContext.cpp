@@ -213,7 +213,9 @@ decContext *decContextSetRounding(decContext *context,
 /* ------------------------------------------------------------------ */
 decContext * decContextSetStatus(decContext *context, uInt status) {
   context->status|=status;
+#ifndef WINCE
   if (status & context->traps) raise(SIGFPE);
+#endif
   return context;} // decContextSetStatus
 
 /* ------------------------------------------------------------------ */

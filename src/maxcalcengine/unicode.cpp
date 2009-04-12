@@ -17,6 +17,14 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
+#if defined(MAXCALC_UNICODE)
+#ifndef WINCE
+#include <locale>
+#else
+#include <windows.h>
+#endif
+#endif
+
 // Local
 #include "unicode.h"
 
@@ -30,10 +38,13 @@ using namespace std;
 #include <clocale>
 #include <cassert>
 
+
+
 using namespace std;
 
-
+#ifndef WINCE
 typedef codecvt<wchar_t, char, mbstate_t> CodeCvt;
+#endif
 
 /*!
 	Converts \a std::string to \a std::wstring using specified \a locale.
@@ -42,17 +53,24 @@ typedef codecvt<wchar_t, char, mbstate_t> CodeCvt;
 
 	\ingroup MaxCalcEngine
 */
-codecvt_base::result stringToWideString(const string & from, wstring & to, const char * localeName)
+void stringToWideString(const string & from, wstring & to, const char * localeName)
 {
 	assert(localeName);
 
+#ifndef WINCE
 	mbstate_t state = mbstate_t();
 	const char * c1 = 0;
 	wchar_t * c2 = 0;
 	size_t len = from.length();
 	if (to.length() < len)
 		to.resize(len);
-	return use_facet<CodeCvt>(locale(localeName)).in(state, &from[0], &from[len], c1, &to[0], &to[len], c2);
+	use_facet<CodeCvt>(locale(localeName)).in(state, &from[0], &from[len], c1, &to[0], &to[len], c2);
+#else
+	size_t length = from.length() + 1;
+	wchar_t * str = new wchar_t[length];
+	MultiByteToWideChar(CP_ACP, 0, from.c_str(), length, str, length);
+	to = str;
+#endif
 }
 
 /*!
@@ -62,17 +80,24 @@ codecvt_base::result stringToWideString(const string & from, wstring & to, const
 
 	\ingroup MaxCalcEngine
 */
-codecvt_base::result wideStringToString(const wstring & from, string & to, const char * localeName)
+void wideStringToString(const wstring & from, string & to, const char * localeName)
 {
 	assert(localeName);
 
+#ifndef WINCE
 	mbstate_t state = mbstate_t();
 	const wchar_t * c1 = 0;
 	char * c2 = 0;
 	size_t len = from.length();
 	if (to.length() < len)
 		to.resize(len);
-	return use_facet<CodeCvt>(locale(localeName)).out(state, &from[0], &from[len], c1, &to[0], &to[len], c2);
+	use_facet<CodeCvt>(locale(localeName)).out(state, &from[0], &from[len], c1, &to[0], &to[len], c2);
+#else
+	size_t length = from.length() + 1;
+	char * str = new char[length];
+	WideCharToMultiByte(CP_ACP, 0, from.c_str(), length, str, length, NULL, NULL);
+	to = str;
+#endif
 }
 
 /*!
@@ -84,19 +109,22 @@ codecvt_base::result wideStringToString(const wstring & from, string & to, const
 
 	\ingroup MaxCalcEngine
 */
-codecvt_base::result charToWideChar(const char * from, size_t fromLength, wchar_t * to, size_t toLength, const char * localeName)
+void charToWideChar(const char * from, size_t fromLength, wchar_t * to, size_t toLength, const char * localeName)
 {
 	assert(fromLength <= toLength);
 	assert(to);
 	assert(from);
 	assert(localeName);
-	
+
+#ifndef WINCE
 	mbstate_t state = mbstate_t();
 	const char * c1 = 0;
 	wchar_t * c2 = 0;
-	codecvt_base::result res = use_facet<CodeCvt>(locale(localeName)).in(state, &from[0], &from[fromLength], c1, &to[0], &to[toLength], c2);
+	use_facet<CodeCvt>(locale(localeName)).in(state, &from[0], &from[fromLength], c1, &to[0], &to[toLength], c2);
 	to[fromLength] = 0;
-	return res;
+#else
+	MultiByteToWideChar(CP_ACP, 0, from, fromLength, to, toLength);
+#endif
 }
 
 /*!
@@ -108,19 +136,22 @@ codecvt_base::result charToWideChar(const char * from, size_t fromLength, wchar_
 
 	\ingroup MaxCalcEngine
 */
-codecvt_base::result wideCharToChar(const wchar_t * from, size_t fromLength, char * to, size_t toLength, const char * localeName)
+void wideCharToChar(const wchar_t * from, size_t fromLength, char * to, size_t toLength, const char * localeName)
 {
 	assert(fromLength <= toLength);
 	assert(to);
 	assert(from);
 	assert(localeName);
 
+#ifndef WINCE
 	mbstate_t state = mbstate_t();
 	const wchar_t * c1 = 0;
 	char * c2 = 0;
-	codecvt_base::result res = use_facet<CodeCvt>(locale(localeName)).out(state, &from[0], &from[fromLength], c1, &to[0], &to[toLength], c2);
+	use_facet<CodeCvt>(locale(localeName)).out(state, &from[0], &from[fromLength], c1, &to[0], &to[toLength], c2);
 	to[fromLength] = 0;
-	return res;
+#else
+	WideCharToMultiByte(CP_ACP, 0, from, fromLength, to, toLength, NULL, NULL);
+#endif
 }
 
 #endif // #if defined(MAXCALC_UNICODE)

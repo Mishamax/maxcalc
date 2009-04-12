@@ -144,23 +144,40 @@ void MainWindow::updateVariablesList()
 {
 	variablesList->clear();
 
+#ifndef WINCE
 	variablesList->addItem(tr("e = ") +
 		QString::fromStdWString(MaxCalcEngine::BigDecimal::E.toWideString()));
 	variablesList->addItem(tr("pi = ") +
 		QString::fromStdWString(MaxCalcEngine::BigDecimal::PI.toWideString()));
+#else
+	variablesList->addItem(tr("e = ") +
+		QString::fromWCharArray(MaxCalcEngine::BigDecimal::E.toWideString().c_str()));
+	variablesList->addItem(tr("pi = ") +
+		QString::fromWCharArray(MaxCalcEngine::BigDecimal::PI.toWideString().c_str()));
+#endif
 
 	if (parser.context().resultExists())
 	{
+#ifndef WINCE
 		variablesList->addItem(tr("res = ") +
 			QString::fromStdWString(parser.context().result().toWideString()));
+#else
+		variablesList->addItem(tr("res = ") +
+			QString::fromWCharArray(parser.context().result().toWideString().c_str()));
+#endif
 	}
 
 	MaxCalcEngine::Variables::const_iterator iter;
 	for (iter = parser.context().variables().begin();
 		iter != parser.context().variables().end(); ++iter)
 	{
+#ifndef WINCE
 		variablesList->addItem(QString::fromStdWString(iter->name) + " = " +
 			QString::fromStdWString(iter->value.toWideString()));
+#else
+		variablesList->addItem(QString::fromWCharArray(iter->name.c_str()) + " = " +
+			QString::fromWCharArray(iter->value.toWideString().c_str()));
+#endif
 	}
 }
 
@@ -207,7 +224,13 @@ void MainWindow::onExpressionEntered()
 	if (expr.isEmpty())
 		return;
 
+#ifndef WINCE
 	parser.setExpression(expr.toStdWString());
+#else
+	wchar_t * str = new wchar_t[expr.length() + 1];
+	expr.toWCharArray(str);
+	parser.setExpression(str);
+#endif
 
 	try
 	{
@@ -229,8 +252,13 @@ void MainWindow::onExpressionEntered()
 	historyBox.setTextColor(Qt::blue);
 	historyBox.append(inputBox.text());
 	historyBox.setTextColor(Qt::darkGreen);
+#ifndef WINCE
 	historyBox.append(indent +
 		QString::fromStdWString(parser.context().result().toWideString()));
+#else
+	historyBox.append(indent +
+		QString::fromWCharArray(parser.context().result().toWideString().c_str()));
+#endif
 	inputBox.clear();
 	inputBox.setFocus();
 	updateVariablesList();

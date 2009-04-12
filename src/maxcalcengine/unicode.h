@@ -22,12 +22,15 @@
 
 // STL
 #include <string>
-#include <locale>
 #include <cctype>
 #include <iostream>
 #include <cwchar>
 
 namespace MaxCalcEngine {
+
+#ifdef _T
+#undef _T
+#endif
 
 #if defined(MAXCALC_UNICODE)
 
@@ -58,19 +61,19 @@ typedef std::wstring tstring;		///< tstring definition
 #define tmain wmain
 
 // String conversion functions
-std::codecvt_base::result stringToWideString(const std::string & from,
+void stringToWideString(const std::string & from,
 											 std::wstring & to,
 											 const char * localeName = "");
-std::codecvt_base::result wideStringToString(const std::wstring & from,
+void wideStringToString(const std::wstring & from,
 											 std::string & to,
 											 const char * localeName = "");
 
-std::codecvt_base::result charToWideChar(const char * from,
+void charToWideChar(const char * from,
 										 size_t fromLength,
 										 wchar_t * to,
 										 size_t toLength,
 										 const char * localeName = "");
-std::codecvt_base::result wideCharToChar(const wchar_t * from,
+void wideCharToChar(const wchar_t * from,
 										 size_t fromLength,
 										 char * to,
 										 size_t toLength,

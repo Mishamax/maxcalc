@@ -1,3 +1,7 @@
 CONFIG += ordered
 TEMPLATE = subdirs
-SUBDIRS += maxcalcengine maxcalc-cli maxcalc-gui
+wince* {
+    SUBDIRS += maxcalcengine maxcalc-gui
+} else {
+    SUBDIRS += maxcalcengine maxcalc-cli maxcalc-gui maxcalctest
+}
