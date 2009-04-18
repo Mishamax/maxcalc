@@ -130,6 +130,8 @@ void Parser::lexicalAnalysis()
 		// other operators to correctly recognize operators like "+=".
 		if (analyzeAssignment())
 			continue;
+		if (analyzeUnitConversions())
+			continue;
 		if (analyzeOperators())
 			continue;
 		if (analyzeIdentifiers())
@@ -174,6 +176,64 @@ bool Parser::analyzeAssignment()
 }
 
 /*!
+	Lexical analysis of unit conversions (syntax "[unit1 -> unit2]").
+*/
+bool Parser::analyzeUnitConversions()
+{
+	if (_T('[') == *curChar_)
+	{
+		tokens_.push_back(Token(OPENING_SQUARE_BRACKET, _T("[")));
+		++curChar_;
+
+		skipSpaces();
+
+		tstring unit = _T("");
+		while (curChar_ != expr_.end() && isUnitChar(*curChar_))
+			unit += *curChar_++;
+		if (unit == _T(""))
+			throw IncorrectUnitConversionSyntaxException();
+		tokens_.push_back(Token(UNIT, unit));
+
+		skipSpaces();
+
+		if (curChar_ != expr_.end() && _T('-') == *curChar_)
+		{
+			++curChar_;
+			if (curChar_ != expr_.end() && _T('>') == *curChar_)
+			{
+				tokens_.push_back(Token(ARROW, _T("->")));
+				++curChar_;
+			}
+			else
+				throw IncorrectUnitConversionSyntaxException();
+		}
+		else
+			throw IncorrectUnitConversionSyntaxException();
+
+		skipSpaces();
+
+		unit = _T("");
+		while (curChar_ != expr_.end() && isUnitChar(*curChar_))
+			unit += *curChar_++;
+		if (unit == _T(""))
+			throw IncorrectUnitConversionSyntaxException();
+		tokens_.push_back(Token(UNIT, unit));
+
+		skipSpaces();
+
+		if (curChar_ != expr_.end() && _T(']') == *curChar_)
+			tokens_.push_back(Token(CLOSING_SQUARE_BRACKET, _T("]")));
+		else
+			throw IncorrectUnitConversionSyntaxException();
+		++curChar_;
+		return true;
+	}
+
+
+	return false;
+}
+
+/*!
 	Lexical analysis of operators (+, -, *, /, ^), brackets and arrow (->).
 */
 bool Parser::analyzeOperators()
@@ -181,17 +241,7 @@ bool Parser::analyzeOperators()
 	if (_T('+') == *curChar_)
 		tokens_.push_back(Token(PLUS, _T("+")));
 	else if (_T('-') == *curChar_)
-	{
-		++curChar_;
-		if (curChar_ != expr_.end() && _T('>') == *curChar_)
-		{
-			tokens_.push_back(Token(ARROW, _T("->")));
-			++curChar_;
-		}
-		else
-			tokens_.push_back(Token(MINUS, _T("-")));
-		return true;
-	}
+		tokens_.push_back(Token(MINUS, _T("-")));
 	else if (_T('*') == *curChar_)
 		tokens_.push_back(Token(MULTIPLY, _T("*")));
 	else if (_T('/') == *curChar_)
@@ -204,10 +254,6 @@ bool Parser::analyzeOperators()
 		tokens_.push_back(Token(CLOSING_BRACKET, _T(")")));
 	else if (_T(';') == *curChar_)
 		tokens_.push_back(Token(SEMICOLON, _T(";")));
-	else if (_T('[') == *curChar_)
-		tokens_.push_back(Token(OPENING_SQUARE_BRACKET, _T("[")));
-	else if (_T(']') == *curChar_)
-		tokens_.push_back(Token(CLOSING_SQUARE_BRACKET, _T("]")));
 	else
 		return false;
 
@@ -502,14 +548,14 @@ Complex Parser::parseUnitConversions()
 		if (OPENING_SQUARE_BRACKET == curToken_->token)
 		{
 			++curToken_;
-			if (curToken_ == tokens_.end() || curToken_->token != IDENTIFIER)
+			if (curToken_ == tokens_.end() || curToken_->token != UNIT)
 				throw IncorrectUnitConversionSyntaxException();
 			tstring unit1 = curToken_->str;
 			++curToken_;
 			if (curToken_ == tokens_.end() || curToken_->token != ARROW)
 				throw IncorrectUnitConversionSyntaxException();
 			++curToken_;
-			if (curToken_ == tokens_.end() || curToken_->token != IDENTIFIER)
+			if (curToken_ == tokens_.end() || curToken_->token != UNIT)
 				throw IncorrectUnitConversionSyntaxException();
 			tstring unit2 = curToken_->str;
 			++curToken_;

@@ -373,13 +373,16 @@ void ParserTest::unitConversions()
 	PARSER_FAIL_TEST(parser, _T("1[in-]"), "Incorrect conversion", IncorrectUnitConversionSyntaxException);
 	PARSER_FAIL_TEST(parser, _T("[in->ft]"), "Incorrect expression", IncorrectExpressionException);
 	PARSER_FAIL_TEST(parser, _T("0 [in->ft] [c->f] [ft->in"), "Incorrect conversion", IncorrectUnitConversionSyntaxException);
-	PARSER_FAIL_TEST(parser, _T("0[unit1->unit2]"), "Unknown conversion", UnknownUnitConversionException);
-	PARSER_FAIL_TEST(parser, _T("0[unit1->km]"), "Unknown conversion", UnknownUnitConversionException);
-	PARSER_FAIL_TEST(parser, _T("0[mile->unit2]"), "Unknown conversion", UnknownUnitConversionException);
+	PARSER_FAIL_TEST(parser, _T("0[unit->unit]"), "Unknown conversion", UnknownUnitConversionException);
+	PARSER_FAIL_TEST(parser, _T("0[unit->km]"), "Unknown conversion", UnknownUnitConversionException);
+	PARSER_FAIL_TEST(parser, _T("0[mile->unit]"), "Unknown conversion", UnknownUnitConversionException);
 	PARSER_FAIL_TEST(parser, _T("0[in->c]"), "Unknown conversion", UnknownUnitConversionException);
 	PARSER_FAIL_TEST(parser, _T("i[in->c]"), "Invalid conversion argument", InvalidUnitConversionArgumentException);
 	PARSER_TEST(parser, _T("1[ft->in]"), "12");
 	PARSER_TEST(parser, _T("  1  [  ft  ->  in  ]  "), "12");
 	PARSER_TEST(parser, _T("0 [c->f]"), "32");
 	PARSER_TEST(parser, _T("0 [in->ft] [c->f] [ft->in]"), "384");
+	PARSER_TEST(parser, _T("0 [km/h->mi/h]"), "0");
+	PARSER_TEST(parser, _T("0 [knot->km/h]"), "0");
+	PARSER_TEST(parser, _T("0 [kNoT->kM/H]"), "0");
 }

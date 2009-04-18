@@ -93,6 +93,7 @@ private:
 		ASSIGN,
 
 		// Unit conversion
+		UNIT,
 		OPENING_SQUARE_BRACKET,
 		CLOSING_SQUARE_BRACKET,
 		ARROW,
@@ -118,11 +119,13 @@ private:
 
 	void lexicalAnalysis();
 	bool analyzeAssignment();
+	bool analyzeUnitConversions();
 	bool analyzeOperators();
 	bool analyzeNumbers();
 	bool analyzeIdentifiers();
 	bool skipSpaces();
 	inline bool isIdentifierChar(tchar c, bool firstChar);
+	inline bool isUnitChar(tchar c);
 
 
 	///////////////////////////////////////////////////////////////////////////
@@ -189,6 +192,14 @@ inline void Parser::setContext(const ParserContext & context)
 inline bool Parser::isIdentifierChar(tchar c, bool firstChar)
 {
 	return (c == _T('_') || istalpha(c) || (!firstChar && istdigit(c)));
+}
+
+/*!
+	Determines if \a c is a character which can be part of an unit in unit conversion.
+*/
+inline bool Parser::isUnitChar(tchar c)
+{
+	return (istalpha(c) || c == _T('/'));
 }
 
 } // namespace MaxCalcEngine

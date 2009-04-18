@@ -2,28 +2,47 @@
 #ifndef UNITCONVERSION_H
 #define UNITCONVERSION_H
 
+// STL
+#include <map>
+
 // Local
 #include "unicode.h"
 #include "bigdecimal.h"
 
 namespace MaxCalcEngine {
 
-struct SimpleConversion
-{
-	tstring unit1;
-	tstring unit2;
-	BigDecimal multiplier;
-};
-
-struct ArbitraryConversion
-{
-	tstring unit1;
-	tstring unit2;
-	BigDecimal (*convert)(BigDecimal arg);
-};
-
 class UnitConversion
 {
+	enum Unit {
+		END = 0,
+		// Length
+		MIL, IN, FT, YD, MI, MICRON, MM, CM, M, KM,
+		// Weight
+		LB, OZ, G, KG,
+		// Time
+		MICROS, MS, S, MIN, H, D,
+		// Speed
+		MIpH, MpS, FTpH, KMpH, KNOT,
+		// Temperature
+		C, F, K };
+
+	static std::map<tstring, Unit> units_;
+	static void initUnits();
+
+	struct SimpleConversion
+	{
+		Unit unit1;
+		Unit unit2;
+		BigDecimal multiplier;
+	};
+
+	struct ArbitraryConversion
+	{
+		Unit unit1;
+		Unit unit2;
+		BigDecimal (*convert)(BigDecimal arg);
+	};
+
 	static SimpleConversion simpleConversions_[];
 	static ArbitraryConversion arbitraryConversions_[];
 
