@@ -31,20 +31,20 @@ class UnitConversion
 
 	struct SimpleConversion
 	{
-		Unit unit1;
-		Unit unit2;
-		BigDecimal multiplier;
+		const Unit unit1;
+		const Unit unit2;
+		const BigDecimal multiplier;
 	};
 
 	struct ArbitraryConversion
 	{
-		Unit unit1;
-		Unit unit2;
+		const Unit unit1;
+		const Unit unit2;
 		BigDecimal (*convert)(BigDecimal arg);
 	};
 
-	static SimpleConversion simpleConversions_[];
-	static ArbitraryConversion arbitraryConversions_[];
+	static const SimpleConversion simpleConversions_[];
+	static const ArbitraryConversion arbitraryConversions_[];
 
 public:
 	static BigDecimal convert(const BigDecimal arg, const tstring & unit1, const tstring & unit2);
