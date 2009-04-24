@@ -28,6 +28,8 @@ private slots:
 	void fails();
 	void realWorld();
 	void unitConversions();
+	void stress();
+	void random();
 };
 
 #endif // PARSERTEST_H

@@ -5,6 +5,8 @@
 // Engine
 #include "parser.h"
 #include "exceptions.h"
+// STL
+#include <ctime>
 
 void ParserTest::basic()
 {
@@ -385,4 +387,36 @@ void ParserTest::unitConversions()
 	PARSER_TEST(parser, _T("0 [km/h->mi/h]"), "0");
 	PARSER_TEST(parser, _T("0 [knot->km/h]"), "0");
 	PARSER_TEST(parser, _T("0 [kNoT->kM/H]"), "0");
+}
+
+void ParserTest::stress()
+{
+	Parser parser;
+
+	PARSER_TEST(parser, _T("0"), "0");
+	for (int i = 0; i < 100; ++i)
+	{
+		PARSER_TEST(parser, _T("res*2"), i*2);
+		PARSER_TEST(parser, _T("res/2"), i);
+		PARSER_TEST(parser, _T("res-1"), i-1);
+		PARSER_TEST(parser, _T("res+2"), i+1);
+	}
+}
+
+void ParserTest::random()
+{
+	Parser parser;
+	tchar expr[56];
+
+	srand((unsigned)time(0));
+	for (int i = 0; i < 50; ++i)
+	{
+		int length = 5 + rand() % 50;
+		for (int i = 0; i < length; ++i)
+		{
+			expr[i] = (tchar)rand();
+		}
+		expr[length] = 0;
+		PARSER_FAIL_TEST(parser, expr, "Random input passed", MaxCalcEngineException);
+	}
 }

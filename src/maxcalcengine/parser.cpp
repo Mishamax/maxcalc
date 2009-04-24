@@ -373,11 +373,11 @@ bool Parser::analyzeNumbers()
 bool Parser::skipSpaces()
 {
 	// Check if it is a space
-	if (expr_.end() == curChar_ || !isspace(*curChar_))
+	if (expr_.end() == curChar_ || !istspace(*curChar_))
 		return false;
 
 	// Skip spaces
-	while (expr_.end() != curChar_ && isspace(*curChar_))
+	while (expr_.end() != curChar_ && istspace(*curChar_))
 		++curChar_;
 
 	return true;

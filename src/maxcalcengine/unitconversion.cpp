@@ -128,42 +128,41 @@ const UnitConversion::ArbitraryConversion UnitConversion::arbitraryConversions_[
 };
 
 std::map<tstring, UnitConversion::Unit> UnitConversion::units_;
+bool UnitConversion::unitsInitialized_ = UnitConversion::initUnits();
 
+/*!
+	Converts \a arg from \a unit1 to \a unit2.
+*/
 BigDecimal UnitConversion::convert(const BigDecimal arg, const tstring & unit1, const tstring & unit2)
 {
-	static bool firstRun = true;
-	if (firstRun)
-	{
-		initUnits();
-		firstRun = false;
-	}
+	initUnits();
 
-	Unit u1 = units_[unit1];
-	Unit u2 = units_[unit2];
+	UnitsMap::const_iterator u1 = units_.find(unit1);
+	UnitsMap::const_iterator u2 = units_.find(unit2);
 
-	if (u1 == END || u2 == END)
+	if (u1 == units_.end() || u2 == units_.end())
 		throw UnknownUnitConversionException();
 
 	// Look up simple conversions table
 	for (const SimpleConversion * cur = simpleConversions_; cur->unit1 != END; cur++)
 	{
-		if (u1 == cur->unit1 && u2 == cur->unit2)
+		if (u1->second == cur->unit1 && u2->second == cur->unit2)
 			return arg * cur->multiplier;
-		if (u1 == cur->unit2 && u2 == cur->unit1)
+		if (u1->second == cur->unit2 && u2->second == cur->unit1)
 			return arg / cur->multiplier;
 	}
 
 	// Look up arbitrary conversions table
 	for (const ArbitraryConversion * cur = arbitraryConversions_; cur->unit1 != END; cur++)
 	{
-		if (u1 == cur->unit1 && u2 == cur->unit2)
+		if (u1->second == cur->unit1 && u2->second == cur->unit2)
 			return cur->convert(arg);
 	}
 
 	throw UnknownUnitConversionException();
 }
 
-void UnitConversion::initUnits()
+bool UnitConversion::initUnits()
 {
 	// Length
 	units_[_T("mil")] = MIL;
@@ -202,6 +201,8 @@ void UnitConversion::initUnits()
 	units_[_T("k")] = K;
 	units_[_T("c")] = C;
 	units_[_T("f")] = F;
+
+	return true;
 }
 
 } // namespace MaxCalcEngine

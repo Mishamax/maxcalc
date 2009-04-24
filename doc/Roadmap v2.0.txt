@@ -15,40 +15,16 @@ Milestone 2 (v1.9.1) - February 2009 (RELEASED)
 
  * Unlimited variables support.
 
-Milestone 3 (v1.9.2) - February 2009 (IN PROGRESS)
+Milestone 3 (v1.9.2) - April 2009 (IN PROGRESS)
 
  * Support for standard unit conversions.
  * C-like assignment operators support.
 
-Milestone 4 (v1.9.3) - March 2009
+Milestone 4 (v1.9.3) - May 2009
 
  * Settings support: radians / degrees, dot / comma, output precision.
  * Meaningful error messages (instead of 'Error!').
 
-Milestone 5 (v1.9.4) - March 2009
+Milestone 5 (v1.9.4) - May 2009
 
- * First version available for Windows Mobile.
- * Engine supports use of 'double' type instead of high precision decimal numbers for mobile devices.
- * First version of GUI for Windows Mobile using Qt4.
-
-Milestone 6 (v1.9.5) - April 2009
-
- * Add localization support for both (desktop and mobile) GUI versions.
- * Russian localization for GUI versions.
-
-Milestone 7 (v1.9.6) - April 2009
-
- * Documentation.
- * CMake build system support (to be able to build console version without Qt4).
-
-Test 1 (v1.9.7) - May 2009
-
- * No new features, only bug fixes / optimizations to engine and UI improvements.
- * Extensive testing.
-
-Test 2 (v1.9.8) - May 2009
-
- * Only bug fixes.
- * Extensive testing.
-
-Release (v2.0) - June 2009
+ * First version available for Windows Mobile with Qt4 GUI.

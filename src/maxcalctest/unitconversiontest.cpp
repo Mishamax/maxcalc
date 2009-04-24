@@ -1,0 +1,47 @@
+
+// Local
+#include "unitconversiontest.h"
+#include "utility.h"
+// MaxCalcEngine
+#include "unitconversion.h"
+#include "exceptions.h"
+// STL
+#include <string>
+#include <cstdlib>
+#include <sstream>
+
+using namespace MaxCalcEngine;
+using namespace std;
+
+void UnitConversionTest::convert()
+{
+	FAIL_TEST(UnitConversion::convert(0, _T(""), _T("")), "Unknown conversion", UnknownUnitConversionException);
+	FAIL_TEST(UnitConversion::convert(0, _T("m"), _T("")), "Unknown conversion", UnknownUnitConversionException);
+	FAIL_TEST(UnitConversion::convert(0, _T(""), _T("cm")), "Unknown conversion", UnknownUnitConversionException);
+	FAIL_TEST(UnitConversion::convert(0, _T("m"), _T("m/s")), "Unknown conversion", UnknownUnitConversionException);
+	COMPARE_BIGDECIMAL(UnitConversion::convert(0, _T("oz"), _T("g")), 0);
+	COMPARE_BIGDECIMAL(UnitConversion::convert(0, _T("g"), _T("oz")), 0);
+	COMPARE_BIGDECIMAL(UnitConversion::convert(0, _T("c"), _T("f")), 32);
+	COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(0, _T("f"), _T("c")), -17.78, 4);
+}
+
+void UnitConversionTest::iterators()
+{
+	UnitConversion::const_iterator iter;
+	int i = 0;
+	
+	for (iter = UnitConversion::begin(); iter != UnitConversion::end(); ++iter, ++i)
+		VERIFY(isUnit(*iter));
+
+	VERIFY(i == 28);
+}
+
+bool UnitConversionTest::isUnit(const tstring str)
+{
+	for (tstring::const_iterator i = str.begin(); i != str.end(); ++i)
+	{
+		if (!istalpha((const int)*i) && *i != _T('/'))
+			return false;
+	}
+	return true;
+}

@@ -1,4 +1,9 @@
-﻿v1.9.1 Milestone-2 (19-Feb-2009).
+﻿v1.9.2 Milestone-3.
+
+    - Added: Unit conversions.
+    - Added: C-like assignment operators (+=, -=, *=, /=, ^=).
+
+v1.9.1 Milestone-2 (19-Feb-2009).
 
     - Added: Unlimited variables support.
     - Added: factorial function.

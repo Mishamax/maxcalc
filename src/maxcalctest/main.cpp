@@ -5,6 +5,7 @@
 #include "parsertest.h"
 #include "bigdecimalbench.h"
 #include "variablestest.h"
+#include "unitconversiontest.h"
 // Qt
 #include <QTest>
 
@@ -21,6 +22,9 @@ int main()
 
 	VariablesTest variablesTest;
 	QTest::qExec(&variablesTest);
+
+	UnitConversionTest unitConversionTest;
+	QTest::qExec(&unitConversionTest);
 
 //	BigDecimalBench bigDecimalBench;
 //	QTest::qExec(&bigDecimalBench);

@@ -8,6 +8,7 @@
 #include <string>
 #include <cstdlib>
 #include <sstream>
+#include <ctime>
 
 using namespace MaxCalcEngine;
 using namespace std;
@@ -30,13 +31,17 @@ void VariablesTest::stress()
 	Variables vars;
 	wchar_t stri[6];
 	wstring name;
+	int rand1, rand2;
 
+	srand((unsigned)time(0));
 	for (int i = 0; i < 10000; ++i)
 	{
 		swprintf(stri, 6, L"%d", i);
 		name = L"Variable#";
 		name += stri;
-		vars.add(Variable(name, Complex(1 / rand(), 1 / rand())));
+		while ((rand1 = rand()) == 0);
+		while ((rand2 = rand()) == 0);
+		vars.add(Variable(name, Complex(BigDecimal(1.0 / rand1), BigDecimal(1.0 / rand2))));
 	}
 	COMPARE(vars.count(), size_t(10000));
 
