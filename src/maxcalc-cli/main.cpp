@@ -244,6 +244,7 @@ bool parseCommand(const tstring & expr, ParserContext & context)
 	return true;
 }
 
+#ifdef WIN32
 bool parseCmdLineArgs(int argc, tchar ** argv)
 {
 	if (argc < 2)
@@ -262,15 +263,22 @@ bool parseCmdLineArgs(int argc, tchar ** argv)
 
 	return false;
 }
+#endif // WIN32
 
+#ifdef WIN32
 int tmain(int argc, tchar ** argv)
+#else
+int main()
+#endif
 {
 	// Without that locale may be set incorrecly on Linux
 	// (non-latic characters may not work)
 	setlocale(LC_ALL, "");
 
+#ifdef WIN32
 	if (parseCmdLineArgs(argc, argv))
 		return 0;
+#endif
 
 	const int exprLength = 1000;
 	tchar charExpr[exprLength];
