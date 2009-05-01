@@ -136,12 +136,16 @@ void MainWindow::initMainMenu()
 	// View menu
 
 	QMenu * view = mainMenu.addMenu(tr("&View"));
-	QAction * action = view->addAction(tr("&Variables"), &variablesListWrapper, SLOT(setVisible(bool)));
+	QAction * action = new QAction(tr("&Variables"), view);
 	action->setCheckable(true);
 	action->setChecked(true);
-	action = view->addAction(tr("&Functions"), &functionsListWrapper, SLOT(setVisible(bool)));
+	connect(action, SIGNAL(toggled(bool)), &variablesListWrapper, SLOT(setVisible(bool)));
+	view->addAction(action);
+	action = new QAction(tr("&Functions"), view);
 	action->setCheckable(true);
 	action->setChecked(true);
+	connect(action, SIGNAL(toggled(bool)), &functionsListWrapper, SLOT(setVisible(bool)));
+	view->addAction(action);
 
 	// Unit conversion menu
 
