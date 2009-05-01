@@ -2,8 +2,9 @@
 
 rem Variables
 call "%VS90COMNTOOLS%\vsvars32.bat"
-set QT_DIR=D:\Programming\qt-4.4.3-msvc2008-static\bin
-set MAXCALC_VERSION=1.9.1-m2
+set QT_DIR=D:\Programming\qt-4.5.1-msvc2008-static\bin
+set MAXCALC_VERSION=1.9.2-m3
+set PATH=D:\Misc\7-Zip;%PATH%
 
 rem Build static binaries
 
@@ -46,7 +47,7 @@ rem GUI version
 
 mkdir release\tmp
 
-copy src\release\maxcalc-win.exe release\tmp
+copy src\release\maxcalcwin.exe release\tmp
 copy doc\Changelog.txt release\tmp
 copy LICENSE.GPL2 release\tmp\LICENSE-GPL2.txt
 copy LICENSE.ICU release\tmp\LICENSE-ICU.txt

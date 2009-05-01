@@ -1,7 +1,8 @@
-﻿v1.9.2 Milestone-3.
+﻿v1.9.2 Milestone-3 (2-May-2009).
 
     - Added: Unit conversions.
     - Added: C-like assignment operators (+=, -=, *=, /=, ^=).
+    - Changed: Functions and variables lists in GUI improved.
 
 v1.9.1 Milestone-2 (19-Feb-2009).
 
