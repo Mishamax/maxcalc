@@ -113,7 +113,7 @@ const UnitConversion::SimpleConversion UnitConversion::simpleConversions_[] =
 	KNOT,	MIpH,	"1.1507794480235425117314881094408653463771574007794480235425117314881094408653463771574007794480235425117314881094408653463771574007794480235425117314881094",
 	KNOT,	FTpH,	"2025.3718285214348206474190726159230096237970253718285214348206474190726159230096237970253718285214348206474190726159230096237970253718285214348206474190726",
 	KNOT,	KMpH,	"1.852",
-	END,	END,	0
+	NO_UNIT,	NO_UNIT,	0
 };
 
 const UnitConversion::ArbitraryConversion UnitConversion::arbitraryConversions_[] =
@@ -124,85 +124,88 @@ const UnitConversion::ArbitraryConversion UnitConversion::arbitraryConversions_[
 	F,		K,		UnitConversion::ftok,
 	K,		C,		UnitConversion::ktoc,
 	K,		F,		UnitConversion::ktof,
-	END,	END,	0
+	NO_UNIT,	NO_UNIT,	0
 };
 
-std::map<tstring, UnitConversion::Unit> UnitConversion::units_;
-bool UnitConversion::unitsInitialized_ = UnitConversion::initUnits();
+const UnitConversion::UnitDef UnitConversion::units_[] =
+{
+	// Length
+	_T("mil"),		MIL,		LENGTH, 
+	_T("in"),		IN,			LENGTH, 
+	_T("ft"),		FT,			LENGTH, 
+	_T("yd"),		YD,			LENGTH, 
+	_T("mi"),		MI,			LENGTH, 
+	_T("micron"),	MICRON,		LENGTH, 
+	_T("mm"),		MM,			LENGTH, 
+	_T("cm"),		CM,			LENGTH, 
+	_T("m"),		M,			LENGTH, 
+	_T("km"),		KM,			LENGTH, 
+
+	// Weight
+	_T("lb"),		LB,			WEIGHT, 
+	_T("oz"),		OZ,			WEIGHT, 
+	_T("g"),		G,			WEIGHT, 
+	_T("kg"),		KG,			WEIGHT, 
+
+	// Time
+	_T("micros"),	MICROS,		TIME, 
+	_T("ms"),		MS,			TIME, 
+	_T("s"),		S,			TIME, 
+	_T("min"),		MIN,		TIME, 
+	_T("h"),		H,			TIME, 
+	_T("d"),		D,			TIME, 
+
+	// Speed
+	_T("mi/h"),		MIpH,		SPEED, 
+	_T("m/s"),		MpS,		SPEED, 
+	_T("ft/h"),		FTpH,		SPEED, 
+	_T("km/h"),		KMpH,		SPEED, 
+	_T("knot"),		KNOT,		SPEED, 
+
+	// Temperature
+	_T("k"),		K,			TEMPERATURE, 
+	_T("c"),		C,			TEMPERATURE, 
+	_T("f"),		F,			TEMPERATURE,
+
+	_T(""),			NO_UNIT,		NO_TYPE
+};
 
 /*!
 	Converts \a arg from \a unit1 to \a unit2.
 */
 BigDecimal UnitConversion::convert(const BigDecimal arg, const tstring & unit1, const tstring & unit2)
 {
-	initUnits();
+	Unit u1 = NO_UNIT;
+	Unit u2 = NO_UNIT;
 
-	UnitsMap::const_iterator u1 = units_.find(unit1);
-	UnitsMap::const_iterator u2 = units_.find(unit2);
+	for (const UnitDef * cur = units_; cur->unit != NO_UNIT && (u1 == NO_UNIT || u2 == NO_UNIT); ++cur)
+	{
+		if (unit1 == cur->name)
+			u1 = cur->unit;
+		if (unit2 == cur->name)
+			u2 = cur->unit;
+	}
 
-	if (u1 == units_.end() || u2 == units_.end())
+	if (u1 == NO_UNIT || u2 == NO_UNIT)
 		throw UnknownUnitConversionException();
 
 	// Look up simple conversions table
-	for (const SimpleConversion * cur = simpleConversions_; cur->unit1 != END; cur++)
+	for (const SimpleConversion * cur = simpleConversions_; cur->unit1 != NO_UNIT; ++cur)
 	{
-		if (u1->second == cur->unit1 && u2->second == cur->unit2)
+		if (u1 == cur->unit1 && u2 == cur->unit2)
 			return arg * cur->multiplier;
-		if (u1->second == cur->unit2 && u2->second == cur->unit1)
+		if (u1 == cur->unit2 && u2 == cur->unit1)
 			return arg / cur->multiplier;
 	}
 
 	// Look up arbitrary conversions table
-	for (const ArbitraryConversion * cur = arbitraryConversions_; cur->unit1 != END; cur++)
+	for (const ArbitraryConversion * cur = arbitraryConversions_; cur->unit1 != NO_UNIT; cur++)
 	{
-		if (u1->second == cur->unit1 && u2->second == cur->unit2)
+		if (u1 == cur->unit1 && u2 == cur->unit2)
 			return cur->convert(arg);
 	}
 
 	throw UnknownUnitConversionException();
-}
-
-bool UnitConversion::initUnits()
-{
-	// Length
-	units_[_T("mil")] = MIL;
-	units_[_T("in")] = IN;
-	units_[_T("ft")] = FT;
-	units_[_T("yd")] = YD;
-	units_[_T("mi")] = MI;
-	units_[_T("micron")] = MICRON;
-	units_[_T("mm")] = MM;
-	units_[_T("cm")] = CM;
-	units_[_T("m")] = M;
-	units_[_T("km")] = KM;
-
-	// Weight
-	units_[_T("lb")] = LB;
-	units_[_T("oz")] = OZ;
-	units_[_T("g")] = G;
-	units_[_T("kg")] = KG;
-
-	// Time
-	units_[_T("micros")] = MICROS;
-	units_[_T("ms")] = MS;
-	units_[_T("s")] = S;
-	units_[_T("min")] = MIN;
-	units_[_T("h")] = H;
-	units_[_T("d")] = D;
-
-	// Speed
-	units_[_T("mi/h")] = MIpH;
-	units_[_T("m/s")] = MpS;
-	units_[_T("ft/h")] = FTpH;
-	units_[_T("km/h")] = KMpH;
-	units_[_T("knot")] = KNOT;
-
-	// Temperature
-	units_[_T("k")] = K;
-	units_[_T("c")] = C;
-	units_[_T("f")] = F;
-
-	return true;
 }
 
 } // namespace MaxCalcEngine

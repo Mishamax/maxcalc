@@ -27,11 +27,12 @@ void UnitConversionTest::convert()
 
 void UnitConversionTest::iterators()
 {
-	UnitConversion::const_iterator iter;
 	int i = 0;
-	
-	for (iter = UnitConversion::begin(); iter != UnitConversion::end(); ++iter, ++i)
-		VERIFY(isUnit(*iter));
+	for (const UnitConversion::UnitDef * cur = UnitConversion::units(); cur->unit != UnitConversion::NO_UNIT; ++cur, ++i)
+	{
+		VERIFY(isUnit(cur->name));
+		VERIFY(cur->type != UnitConversion::NO_TYPE);
+	}
 
 	VERIFY(i == 28);
 }

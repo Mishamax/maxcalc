@@ -22,10 +22,10 @@
 #include "parsercontext.h"
 #include "precision.h"
 #include "unicode.h"
-// STL
-#include <cstdlib>
 #include "version.h"
+#include "unitconversion.h"
 // STL
+#include <iostream>
 #include <clocale>
 #include <cstdlib>
 
@@ -66,6 +66,51 @@ void printFunctions()
 	tcout << indent << _T("log10") << endl;
 	tcout << indent << _T("exp") << endl;
 	tcout << endl;
+}
+
+/*!
+	Prints list of unit conversions.
+*/
+void printUnitConversions()
+{
+	tcout << _T("Unit conversion syntax: <expression> [unit1->unit2]") << endl;
+	tcout << _T("Example: 140[km->mi]") << endl << endl;
+	tcout << _T("Supported units are:");
+
+	UnitConversion::Type type = UnitConversion::NO_TYPE;
+	for (const UnitConversion::UnitDef * cur = UnitConversion::units(); cur->unit != UnitConversion::NO_UNIT; ++cur)
+	{
+		if (type != cur->type)
+		{
+			type = cur->type;
+			switch (type)
+			{
+			case UnitConversion::LENGTH:
+				tcout << endl << indent << _T("Length: ");
+				break;
+			case UnitConversion::WEIGHT:
+				tcout << endl << indent << _T("Weight: ");
+				break;
+			case UnitConversion::TIME:
+				tcout << endl << indent << _T("Time: ");
+				break;
+			case UnitConversion::SPEED:
+				tcout << endl << indent << _T("Speed: ");
+				break;
+			case UnitConversion::TEMPERATURE:
+				tcout << endl << indent << _T("Temperature: ");
+				break;
+			default:
+				tcout << endl << indent << _T("Unknown units: ");
+				break;
+			}
+		}
+
+		tcout << cur->name;
+		if ((cur+1)->type == type)
+			tcout << _T(", ");
+	}
+	tcout << endl << endl;
 }
 
 /*!
@@ -122,12 +167,13 @@ void printHelp()
 {
 	tcout <<  _T("Commands:") << endl;
 	tcout << indent << _T("#funcs - Display list of built-in functions.") << endl;
+	tcout << indent << _T("#convs - Display list of unit conversions.") << endl;
 	tcout << indent << _T("#consts - Display list of built-in constants.") << endl;
 	tcout << indent << _T("#vars - Display list of variables.") << endl;
 	tcout << indent << _T("#del <variable> - Delete <variable>.") << endl;
 	tcout << indent << _T("#delall - Delete all variables.") << endl;
-	tcout << indent << _T("#help - Get this help.") << endl;
 	tcout << indent << _T("#ver - Display version information.") << endl;
+	tcout << indent << _T("help - Get this help.") << endl;
 	tcout << indent << _T("exit - Close the program.") << endl;
 	tcout << endl;
 }
@@ -178,6 +224,8 @@ bool parseCommand(const tstring & expr, ParserContext & context)
 
 	if (cmd == _T("#funcs"))
 		printFunctions();
+	else if (cmd == _T("#convs"))
+		printUnitConversions();
 	else if (cmd == _T("#consts"))
 		printConstants(context);
 	else if (cmd == _T("#vars"))

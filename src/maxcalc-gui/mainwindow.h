@@ -76,6 +76,7 @@ private slots:
 	void onFunctionClicked(QListWidgetItem * item);
 	void onHelpAbout();
 	void onDeleteAllVariables();
+	void onUnitConversion(const QString & conversion);
 };
 
 #endif // MAINWINDOW_H

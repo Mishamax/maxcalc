@@ -45,27 +45,17 @@ void ParserTest::complexNumbers()
 
 	PARSER_TEST(parser, _T("i"), Complex::i);
 	PARSER_TEST(parser, _T("1i"), Complex::i);
-//	PARSER_TEST(parser, _T("i1"), Complex::i);
 	PARSER_TEST(parser, _T("0i"), 0);
 	PARSER_TEST(parser, _T("2.56i"), Complex("0", "2.56"));
 	PARSER_TEST(parser, _T("2e-3i"), Complex("0", "0.002"));
 	PARSER_TEST(parser, _T("3e+4i"), Complex(0, 30000));
 	PARSER_TEST(parser, _T("2.546e-3i"), Complex("0", "0.002546"));
 	PARSER_TEST(parser, _T("2.11e+1i"), Complex("0", "21.1"));
-/*	PARSER_TEST(parser, _T("i0"), 0);
-	PARSER_TEST(parser, _T("i2.56"), Complex("0", "2.56"));
-	PARSER_TEST(parser, _T("i2e-3"), Complex("0", "0.002"));
-	PARSER_TEST(parser, _T("i3e+4"), Complex(0, 30000));
-	PARSER_TEST(parser, _T("i2.546e-3"), Complex("0", "0.002546"));
-	PARSER_TEST(parser, _T("i2.11e+1"), Complex("0", "21.1"));
-*/	PARSER_TEST(parser, _T(".0i"), 0);
+	PARSER_TEST(parser, _T(".0i"), 0);
 	PARSER_TEST(parser, _T("0.i"), 0);
 	PARSER_TEST(parser, _T(".1i"), Complex("0", "0.1"));
-//	PARSER_TEST(parser, _T("i.1"), Complex("0", "0.1"));
 	PARSER_TEST(parser, _T("1.i"), Complex(0, 1));
-//	PARSER_TEST(parser, _T("i1."), Complex(0, 1));
 	PARSER_TEST(parser, _T(".27863e-2i"), Complex("0", "0.0027863"));
-//	PARSER_FAIL_TEST(parser, _T("ii"), "Incorrect expression", IncorrectNumberException);
 }
 
 void ParserTest::addSub()
@@ -246,6 +236,44 @@ void ParserTest::userVars()
 	PARSER_TEST(parser, _T("res_"), 10);
 	PARSER_TEST(parser, _T("erespii=101"), 101);
 	PARSER_TEST(parser, _T("erespii"), 101);
+
+	// Multiple assignment
+	PARSER_TEST(parser, _T("x = y = 1"), 1);
+	PARSER_TEST(parser, _T("x"), 1);
+	PARSER_TEST(parser, _T("y"), 1);
+	PARSER_FAIL_TEST(parser, _T("x = y+1 = 1"), "Incorrent expression", IncorrectExpressionException);
+	PARSER_FAIL_TEST(parser, _T("x/2 = y = 1"), "Incorrent expression", IncorrectExpressionException);
+
+	tstring var = _T("");
+	tchar num[3];
+	for (int i = 0; i < 100; ++i)
+	{
+		swprintf(num, 3, _T("%d"), i);
+		var += _T("x");
+		var += num;
+		var += _T("=");
+	}
+	var += _T("11.1+1.1i");
+	PARSER_TEST(parser, var, Complex("11.1", "1.1"));
+	for (int i = 0; i < 100; ++i)
+	{
+		swprintf(num, 3, _T("%d"), i);
+		var = _T("x");
+		var += num;
+		PARSER_TEST(parser, var, Complex("11.1", "1.1"));
+	}
+
+	// C-like assignment operators
+	PARSER_TEST(parser, _T("x = 2"), 2);
+	PARSER_TEST(parser, _T("x *= 2"), 4);
+	PARSER_TEST(parser, _T("x /= 2"), 2);
+	PARSER_TEST(parser, _T("x += 2"), 4);
+	PARSER_TEST(parser, _T("x -= 2"), 2);
+	PARSER_TEST(parser, _T("x ^= 2"), 4);
+	PARSER_TEST(parser, _T("x *= y = z = 2"), 8);
+	PARSER_TEST(parser, _T("x *= y += z ^= 2"), 48);
+	PARSER_FAIL_TEST(parser, _T("new_var *= 2"), "Unknown variable", UnknownVariableException);
+	PARSER_FAIL_TEST(parser, _T("x = new_var *= 2"), "Unknown variable", UnknownVariableException);
 }
 
 void ParserTest::functions()
@@ -387,6 +415,12 @@ void ParserTest::unitConversions()
 	PARSER_TEST(parser, _T("0 [km/h->mi/h]"), "0");
 	PARSER_TEST(parser, _T("0 [knot->km/h]"), "0");
 	PARSER_TEST(parser, _T("0 [kNoT->kM/H]"), "0");
+	PARSER_TEST(parser, _T("1[c->f]"), "33.8");
+	PARSER_TEST(parser, _T("-1[c->f]"), "30.2");
+	PARSER_TEST(parser, _T("(-1)[c->f]"), "30.2");
+	PARSER_TEST(parser, _T("-(1[c->f])"), "-33.8");
+	PARSER_TEST(parser, _T("2^1[ft->in]"), "4096");
+	PARSER_TEST(parser, _T("(2^1)[ft->in]"), "24");
 }
 
 void ParserTest::stress()

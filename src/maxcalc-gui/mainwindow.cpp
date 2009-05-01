@@ -20,8 +20,10 @@
 // Local
 #include "mainwindow.h"
 #include "aboutbox.h"
+#include "myaction.h"
 // MaxCalcEngine
 #include "bigdecimal.h"
+#include "unitconversion.h"
 
 /// Indentation used for output
 static const QString indent = "    ";
@@ -32,6 +34,8 @@ static const QString indent = "    ";
 
 	\ingroup MaxCalcGui
 */
+
+using namespace MaxCalcEngine;
 
 /*!
 	Constructs a new main window.
@@ -118,12 +122,18 @@ void MainWindow::initMainMenu()
 {
 	setMenuBar(&mainMenu);
 
+	// File menu
+
 	QMenu * file = mainMenu.addMenu(tr("&File"));
 	file->addAction(tr("&Exit"), this, SLOT(close()));
+
+	// Commands menu
 
 	QMenu * commands = mainMenu.addMenu(tr("&Commands"));
 	commands->addAction(tr("&Clear history"), &historyBox, SLOT(clear()));
 	commands->addAction(tr("&Delete all variables"), this, SLOT(onDeleteAllVariables()));
+
+	// View menu
 
 	QMenu * view = mainMenu.addMenu(tr("&View"));
 	QAction * action = view->addAction(tr("&Variables"), &variablesListWrapper, SLOT(setVisible(bool)));
@@ -132,6 +142,58 @@ void MainWindow::initMainMenu()
 	action = view->addAction(tr("&Functions"), &functionsListWrapper, SLOT(setVisible(bool)));
 	action->setCheckable(true);
 	action->setChecked(true);
+
+	// Unit conversion menu
+
+	QMenu * unitConversion = mainMenu.addMenu(tr("&Unit conversion"));
+	QMenu * currentUnits = 0;
+	QMenu * firstLevelMenu = 0;
+	const UnitConversion::UnitDef * firstLevelCur;
+
+	UnitConversion::Type type = UnitConversion::NO_TYPE;
+	for (const UnitConversion::UnitDef * cur = UnitConversion::units(); cur->unit != UnitConversion::NO_UNIT; ++cur)
+	{
+		if (type != cur->type)
+		{
+			type = cur->type;
+			firstLevelCur = cur;
+			switch (type)
+			{
+			case UnitConversion::LENGTH:
+				currentUnits = unitConversion->addMenu(tr("&Length"));
+				break;
+			case UnitConversion::WEIGHT:
+				currentUnits = unitConversion->addMenu(tr("&Weight"));
+				break;
+			case UnitConversion::TIME:
+				currentUnits = unitConversion->addMenu(tr("&Time"));
+				break;
+			case UnitConversion::SPEED:
+				currentUnits = unitConversion->addMenu(tr("&Speed"));
+				break;
+			case UnitConversion::TEMPERATURE:
+				currentUnits = unitConversion->addMenu(tr("T&emperature"));
+				break;
+			default:
+				currentUnits = unitConversion->addMenu(tr("&Unknown units"));
+				break;
+			}
+		}
+
+		firstLevelMenu = currentUnits->addMenu(QString::fromStdWString(cur->name));
+		for (const UnitConversion::UnitDef * cur2 = firstLevelCur; cur2->type == type; ++cur2)
+		{
+			if (cur2 == cur)
+				continue;
+			QString conversion = QString("[") + firstLevelMenu->title() + QString("->") +
+				QString::fromStdWString(cur2->name) + QString("]");
+			MyAction * action = new MyAction(firstLevelMenu,QString::fromStdWString(cur2->name), conversion,
+				this, SLOT(onUnitConversion(const QString &)));
+			firstLevelMenu->addAction(action);
+		}
+	}
+
+	// Help menu
 
 	QMenu * help = mainMenu.addMenu(tr("&Help"));
 	help->addAction(tr("&About"), this, SLOT(onHelpAbout()));
@@ -303,4 +365,9 @@ void MainWindow::onDeleteAllVariables()
 {
 	parser.context().variables().removeAll();
 	updateVariablesList();
+}
+
+void MainWindow::onUnitConversion(const QString & conversion)
+{
+	inputBox.insert(conversion);
 }

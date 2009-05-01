@@ -2,9 +2,6 @@
 #ifndef UNITCONVERSION_H
 #define UNITCONVERSION_H
 
-// STL
-#include <map>
-
 // Local
 #include "unicode.h"
 #include "bigdecimal.h"
@@ -13,8 +10,10 @@ namespace MaxCalcEngine {
 
 class UnitConversion
 {
-	enum Unit {
-		END = 0,
+public:
+	enum Unit
+	{
+		NO_UNIT,
 		// Length
 		MIL, IN, FT, YD, MI, MICRON, MM, CM, M, KM,
 		// Weight
@@ -24,12 +23,23 @@ class UnitConversion
 		// Speed
 		MIpH, MpS, FTpH, KMpH, KNOT,
 		// Temperature
-		C, F, K };
+		C, F, K
+	};
 
-	typedef std::map<tstring, Unit> UnitsMap;
-	static UnitsMap units_;
-	static bool unitsInitialized_;
-	static bool initUnits();
+	enum Type
+	{
+		NO_TYPE, LENGTH, WEIGHT, TIME, SPEED, TEMPERATURE
+	};
+
+	struct UnitDef
+	{
+		tstring name;
+		Unit unit;
+		Type type;
+	};
+
+private:
+	static const UnitDef units_[];
 
 	struct SimpleConversion
 	{
@@ -75,53 +85,12 @@ class UnitConversion
 
 public:
 	static BigDecimal convert(const BigDecimal arg, const tstring & unit1, const tstring & unit2);
-
-	class const_iterator : public UnitsMap::const_iterator
-	{
-	public:
-		/// Default constructor.
-		const_iterator() : UnitsMap::const_iterator()
-		{
-		}
-
-		/// Constructs const_iterator from std::map<tstring, Unit> iterator.
-		const_iterator(const UnitsMap::const_iterator & iter) :
-			UnitsMap::const_iterator(iter)
-		{
-		}
-
-		/// Gets Variable associated with current value.
-		const tstring & operator* ()
-		{
-			return (UnitsMap::const_iterator::operator*()).first;
-		}
-
-		/// Gets Variable associated with current value.
-		const tstring * operator-> ()
-		{
-			return &((UnitsMap::const_iterator::operator*()).first);
-		}
-	};
-
-	inline static const_iterator begin();
-	inline static const_iterator end();
+	inline static const UnitDef * units();
 };
 
-/*!
-	Returns const_iterator pointing to the beginning of variables' map.
-*/
-inline UnitConversion::const_iterator UnitConversion::begin()
+inline const UnitConversion::UnitDef * UnitConversion::units()
 {
-    return const_iterator(units_.begin());
-}
-
-/*!
-	Returns const_iterator pointing to the next element after the end of
-	variables' map.
-*/
-inline UnitConversion::const_iterator UnitConversion::end()
-{
-    return const_iterator(units_.end());
+	return units_;
 }
 
 } // namespace MaxCalcEngine
