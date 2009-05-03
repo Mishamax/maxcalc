@@ -15,12 +15,12 @@ Milestone 2 (v1.9.1) - February 2009 (RELEASED)
 
  * Unlimited variables support.
 
-Milestone 3 (v1.9.2) - April 2009 (IN PROGRESS)
+Milestone 3 (v1.9.2) - April 2009 (RELEASED)
 
  * Support for standard unit conversions.
  * C-like assignment operators support.
 
-Milestone 4 (v1.9.3) - May 2009
+Milestone 4 (v1.9.3) - May 2009 (IN PROGRESS)
 
  * Settings support: radians / degrees, dot / comma, output precision.
  * Meaningful error messages (instead of 'Error!').
