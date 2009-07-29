@@ -178,6 +178,9 @@ void printHelp()
 	tcout << endl;
 }
 
+/*!
+	Delete variable \a name from \a context.
+*/
 void deleteVariable(ParserContext & context, tstring name)
 {
 	trim(name);
@@ -244,7 +247,11 @@ bool parseCommand(const tstring & expr, ParserContext & context)
 	return true;
 }
 
+// TODO: make it work on Linux
 #ifdef WIN32
+/*!
+	Parse command line arguments.
+*/
 bool parseCmdLineArgs(int argc, tchar ** argv)
 {
 	if (argc < 2)
@@ -256,7 +263,14 @@ bool parseCmdLineArgs(int argc, tchar ** argv)
 
 		Parser parser;
 		parser.setExpression(expr);
-		tcout << parser.parse().result().toString().c_str();
+		try
+		{
+			tcout << parser.parse().result().toString().c_str();
+		}
+		catch (...)
+		{
+			tcout << _T("Error!");
+		}
 
 		return true;
 	}

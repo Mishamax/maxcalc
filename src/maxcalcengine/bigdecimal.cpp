@@ -271,7 +271,7 @@ std::wstring BigDecimal::toWideString(const BigDecimalFormat & format) const
 int BigDecimal::toInt() const
 {
 	if (!fractional().isZero())
-		throw ConversionImpossibleException();
+		throw ArithmeticException(ArithmeticException::CONVERSION_IMPOSSIBLE);
 
 	NEW_IO_CONTEXT(context);
 	decNumber num;
@@ -283,7 +283,7 @@ int BigDecimal::toInt() const
 
 	int result = decNumberToInt32(&num, &context);
 	if (context.status & DEC_Invalid_operation)
-		throw ConversionImpossibleException();
+		throw ArithmeticException(ArithmeticException::CONVERSION_IMPOSSIBLE);
 	checkContextStatus(context);
 	return result;
 }
@@ -297,7 +297,7 @@ int BigDecimal::toInt() const
 unsigned BigDecimal::toUInt() const
 {
 	if (!fractional().isZero())
-		throw ConversionImpossibleException();
+		throw ArithmeticException(ArithmeticException::CONVERSION_IMPOSSIBLE);
 
 	NEW_IO_CONTEXT(context);
 	decNumber num;
@@ -309,7 +309,7 @@ unsigned BigDecimal::toUInt() const
 
 	unsigned result = decNumberToUInt32(&num, &context);
 	if (context.status & DEC_Invalid_operation)
-		throw ConversionImpossibleException();
+		throw ArithmeticException(ArithmeticException::CONVERSION_IMPOSSIBLE);
 	checkContextStatus(context);
 	return result;
 }
@@ -510,7 +510,7 @@ BigDecimal BigDecimal::operator*(const BigDecimal & num) const
 BigDecimal BigDecimal::operator/(const BigDecimal & num) const
 {
 	if (num.isZero())
-		throw DivisionByZeroException();
+		throw ArithmeticException(ArithmeticException::DIVISION_BY_ZERO);
 
 	NEW_CONTEXT(context);
 	decNumber result;
@@ -527,7 +527,7 @@ BigDecimal BigDecimal::operator/(const BigDecimal & num) const
 BigDecimal BigDecimal::operator%(const BigDecimal & num) const
 {
 	if (num.isZero())
-		throw DivisionByZeroException();
+		throw ArithmeticException(ArithmeticException::DIVISION_BY_ZERO);
 
 	NEW_CONTEXT(context);
 	decNumber result;
@@ -577,7 +577,7 @@ BigDecimal BigDecimal::operator*=(const BigDecimal & num)
 BigDecimal BigDecimal::operator/=(const BigDecimal & num)
 {
 	if (num.isZero())
-		throw DivisionByZeroException();
+		throw ArithmeticException(ArithmeticException::DIVISION_BY_ZERO);
 
 	NEW_CONTEXT(context);
 	decNumberDivide(&number_, &number_, &num.number_, &context);
@@ -593,7 +593,7 @@ BigDecimal BigDecimal::operator/=(const BigDecimal & num)
 BigDecimal BigDecimal::operator%=(const BigDecimal & num)
 {
 	if (num.isZero())
-		throw DivisionByZeroException();
+		throw ArithmeticException(ArithmeticException::DIVISION_BY_ZERO);
 
 	NEW_CONTEXT(context);
 	decNumberRemainder(&number_, &number_, &num.number_, &context);
@@ -610,7 +610,7 @@ BigDecimal BigDecimal::operator%=(const BigDecimal & num)
 BigDecimal BigDecimal::operator~() const
 {
 	if (!fractional().isZero())
-		throw LogicalOperationOnFractionalNumberException();
+		throw ArithmeticException(ArithmeticException::INVALID_OPERATION_ON_FRACTIONAL_NUMBER);
 
 	NEW_CONTEXT(context);
 	decNumber result;
@@ -628,7 +628,7 @@ BigDecimal BigDecimal::operator~() const
 BigDecimal BigDecimal::operator|(const BigDecimal & num) const
 {
 	if (!fractional().isZero() || !num.fractional().isZero())
-		throw LogicalOperationOnFractionalNumberException();
+		throw ArithmeticException(ArithmeticException::INVALID_OPERATION_ON_FRACTIONAL_NUMBER);
 
 	NEW_CONTEXT(context);
 	decNumber result;
@@ -646,7 +646,7 @@ BigDecimal BigDecimal::operator|(const BigDecimal & num) const
 BigDecimal BigDecimal::operator&(const BigDecimal & num) const
 {
 	if (!fractional().isZero() || !num.fractional().isZero())
-		throw LogicalOperationOnFractionalNumberException();
+		throw ArithmeticException(ArithmeticException::INVALID_OPERATION_ON_FRACTIONAL_NUMBER);
 
 	NEW_CONTEXT(context);
 	decNumber result;
@@ -664,7 +664,7 @@ BigDecimal BigDecimal::operator&(const BigDecimal & num) const
 BigDecimal BigDecimal::operator^(const BigDecimal & num) const
 {
 	if (!fractional().isZero() || !num.fractional().isZero())
-		throw LogicalOperationOnFractionalNumberException();
+		throw ArithmeticException(ArithmeticException::INVALID_OPERATION_ON_FRACTIONAL_NUMBER);
 
 	NEW_CONTEXT(context);
 	decNumber result;
@@ -682,7 +682,7 @@ BigDecimal BigDecimal::operator^(const BigDecimal & num) const
 BigDecimal BigDecimal::operator<<(const BigDecimal & shift) const
 {
 	if (!fractional().isZero() || !shift.fractional().isZero())
-		throw LogicalOperationOnFractionalNumberException();
+		throw ArithmeticException(ArithmeticException::INVALID_OPERATION_ON_FRACTIONAL_NUMBER);
 
 	NEW_CONTEXT(context);
 	decNumber result;
@@ -700,7 +700,7 @@ BigDecimal BigDecimal::operator<<(const BigDecimal & shift) const
 BigDecimal BigDecimal::operator>>(const BigDecimal & shift) const
 {
 	if (!fractional().isZero() || !shift.fractional().isZero())
-		throw LogicalOperationOnFractionalNumberException();
+		throw ArithmeticException(ArithmeticException::INVALID_OPERATION_ON_FRACTIONAL_NUMBER);
 
 	NEW_CONTEXT(context);
 	decNumber result;
@@ -721,7 +721,7 @@ BigDecimal BigDecimal::operator>>(const BigDecimal & shift) const
 BigDecimal BigDecimal::operator|=(const BigDecimal & num)
 {
 	if (!fractional().isZero() || !num.fractional().isZero())
-		throw LogicalOperationOnFractionalNumberException();
+		throw ArithmeticException(ArithmeticException::INVALID_OPERATION_ON_FRACTIONAL_NUMBER);
 
 	NEW_CONTEXT(context);
 	decNumberOr(&number_, &number_, &num.number_, &context);
@@ -738,7 +738,7 @@ BigDecimal BigDecimal::operator|=(const BigDecimal & num)
 BigDecimal BigDecimal::operator&=(const BigDecimal & num)
 {
 	if (!fractional().isZero() || !num.fractional().isZero())
-		throw LogicalOperationOnFractionalNumberException();
+		throw ArithmeticException(ArithmeticException::INVALID_OPERATION_ON_FRACTIONAL_NUMBER);
 
 	NEW_CONTEXT(context);
 	decNumberAnd(&number_, &number_, &num.number_, &context);
@@ -755,7 +755,7 @@ BigDecimal BigDecimal::operator&=(const BigDecimal & num)
 BigDecimal BigDecimal::operator^=(const BigDecimal & num)
 {
 	if (!fractional().isZero() || !num.fractional().isZero())
-		throw LogicalOperationOnFractionalNumberException();
+		throw ArithmeticException(ArithmeticException::INVALID_OPERATION_ON_FRACTIONAL_NUMBER);
 
 	NEW_CONTEXT(context);
 	decNumberXor(&number_, &number_, &num.number_, &context);
@@ -772,7 +772,7 @@ BigDecimal BigDecimal::operator^=(const BigDecimal & num)
 BigDecimal BigDecimal::operator<<=(const BigDecimal & shift)
 {
 	if (!fractional().isZero() || !shift.fractional().isZero())
-		throw LogicalOperationOnFractionalNumberException();
+		throw ArithmeticException(ArithmeticException::INVALID_OPERATION_ON_FRACTIONAL_NUMBER);
 
 	NEW_CONTEXT(context);
 	decNumberShift(&number_, &number_, &shift.number_, &context);
@@ -789,7 +789,7 @@ BigDecimal BigDecimal::operator<<=(const BigDecimal & shift)
 BigDecimal BigDecimal::operator>>=(const BigDecimal & shift)
 {
 	if (!fractional().isZero() || !shift.fractional().isZero())
-		throw LogicalOperationOnFractionalNumberException();
+		throw ArithmeticException(ArithmeticException::INVALID_OPERATION_ON_FRACTIONAL_NUMBER);
 
 	NEW_CONTEXT(context);
 	decNumber negativeShift;
@@ -887,7 +887,7 @@ BigDecimal BigDecimal::exp(const BigDecimal & num)
 BigDecimal BigDecimal::ln(const BigDecimal & num)
 {
 	if (num.isZero() || num.isNegative())
-		throw InvalidLogArgumentException();
+		throw InvalidArgumentException("ln");
 
 	NEW_CONTEXT(context);
 	decNumber result;
@@ -906,7 +906,7 @@ BigDecimal BigDecimal::ln(const BigDecimal & num)
 BigDecimal BigDecimal::log10(const BigDecimal & num)
 {
 	if (num.isZero() || num.isNegative())
-		throw InvalidLogArgumentException();
+		throw InvalidArgumentException("log10");
 
 	NEW_CONTEXT(context);
 	decNumber result;
@@ -937,7 +937,7 @@ BigDecimal BigDecimal::sqr(const BigDecimal & num)
 BigDecimal BigDecimal::sqrt(const BigDecimal & num)
 {
 	if (num.isNegative())
-		throw InvalidSqrtArgumentException();
+		throw InvalidArgumentException("sqrt");
 
 	NEW_CONTEXT(context);
 	decNumber result;
@@ -959,7 +959,7 @@ BigDecimal BigDecimal::pow(const BigDecimal & num, const BigDecimal & power)
 	if (num.isZero() && power.isZero())
 		return BigDecimal(1);
 	if ((num.isZero() || num.isNegative()) && power.isNegative())
-		throw InvalidPowArgumentException();
+		throw InvalidArgumentException("pow");
 
 	NEW_CONTEXT(context);
 	decNumber result;
@@ -978,7 +978,7 @@ BigDecimal BigDecimal::pow(const BigDecimal & num, const BigDecimal & power)
 BigDecimal BigDecimal::div(const BigDecimal & dividend, const BigDecimal & divisor)
 {
 	if (divisor.isZero())
-		throw DivisionByZeroException();
+		throw ArithmeticException(ArithmeticException::DIVISION_BY_ZERO);
 
 	NEW_CONTEXT(context);
 	decNumber result;
@@ -1029,7 +1029,7 @@ BigDecimal BigDecimal::factorial(const BigDecimal & num)
 	if (num.isZero())
 		return 1;
 	if (num.isNegative() || !num.fractional().isZero())
-		throw InvalidFactorialArgumentException();
+		throw InvalidArgumentException("fact");
 
 	unsigned max = num.toUInt();
 	BigDecimal result = 1;
@@ -1140,7 +1140,7 @@ BigDecimal BigDecimal::tan(const BigDecimal & num)
 	BigDecimal cosine = cos(angle);
 
 	if (cosine.isZero())
-		throw InvalidTanArgumentException();
+		throw InvalidArgumentException("tan");
 
 	return sin(angle) / cosine;
 }
@@ -1157,7 +1157,7 @@ BigDecimal BigDecimal::cot(const BigDecimal & num)
 	BigDecimal sine = sin(angle);
 
 	if (sine.isZero())
-		throw InvalidCotArgumentException();
+		throw InvalidArgumentException("cot");
 
 	return cos(angle) / sine;
 }
@@ -1176,7 +1176,7 @@ BigDecimal BigDecimal::arcsin(const BigDecimal & num)
 		return -PI / 2;
 
 	if (abs(num) > BigDecimal(1))
-		throw InvalidArcSinArgumentException();
+		throw InvalidArgumentException("asin");
 
 	return arctan(num / sqrt(-sqr(num) + 1));
 }
@@ -1190,7 +1190,7 @@ BigDecimal BigDecimal::arcsin(const BigDecimal & num)
 BigDecimal BigDecimal::arccos(const BigDecimal & num)
 {
 	if (abs(num) > BigDecimal(1))
-		throw InvalidArcCosArgumentException();
+		throw InvalidArgumentException("acos");
 
 	return PI / 2 - arcsin(num);
 }
@@ -1282,15 +1282,15 @@ void BigDecimal::checkContextStatus(const DecNumber::decContext & context)
 		// DEC_Division_undefined is 0/0 division, so it is also division by zero
 		if (context.status & DEC_Division_by_zero ||
 			context.status & DEC_Division_undefined)
-			throw DivisionByZeroException();
+			throw ArithmeticException(ArithmeticException::DIVISION_BY_ZERO);
 		else if (context.status & DEC_Division_impossible)
-			throw DivisionImpossibleException();
+			throw ArithmeticException(ArithmeticException::DIVISION_IMPOSSIBLE);
 		else if (context.status & DEC_Overflow)
-			throw OverflowException();
+			throw ArithmeticException(ArithmeticException::OVERFLOW);
 		else if (context.status & DEC_Underflow)
-			throw UnderflowException();
+			throw ArithmeticException(ArithmeticException::UNDERFLOW);
 		else if (context.status & DEC_Conversion_syntax)
-			throw ConversionImpossibleException();
+			throw ArithmeticException(ArithmeticException::CONVERSION_IMPOSSIBLE);
 		else if (context.status & DEC_Insufficient_storage)
 			throw std::bad_alloc();
 		// DEC_Invalid_context, DEC_Invalid_operation or anything else;
@@ -1298,7 +1298,7 @@ void BigDecimal::checkContextStatus(const DecNumber::decContext & context)
 		// DEC_Invalid_operation is checked right after operations where it can occur;
 		//		when it is not checked it's OK to throw ArithmeticException.
 		else
-			throw ArithmeticException();
+			throw ArithmeticException(ArithmeticException::UNKNOWN_REASON);
 	}
 }
 

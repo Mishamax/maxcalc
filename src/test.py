@@ -1,49 +1,57 @@
-from random import *
-from subprocess import *
+import random
+import subprocess
 
 number_format = '%.15f'
-test_program = 'debug/maxcalc.exe'
+test_program = 'release/maxcalc.exe'
 
 def operations():
     expr = brackets()
 
-    if (random() < 0.75):
-        for i in xrange(randint(1, 5)):
-            rand = random()
-            if (rand < 0.2):
-                op = '+';
-            elif (rand < 0.4):
-                op = '-';
-            elif (rand < 0.6):
-                op = '*';
-            elif (rand < 0.8):
-                op = '/';
+    if (random.random() < 0.75):
+        for i in range(random.randint(1, 5)):
+            rand = random.random()
+            if (rand < 0.25):
+                op = '+'
+            elif (rand < 0.5):
+                op = '-'
+            elif (rand < 0.75):
+                op = '*'
             else:
-                op = '+';   # change to '^'
+                op = '/'
             expr += op + brackets()
 
     return expr
 
 def brackets():
-    if (random() < 0.25):
-        return '(' + operations() + ')';
+    if (random.random() < 0.25):
+        return '(' + operations() + ')'
     else:
-        return number();
+        return number()
 
 def number():
-    return number_format % uniform(-1000.0, 1000.0);
+    return number_format % random.uniform(-1000.0, 1000.0)
+
+def compare_numbers(num1, num2, max_diff):
+    if len(num1) != len(num2):
+        return FALSE
+
+    diff_count = 0
+    for i in range(len(num1)):
+        if (num1[i] != num2[i]):
+            diff_count += 1
+    return diff_count <= max_diff
 
 def test():
     expr = operations()
-    result1 = '%f' % eval(expr)
-    result2 = '%f' % float(Popen([test_program, '-c', expr], stdout=PIPE).communicate()[0])
-    if (result1 == result2):
-        print 'PASS'
+    result1 = number_format % eval(expr)
+    result2 = number_format % float(subprocess.Popen([test_program, '-c', expr], stdout=subprocess.PIPE).communicate()[0])
+    if (compare_numbers(result1, result2, 5)):
+        print('PASS')
     else:
-        print 'FAIL!'
-        print 'Expr    = ' + expr
-        print 'Python  = ' + result1
-        print 'MaxCalc = ' + result2
+        print('FAIL!')
+        print('Expr    = ' + expr)
+        print('Python  = ' + result1)
+        print('MaxCalc = ' + result2)
 
-for i in xrange(100):
+for i in range(100):
     test()

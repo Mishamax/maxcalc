@@ -77,14 +77,14 @@ void ParserTest::mulDiv()
 	Parser parser;
 
 	PARSER_TEST(parser, _T("1/2"), "0.5");
-	PARSER_FAIL_TEST(parser, _T("1 / 0"), "Division by zero", DivisionByZeroException);
+	PARSER_FAIL_TEST(parser, _T("1 / 0"), "Division by zero", ArithmeticException);
 	COMPARE_COMPLEX(parser.context().result(), "0.5");
 	PARSER_TEST(parser, _T("1 / i"), -Complex::i);
-	PARSER_FAIL_TEST(parser, _T("1 / sin(0)"), "Division by zero", DivisionByZeroException);
-	PARSER_FAIL_TEST(parser, _T("1/sin(pi)"), "Division by zero", DivisionByZeroException);
-	PARSER_FAIL_TEST(parser, _T(" 1 / cos ( pi / 2 ) "), "Division by zero", DivisionByZeroException);
-	PARSER_FAIL_TEST(parser, _T("1 / tan(0)"), "Division by zero", DivisionByZeroException);
-	PARSER_FAIL_TEST(parser, _T("1 / cot(pi/2)"), "Division by zero", DivisionByZeroException);
+	PARSER_FAIL_TEST(parser, _T("1 / sin(0)"), "Division by zero", ArithmeticException);
+	PARSER_FAIL_TEST(parser, _T("1/sin(pi)"), "Division by zero", ArithmeticException);
+	PARSER_FAIL_TEST(parser, _T(" 1 / cos ( pi / 2 ) "), "Division by zero", ArithmeticException);
+	PARSER_FAIL_TEST(parser, _T("1 / tan(0)"), "Division by zero", ArithmeticException);
+	PARSER_FAIL_TEST(parser, _T("1 / cot(pi/2)"), "Division by zero", ArithmeticException);
 }
 
 void ParserTest::unaryPlusMinus()
@@ -451,6 +451,6 @@ void ParserTest::random()
 			expr[i] = (tchar)rand();
 		}
 		expr[length] = 0;
-		PARSER_FAIL_TEST(parser, expr, "Random input passed", MaxCalcEngineException);
+		PARSER_FAIL_TEST(parser, expr, "Random input passed", MaxCalcException);
 	}
 }

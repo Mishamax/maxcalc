@@ -5,7 +5,7 @@ CONFIG -= qt
 CONFIG += debug_and_release warn_on precompile_header
 win32:CONFIG += console
 
-HEADERS += unicode.h
+HEADERS += 
 SOURCES += main.cpp
 
 PRECOMPILED_HEADER = pch.h

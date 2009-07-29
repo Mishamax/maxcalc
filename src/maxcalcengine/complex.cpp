@@ -258,7 +258,7 @@ Complex Complex::operator/(const Complex & num) const
 {
 	BigDecimal sqrt = num.re * num.re + num.im * num.im;
 	if (sqrt.isZero())
-		throw DivisionByZeroException();
+		throw ArithmeticException(ArithmeticException::DIVISION_BY_ZERO);
 	return Complex((re * num.re + im * num.im) / sqrt,
 		(im * num.re - re * num.im) / sqrt);
 }
@@ -300,7 +300,7 @@ Complex Complex::operator/=(const Complex & num)
 {
 	BigDecimal sqrt = num.re * num.re + num.im * num.im;
 	if (sqrt.isZero())
-		throw DivisionByZeroException();
+		throw ArithmeticException(ArithmeticException::DIVISION_BY_ZERO);
 	Complex result = Complex((re * num.re + im * num.im) / sqrt,
 		(im * num.re - re * num.im) / sqrt);
 	re = result.re;
@@ -388,7 +388,7 @@ BigDecimal Complex::arg(const Complex & num)
 BigDecimal Complex::factorial(const Complex & num)
 {
 	if (!num.im.isZero())
-		throw InvalidFactorialArgumentException();
+		throw InvalidArgumentException("fact");
 
 	return BigDecimal::factorial(num.re);
 }
@@ -499,7 +499,7 @@ Complex Complex::tan(const Complex & num)
 {
 	Complex cosine = cos(num);
 	if (cosine.isZero())
-		throw InvalidTanArgumentException();
+		throw InvalidArgumentException("tan");
 	return sin(num) / cosine;
 }
 
@@ -514,7 +514,7 @@ Complex Complex::cot(const Complex & num)
 {
 	Complex sine = sin(num);
 	if (sine.isZero())
-		throw InvalidCotArgumentException();
+		throw InvalidArgumentException("cot");
 	return cos(num) / sine;
 }
 
@@ -622,7 +622,7 @@ Complex Complex::tanh(const Complex & num)
 {
 	Complex cosineh = cosh(num);
 	if (cosineh.isZero())
-		throw InvalidTanhArgumentException();
+		throw InvalidArgumentException("tanh");
 	return sinh(num) / cosineh;
 }
 
@@ -637,7 +637,7 @@ Complex Complex::coth(const Complex & num)
 {
 	Complex sineh = sinh(num);
 	if (sineh.isZero())
-		throw InvalidCothArgumentException();
+		throw InvalidArgumentException("coth");
 	return cosh(num) / sineh;
 }
 
