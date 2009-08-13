@@ -69,6 +69,7 @@ private:
 	void initMainMenu();
 	void updateVariablesList();
 	void initFunctionsList();
+	void outputError(QString message);
 
 private slots:
 	void onExpressionEntered();

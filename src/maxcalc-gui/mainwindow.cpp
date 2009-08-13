@@ -301,33 +301,130 @@ void MainWindow::onExpressionEntered()
 	try
 	{
 		parser.parse();
-	}
-	catch (std::exception)
-	{
+
+		// No error during parsing, output result (otherwise an exception will be caught)
+
+		emit expressionCalculated();
+
 		historyBox.setTextColor(Qt::blue);
 		historyBox.append(inputBox.text());
-		historyBox.setTextColor(Qt::red);
-		historyBox.append(indent + tr("Error"));
-		inputBox.selectAll();
+		historyBox.setTextColor(Qt::darkGreen);
+#ifndef WINCE
+		historyBox.append(indent +
+			QString::fromStdWString(parser.context().result().toWideString()));
+#else
+		historyBox.append(indent +
+			QString::fromWCharArray(parser.context().result().toWideString().c_str()));
+#endif
+		inputBox.clear();
 		inputBox.setFocus();
-		return;
+		updateVariablesList();
 	}
+	// Parser exceptions
+	catch (ResultDoesNotExistException)
+	{
+		outputError(tr("No result of previous calculations"));
+	}
+	catch (UnknownTokenException)
+	{
+		outputError(tr("Unknown token in expression"));
+	}
+	catch (IncorrectNumberException)
+	{
+		outputError(tr("Incorrect number"));
+	}
+	catch (IncorrectExpressionException)
+	{
+		outputError(tr("Incorrect expression"));
+	}
+	catch (NoClosingBracketException)
+	{
+		outputError(tr("No closing bracket"));
+	}
+	catch (UnknownFunctionException)
+	{
+		outputError(tr("Unknown function"));
+	}
+	catch (UnknownVariableException)
+	{
+		outputError(tr("Unknown variable"));
+	}
+	catch (IncorrectVariableNameException)
+	{
+		outputError(tr("Incorrect name of variable"));
+	}
+	catch (IncorrectUnitConversionSyntaxException)
+	{
+		outputError(tr("Incorrect unit conversion syntax"));
+	}
+	catch (UnknownUnitConversionException)
+	{
+		outputError(tr("Unknown unit conversion"));
+	}
+	// Invalid argument exceptions
+	catch (InvalidArgumentException & ex)
+	{
+		outputError(QString("Invalid argument of function '%1'").arg(ex.what()));
+	}
+	catch (InvalidUnitConversionArgumentException)
+	{
+		outputError(tr("Complex number is used as unit conversion argument"));
+	}
+	// Arithmetic exception
+	catch (ArithmeticException & ex)
+	{
+		QString reason;
+		switch (ex.what())
+		{
+		case ArithmeticException::DIVISION_BY_ZERO:
+			reason = "Division by zero";
+			break;
+		case ArithmeticException::DIVISION_IMPOSSIBLE:
+			reason = "Division impossible";
+			break;
+		case ArithmeticException::OVERFLOW:
+			reason = "Arithmetic overflow";
+			break;
+		case ArithmeticException::UNDERFLOW:
+			reason = "Arithmetic underflow";
+			break;
+		case ArithmeticException::CONVERSION_IMPOSSIBLE:
+			reason = "Arithmetic conversion impossible";
+			break;
+		case ArithmeticException::INVALID_OPERATION_ON_FRACTIONAL_NUMBER:
+			reason = "Invalid operation on fractional number";
+			break;
+		default: // This includes UNKNOWN_REASON
+			reason = "Unknown arithmetic error";
+			break;
+		}
+		outputError(reason);
+	}
+	// Generic parser exception
+	catch (ParserException)
+	{
+		outputError(tr("Unknown error"));
+	}
+	// Generic MaxCalc exception
+	catch (MaxCalcException)
+	{
+		outputError(tr("Unknown error"));
+	}
+	// Generic exception
+	catch (std::exception)
+	{
+		outputError(tr("Unknown error"));
+	}
+}
 
-	emit expressionCalculated();
-
+void MainWindow::outputError(QString message)
+{
 	historyBox.setTextColor(Qt::blue);
 	historyBox.append(inputBox.text());
-	historyBox.setTextColor(Qt::darkGreen);
-#ifndef WINCE
-	historyBox.append(indent +
-		QString::fromStdWString(parser.context().result().toWideString()));
-#else
-	historyBox.append(indent +
-		QString::fromWCharArray(parser.context().result().toWideString().c_str()));
-#endif
-	inputBox.clear();
+	historyBox.setTextColor(Qt::red);
+	historyBox.append(indent + message);
+	inputBox.selectAll();
 	inputBox.setFocus();
-	updateVariablesList();
 }
 
 /*!
@@ -371,6 +468,9 @@ void MainWindow::onDeleteAllVariables()
 	updateVariablesList();
 }
 
+/*!
+	Unit conversion menu command handler.
+*/
 void MainWindow::onUnitConversion(const QString & conversion)
 {
 	inputBox.insert(conversion);
