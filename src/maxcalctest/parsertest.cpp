@@ -7,6 +7,7 @@
 #include "exceptions.h"
 // STL
 #include <ctime>
+#include <cstdlib>
 
 void ParserTest::basic()
 {

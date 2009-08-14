@@ -39,8 +39,8 @@ void VariablesTest::stress()
 		swprintf(stri, 6, L"%d", i);
 		name = L"Variable#";
 		name += stri;
-		while ((rand1 = rand()) == 0);
-		while ((rand2 = rand()) == 0);
+		while ((rand1 = rand()) == 0) {}
+		while ((rand2 = rand()) == 0) {}
 		vars.add(Variable(name, Complex(BigDecimal(1.0 / rand1), BigDecimal(1.0 / rand2))));
 	}
 	COMPARE(vars.count(), size_t(10000));

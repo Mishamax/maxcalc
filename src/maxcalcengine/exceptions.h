@@ -35,7 +35,7 @@ public:
 	
 	MaxCalcException(const char * const & what) : what_(what) {}
 
-	virtual const char * what() const
+	virtual const char * what() const throw()
 	{
 		return what_;
 	}
