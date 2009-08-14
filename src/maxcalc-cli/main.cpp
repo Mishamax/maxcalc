@@ -247,6 +247,112 @@ bool parseCommand(const tstring & expr, ParserContext & context)
 	return true;
 }
 
+/*!
+	Runs \a parser and prints results to standard output.
+*/
+void runParser(Parser & parser)
+{
+	try
+	{
+		tcout << parser.parse().result().toString().c_str();
+	}
+	// Parser exceptions
+	catch (ResultDoesNotExistException)
+	{
+		tcout << _T("No result of previous calculations");
+	}
+	catch (UnknownTokenException)
+	{
+		tcout << _T("Unknown token in expression");
+	}
+	catch (IncorrectNumberException)
+	{
+		tcout << _T("Incorrect number");
+	}
+	catch (IncorrectExpressionException)
+	{
+		tcout << _T("Incorrect expression");
+	}
+	catch (NoClosingBracketException)
+	{
+		tcout << _T("No closing bracket");
+	}
+	catch (UnknownFunctionException)
+	{
+		tcout << _T("Unknown function");
+	}
+	catch (UnknownVariableException)
+	{
+		tcout << _T("Unknown variable");
+	}
+	catch (IncorrectVariableNameException)
+	{
+		tcout << _T("Incorrect name of variable");
+	}
+	catch (IncorrectUnitConversionSyntaxException)
+	{
+		tcout << _T("Incorrect unit conversion syntax");
+	}
+	catch (UnknownUnitConversionException)
+	{
+		tcout << _T("Unknown unit conversion");
+	}
+	// Invalid argument exceptions
+	catch (InvalidArgumentException & ex)
+	{
+		tcout << _T("Invalid argument of function '") << ex.what() << _T("'");
+	}
+	catch (InvalidUnitConversionArgumentException)
+	{
+		tcout << _T("Complex number is used as unit conversion argument");
+	}
+	// Arithmetic exception
+	catch (ArithmeticException & ex)
+	{
+		tstring reason;
+		switch (ex.what())
+		{
+		case ArithmeticException::DIVISION_BY_ZERO:
+			reason = _T("Division by zero");
+			break;
+		case ArithmeticException::DIVISION_IMPOSSIBLE:
+			reason = _T("Division impossible");
+			break;
+		case ArithmeticException::OVERFLOW:
+			reason = _T("Arithmetic overflow");
+			break;
+		case ArithmeticException::UNDERFLOW:
+			reason = _T("Arithmetic underflow");
+			break;
+		case ArithmeticException::CONVERSION_IMPOSSIBLE:
+			reason = _T("Arithmetic conversion impossible");
+			break;
+		case ArithmeticException::INVALID_OPERATION_ON_FRACTIONAL_NUMBER:
+			reason = _T("Invalid operation on fractional number");
+			break;
+		default: // This includes UNKNOWN_REASON
+			reason = _T("Unknown arithmetic error");
+			break;
+		}
+		tcout << reason;
+	}
+	// Generic parser exception
+	catch (ParserException)
+	{
+		tcout << _T("Unknown error");
+	}
+	// Generic MaxCalc exception
+	catch (MaxCalcException)
+	{
+		tcout << _T("Unknown error");
+	}
+	// Generic exception
+	catch (std::exception)
+	{
+		tcout << _T("Unknown error");
+	}
+}
+
 // TODO: make it work on Linux
 #ifdef WIN32
 /*!
@@ -263,14 +369,7 @@ bool parseCmdLineArgs(int argc, tchar ** argv)
 
 		Parser parser;
 		parser.setExpression(expr);
-		try
-		{
-			tcout << parser.parse().result().toString().c_str();
-		}
-		catch (...)
-		{
-			tcout << _T("Error!");
-		}
+		runParser(parser);
 
 		return true;
 	}
@@ -317,15 +416,9 @@ int main()
 			continue;
 
 		parser.setExpression(expr);
-
-		try
-		{
-			tcout << indent << parser.parse().result().toTString() << endl;
-		}
-		catch (...)
-		{
-			tcout << indent << _T("Error!") << endl;
-		}
+		tcout << indent;
+		runParser(parser);
+		tcout << endl;
 	}
 
 	return 0;
