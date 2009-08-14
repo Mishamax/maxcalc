@@ -184,6 +184,7 @@ void MainWindow::initMainMenu()
 			}
 		}
 
+#ifndef WINCE
 		firstLevelMenu = currentUnits->addMenu(QString::fromStdWString(cur->name));
 		for (const UnitConversion::UnitDef * cur2 = firstLevelCur; cur2->type == type; ++cur2)
 		{
@@ -195,6 +196,19 @@ void MainWindow::initMainMenu()
 				this, SLOT(onUnitConversion(const QString &)));
 			firstLevelMenu->addAction(action);
 		}
+#else
+		firstLevelMenu = currentUnits->addMenu(QString::fromWCharArray(cur->name.c_str()));
+		for (const UnitConversion::UnitDef * cur2 = firstLevelCur; cur2->type == type; ++cur2)
+		{
+			if (cur2 == cur)
+				continue;
+			QString conversion = QString("[") + firstLevelMenu->title() + QString("->") +
+				QString::fromWCharArray(cur2->name.c_str()) + QString("]");
+			MyAction * action = new MyAction(firstLevelMenu,QString::fromWCharArray(cur2->name.c_str()), conversion,
+				this, SLOT(onUnitConversion(const QString &)));
+			firstLevelMenu->addAction(action);
+		}
+#endif
 	}
 
 	// Help menu

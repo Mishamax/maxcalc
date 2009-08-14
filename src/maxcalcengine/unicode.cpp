@@ -38,7 +38,7 @@ using namespace std;
 #include <clocale>
 #include <cassert>
 
-
+// TODO: do something with unreferenced localeName parameters under WinCE
 
 using namespace std;
 
@@ -66,6 +66,7 @@ void stringToWideString(const string & from, wstring & to, const char * localeNa
 		to.resize(len);
 	use_facet<CodeCvt>(locale(localeName)).in(state, &from[0], &from[len], c1, &to[0], &to[len], c2);
 #else
+	localeName;
 	size_t length = from.length() + 1;
 	wchar_t * str = new wchar_t[length];
 	MultiByteToWideChar(CP_ACP, 0, from.c_str(), length, str, length);
@@ -93,6 +94,7 @@ void wideStringToString(const wstring & from, string & to, const char * localeNa
 		to.resize(len);
 	use_facet<CodeCvt>(locale(localeName)).out(state, &from[0], &from[len], c1, &to[0], &to[len], c2);
 #else
+	localeName;
 	size_t length = from.length() + 1;
 	char * str = new char[length];
 	WideCharToMultiByte(CP_ACP, 0, from.c_str(), length, str, length, NULL, NULL);
@@ -123,6 +125,7 @@ void charToWideChar(const char * from, size_t fromLength, wchar_t * to, size_t t
 	use_facet<CodeCvt>(locale(localeName)).in(state, &from[0], &from[fromLength], c1, &to[0], &to[toLength], c2);
 	to[fromLength] = 0;
 #else
+	localeName;
 	MultiByteToWideChar(CP_ACP, 0, from, fromLength, to, toLength);
 #endif
 }
@@ -150,6 +153,7 @@ void wideCharToChar(const wchar_t * from, size_t fromLength, char * to, size_t t
 	use_facet<CodeCvt>(locale(localeName)).out(state, &from[0], &from[fromLength], c1, &to[0], &to[toLength], c2);
 	to[fromLength] = 0;
 #else
+	localeName;
 	WideCharToMultiByte(CP_ACP, 0, from, fromLength, to, toLength, NULL, NULL);
 #endif
 }
