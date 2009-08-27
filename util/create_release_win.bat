@@ -31,7 +31,7 @@ rem CLI version
 mkdir %RELEASE%\tmp
 
 copy ..\src\release\maxcalc.exe %RELEASE%\tmp
-copy ..\doc\Changelog.txt %RELEASE%\tmp
+copy ..\Changelog.txt %RELEASE%\tmp
 copy ..\LICENSE.GPL2 %RELEASE%\tmp\LICENSE-GPL2.txt
 copy ..\LICENSE.ICU %RELEASE%\tmp\LICENSE-ICU.txt
 
@@ -53,7 +53,7 @@ rem GUI version
 mkdir %RELEASE%\tmp
 
 copy ..\src\release\maxcalcwin.exe %RELEASE%\tmp
-copy ..\doc\Changelog.txt %RELEASE%\tmp
+copy ..\Changelog.txt %RELEASE%\tmp
 copy ..\LICENSE.GPL2 %RELEASE%\tmp\LICENSE-GPL2.txt
 copy ..\LICENSE.ICU %RELEASE%\tmp\LICENSE-ICU.txt
 

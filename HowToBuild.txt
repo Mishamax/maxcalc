@@ -1,0 +1,49 @@
+The latest version of MaxCalc including sources can be downloaded from
+http://code.google.com/p/maxcalc/.
+
+To get the latest development version, use SVN:
+svn checkout http://maxcalc.googlecode.com/svn/trunk/ maxcalc-read-only
+
+
+Building on Windows
+===================
+
+Prerequisites:
+ - Qt v4.2 or higher (4.4 or 4.5 is recommended).
+ - Microsoft Visual Studio 2005 or 2008
+    (Express Edition may also work if you install Platform SDK, but not tested).
+
+ 
+Notes about MinGW (and standard prebuilt Qt SDK):
+
+ - Official MinGW with gcc 3 will NOT work due to bad Unicode support.
+    Thus standard Qt SDK also won't work (you need to compile Qt from source
+    using Visual Studio or unofficial gcc 4-based version of MinGW).
+    
+ - Unofficial builds with gcc 4 should work, although it is not tested
+    (you can get it from http://www.tdragon.net/recentgcc/).
+
+
+To build the sources, execute in "src" directory from Visual Studio Command
+Prompt (or MinGW environment):
+
+    qmake
+    nmake debug OR nmake release
+
+If you're using MinGW, replace "nmake" with "mingw32-make".
+Compiled binaries will be put to "src\debug" and "src\release" directories.
+
+
+Building on Linux
+=================
+
+Prerequisites:
+ - Qt v4.2 or higher (4.4 or 4.5 is recommended).
+ - gcc 4.
+
+To build the sources, execute in "src" directory:
+
+    qmake
+    make debug OR make release
+
+Compiled binaries will be put to "src\debug" and "src\release" directories.
