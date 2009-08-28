@@ -388,7 +388,8 @@ BigDecimal Complex::arg(const Complex & num)
 BigDecimal Complex::factorial(const Complex & num)
 {
 	if (!num.im.isZero())
-		throw InvalidArgumentException(_T("fact"));
+        throw InvalidArgumentException(_T("fact"),
+            InvalidArgumentException::FACTORIAL_FUNCTION);
 
 	return BigDecimal::factorial(num.re);
 }
@@ -499,7 +500,8 @@ Complex Complex::tan(const Complex & num)
 {
 	Complex cosine = cos(num);
 	if (cosine.isZero())
-		throw InvalidArgumentException(_T("tan"));
+        throw InvalidArgumentException(_T("tan"),
+            InvalidArgumentException::TANGENT_FUNCTION);
 	return sin(num) / cosine;
 }
 
@@ -514,7 +516,8 @@ Complex Complex::cot(const Complex & num)
 {
 	Complex sine = sin(num);
 	if (sine.isZero())
-		throw InvalidArgumentException(_T("cot"));
+        throw InvalidArgumentException(_T("cot"),
+            InvalidArgumentException::COTANGENT_FUNCTION);
 	return cos(num) / sine;
 }
 
@@ -622,7 +625,8 @@ Complex Complex::tanh(const Complex & num)
 {
 	Complex cosineh = cosh(num);
 	if (cosineh.isZero())
-		throw InvalidArgumentException(_T("tanh"));
+        throw InvalidArgumentException(_T("tanh"),
+            InvalidArgumentException::HYPERBOLIC_TANGENT_FUNCTION);
 	return sinh(num) / cosineh;
 }
 
@@ -637,7 +641,8 @@ Complex Complex::coth(const Complex & num)
 {
 	Complex sineh = sinh(num);
 	if (sineh.isZero())
-		throw InvalidArgumentException(_T("coth"));
+        throw InvalidArgumentException(_T("coth"),
+            InvalidArgumentException::HYPERBOLIC_COTANGENT_FUNCTION);
 	return cosh(num) / sineh;
 }
 

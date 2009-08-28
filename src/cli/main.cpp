@@ -306,9 +306,43 @@ void runParser(Parser & parser)
 	// Invalid argument exceptions
 	catch (InvalidArgumentException & ex)
 	{
-		tcout << _T("Invalid argument of function '") << ex.what().c_str() <<
-				_T("'");
-	}
+        tcout << _T("Invalid argument of function '") << ex.what().c_str() <<
+                _T("'");
+        switch (ex.reason())
+        {
+        case InvalidArgumentException::ZERO:
+            tcout << _T(" (zero)");
+            break;
+        case InvalidArgumentException::NEGATIVE:
+            tcout << _T(" (negative number)");
+            break;
+        case InvalidArgumentException::ZERO_OR_NEGATIVE:
+            tcout << _T(" (zero or negative number)");
+            break;
+        case InvalidArgumentException::POWER_FUNCTION:
+            tcout << _T(" (zero or negative number in negative degree)");
+            break;
+        case InvalidArgumentException::FACTORIAL_FUNCTION:
+            tcout << _T(" (negative, fractional or complex number)");
+            break;
+        case InvalidArgumentException::TANGENT_FUNCTION:
+            tcout << _T(" (cos(arg) = 0)");
+            break;
+        case InvalidArgumentException::COTANGENT_FUNCTION:
+            tcout << _T(" (sin(arg) = 0)");
+            break;
+        case InvalidArgumentException::ARCSINE_FUNCTION:
+        case InvalidArgumentException::ARCCOSINE_FUNCTION:
+            tcout << _T(" (abs(arg) > 1)");
+            break;
+        case InvalidArgumentException::HYPERBOLIC_TANGENT_FUNCTION:
+            tcout << _T(" (cosh(arg) = 0)");
+            break;
+        case InvalidArgumentException::HYPERBOLIC_COTANGENT_FUNCTION:
+            tcout << _T(" (sinh(arg) = 0)");
+            break;
+        }
+    }
 	catch (InvalidUnitConversionArgumentException & ex)
 	{
 		tcout << _T("Complex argument in unit conversion '") <<

@@ -396,9 +396,44 @@ void MainWindow::onExpressionEntered()
 	// Invalid argument exceptions
 	catch (InvalidArgumentException & ex)
 	{
-		outputError(QString("Invalid argument of function '%1'")
-					.arg(QString::fromStdWString(ex.what())));
-	}
+        QString msg = QString("Invalid argument of function '%1'")
+                    .arg(QString::fromStdWString(ex.what()));
+        switch (ex.reason())
+        {
+        case InvalidArgumentException::ZERO:
+            msg += " (zero)";
+            break;
+        case InvalidArgumentException::NEGATIVE:
+            msg += " (negative number)";
+            break;
+        case InvalidArgumentException::ZERO_OR_NEGATIVE:
+            msg += " (zero or negative number)";
+            break;
+        case InvalidArgumentException::POWER_FUNCTION:
+            msg += " (zero or negative number in negative degree)";
+            break;
+        case InvalidArgumentException::FACTORIAL_FUNCTION:
+            msg += " (negative, fractional or complex number)";
+            break;
+        case InvalidArgumentException::TANGENT_FUNCTION:
+            msg += " (cos(arg) = 0)";
+            break;
+        case InvalidArgumentException::COTANGENT_FUNCTION:
+            msg += " (sin(arg) = 0)";
+            break;
+        case InvalidArgumentException::ARCSINE_FUNCTION:
+        case InvalidArgumentException::ARCCOSINE_FUNCTION:
+            msg += " (abs(arg) > 1)";
+            break;
+        case InvalidArgumentException::HYPERBOLIC_TANGENT_FUNCTION:
+            msg += " (cosh(arg) = 0)";
+            break;
+        case InvalidArgumentException::HYPERBOLIC_COTANGENT_FUNCTION:
+            msg += " (sinh(arg) = 0)";
+            break;
+        }
+        outputError(msg);
+    }
 	catch (InvalidUnitConversionArgumentException & ex)
 	{
 		outputError(QString("Complex argument in unit conversion '%1'")

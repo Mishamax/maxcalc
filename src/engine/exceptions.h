@@ -57,20 +57,20 @@ public:
 class ArithmeticException : public MaxCalcException
 {
 public:
-	enum ArithmeticExceptions { UNKNOWN_REASON, DIVISION_BY_ZERO,
-								DIVISION_IMPOSSIBLE, OVERFLOW, UNDERFLOW,
-								CONVERSION_IMPOSSIBLE,
-								INVALID_OPERATION_ON_FRACTIONAL_NUMBER};
+    enum Reasons { UNKNOWN_REASON, DIVISION_BY_ZERO, DIVISION_IMPOSSIBLE,
+                   OVERFLOW, UNDERFLOW, CONVERSION_IMPOSSIBLE,
+                   INVALID_OPERATION_ON_FRACTIONAL_NUMBER};
 
-	ArithmeticExceptions reason_;
+private:
+    Reasons reason_;
 
 public:
-	ArithmeticException(const ArithmeticExceptions reason)
+    ArithmeticException(const Reasons reason)
 	{
 		reason_ = reason;
 	}
 
-	ArithmeticExceptions reason() const throw()
+    Reasons reason() const throw()
 	{
 		return reason_;
 	}
@@ -81,8 +81,25 @@ public:
 class InvalidArgumentException : public MaxCalcException
 {
 public:
-	InvalidArgumentException(const tstring & function) :
-			MaxCalcException(function) { }
+    enum Reasons { UNKNOWN, ZERO, NEGATIVE, ZERO_OR_NEGATIVE, POWER_FUNCTION,
+                   FACTORIAL_FUNCTION, TANGENT_FUNCTION, COTANGENT_FUNCTION,
+                   ARCSINE_FUNCTION, ARCCOSINE_FUNCTION,
+                   HYPERBOLIC_TANGENT_FUNCTION, HYPERBOLIC_COTANGENT_FUNCTION};
+
+private:
+    Reasons reason_;
+
+public:
+    InvalidArgumentException(const tstring & function, const Reasons reason) :
+            MaxCalcException(function)
+    {
+        reason_ = reason;
+    }
+
+    Reasons reason() const throw()
+    {
+        return reason_;
+    }
 };
 
 /// Invalid unit conversion argument (complex number).

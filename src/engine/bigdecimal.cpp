@@ -887,7 +887,8 @@ BigDecimal BigDecimal::exp(const BigDecimal & num)
 BigDecimal BigDecimal::ln(const BigDecimal & num)
 {
 	if (num.isZero() || num.isNegative())
-		throw InvalidArgumentException(_T("ln"));
+        throw InvalidArgumentException(_T("ln"),
+            InvalidArgumentException::ZERO_OR_NEGATIVE);
 
 	NEW_CONTEXT(context);
 	decNumber result;
@@ -906,7 +907,8 @@ BigDecimal BigDecimal::ln(const BigDecimal & num)
 BigDecimal BigDecimal::log10(const BigDecimal & num)
 {
 	if (num.isZero() || num.isNegative())
-		throw InvalidArgumentException(_T("log10"));
+        throw InvalidArgumentException(_T("log10"),
+            InvalidArgumentException::ZERO_OR_NEGATIVE);
 
 	NEW_CONTEXT(context);
 	decNumber result;
@@ -937,7 +939,8 @@ BigDecimal BigDecimal::sqr(const BigDecimal & num)
 BigDecimal BigDecimal::sqrt(const BigDecimal & num)
 {
 	if (num.isNegative())
-		throw InvalidArgumentException(_T("sqrt"));
+        throw InvalidArgumentException(_T("sqrt"),
+            InvalidArgumentException::NEGATIVE);
 
 	NEW_CONTEXT(context);
 	decNumber result;
@@ -959,7 +962,8 @@ BigDecimal BigDecimal::pow(const BigDecimal & num, const BigDecimal & power)
 	if (num.isZero() && power.isZero())
 		return BigDecimal(1);
 	if ((num.isZero() || num.isNegative()) && power.isNegative())
-		throw InvalidArgumentException(_T("pow"));
+        throw InvalidArgumentException(_T("pow"),
+            InvalidArgumentException::POWER_FUNCTION);
 
 	NEW_CONTEXT(context);
 	decNumber result;
@@ -1029,7 +1033,8 @@ BigDecimal BigDecimal::factorial(const BigDecimal & num)
 	if (num.isZero())
 		return 1;
 	if (num.isNegative() || !num.fractional().isZero())
-		throw InvalidArgumentException(_T("fact"));
+        throw InvalidArgumentException(_T("fact"),
+            InvalidArgumentException::FACTORIAL_FUNCTION);
 
 	unsigned max = num.toUInt();
 	BigDecimal result = 1;
@@ -1140,7 +1145,8 @@ BigDecimal BigDecimal::tan(const BigDecimal & num)
 	BigDecimal cosine = cos(angle);
 
 	if (cosine.isZero())
-		throw InvalidArgumentException(_T("tan"));
+        throw InvalidArgumentException(_T("tan"),
+            InvalidArgumentException::TANGENT_FUNCTION);
 
 	return sin(angle) / cosine;
 }
@@ -1157,7 +1163,8 @@ BigDecimal BigDecimal::cot(const BigDecimal & num)
 	BigDecimal sine = sin(angle);
 
 	if (sine.isZero())
-		throw InvalidArgumentException(_T("cot"));
+        throw InvalidArgumentException(_T("cot"),
+            InvalidArgumentException::COTANGENT_FUNCTION);
 
 	return cos(angle) / sine;
 }
@@ -1176,7 +1183,8 @@ BigDecimal BigDecimal::arcsin(const BigDecimal & num)
 		return -PI / 2;
 
 	if (abs(num) > BigDecimal(1))
-		throw InvalidArgumentException(_T("asin"));
+        throw InvalidArgumentException(_T("asin"),
+            InvalidArgumentException::ARCSINE_FUNCTION);
 
 	return arctan(num / sqrt(-sqr(num) + 1));
 }
@@ -1190,7 +1198,8 @@ BigDecimal BigDecimal::arcsin(const BigDecimal & num)
 BigDecimal BigDecimal::arccos(const BigDecimal & num)
 {
 	if (abs(num) > BigDecimal(1))
-		throw InvalidArgumentException(_T("acos"));
+        throw InvalidArgumentException(_T("acos"),
+            InvalidArgumentException::ARCCOSINE_FUNCTION);
 
 	return PI / 2 - arcsin(num);
 }
