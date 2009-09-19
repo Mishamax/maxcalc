@@ -361,9 +361,12 @@ void MainWindow::onExpressionEntered()
 		outputError(QString("Unknown token '%1' in expression")
 					.arg(QString::fromStdWString(ex.what())));
 	}
-	catch (IncorrectNumberException)
+    catch (IncorrectNumberException & ex)
 	{
-		outputError(tr("Incorrect number"));
+        QString msg = "Incorrect number";
+        if (ex.what() != _T(""))
+            msg += QString(" '%1'").arg(QString::fromStdWString(ex.what()));
+        outputError(msg);
 	}
 	catch (IncorrectExpressionException)
 	{
@@ -373,13 +376,15 @@ void MainWindow::onExpressionEntered()
 	{
 		outputError(tr("No closing bracket"));
 	}
-	catch (UnknownFunctionException)
+    catch (UnknownFunctionException & ex)
 	{
-		outputError(tr("Unknown function"));
+        outputError(QString("Unknown function '%1'")
+                    .arg(QString::fromStdWString(ex.what())));
 	}
-	catch (UnknownVariableException)
+    catch (UnknownVariableException & ex)
 	{
-		outputError(tr("Unknown variable"));
+        outputError(QString("Unknown variable '%1'")
+                    .arg(QString::fromStdWString(ex.what())));
 	}
 	catch (IncorrectVariableNameException)
 	{
@@ -430,6 +435,10 @@ void MainWindow::onExpressionEntered()
             break;
         case InvalidArgumentException::HYPERBOLIC_COTANGENT_FUNCTION:
             msg += " (sinh(arg) = 0)";
+            break;
+        case InvalidArgumentException::UNKNOWN:
+        default:
+            // Add nothing
             break;
         }
         outputError(msg);

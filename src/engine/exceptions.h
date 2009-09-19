@@ -124,15 +124,28 @@ public:
 	UnknownTokenException(const tstring & token) : ParserException(token) { }
 };
 /// Incorrect number.
-class IncorrectNumberException : public ParserException {};
+class IncorrectNumberException : public ParserException
+{
+public:
+    IncorrectNumberException() : ParserException() { }
+    IncorrectNumberException(const tstring & num) : ParserException(num) { }
+};
 /// Incorrect expression.
 class IncorrectExpressionException : public ParserException {};
 /// No closing bracket.
 class NoClosingBracketException : public ParserException {};
 /// Unknown function.
-class UnknownFunctionException : public ParserException {};
+class UnknownFunctionException : public ParserException
+{
+public:
+    UnknownFunctionException(const tstring & func) : ParserException(func) { }
+};
 /// Unknown variable.
-class UnknownVariableException : public ParserException {};
+class UnknownVariableException : public ParserException
+{
+public:
+    UnknownVariableException(const tstring & var) : ParserException(var) { }
+};
 /// Incorrect variable name.
 class IncorrectVariableNameException : public ParserException {};
 /// Incorrect unit conversion syntax.

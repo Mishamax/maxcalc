@@ -36,7 +36,11 @@ void VariablesTest::stress()
 	srand((unsigned)time(0));
 	for (int i = 0; i < 10000; ++i)
 	{
-		swprintf(stri, 6, L"%d", i);
+#if defined(Q_CC_MSVC)
+        swprintf(stri, 6, L"%d", i);
+#else
+        swprintf(stri, L"%d", i);
+#endif
 		name = L"Variable#";
 		name += stri;
 		while ((rand1 = rand()) == 0) {}
@@ -47,8 +51,12 @@ void VariablesTest::stress()
 
 	for (int i = 2500; i < 7500; ++i)
 	{
-		swprintf(stri, 6, L"%d", i);
-		name = L"Variable#";
+#if defined(Q_CC_MSVC)
+        swprintf(stri, 6, L"%d", i);
+#else
+        swprintf(stri, L"%d", i);
+#endif
+        name = L"Variable#";
 		name += stri;
 		vars.remove(name);
 	}
@@ -65,8 +73,12 @@ void VariablesTest::iterators()
 
 	for (int i = 0; i < 1000; ++i)
 	{
-		swprintf(stri, 6, L"%d", i);
-		vars.add(stri, Complex(i, 1000-i));
+#if defined(Q_CC_MSVC)
+        swprintf(stri, 6, L"%d", i);
+#else
+        swprintf(stri, L"%d", i);
+#endif
+        vars.add(stri, Complex(i, 1000-i));
 	}
 
 	Variables::const_iterator iter;

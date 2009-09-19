@@ -1,4 +1,6 @@
 
+// TODO: update tests to reflect new exception system (check that correct exceptions are thrown)
+
 // Local
 #include "bigdecimaltest.h"
 #include "complextest.h"

@@ -271,9 +271,11 @@ void runParser(Parser & parser)
 		tcout << _T("Unknown token '") << ex.what().c_str() <<
 				_T("'in expression");
 	}
-	catch (IncorrectNumberException)
+    catch (IncorrectNumberException & ex)
 	{
 		tcout << _T("Incorrect number");
+        if (ex.what() != _T(""))
+            tcout << _T("'") << ex.what().c_str() << _T("'");
 	}
 	catch (IncorrectExpressionException)
 	{
@@ -283,15 +285,15 @@ void runParser(Parser & parser)
 	{
 		tcout << _T("No closing bracket");
 	}
-	catch (UnknownFunctionException)
+    catch (UnknownFunctionException & ex)
 	{
-		tcout << _T("Unknown function");
+        tcout << _T("Unknown function '") << ex.what().c_str() << _T("'");
 	}
-	catch (UnknownVariableException)
+    catch (UnknownVariableException & ex)
 	{
-		tcout << _T("Unknown variable");
-	}
-	catch (IncorrectVariableNameException)
+        tcout << _T("Unknown variable '") << ex.what().c_str() << _T("'");
+    }
+    catch (IncorrectVariableNameException)
 	{
 		tcout << _T("Incorrect name of variable");
 	}
@@ -340,6 +342,10 @@ void runParser(Parser & parser)
             break;
         case InvalidArgumentException::HYPERBOLIC_COTANGENT_FUNCTION:
             tcout << _T(" (sinh(arg) = 0)");
+            break;
+        case InvalidArgumentException::UNKNOWN:
+        default:
+            // Add nothing
             break;
         }
     }
@@ -391,7 +397,7 @@ void runParser(Parser & parser)
 }
 
 // TODO: make it work on Linux
-#ifdef WIN32
+#if defined(Q_CC_MSVC)
 /*!
 	Parse command line arguments.
 */
@@ -413,9 +419,9 @@ bool parseCmdLineArgs(int argc, tchar ** argv)
 
 	return false;
 }
-#endif // WIN32
+#endif // Q_CC_MSVC
 
-#ifdef WIN32
+#if defined(Q_CC_MSVC)
 int tmain(int argc, tchar ** argv)
 #else
 int main()
@@ -425,7 +431,7 @@ int main()
 	// (non-latic characters may not work)
 	setlocale(LC_ALL, "");
 
-#ifdef WIN32
+#if defined(Q_CC_MSVC)
 	if (parseCmdLineArgs(argc, argv))
 		return 0;
 #endif

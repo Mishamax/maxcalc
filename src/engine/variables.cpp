@@ -87,7 +87,7 @@ void Variables::add(const Variable & var)
 void Variables::remove(tstring name)
 {
 	if (!vars_.erase(strToLower(name)))
-		throw UnknownVariableException();
+        throw UnknownVariableException(name);
 }
 
 /*!
@@ -100,7 +100,7 @@ Complex Variables::operator[] (tstring name)
 	VarsMap::const_iterator iter = vars_.find(strToLower(name));
 
 	if (iter == vars_.end())
-		throw UnknownVariableException();
+        throw UnknownVariableException(name);
 	else
 		return iter->second.value;
 }

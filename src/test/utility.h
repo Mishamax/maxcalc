@@ -43,7 +43,11 @@ using namespace MaxCalcEngine;
 		{ code; } \
 		QFAIL(error_message); \
 	} \
-	catch (exception) {}
+    catch (exception) {} \
+    catch (...) \
+    { \
+        QFAIL("incorrect exception caught"); \
+    }
 
 // Executes parser to evaluate expression and compares it with result
 #define PARSER_TEST(parser, expression, expression_result) \

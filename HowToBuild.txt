@@ -10,18 +10,15 @@ Building on Windows
 
 Prerequisites:
  - Qt v4.2 or higher (4.4 or 4.5 is recommended).
- - Microsoft Visual Studio 2005 or 2008
-    (Express Edition may also work if you install Platform SDK, but not tested).
+ - MSVC or MinGW:
+     - Microsoft Visual Studio 2005 or 2008 (Express Edition should also work if
+        you install Platform SDK).
+     - Unofficial MinGW build with gcc 4 (http://www.tdragon.net/recentgcc/).
 
- 
-Notes about MinGW (and standard prebuilt Qt SDK):
 
- - Official MinGW with gcc 3 will NOT work due to bad Unicode support.
-    Thus standard Qt SDK also won't work (you need to compile Qt from source
-    using Visual Studio or unofficial gcc 4-based version of MinGW).
-    
- - Unofficial builds with gcc 4 should work, although it is not tested
-    (you can get it from http://www.tdragon.net/recentgcc/).
+Note, that official MinGW with gcc 3 will NOT work due to bad Unicode support.
+Thus the standard Qt SDK also won't work (you need to compile Qt from source
+using Visual Studio or unofficial gcc 4-based version of MinGW).
 
 
 To build the sources, execute in "src" directory from Visual Studio Command

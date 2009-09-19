@@ -315,7 +315,7 @@ bool Parser::analyzeNumbers()
 		thereIsPoint = true;
 
 		if (expr_.end() == curChar_)
-			throw IncorrectNumberException();
+            throw IncorrectNumberException(number);
 	}
 
 	// Process digits
@@ -327,7 +327,7 @@ bool Parser::analyzeNumbers()
 	{
 		// Throw an exception if there was a decimal point already
 		if (thereIsPoint)
-			throw IncorrectNumberException();
+            throw IncorrectNumberException(number);
 
 		number += *curChar_++;
 
@@ -351,7 +351,7 @@ bool Parser::analyzeNumbers()
 			number += *curChar_++;
 		skipSpaces();
 		if (expr_.end() == curChar_)
-			throw IncorrectNumberException();
+            throw IncorrectNumberException(number);
 		// Process exponent digits
 		while(expr_.end() != curChar_ && istdigit(*curChar_))
 			number += *curChar_++;
@@ -702,7 +702,9 @@ Complex Parser::parseFunctions()
 				return Complex::exp(args[0]);
 			else
 				// Unknown function
-				throw UnknownFunctionException();
+                // TODO: correctly report known function with incorrect number
+                // of arguments
+                throw UnknownFunctionException(name);
 		}
 	}
 

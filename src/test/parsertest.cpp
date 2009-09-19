@@ -249,8 +249,12 @@ void ParserTest::userVars()
 	tchar num[3];
 	for (int i = 0; i < 100; ++i)
 	{
+#if defined(Q_CC_MSVC)
 		swprintf(num, 3, _T("%d"), i);
-		var += _T("x");
+#else
+        swprintf(num, _T("%d"), i);
+#endif
+        var += _T("x");
 		var += num;
 		var += _T("=");
 	}
@@ -258,7 +262,11 @@ void ParserTest::userVars()
 	PARSER_TEST(parser, var, Complex("11.1", "1.1"));
 	for (int i = 0; i < 100; ++i)
 	{
-		swprintf(num, 3, _T("%d"), i);
+#if defined(Q_CC_MSVC)
+        swprintf(num, 3, _T("%d"), i);
+#else
+        swprintf(num, _T("%d"), i);
+#endif
 		var = _T("x");
 		var += num;
 		PARSER_TEST(parser, var, Complex("11.1", "1.1"));
