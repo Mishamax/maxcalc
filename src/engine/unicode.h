@@ -79,6 +79,11 @@ void wideCharToChar(const wchar_t * from,
 										 size_t toLength,
 										 const char * localeName = "");
 
+// TODO: Temp fix for Qt GUI compilation for Windows CE
+#if defined(WINCE)
+#define fromStdWString(str) fromWCharArray(str.c_str())
+#endif
+
 #else // #if defined(MAXCALC_UNICODE)
 
 ///////////////////////////////////////////////////////////////////////////

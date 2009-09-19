@@ -60,11 +60,7 @@ AboutBox::AboutBox(QWidget * parent) : QDialog(parent)
 	labelText += MaxCalcEngine::WEBSITE;
 	labelText += _T("</a>");
 
-#ifndef WINCE
 	label.setHtml(QString::fromStdWString(labelText));
-#else
-	label.setHtml(QString::fromWCharArray(labelText.c_str()));
-#endif
 	label.setOpenExternalLinks(true);
 	label.setFrameStyle(QFrame::NoFrame);
 	QPalette p;

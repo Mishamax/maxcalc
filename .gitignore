@@ -4,3 +4,9 @@ vc90.pdb
 maxcalc.pro.user
 debug
 release
+pch.h.cpp
+vc??.idb
+*.vcproj*
+maxcalc.ncb
+maxcalc.sln
+maxcalc.suo
