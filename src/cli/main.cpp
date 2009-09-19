@@ -397,7 +397,7 @@ void runParser(Parser & parser)
 }
 
 // TODO: make it work on Linux
-#if defined(Q_CC_MSVC)
+#if defined(_MSC_VER)
 /*!
 	Parse command line arguments.
 */
@@ -419,9 +419,9 @@ bool parseCmdLineArgs(int argc, tchar ** argv)
 
 	return false;
 }
-#endif // Q_CC_MSVC
+#endif // _MSC_VER
 
-#if defined(Q_CC_MSVC)
+#if defined(_MSC_VER)
 int tmain(int argc, tchar ** argv)
 #else
 int main()
@@ -431,7 +431,7 @@ int main()
 	// (non-latic characters may not work)
 	setlocale(LC_ALL, "");
 
-#if defined(Q_CC_MSVC)
+#if defined(_MSC_VER)
 	if (parseCmdLineArgs(argc, argv))
 		return 0;
 #endif

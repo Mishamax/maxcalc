@@ -10,3 +10,5 @@ vc??.idb
 maxcalc.ncb
 maxcalc.sln
 maxcalc.suo
+object_script.*.Debug
+object_script.*.Release

@@ -1,6 +1,7 @@
 ﻿v1.9.3 Milestone-4 (IN PROGRESS).
 
     - Added: Meaningful error messages instead of 'Error!'.
+    - Fixed: Command line params handling in console version.
 
 v1.9.2 Milestone-3 (2-May-2009).
 

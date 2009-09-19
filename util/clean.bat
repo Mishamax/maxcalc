@@ -15,4 +15,6 @@ del /Q /S *.suo
 del /Q /S *.idb
 del /Q /S *.pdb
 del /Q /S pch.h.cpp
+del /Q /S object_script.*.Debug
+del /Q /S object_script.*.Release
 popd
