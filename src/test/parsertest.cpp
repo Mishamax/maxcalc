@@ -1,13 +1,14 @@
 
+// STL
+#include <ctime>
+#include <cstdlib>
+#include <sstream>
 // Local
 #include "parsertest.h"
 #include "utility.h"
 // Engine
 #include "parser.h"
 #include "exceptions.h"
-// STL
-#include <ctime>
-#include <cstdlib>
 
 void ParserTest::basic()
 {
@@ -246,29 +247,22 @@ void ParserTest::userVars()
 	PARSER_FAIL_TEST(parser, _T("x/2 = y = 1"), "Incorrent expression", IncorrectExpressionException);
 
 	tstring var = _T("");
-	tchar num[3];
-	for (int i = 0; i < 100; ++i)
+    for (int i = 0; i < 100; ++i)
 	{
-#if !defined(_MSC_VER) && defined(WIN32)
-		swprintf(num, _T("%d"), i);
-#else
-        swprintf(num, 3, _T("%d"), i);
-#endif
+        std::tstringstream ss;
+        ss << i;
         var += _T("x");
-		var += num;
+        var += ss.str();
 		var += _T("=");
 	}
 	var += _T("11.1+1.1i");
 	PARSER_TEST(parser, var, Complex("11.1", "1.1"));
 	for (int i = 0; i < 100; ++i)
 	{
-#if !defined(_MSC_VER) && defined(WIN32)
-		swprintf(num, _T("%d"), i);
-#else
-        swprintf(num, 3, _T("%d"), i);
-#endif
-		var = _T("x");
-		var += num;
+        std::tstringstream ss;
+        ss << i;
+        var = _T("x");
+        var += ss.str();
 		PARSER_TEST(parser, var, Complex("11.1", "1.1"));
 	}
 

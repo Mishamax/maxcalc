@@ -194,7 +194,7 @@ private:
 */
 inline tstring BigDecimal::toTString(const BigDecimalFormat & format) const
 {
-#if defined (MAXCALC_UNICODE)
+#if defined(MAXCALC_UNICODE)
 		return toWideString(format);
 #else
 		return toString(format);

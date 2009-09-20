@@ -1,14 +1,14 @@
 
-// Local
-#include "variablestest.h"
-#include "utility.h"
-// MaxCalcEngine
-#include "variables.h"
 // STL
 #include <string>
 #include <cstdlib>
 #include <sstream>
 #include <ctime>
+// Local
+#include "variablestest.h"
+#include "utility.h"
+// MaxCalcEngine
+#include "variables.h"
 
 using namespace MaxCalcEngine;
 using namespace std;
@@ -29,20 +29,17 @@ void VariablesTest::basic()
 void VariablesTest::stress()
 {
 	Variables vars;
-	wchar_t stri[6];
 	wstring name;
 	int rand1, rand2;
+    std::tstringstream ss;
 
 	srand((unsigned)time(0));
 	for (int i = 0; i < 10000; ++i)
 	{
-#if !defined(_MSC_VER) && defined(WIN32)
-        swprintf(stri, L"%d", i);
-#else
-        swprintf(stri, 6, L"%d", i);
-#endif
+        std::tstringstream ss;
+        ss << i;
 		name = L"Variable#";
-		name += stri;
+        name += ss.str();
 		while ((rand1 = rand()) == 0) {}
 		while ((rand2 = rand()) == 0) {}
 		vars.add(Variable(name, Complex(BigDecimal(1.0 / rand1), BigDecimal(1.0 / rand2))));
@@ -51,13 +48,10 @@ void VariablesTest::stress()
 
 	for (int i = 2500; i < 7500; ++i)
 	{
-#if !defined(_MSC_VER) && defined(WIN32)
-        swprintf(stri, L"%d", i);
-#else
-        swprintf(stri, 6, L"%d", i);
-#endif
+        std::tstringstream ss;
+        ss << i;
         name = L"Variable#";
-		name += stri;
+        name += ss.str();
 		vars.remove(name);
 	}
 	COMPARE(vars.count(), size_t(5000));
@@ -69,16 +63,13 @@ void VariablesTest::stress()
 void VariablesTest::iterators()
 {
 	Variables vars;
-	wchar_t stri[6];
+    std::tstringstream ss;
 
 	for (int i = 0; i < 1000; ++i)
 	{
-#if !defined(_MSC_VER) && defined(WIN32)
-        swprintf(stri, L"%d", i);
-#else
-        swprintf(stri, 6, L"%d", i);
-#endif
-        vars.add(stri, Complex(i, 1000-i));
+        std::tstringstream ss;
+        ss << i;
+        vars.add(ss.str(), Complex(i, 1000-i));
 	}
 
 	Variables::const_iterator iter;

@@ -28,6 +28,7 @@
 #include <iostream>
 #include <clocale>
 #include <cstdlib>
+#include <cstring>
 
 using namespace std;
 using namespace MaxCalcEngine;
@@ -269,7 +270,7 @@ void runParser(Parser & parser)
 	catch (UnknownTokenException & ex)
 	{
 		tcout << _T("Unknown token '") << ex.what().c_str() <<
-				_T("'in expression");
+                _T("' in expression");
 	}
     catch (IncorrectNumberException & ex)
 	{
@@ -396,22 +397,27 @@ void runParser(Parser & parser)
 	}
 }
 
-// TODO: make it work on Linux
-#if defined(_MSC_VER)
 /*!
 	Parse command line arguments.
 */
-bool parseCmdLineArgs(int argc, tchar ** argv)
+bool parseCmdLineArgs(int argc, char ** argv)
 {
 	if (argc < 2)
 		return false;
 
-	if (argc >= 3 && tstrcmp(argv[1], _T("-c")) == 0)
+    if (argc >= 3 && strcmp(argv[1], "-c") == 0)
 	{
-		tchar * expr = argv[2];
+        char * expr = argv[2];
+        string str(expr);
+        tstring tstr;
+#if defined(MAXCALC_UNICODE)
+        stringToWideString(str, tstr);
+#else
+        tstr = str;
+#endif
 
 		Parser parser;
-		parser.setExpression(expr);
+        parser.setExpression(tstr);
 		runParser(parser);
 
 		return true;
@@ -419,22 +425,15 @@ bool parseCmdLineArgs(int argc, tchar ** argv)
 
 	return false;
 }
-#endif // _MSC_VER
 
-#if defined(_MSC_VER)
-int tmain(int argc, tchar ** argv)
-#else
-int main()
-#endif
+int main(int argc, char ** argv)
 {
 	// Without that locale may be set incorrecly on Linux
 	// (non-latic characters may not work)
 	setlocale(LC_ALL, "");
 
-#if defined(_MSC_VER)
 	if (parseCmdLineArgs(argc, argv))
 		return 0;
-#endif
 
 	const int exprLength = 1000;
 	tchar charExpr[exprLength];

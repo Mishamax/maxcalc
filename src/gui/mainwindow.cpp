@@ -188,7 +188,8 @@ void MainWindow::initMainMenu()
 			}
 		}
 
-		firstLevelMenu = currentUnits->addMenu(QString::fromStdWString(cur->name));
+        firstLevelMenu = currentUnits->addMenu(QString::fromWCharArray(
+                cur->name.c_str()));
 		const UnitConversion::UnitDef * cur2;
 		for (cur2 = firstLevelCur; cur2->type == type; ++cur2)
 		{
@@ -197,10 +198,10 @@ void MainWindow::initMainMenu()
 			QString conversion = QString("[") +
 								 firstLevelMenu->title() +
 								 QString("->") +
-								 QString::fromStdWString(cur2->name) +
+                                 QString::fromWCharArray(cur2->name.c_str()) +
 								 QString("]");
 			MyAction * action = new MyAction(firstLevelMenu,
-											 QString::fromStdWString(cur2->name),
+                                             QString::fromWCharArray(cur2->name.c_str()),
 											 conversion, this,
 											 SLOT(onUnitConversion(const QString &)));
 			firstLevelMenu->addAction(action);
@@ -221,22 +222,22 @@ void MainWindow::updateVariablesList()
 	variablesList->clear();
 
 	variablesList->addItem(tr("e = ") +
-		QString::fromStdWString(MaxCalcEngine::BigDecimal::E.toWideString()));
+        QString::fromWCharArray(MaxCalcEngine::BigDecimal::E.toWideString().c_str()));
 	variablesList->addItem(tr("pi = ") +
-		QString::fromStdWString(MaxCalcEngine::BigDecimal::PI.toWideString()));
+        QString::fromWCharArray(MaxCalcEngine::BigDecimal::PI.toWideString().c_str()));
 
 	if (parser.context().resultExists())
 	{
 		variablesList->addItem(tr("res = ") +
-			QString::fromStdWString(parser.context().result().toWideString()));
+            QString::fromWCharArray(parser.context().result().toWideString().c_str()));
 	}
 
 	MaxCalcEngine::Variables::const_iterator iter;
 	for (iter = parser.context().variables().begin();
 		iter != parser.context().variables().end(); ++iter)
 	{
-		variablesList->addItem(QString::fromStdWString(iter->name) + " = " +
-			QString::fromStdWString(iter->value.toWideString()));
+        variablesList->addItem(QString::fromWCharArray(iter->name.c_str()) +
+            " = " + QString::fromWCharArray(iter->value.toWideString().c_str()));
 	}
 }
 
@@ -303,7 +304,7 @@ void MainWindow::onExpressionEntered()
 		historyBox.append(inputBox.text());
 		historyBox.setTextColor(Qt::darkGreen);
 		historyBox.append(indent +
-			QString::fromStdWString(parser.context().result().toWideString()));
+            QString::fromWCharArray(parser.context().result().toWideString().c_str()));
 		inputBox.clear();
 		inputBox.setFocus();
 		updateVariablesList();
@@ -316,13 +317,13 @@ void MainWindow::onExpressionEntered()
 	catch (UnknownTokenException & ex)
 	{
 		outputError(QString("Unknown token '%1' in expression")
-					.arg(QString::fromStdWString(ex.what())));
+                    .arg(QString::fromWCharArray(ex.what().c_str())));
 	}
     catch (IncorrectNumberException & ex)
 	{
         QString msg = "Incorrect number";
         if (ex.what() != _T(""))
-            msg += QString(" '%1'").arg(QString::fromStdWString(ex.what()));
+            msg += QString(" '%1'").arg(QString::fromWCharArray(ex.what().c_str()));
         outputError(msg);
 	}
 	catch (IncorrectExpressionException)
@@ -336,12 +337,12 @@ void MainWindow::onExpressionEntered()
     catch (UnknownFunctionException & ex)
 	{
         outputError(QString("Unknown function '%1'")
-                    .arg(QString::fromStdWString(ex.what())));
+                    .arg(QString::fromWCharArray(ex.what().c_str())));
 	}
     catch (UnknownVariableException & ex)
 	{
         outputError(QString("Unknown variable '%1'")
-                    .arg(QString::fromStdWString(ex.what())));
+                    .arg(QString::fromWCharArray(ex.what().c_str())));
 	}
 	catch (IncorrectVariableNameException)
 	{
@@ -359,7 +360,7 @@ void MainWindow::onExpressionEntered()
 	catch (InvalidArgumentException & ex)
 	{
         QString msg = QString("Invalid argument of function '%1'")
-                    .arg(QString::fromStdWString(ex.what()));
+                    .arg(QString::fromWCharArray(ex.what().c_str()));
         switch (ex.reason())
         {
         case InvalidArgumentException::ZERO:
@@ -403,7 +404,7 @@ void MainWindow::onExpressionEntered()
 	catch (InvalidUnitConversionArgumentException & ex)
 	{
 		outputError(QString("Complex argument in unit conversion '%1'")
-					.arg(QString::fromStdWString(ex.what())));
+                    .arg(QString::fromWCharArray(ex.what().c_str())));
 	}
 	// Arithmetic exception
 	catch (ArithmeticException & ex)

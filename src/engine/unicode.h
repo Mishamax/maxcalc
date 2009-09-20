@@ -55,34 +55,15 @@ typedef std::wstring tstring;		///< tstring definition
 #define tcout wcout					///< Standard output stream
 #define tcin wcin					///< Standard input stream
 #define fgetts fgetws				///< Gets string from stream
+#define tstringstream wstringstream ///< stringstream
 
 // String functions
 #define tstrcmp wcscmp
 #define tmain wmain
 
 // String conversion functions
-void stringToWideString(const std::string & from,
-											 std::wstring & to,
-											 const char * localeName = "");
-void wideStringToString(const std::wstring & from,
-											 std::string & to,
-											 const char * localeName = "");
-
-void charToWideChar(const char * from,
-										 size_t fromLength,
-										 wchar_t * to,
-										 size_t toLength,
-										 const char * localeName = "");
-void wideCharToChar(const wchar_t * from,
-										 size_t fromLength,
-										 char * to,
-										 size_t toLength,
-										 const char * localeName = "");
-
-// TODO: Temp fix for Qt GUI compilation for Windows CE
-#if defined(WINCE)
-#define fromStdWString(str) fromWCharArray(str.c_str())
-#endif
+void stringToWideString(const std::string & from, std::wstring & to);
+void wideStringToString(const std::wstring & from, std::string & to);
 
 #else // #if defined(MAXCALC_UNICODE)
 
@@ -108,6 +89,7 @@ typedef std::string tstring;		///< tstring definition
 #define tcout cout					///< Standard output stream
 #define tcin cin					///< Standard input stream
 #define fgetts fgets				///< Gets string from stream
+#define tstringstream stringstream  ///< stringstream
 
 // String functions
 #define tstrcmp strcmp

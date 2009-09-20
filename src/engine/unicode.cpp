@@ -17,16 +17,15 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
-#if defined(MAXCALC_UNICODE)
-#ifndef WINCE
-#include <locale>
-#else
-#include <windows.h>
-#endif
-#endif
 
 // Local
 #include "unicode.h"
+
+#if defined(MAXCALC_UNICODE)
+// STL
+#include <cstdlib>
+#include <cassert>
+#endif
 
 namespace MaxCalcEngine {
 
@@ -34,138 +33,26 @@ using namespace std;
 
 #if defined(MAXCALC_UNICODE)
 
-// STL
-#include <clocale>
-#include <cassert>
-
-// TODO: do something with unreferenced localeName parameters under WinCE
-
-using namespace std;
-
-#ifndef WINCE
-typedef codecvt<wchar_t, char, mbstate_t> CodeCvt;
-#endif
-
 /*!
-	Converts \a std::string to \a std::wstring using specified \a locale.
-
-	If \a locale is empty string, the default system locale is used.
-
+    Converts \a std::string to \a std::wstring.
 	\ingroup MaxCalcEngine
 */
-void stringToWideString(const string & from, wstring & to, const char * localeName)
+void stringToWideString(const string & from, wstring & to)
 {
-	assert(localeName);
-
-#ifndef WINCE
-	mbstate_t state = mbstate_t();
-	const char * c1 = 0;
-	wchar_t * c2 = 0;
-	size_t len = from.length();
-	if (to.length() < len)
-		to.resize(len);
-	use_facet<CodeCvt>(locale(localeName)).in(state, &from[0], &from[len], c1,
-											  &to[0], &to[len], c2);
-#else
-	localeName;
-	size_t length = from.length() + 1;
-	wchar_t * str = new wchar_t[length];
-	MultiByteToWideChar(CP_ACP, 0, from.c_str(), length, str, length);
-	to = str;
-#endif
+    wchar_t * toStr = new wchar_t[from.length() + 1];
+    mbstowcs(toStr, from.c_str(), from.length() + 1);
+    to.assign(toStr);
 }
 
 /*!
-	Converts \a std::wstring to \a std::string using specified \a locale.
-
-	If \a locale is empty string, the default system locale is used.
-
+    Converts \a std::wstring to \a std::string.
 	\ingroup MaxCalcEngine
 */
-void wideStringToString(const wstring & from, string & to, const char * localeName)
+void wideStringToString(const wstring & from, string & to)
 {
-	assert(localeName);
-
-#ifndef WINCE
-	mbstate_t state = mbstate_t();
-	const wchar_t * c1 = 0;
-	char * c2 = 0;
-	size_t len = from.length();
-	if (to.length() < len)
-		to.resize(len);
-	use_facet<CodeCvt>(locale(localeName)).out(state, &from[0], &from[len], c1,
-											   &to[0], &to[len], c2);
-#else
-	localeName;
-	size_t length = from.length() + 1;
-	char * str = new char[length];
-	WideCharToMultiByte(CP_ACP, 0, from.c_str(), length, str, length, NULL, NULL);
-	to = str;
-#endif
-}
-
-/*!
-	Converts \a char* string to \a wchar_t * string using specified \a locale.
-
-	If \a locale is empty string, the default system locale is used.
-
-	\a toLength (length of \a to) must be no less than than \a fromLength
-	(length of \a from).
-
-	\ingroup MaxCalcEngine
-*/
-void charToWideChar(const char * from, size_t fromLength, wchar_t * to,
-					size_t toLength, const char * localeName)
-{
-	assert(fromLength <= toLength);
-	assert(to);
-	assert(from);
-	assert(localeName);
-
-#ifndef WINCE
-	mbstate_t state = mbstate_t();
-	const char * c1 = 0;
-	wchar_t * c2 = 0;
-	use_facet<CodeCvt>(locale(localeName)).in(state, &from[0],
-											  &from[fromLength], c1, &to[0],
-											  &to[toLength], c2);
-	to[fromLength] = 0;
-#else
-	localeName;
-	MultiByteToWideChar(CP_ACP, 0, from, fromLength, to, toLength);
-#endif
-}
-
-/*!
-	Converts \a wchar_t* string to \a char * string using specified \a locale.
-
-	If \a locale is empty string, the default system locale is used.
-
-	\a toLength (length of \a to) must be no less than than \a fromLength
-	(length of \a from).
-
-	\ingroup MaxCalcEngine
-*/
-void wideCharToChar(const wchar_t * from, size_t fromLength, char * to,
-					size_t toLength, const char * localeName)
-{
-	assert(fromLength <= toLength);
-	assert(to);
-	assert(from);
-	assert(localeName);
-
-#ifndef WINCE
-	mbstate_t state = mbstate_t();
-	const wchar_t * c1 = 0;
-	char * c2 = 0;
-	use_facet<CodeCvt>(locale(localeName)).out(state, &from[0],
-											   &from[fromLength], c1, &to[0],
-											   &to[toLength], c2);
-	to[fromLength] = 0;
-#else
-	localeName;
-	WideCharToMultiByte(CP_ACP, 0, from, fromLength, to, toLength, NULL, NULL);
-#endif
+    char * toStr = new char[from.length() + 1];
+    wcstombs(toStr, from.c_str(), from.length() + 1);
+    to.assign(toStr);
 }
 
 #endif // #if defined(MAXCALC_UNICODE)
