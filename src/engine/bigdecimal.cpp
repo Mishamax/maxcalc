@@ -61,6 +61,29 @@ using namespace DecNumber;
 	\ingroup MaxCalcEngine
 */
 
+/*!
+    Working precision of BigDecimal represented as string.
+
+    The default value is 1E-WORKING_PRECISION.
+    This is used internally in BigDecimal.
+
+    \sa BigDecimal, WORKING_PRECISION
+    \ingroup MaxCalcEngine
+*/
+static const char * WORKING_PRECISION_STRING = "1E-136";
+
+/*!
+    Default precision used to rounding during conversion from BigDecimal to
+    string and from string to BigDecimal represented as string.
+
+    The default value is 1E-MAX_IO_PRECISION.
+    This is used internally in BigDecimal.
+
+    \sa BigDecimal, WORKING_PRECISION
+    \ingroup MaxCalcEngine
+*/
+static const char * MAX_IO_PRECISION_STRING = "1E-50";
+
 
 // Macro for creating new decContext with default settings and specified precision
 #define NEW_PRECISE_CONTEXT(context, precision) \

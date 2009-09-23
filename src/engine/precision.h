@@ -49,16 +49,6 @@ namespace MaxCalcEngine {
 */
 static const int WORKING_PRECISION = DECNUMDIGITS;
 
-/*!
-	Working precision of BigDecimal represented as string.
-
-	The default value is 1E-WORKING_PRECISION.
-	This is used internally in BigDecimal.
-
-	\sa BigDecimal, WORKING_PRECISION
-	\ingroup MaxCalcEngine
-*/
-static const char * WORKING_PRECISION_STRING = "1E-136";
 
 /*!
 	Default precision used to rounding during conversion from BigDecimal to
@@ -72,17 +62,6 @@ static const char * WORKING_PRECISION_STRING = "1E-136";
 */
 static const int MAX_IO_PRECISION = 50;
 
-/*!
-	Default precision used to rounding during conversion from BigDecimal to
-	string and from string to BigDecimal represented as string.
-
-	The default value is 1E-MAX_IO_PRECISION.
-	This is used internally in BigDecimal.
-
-	\sa BigDecimal, WORKING_PRECISION
-	\ingroup MaxCalcEngine
-*/
-static const char * MAX_IO_PRECISION_STRING = "1E-50";
 
 
 } // namespace MaxCalcEngine

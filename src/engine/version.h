@@ -33,10 +33,6 @@ static const tchar * VERSION = _T("1.9.4");
 */
 static const tchar * VERSION_LABEL = _T("Milestone 5");
 /*!
-	Developer.
-*/
-static const tchar * DEVELOPER = _T("Michael Maximov");
-/*!
 	Web site.
 */
 static const tchar * WEBSITE = _T("http://code.google.com/p/maxcalc/");

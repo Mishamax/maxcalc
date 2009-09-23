@@ -155,7 +155,7 @@ void MainWindow::initMainMenu()
 	QMenu * unitConversion = mainMenu.addMenu(tr("&Unit conversion"));
 	QMenu * currentUnits = 0;
 	QMenu * firstLevelMenu = 0;
-	const UnitConversion::UnitDef * firstLevelCur;
+    const UnitConversion::UnitDef * firstLevelCur = 0;
 
 	UnitConversion::Type type = UnitConversion::NO_TYPE;
 	const UnitConversion::UnitDef * cur;
@@ -286,6 +286,7 @@ void MainWindow::onExpressionEntered()
 
 	wchar_t * str = new wchar_t[expr.length() + 1];
 	expr.toWCharArray(str);
+    str[expr.length()] = L'\0';
 	parser.setExpression(str);
 
 	try
