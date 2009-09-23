@@ -284,13 +284,9 @@ void MainWindow::onExpressionEntered()
 	if (expr.isEmpty())
 		return;
 
-#ifndef WINCE
-	parser.setExpression(expr.toStdWString());
-#else
 	wchar_t * str = new wchar_t[expr.length() + 1];
 	expr.toWCharArray(str);
 	parser.setExpression(str);
-#endif
 
 	try
 	{
