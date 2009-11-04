@@ -13,8 +13,6 @@ endif (WIN32)
 include_directories(${MAXCALC_SOURCE_DIR}/engine)
 link_directories(${MAXCALC_BINARY_DIR}/engine)
 
-# Macros
-add_definitions(-DMAXCALC_UNICODE)
 
 # Files
 set(SOURCES
@@ -24,17 +22,26 @@ set(SOURCES
         mainwindow.cpp
         myaction.cpp)
 
-set(HEADERS
+set(MOC_HEADERS
     aboutbox.h
     inputbox.h
     mainwindow.h
     myaction.h)
 
-qt4_wrap_cpp(MOC_SOURCES ${HEADERS})
-
-# WIN32 is specified on Windows to remove console
 if (WIN32)
-    add_executable(maxcalcwin WIN32 ${SOURCES} ${MOC_SOURCES})
+    set (RESOURCES resources.rc)
+endif (WIN32)
+
+if (MSVC)
+    set_source_files_properties(${SOURCES} ${MOC_SOURCES} PROPERTIES COMPILE_FLAGS /Zc:wchar_t-)
+endif (MSVC)
+
+qt4_wrap_cpp(MOC_SOURCES ${MOC_HEADERS})
+
+# Executable
+if (WIN32)
+    # WIN32 is specified on Windows to remove console
+    add_executable(maxcalcwin WIN32 ${SOURCES} ${MOC_SOURCES} ${RESOURCES})
     target_link_libraries(maxcalcwin ${QT_LIBRARIES} engine)
 else (WIN32)
     add_executable(maxcalcgui ${SOURCES} ${MOC_SOURCES})
