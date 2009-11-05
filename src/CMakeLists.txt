@@ -1,7 +1,7 @@
 
 project(MAXCALC)
 
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.4.4)
 
 # To eliminate warning when linking to Qt4
 if (COMMAND cmake_policy)

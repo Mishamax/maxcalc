@@ -16,11 +16,11 @@ link_directories(${MAXCALC_BINARY_DIR}/engine)
 
 # Files
 set(SOURCES
-       aboutbox.cpp
-        inputbox.cpp
-        main.cpp
-        mainwindow.cpp
-        myaction.cpp)
+    aboutbox.cpp
+    inputbox.cpp
+    main.cpp
+    mainwindow.cpp
+    myaction.cpp)
 
 set(MOC_HEADERS
     aboutbox.h
