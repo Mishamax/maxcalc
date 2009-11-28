@@ -66,7 +66,7 @@ void MainWindow::initUi()
 
 	QFont font = historyBox.currentFont();
 	font.setPixelSize(12);
-	historyBox.setCurrentFont(font);
+    historyBox.setFont(font);
 	historyBox.setReadOnly(true);
 
 	font = inputBox.font();
@@ -289,6 +289,10 @@ void MainWindow::onExpressionEntered()
     str[expr.length()] = L'\0';
 	parser.setExpression(str);
 
+    historyBox.moveCursor(QTextCursor::End);
+    historyBox.setTextColor(Qt::blue);
+    historyBox.append(inputBox.text());
+
 	try
 	{
 		parser.parse();
@@ -297,8 +301,6 @@ void MainWindow::onExpressionEntered()
 
 		emit expressionCalculated();
 
-		historyBox.setTextColor(Qt::blue);
-		historyBox.append(inputBox.text());
 		historyBox.setTextColor(Qt::darkGreen);
 		historyBox.append(indent +
             QString::fromWCharArray(parser.context().result().toWideString().c_str()));
@@ -447,8 +449,6 @@ void MainWindow::onExpressionEntered()
 
 void MainWindow::outputError(QString message)
 {
-	historyBox.setTextColor(Qt::blue);
-	historyBox.append(inputBox.text());
 	historyBox.setTextColor(Qt::red);
 	historyBox.append(indent + message);
 	inputBox.selectAll();
