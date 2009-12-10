@@ -134,21 +134,22 @@ void MainWindow::initMainMenu()
 	commands->addAction(tr("&Delete all variables"), this,
 						SLOT(onDeleteAllVariables()));
 
-	// View menu
+    // Settings menu
 
-	QMenu * view = mainMenu.addMenu(tr("&View"));
-	QAction * action = new QAction(tr("&Variables"), view);
+    QMenu * settings = mainMenu.addMenu(tr("&Settings"));
+    QAction * action = new QAction(tr("&Variables"), settings);
 	action->setCheckable(true);
 	action->setChecked(true);
 	connect(action, SIGNAL(toggled(bool)), &variablesListWrapper,
 			SLOT(setVisible(bool)));
-	view->addAction(action);
-	action = new QAction(tr("&Functions"), view);
+    settings->addAction(action);
+    action = new QAction(tr("&Functions"), settings);
 	action->setCheckable(true);
 	action->setChecked(true);
 	connect(action, SIGNAL(toggled(bool)), &functionsListWrapper,
 			SLOT(setVisible(bool)));
-	view->addAction(action);
+    settings->addAction(action);
+//    action = new QAction(tr("&"))
 
 	// Unit conversion menu
 
