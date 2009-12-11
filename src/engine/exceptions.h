@@ -134,6 +134,8 @@ public:
 class IncorrectExpressionException : public ParserException {};
 /// No closing bracket.
 class NoClosingBracketException : public ParserException {};
+/// No closing bracket.
+class TooManyClosingBracketsException : public ParserException {};
 /// Unknown function.
 class UnknownFunctionException : public ParserException
 {

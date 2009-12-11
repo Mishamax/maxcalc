@@ -334,6 +334,10 @@ void MainWindow::onExpressionEntered()
 	{
 		outputError(tr("No closing bracket"));
 	}
+    catch (TooManyClosingBracketsException)
+    {
+        outputError(tr("Too many closing brackets"));
+    }
     catch (UnknownFunctionException & ex)
 	{
         outputError(QString("Unknown function '%1'")

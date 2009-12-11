@@ -286,6 +286,10 @@ void runParser(Parser & parser)
 	{
 		tcout << _T("No closing bracket");
 	}
+    catch (TooManyClosingBracketsException)
+    {
+        tcout << _T("Too many closing brackets");
+    }
     catch (UnknownFunctionException & ex)
 	{
         tcout << _T("Unknown function '") << ex.what().c_str() << _T("'");

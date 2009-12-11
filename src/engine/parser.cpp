@@ -404,7 +404,9 @@ void Parser::syntaxAnalysis()
 
 	if (tokens_.end() == curToken_)
 		context_.setResult(result);
-	else
+    else if (CLOSING_BRACKET == curToken_->token)
+        throw TooManyClosingBracketsException();
+    else
 		throw IncorrectExpressionException();
 }
 
