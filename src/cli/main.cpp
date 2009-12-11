@@ -302,11 +302,15 @@ void runParser(Parser & parser)
 	{
 		tcout << _T("Incorrect unit conversion syntax");
 	}
-	catch (UnknownUnitConversionException)
-	{
-		tcout << _T("Unknown unit conversion");
-	}
-	// Invalid argument exceptions
+    catch (UnknownUnitException & ex)
+    {
+        tcout << _T("Unknown unit '") << ex.what().c_str() << _T("'");
+    }
+    catch (UnknownUnitConversionException & ex)
+    {
+        tcout << _T("There is no unit conversion '") << ex.what().c_str() << _T("'");
+    }
+    // Invalid argument exceptions
 	catch (InvalidArgumentException & ex)
 	{
         tcout << _T("Invalid argument of function '") << ex.what().c_str() <<

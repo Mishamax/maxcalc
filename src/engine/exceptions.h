@@ -150,8 +150,18 @@ public:
 class IncorrectVariableNameException : public ParserException {};
 /// Incorrect unit conversion syntax.
 class IncorrectUnitConversionSyntaxException : public ParserException {};
+/// Unknown unit in unit conversion.
+class UnknownUnitException : public ParserException
+{
+public:
+    UnknownUnitException(const tstring & unit) : ParserException(unit) { }
+};
 /// Unknown unit conversion.
-class UnknownUnitConversionException : public ParserException {};
+class UnknownUnitConversionException : public ParserException
+{
+public:
+    UnknownUnitConversionException(const tstring & c) : ParserException(c) { }
+};
 
 } // namespace MaxCalcEngine
 

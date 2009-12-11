@@ -352,9 +352,15 @@ void MainWindow::onExpressionEntered()
 	{
 		outputError(tr("Incorrect unit conversion syntax"));
 	}
-	catch (UnknownUnitConversionException)
+    catch (UnknownUnitException & ex)
+    {
+        outputError(QString("Unknown unit '%1'")
+                    .arg(QString::fromWCharArray(ex.what().c_str())));
+    }
+    catch (UnknownUnitConversionException & ex)
 	{
-		outputError(tr("Unknown unit conversion"));
+        outputError(QString("There is no unit conversion '%1'")
+                    .arg(QString::fromWCharArray(ex.what().c_str())));
 	}
 	// Invalid argument exceptions
 	catch (InvalidArgumentException & ex)

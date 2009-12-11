@@ -24,98 +24,79 @@
 #include "unicode.h"
 #include "bigdecimal.h"
 
-// Workaround for Windows CE, where IN is defined in windef.h
-#ifdef IN
-#undef IN
-#endif
 
 namespace MaxCalcEngine {
 
 class UnitConversion
 {
 public:
-	enum Unit
-	{
-		NO_UNIT,
-		// Length
-		MIL, IN, FT, YD, MI, MICRON, MM, CM, M, KM,
-		// Weight
-		LB, OZ, G, KG,
-		// Time
-		MICROS, MS, S, MIN, H, D,
-		// Speed
-		MIpH, MpS, FTpH, KMpH, KNOT,
-		// Temperature
-		C, F, K
-	};
 
-	enum Type
-	{
-		NO_TYPE, LENGTH, WEIGHT, TIME, SPEED, TEMPERATURE
-	};
+    /*! Units. */
+    enum Unit
+    {
+        NO_UNIT,
+        // Length
+        MIL, INCH, FOOT, YARD, MILE, MICRON, MILLIMETER, CENTIMETER, METER, KILOMETER,
+        // Weight
+        POUND, OUNCE, GRAMME, KILOGRAMME,
+        // Time
+        MICROSECOND, MILLISECOND, SECOND, MINUTE, HOUR, DAY,
+        // Speed
+        MILE_PER_HOUR, METER_PER_SECOND, FOOT_PER_HOUR, KILOMETER_PER_HOUR, KNOT,
+        // Temperature
+        CELSIUS, FAHRENHEIT, KELVIN
+    };
 
-	struct UnitDef
-	{
-		tstring name;
-		Unit unit;
-		Type type;
-	};
+    /*! Types of unit conversions. */
+    enum Type
+    {
+        NO_TYPE, LENGTH, WEIGHT, TIME, SPEED, TEMPERATURE
+    };
+
+    /*! Unit definition for table of units. */
+    struct UnitDef
+    {
+        tstring name;
+        Unit unit;
+        Type type;
+    };
 
 private:
-	static const UnitDef units_[];
+    static const UnitDef mUnits[];
 
-	struct SimpleConversion
-	{
-		const Unit unit1;
-		const Unit unit2;
-		const BigDecimal multiplier;
-	};
+    /*! Represents simple unit conversion (multiply / divide by multiplier). */
+    struct SimpleConversion
+    {
+        const Unit unit1;
+        const Unit unit2;
+        const BigDecimal multiplier;
+    };
 
-	struct ArbitraryConversion
-	{
-		const Unit unit1;
-		const Unit unit2;
-		BigDecimal (*convert)(BigDecimal arg);
-	};
+    /*! Represents arbitrary unit conversion (call conversion functions). */
+    struct ArbitraryConversion
+    {
+        const Unit unit1;
+        const Unit unit2;
+        BigDecimal (*convert)(BigDecimal arg);
+    };
 
-	static const SimpleConversion simpleConversions_[];
-	static const ArbitraryConversion arbitraryConversions_[];
+    static const SimpleConversion mSimpleConversions[];
+    static const ArbitraryConversion mArbitraryConversions[];
 
-	static BigDecimal ctof(BigDecimal arg)
-	{
-		return arg * 1.8 + 32;
-	}
-	static BigDecimal ctok(BigDecimal arg)
-	{
-		return arg + 273.15;
-	}
-	static BigDecimal ftoc(BigDecimal arg)
-	{
-		return (arg + 459.67) * 5.0 / 9.0 - 273.15;
-	}
-	static BigDecimal ftok(BigDecimal arg)
-	{
-		return (arg + 459.67) * 5.0 / 9.0;
-	}
-	static BigDecimal ktoc(BigDecimal arg)
-	{
-		return arg - 273.15;
-	}
-	static BigDecimal ktof(BigDecimal arg)
-	{
-		return (arg - 273.15) * 1.8 + 32;
-	}
+    // Arbitrary conversions functions.
+    static BigDecimal ctof(BigDecimal arg) { return arg * 1.8 + 32; }
+    static BigDecimal ctok(BigDecimal arg) { return arg + 273.15; }
+    static BigDecimal ftoc(BigDecimal arg) { return (arg + 459.67) * 5.0 / 9.0 - 273.15; }
+    static BigDecimal ftok(BigDecimal arg) { return (arg + 459.67) * 5.0 / 9.0; }
+    static BigDecimal ktoc(BigDecimal arg) { return arg - 273.15; }
+    static BigDecimal ktof(BigDecimal arg) { return (arg - 273.15) * 1.8 + 32; }
 
 public:
-	static BigDecimal convert(const BigDecimal arg, const tstring & unit1,
-							  const tstring & unit2);
-	inline static const UnitDef * units();
+    static BigDecimal convert(const BigDecimal number,
+                              const tstring & unit1,
+                              const tstring & unit2);
+    inline static const UnitDef * units() { return mUnits; }
 };
-
-inline const UnitConversion::UnitDef * UnitConversion::units()
-{
-	return units_;
-}
 
 } // namespace MaxCalcEngine
 

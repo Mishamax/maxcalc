@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (CELSIUS) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,214 +23,244 @@
 
 namespace MaxCalcEngine {
 
-// All constants have 150 digits precision
-const UnitConversion::SimpleConversion UnitConversion::simpleConversions_[] =
+/*!
+    \class UnitConversion
+    \brief Performs unit conversions.
+
+    Unit conversion of a number from unit1 to unit2 is performed using
+    convert(number, unit1, unit2) function.
+
+    This class also stores all unit conversion tables.
+    List of units can be retrieved using units() function.
+
+    \ingroup MaxCalcEngine
+*/
+
+/*!
+    Simple unit conversion which can be performed by multiplying / dividing
+    of number by a constant.
+    Here are only conversions with constant > 1. Conversions in forward
+    direction are performed by multiplying by this constant and in backward
+    direction - by dividing by this constant.
+    All constants have 150 digits precision.
+*/
+const UnitConversion::SimpleConversion UnitConversion::mSimpleConversions[] =
 {
-	//---------------------------------------------------------------------
-	// Length
-	// Mil
-    { MIL,		MICRON,	"25.4" },
-	// Inch
-	{ IN,		MIL,	"1000" },
-	{ IN,		MICRON,	"25400" },
-	{ IN,		MM,		"25.4" },
-	{ IN,		CM,		"2.54" },
-	// Foot
-	{ FT,		MIL,	"12000" },
-	{ FT,		IN,		"12" },
-	{ FT,		MICRON,	"304800" },
-	{ FT,		MM,		"304.8" },
-	{ FT,		CM,		"30.48" },
-	// Yard
-	{ YD,		MIL,	"36000" },
-	{ YD,		IN,		"36" },
-	{ YD,		FT,		"3" },
-	{ YD,		MICRON,	"914400" },
-	{ YD,		MM,		"914.4" },
-	{ YD,		CM,		"91.44" },
-	// Mile
-	{ MI,		MIL,	"63360000" },
-	{ MI,		IN,		"63360" },
-	{ MI,		FT,		"5280" },
-	{ MI,		YD,		"1760" },
-	{ MI,		MICRON,	"1609344000" },
-	{ MI,		MM,		"1609344" },
-	{ MI,		CM,		"160934.4" },
-	{ MI,		M,		"1609.344" },
-	{ MI,		KM,		"1.609344" },
-	// Millimeter
-	{ MM,		MIL,	"39370.078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921e-3" },
-	{ MM,		MICRON,	"1000" },
-	// Cantimeter
-	{ CM,		MIL,	"39370.078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921e-2" },
-	{ CM,		MICRON,	"10000" },
-	{ CM,		MM,		"10" },
-	// Meter
-	{ M,		MIL,	"39370.078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921" },
-	{ M,		IN,		"39.370078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921" },
-	{ M,		FT,		"3.2808398950131233595800524934383202099737532808398950131233595800524934383202099737532808398950131233595800524934383202099737532808398950131233595800524934" },
-	{ M,		YD,		"1.0936132983377077865266841644794400699912510936132983377077865266841644794400699912510936132983377077865266841644794400699912510936132983377077865266841645" },
-	{ M,		MICRON,	"1000000" },
-	{ M,		MM,		"1000" },
-	{ M,		CM,		"100" },
-	// Kilometer
-	{ KM,		MIL,	"39370.078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921e+3" },
-	{ KM,		IN,		"39.370078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921e+3" },
-	{ KM,		FT,		"3.2808398950131233595800524934383202099737532808398950131233595800524934383202099737532808398950131233595800524934383202099737532808398950131233595800524934e+3" },
-	{ KM,		YD,		"1.0936132983377077865266841644794400699912510936132983377077865266841644794400699912510936132983377077865266841644794400699912510936132983377077865266841645e+3" },
-	{ KM,		MICRON,	"1000000000" },
-	{ KM,		MM,		"1000000" },
-	{ KM,		CM,		"100000" },
-	{ KM,		M,		"1000" },
-	//---------------------------------------------------------------------
-	// Weight
-	// Pound
-	{ LB,		OZ,		"16.000002821917267029565227206668754885444268544934799601545281895425389918418371810175269281455206296261806196365934943519325900403251977458524870967832965" },
-	{ LB,		G,		"453.5924" },
-	// Ounce
-	{ OZ,		G,		"28.34952" },
-	// Kilogramme
-	{ KG,		LB,		"2.2046224760379583079434311509628468201848179114112141208715137202475173746297336551494249021809007381957898765499598317784865883996292706844294569309362326" },
-	{ KG,		OZ,		"35.273965837869565340083359436068053356811684995019316023692817373980229647627190866018190078703272577454574186793991573755040649718231560887097912063414125" },
-	{ KG,		G,		"1000" },
-	//---------------------------------------------------------------------
-	// Time
-	// Millisecond
-	{ MS,		MICROS,	"1000" },
-	// Second
-	{ S,		MICROS,	"1000000" },
-	{ S,		MS,		"1000" },
-	// Minute
-	{ MIN,		MICROS,	"60000000" },
-	{ MIN,		MS,		"60000" },
-	{ MIN,		S,		"60" },
-	// Hour
-	{ H,		MICROS,	"3600000000" },
-	{ H,		MS,		"3600000" },
-	{ H,		S,		"3600" },
-	{ H,		MIN,	"60" },
-	// Day
-	{ D,		MICROS,	"86400000000" },
-	{ D,		MS,		"86400000" },
-	{ D,		S,		"86400" },
-	{ D,		MIN,	"1440" },
-	{ D,		H,		"24" },
-	//---------------------------------------------------------------------
-	// Speed
-	// mi/hour
-	{ MIpH,		FTpH,	"1760" },
-	{ MIpH,		KMpH,	"1.609344" },
-	// Meter/second
-	{ MpS,		MIpH,	"2.2369362920544022906227630637079455977093772369362920544022906227630637079455977093772369362920544022906227630637079455977093772369362920544022906227630637" },
-	{ MpS,		FTpH,	"3937.0078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921" },
-	{ MpS,		KMpH,	"3.6" },
-	{ MpS,		KNOT,	"1.9438444924406047516198704103671706263498920086393088552915766738660907127429805615550755939524838012958963282937365010799136069114470842332613390928725702" },
-	// Kilometre/hour
-	{ KMpH,		FTpH,	"1093.6132983377077865266841644794400699912510936132983377077865266841644794400699912510936132983377077865266841644794400699912510936132983377077865266841645" },
-	// Knot
-	{ KNOT,		MIpH,	"1.1507794480235425117314881094408653463771574007794480235425117314881094408653463771574007794480235425117314881094408653463771574007794480235425117314881094" },
-	{ KNOT,		FTpH,	"2025.3718285214348206474190726159230096237970253718285214348206474190726159230096237970253718285214348206474190726159230096237970253718285214348206474190726" },
-	{ KNOT,		KMpH,	"1.852" },
-	{ NO_UNIT,	NO_UNIT,	0 }
-};
+    //---------------------------------------------------------------------
+    // Length
+    // Mil
+    { MIL,          MICRON,         "25.4" },
+    // Inch
+    { INCH,         MIL,            "1000" },
+    { INCH,         MICRON,         "25400" },
+    { INCH,         MILLIMETER,     "25.4" },
+    { INCH,         CENTIMETER,     "2.54" },
+    // Foot
+    { FOOT,         MIL,            "12000" },
+    { FOOT,         INCH,           "12" },
+    { FOOT,         MICRON,         "304800" },
+    { FOOT,         MILLIMETER,     "304.8" },
+    { FOOT,         CENTIMETER,     "30.48" },
+    // Yard
+    { YARD,         MIL,            "36000" },
+    { YARD,         INCH,           "36" },
+    { YARD,         FOOT,           "3" },
+    { YARD,         MICRON,         "914400" },
+    { YARD,         MILLIMETER,     "914.4" },
+    { YARD,         CENTIMETER,     "91.44" },
+    // Mile
+    { MILE,         MIL,            "63360000" },
+    { MILE,         INCH,           "63360" },
+    { MILE,         FOOT,           "5280" },
+    { MILE,         YARD,           "1760" },
+    { MILE,         MICRON,         "1609344000" },
+    { MILE,         MILLIMETER,     "1609344" },
+    { MILE,         CENTIMETER,     "160934.4" },
+    { MILE,         METER,          "1609.344" },
+    { MILE,         KILOMETER,      "1.609344" },
+    // Millimeter
+    { MILLIMETER,   MIL,            "39370.078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921e-3" },
+    { MILLIMETER,   MICRON,         "1000" },
+    // Cantimeter
+    { CENTIMETER,   MIL,            "39370.078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921e-2" },
+    { CENTIMETER,   MICRON,         "10000" },
+    { CENTIMETER,   MILLIMETER,     "10" },
+    // Meter
+    { METER,        MIL,            "39370.078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921" },
+    { METER,        INCH,           "39.370078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921" },
+    { METER,        FOOT,           "3.2808398950131233595800524934383202099737532808398950131233595800524934383202099737532808398950131233595800524934383202099737532808398950131233595800524934" },
+    { METER,        YARD,           "1.0936132983377077865266841644794400699912510936132983377077865266841644794400699912510936132983377077865266841644794400699912510936132983377077865266841645" },
+    { METER,        MICRON,         "1000000" },
+    { METER,        MILLIMETER,     "1000" },
+    { METER,        CENTIMETER,     "100" },
+    // Kilometer
+    { KILOMETER,    MIL,            "39370.078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921e+3" },
+    { KILOMETER,    INCH,           "39.370078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921e+3" },
+    { KILOMETER,    FOOT,           "3.2808398950131233595800524934383202099737532808398950131233595800524934383202099737532808398950131233595800524934383202099737532808398950131233595800524934e+3" },
+    { KILOMETER,    YARD,           "1.0936132983377077865266841644794400699912510936132983377077865266841644794400699912510936132983377077865266841644794400699912510936132983377077865266841645e+3" },
+    { KILOMETER,    MICRON,         "1000000000" },
+    { KILOMETER,    MILLIMETER,     "1000000" },
+    { KILOMETER,    CENTIMETER,     "100000" },
+    { KILOMETER,    METER,          "1000" },
 
-const UnitConversion::ArbitraryConversion UnitConversion::arbitraryConversions_[] =
-{
-	{ C,		F,		UnitConversion::ctof },
-	{ C,		K,		UnitConversion::ctok },
-	{ F,		C,		UnitConversion::ftoc },
-	{ F,		K,		UnitConversion::ftok },
-	{ K,		C,		UnitConversion::ktoc },
-	{ K,		F,		UnitConversion::ktof },
-	{ NO_UNIT,	NO_UNIT,	0 }
-};
+    //---------------------------------------------------------------------
+    // Weight
+    // Pound
+    { POUND,        OUNCE,          "16.000002821917267029565227206668754885444268544934799601545281895425389918418371810175269281455206296261806196365934943519325900403251977458524870967832965" },
+    { POUND,        GRAMME,         "453.5924" },
+    // Ounce
+    { OUNCE,        GRAMME,         "28.34952" },
+    // Kilogramme
+    { KILOGRAMME,   POUND,          "2.2046224760379583079434311509628468201848179114112141208715137202475173746297336551494249021809007381957898765499598317784865883996292706844294569309362326" },
+    { KILOGRAMME,   OUNCE,          "35.273965837869565340083359436068053356811684995019316023692817373980229647627190866018190078703272577454574186793991573755040649718231560887097912063414125" },
+    { KILOGRAMME,   GRAMME,         "1000" },
 
-const UnitConversion::UnitDef UnitConversion::units_[] =
-{
-	// Length
-	{ _T("mil"),	MIL,		LENGTH },
-	{ _T("in"),		IN,			LENGTH },
-	{ _T("ft"),		FT,			LENGTH },
-	{ _T("yd"),		YD,			LENGTH },
-	{ _T("mi"),		MI,			LENGTH },
-	{ _T("micron"),	MICRON,		LENGTH },
-	{ _T("mm"),		MM,			LENGTH },
-	{ _T("cm"),		CM,			LENGTH },
-	{ _T("m"),		M,			LENGTH },
-	{ _T("km"),		KM,			LENGTH },
+    //---------------------------------------------------------------------
+    // Time
+    // Millisecond
+    { MILLISECOND,  MICROSECOND,    "1000" },
+    // Second
+    { SECOND,       MICROSECOND,    "1000000" },
+    { SECOND,       MILLISECOND,    "1000" },
+    // Minute
+    { MINUTE,       MICROSECOND,    "60000000" },
+    { MINUTE,       MILLISECOND,    "60000" },
+    { MINUTE,       SECOND,         "60" },
+    // Hour
+    { HOUR,         MICROSECOND,    "3600000000" },
+    { HOUR,         MILLISECOND,    "3600000" },
+    { HOUR,         SECOND,         "3600" },
+    { HOUR,         MINUTE,         "60" },
+    // Day
+    { DAY,          MICROSECOND,    "86400000000" },
+    { DAY,          MILLISECOND,    "86400000" },
+    { DAY,          SECOND,         "86400" },
+    { DAY,          MINUTE,         "1440" },
+    { DAY,          HOUR,           "24" },
 
-	// Weight
-	{ _T("lb"),		LB,			WEIGHT },
-	{ _T("oz"),		OZ,			WEIGHT },
-	{ _T("g"),		G,			WEIGHT },
-	{ _T("kg"),		KG,			WEIGHT },
-
-	// Time
-	{ _T("micros"),	MICROS,		TIME },
-	{ _T("ms"),		MS,			TIME },
-	{ _T("s"),		S,			TIME },
-	{ _T("min"),	MIN,		TIME },
-	{ _T("h"),		H,			TIME },
-	{ _T("d"),		D,			TIME },
-
-	// Speed
-	{ _T("mi/h"),	MIpH,		SPEED },
-	{ _T("m/s"),	MpS,		SPEED },
-	{ _T("ft/h"),	FTpH,		SPEED },
-	{ _T("km/h"),	KMpH,		SPEED },
-	{ _T("knot"),	KNOT,		SPEED },
-
-	// Temperature
-	{ _T("k"),		K,			TEMPERATURE },
-	{ _T("c"),		C,			TEMPERATURE },
-	{ _T("f"),		F,			TEMPERATURE },
-
-	{ _T(""),		NO_UNIT,	NO_TYPE }
+    //---------------------------------------------------------------------
+    // Speed
+    // mi/hour
+    { MILE_PER_HOUR,        FOOT_PER_HOUR,      "1760" },
+    { MILE_PER_HOUR,        KILOMETER_PER_HOUR, "1.609344" },
+    // Meter/second
+    { METER_PER_SECOND,     MILE_PER_HOUR,      "2.2369362920544022906227630637079455977093772369362920544022906227630637079455977093772369362920544022906227630637079455977093772369362920544022906227630637" },
+    { METER_PER_SECOND,     FOOT_PER_HOUR,      "3937.0078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921259842519685039370078740157480314960629921" },
+    { METER_PER_SECOND,     KILOMETER_PER_HOUR, "3.6" },
+    { METER_PER_SECOND,     KNOT,               "1.9438444924406047516198704103671706263498920086393088552915766738660907127429805615550755939524838012958963282937365010799136069114470842332613390928725702" },
+    // Kilometre/hour
+    { KILOMETER_PER_HOUR,   FOOT_PER_HOUR,      "1093.6132983377077865266841644794400699912510936132983377077865266841644794400699912510936132983377077865266841644794400699912510936132983377077865266841645" },
+    // Knot
+    { KNOT,                 MILE_PER_HOUR,      "1.1507794480235425117314881094408653463771574007794480235425117314881094408653463771574007794480235425117314881094408653463771574007794480235425117314881094" },
+    { KNOT,                 FOOT_PER_HOUR,      "2025.3718285214348206474190726159230096237970253718285214348206474190726159230096237970253718285214348206474190726159230096237970253718285214348206474190726" },
+    { KNOT,                 KILOMETER_PER_HOUR, "1.852" },
+    { NO_UNIT,              NO_UNIT,            0 }
 };
 
 /*!
-	Converts \a arg from \a unit1 to \a unit2.
+    Arbitrary unit conversions which are performed by calling a conversion
+    function.
+
+    Conversion functions have one argument - number to be converted.
 */
-BigDecimal UnitConversion::convert(const BigDecimal arg, const tstring & unit1,
-								   const tstring & unit2)
+const UnitConversion::ArbitraryConversion UnitConversion::mArbitraryConversions[] =
 {
-	Unit u1 = NO_UNIT;
-	Unit u2 = NO_UNIT;
+    //---------------------------------------------------------------------
+    // Termperature
+    { CELSIUS,              FAHRENHEIT,         UnitConversion::ctof },
+    { CELSIUS,              KELVIN,             UnitConversion::ctok },
+    { FAHRENHEIT,           CELSIUS,            UnitConversion::ftoc },
+    { FAHRENHEIT,           KELVIN,             UnitConversion::ftok },
+    { KELVIN,               CELSIUS,            UnitConversion::ktoc },
+    { KELVIN,               FAHRENHEIT,         UnitConversion::ktof },
+    { NO_UNIT,              NO_UNIT,            0 }
+};
 
-	for (const UnitDef * cur = units_;
-		 cur->unit != NO_UNIT && (u1 == NO_UNIT || u2 == NO_UNIT);
-		 ++cur)
-	{
-		if (unit1 == cur->name)
-			u1 = cur->unit;
-		if (unit2 == cur->name)
-			u2 = cur->unit;
-	}
+/*!
+    Units with their names and category.
+*/
+const UnitConversion::UnitDef UnitConversion::mUnits[] =
+{
+    // Length
+    { _T("mil"),        MIL,                LENGTH },
+    { _T("in"),         INCH,               LENGTH },
+    { _T("ft"),         FOOT,               LENGTH },
+    { _T("yd"),         YARD,               LENGTH },
+    { _T("mi"),         MILE,               LENGTH },
+    { _T("micron"),     MICRON,             LENGTH },
+    { _T("mm"),         MILLIMETER,         LENGTH },
+    { _T("cm"),         CENTIMETER,         LENGTH },
+    { _T("m"),          METER,              LENGTH },
+    { _T("km"),         KILOMETER,          LENGTH },
 
-	if (u1 == NO_UNIT || u2 == NO_UNIT)
-		throw UnknownUnitConversionException();
+    // Weight
+    { _T("lb"),         POUND,              WEIGHT },
+    { _T("oz"),         OUNCE,              WEIGHT },
+    { _T("g"),          GRAMME,             WEIGHT },
+    { _T("kg"),         KILOGRAMME,         WEIGHT },
 
-	// Look up simple conversions table
-	for (const SimpleConversion * cur = simpleConversions_;
-		 cur->unit1 != NO_UNIT;
-		 ++cur)
-	{
-		if (u1 == cur->unit1 && u2 == cur->unit2)
-			return arg * cur->multiplier;
-		if (u1 == cur->unit2 && u2 == cur->unit1)
-			return arg / cur->multiplier;
-	}
+    // Time
+    { _T("micros"),     MICROSECOND,        TIME },
+    { _T("ms"),         MILLISECOND,        TIME },
+    { _T("s"),          SECOND,             TIME },
+    { _T("min"),        MINUTE,             TIME },
+    { _T("h"),          HOUR,               TIME },
+    { _T("d"),          DAY,                TIME },
 
-	// Look up arbitrary conversions table
-	for (const ArbitraryConversion * cur = arbitraryConversions_;
-		 cur->unit1 != NO_UNIT;
-		 cur++)
-	{
-		if (u1 == cur->unit1 && u2 == cur->unit2)
-			return cur->convert(arg);
-	}
+    // Speed
+    { _T("mi/h"),       MILE_PER_HOUR,      SPEED },
+    { _T("m/s"),        METER_PER_SECOND,   SPEED },
+    { _T("ft/h"),       FOOT_PER_HOUR,      SPEED },
+    { _T("km/h"),       KILOMETER_PER_HOUR, SPEED },
+    { _T("knot"),       KNOT,               SPEED },
 
-	throw UnknownUnitConversionException();
+    // Temperature
+    { _T("k"),          KELVIN,             TEMPERATURE },
+    { _T("c"),          CELSIUS,            TEMPERATURE },
+    { _T("f"),          FAHRENHEIT,         TEMPERATURE },
+
+    { _T(""),           NO_UNIT,            NO_TYPE }
+};
+
+
+/*!
+    Converts \a number from \a unit1 to \a unit2.
+
+    \return Converted number.
+
+    \throw UnknownUnitException \a unit1 or \a unit2 is an unknown unit.
+    \throw UnknownUnitConversionException There's no conversion \a unit1->unit2.
+*/
+BigDecimal UnitConversion::convert(const BigDecimal number,
+                                   const tstring & unit1,
+                                   const tstring & unit2)
+{
+    Unit u1 = NO_UNIT;
+    Unit u2 = NO_UNIT;
+
+    // Find unit1 and unit2 in mUnits array and assign u1 and u2
+    for (const UnitDef * ud = mUnits; ud->unit != NO_UNIT && (u1 == NO_UNIT || u2 == NO_UNIT); ++ud) {
+        if (unit1 == ud->name) u1 = ud->unit;
+        if (unit2 == ud->name) u2 = ud->unit;
+    }
+
+    // Check that units are found
+    if (u1 == NO_UNIT) throw UnknownUnitException(unit1);
+    if (u2 == NO_UNIT) throw UnknownUnitException(unit2);
+
+    // Look up simple conversions table
+    for (const SimpleConversion * sc = mSimpleConversions; sc->unit1 != NO_UNIT; ++sc) {
+        if (u1 == sc->unit1 && u2 == sc->unit2) return number * sc->multiplier;
+        if (u1 == sc->unit2 && u2 == sc->unit1) return number / sc->multiplier;
+    }
+
+    // Look up arbitrary conversions table
+    for (const ArbitraryConversion * ac = mArbitraryConversions; ac->unit1 != NO_UNIT; ++ac) {
+        if (u1 == ac->unit1 && u2 == ac->unit2) return ac->convert(number);
+    }
+
+    // There is no such conversion
+    throw UnknownUnitConversionException(unit1 + _T(" -> ") + unit2);
 }
 
 } // namespace MaxCalcEngine

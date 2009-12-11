@@ -15,10 +15,13 @@ using namespace std;
 
 void UnitConversionTest::convert()
 {
-	FAIL_TEST(UnitConversion::convert(0, _T(""), _T("")), "Unknown conversion", UnknownUnitConversionException);
-	FAIL_TEST(UnitConversion::convert(0, _T("m"), _T("")), "Unknown conversion", UnknownUnitConversionException);
-	FAIL_TEST(UnitConversion::convert(0, _T(""), _T("cm")), "Unknown conversion", UnknownUnitConversionException);
+	FAIL_TEST(UnitConversion::convert(0, _T(""), _T("")), "Unknown unit", UnknownUnitException);
+	FAIL_TEST(UnitConversion::convert(0, _T("m"), _T("")), "Unknown unit", UnknownUnitException);
+	FAIL_TEST(UnitConversion::convert(0, _T(""), _T("cm")), "Unknown unit", UnknownUnitException);
 	FAIL_TEST(UnitConversion::convert(0, _T("m"), _T("m/s")), "Unknown conversion", UnknownUnitConversionException);
+	FAIL_TEST(UnitConversion::convert(0, _T("q"), _T("m/s")), "Unknown unit", UnknownUnitException);
+	FAIL_TEST(UnitConversion::convert(0, _T("m"), _T("m/sq")), "Unknown unit", UnknownUnitException);
+	FAIL_TEST(UnitConversion::convert(0, _T("qwe"), _T("rty")), "Unknown unit", UnknownUnitException);
 	COMPARE_BIGDECIMAL(UnitConversion::convert(0, _T("oz"), _T("g")), 0);
 	COMPARE_BIGDECIMAL(UnitConversion::convert(0, _T("g"), _T("oz")), 0);
 	COMPARE_BIGDECIMAL(UnitConversion::convert(0, _T("c"), _T("f")), 32);
