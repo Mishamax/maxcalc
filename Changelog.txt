@@ -1,4 +1,11 @@
-﻿v1.9.3 Milestone-4 (19-Sep-2009).
+﻿v2.0.0 (IN DEVELOPMENT).
+
+    - Added: Links to Web site and bug tracker in GUI.
+    - Changed: Added more error messages; improved exception system.
+    - Fixed: Bug with history highlighting in graphical version.
+    - Internal: Improved program portability; added CMake build system support.
+
+v1.9.3 Milestone-4 (19-Sep-2009).
 
     - Added: Meaningful error messages instead of 'Error!'.
     - Fixed: Command line params handling in console version.

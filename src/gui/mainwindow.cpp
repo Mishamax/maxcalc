@@ -24,6 +24,9 @@
 // MaxCalcEngine
 #include "bigdecimal.h"
 #include "unitconversion.h"
+// Qt
+#include <QDesktopServices>
+#include <QUrl>
 
 /// Indentation used for output
 static const QString indent = "    ";
@@ -212,7 +215,11 @@ void MainWindow::initMainMenu()
 	// Help menu
 
 	QMenu * help = mainMenu.addMenu(tr("&Help"));
-	help->addAction(tr("&About"), this, SLOT(onHelpAbout()));
+    help->addAction(tr("MaxCalc &Web Site..."), this, SLOT(onHelpWebSite()));
+    help->addAction(tr("&Report issue..."), this, SLOT(onHelpReportIssue()));
+    help->addSeparator();
+    help->addAction(tr("About &MaxCalc"), this, SLOT(onHelpAbout()));
+    help->addAction(tr("About &Qt"), QApplication::instance(), SLOT(aboutQt()));
 }
 
 /*!
@@ -496,6 +503,22 @@ void MainWindow::onHelpAbout()
 {
 	AboutBox aboutBox(this);
 	aboutBox.exec();
+}
+
+/*!
+    Help -> MaxCalc Web site command.
+*/
+void MainWindow::onHelpWebSite()
+{
+    QDesktopServices::openUrl(QUrl("http://code.google.com/p/maxcalc/"));
+}
+
+/*!
+    Help -> Report issue site command.
+*/
+void MainWindow::onHelpReportIssue()
+{
+    QDesktopServices::openUrl(QUrl("http://code.google.com/p/maxcalc/issues/entry"));
 }
 
 /*!

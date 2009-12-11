@@ -76,7 +76,9 @@ private slots:
 	void onVariableClicked(QListWidgetItem * item);
 	void onFunctionClicked(QListWidgetItem * item);
 	void onHelpAbout();
-	void onDeleteAllVariables();
+    void onHelpWebSite();
+    void onHelpReportIssue();
+    void onDeleteAllVariables();
 	void onUnitConversion(const QString & conversion);
 };
 

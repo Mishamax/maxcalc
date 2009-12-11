@@ -2,10 +2,10 @@
 
 rem Variables - adjust them to environment
 set VSCOMNTOOLS="%VS90COMNTOOLS%\vsvars32.bat"
-set QT_DIR=D:\Programming\qt-4.5.2-msvc2008-static\bin
+set QT_DIR=D:\Programming\qt-4.6.0-msvc2008-static\bin
 set SEVEN_ZIP_PATH=D:\Misc\7-Zip-x86
 set RELEASE=..\..\release
-set MAXCALC_VERSION=1.9.3-m4
+set MAXCALC_VERSION=2.0.0
 
 rem Set up environment
 
@@ -32,8 +32,7 @@ mkdir %RELEASE%\tmp
 
 copy ..\src\release\maxcalc.exe %RELEASE%\tmp
 copy ..\Changelog.txt %RELEASE%\tmp
-copy ..\LICENSE.GPL2 %RELEASE%\tmp\LICENSE-GPL2.txt
-copy ..\LICENSE.ICU %RELEASE%\tmp\LICENSE-ICU.txt
+copy ..\Licenses.txt %RELEASE%\tmp\Licenses.txt
 
 pushd %RELEASE%
 del /Q maxcalc-win-console-%MAXCALC_VERSION%.zip
@@ -54,8 +53,7 @@ mkdir %RELEASE%\tmp
 
 copy ..\src\release\maxcalcwin.exe %RELEASE%\tmp
 copy ..\Changelog.txt %RELEASE%\tmp
-copy ..\LICENSE.GPL2 %RELEASE%\tmp\LICENSE-GPL2.txt
-copy ..\LICENSE.ICU %RELEASE%\tmp\LICENSE-ICU.txt
+copy ..\Licenses.txt %RELEASE%\tmp\Licenses.txt
 
 pushd %RELEASE%
 del /Q maxcalc-win-gui-%MAXCALC_VERSION%.zip
