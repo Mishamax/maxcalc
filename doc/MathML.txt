@@ -1,0 +1,41 @@
+
+The idea
+========
+
+Add MathML input support in MaxCalc.
+
+It is not very user-friendly and visual to input formulas as text string
+especially on touch screen-enabled devices.
+It would be great to use something like Windows 7 Math Input Panel (MIP).
+This will allow simple and visual expression input.
+
+MIP, like most other math apps uses MathML as its output language.
+So adding MathML support can open many possibilities of integration with
+different applications.
+
+Help
+====
+
+MathML home:        [[http://www.w3.org/Math/]]
+MathML software:    [[http://www.w3.org/Math/Software/]]
+Wikipedia:          [[http://en.wikipedia.org/wiki/MathML]]
+KAlgebra:           [[http://kalgebra.berlios.de/]]
+
+MIP Help:           [[http://msdn.microsoft.com/en-us/library/dd317324(VS.85).aspx]]
+
+
+Implementation
+==============
+
+MathML support needs to be added to parser.
+Parser needs to be split into backend and frontend, so that single backend
+can use various fronends like:
+ - Default text string fronend.
+ - MathML.
+ - LaTeX.
+
+Some universal internal representation is needed between fronend and backend:
+ - Use existing text representation (MathML will be converted into it).
+ + Use commands of some abstract machine. Everything else will be
+    converted into this language by frontends. Backend is a machine,
+    implementing this language.
