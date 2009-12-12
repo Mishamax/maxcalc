@@ -32,8 +32,8 @@ namespace MaxCalcEngine {
 
 struct Variable
 {
-    tstring name;        ///< Name of variable.
-    Complex value;        ///< Value of variable.
+    tstring name;       ///< Name of variable.
+    Complex value;      ///< Value of variable.
 
     /// Default constructor.
     Variable()

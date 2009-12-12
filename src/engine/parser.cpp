@@ -104,8 +104,8 @@ ParserContext Parser::parse()
 */
 void Parser::reset()
 {
-    curChar_ = mExpr.begin();
-    tokens_.clear();
+    mCurChar = mExpr.begin();
+    mTokens.clear();
 }
 
 
@@ -120,9 +120,9 @@ void Parser::reset()
 */
 void Parser::lexicalAnalysis()
 {
-    curChar_ = mExpr.begin();
+    mCurChar = mExpr.begin();
 
-    while (curChar_ != mExpr.end()) {
+    while (mCurChar != mExpr.end()) {
         // It is important to analyze identifiers before numbers
         // to prevent recognizing of "i<something>" as number "i" and
         // following identifier "<something>".
@@ -136,7 +136,7 @@ void Parser::lexicalAnalysis()
         if (skipSpaces()) continue;
         // Token couldn't be parsed
         tstring ex = _T("");
-        ex += *curChar_;
+        ex += *mCurChar;
         throw UnknownTokenException(ex);
     }
 }
@@ -146,22 +146,22 @@ void Parser::lexicalAnalysis()
 */
 bool Parser::analyzeAssignment()
 {
-    if (_T('=') == *curChar_) {
-        tokens_.push_back(Token(ASSIGN, _T("=")));
+    if (_T('=') == *mCurChar) {
+        mTokens.push_back(Token(ASSIGN, _T("=")));
     } else {
-        tchar prevChar = *curChar_++;
-        if (curChar_ != mExpr.end() && _T('=') == *curChar_ &&
+        tchar prevChar = *mCurChar++;
+        if (mCurChar != mExpr.end() && _T('=') == *mCurChar &&
             (_T('+') == prevChar || _T('-') == prevChar ||
              _T('*') == prevChar || _T('/') == prevChar ||
              _T('^') == prevChar)) {
-            tokens_.push_back(Token(ASSIGN, prevChar + tstring(_T("="))));
+            mTokens.push_back(Token(ASSIGN, prevChar + tstring(_T("="))));
         } else {
-            --curChar_;
+            --mCurChar;
             return false;
         }
     }
 
-    ++curChar_;
+    ++mCurChar;
     return true;
 }
 
@@ -172,26 +172,26 @@ bool Parser::analyzeAssignment()
 */
 bool Parser::analyzeUnitConversions()
 {
-    if (_T('[') == *curChar_) {
-        tokens_.push_back(Token(OPENING_SQUARE_BRACKET, _T("[")));
-        ++curChar_;
+    if (_T('[') == *mCurChar) {
+        mTokens.push_back(Token(OPENING_SQUARE_BRACKET, _T("[")));
+        ++mCurChar;
 
         skipSpaces();
 
         tstring unit = _T("");
-        while (curChar_ != mExpr.end() && isUnitChar(*curChar_))
-            unit += *curChar_++;
+        while (mCurChar != mExpr.end() && isUnitChar(*mCurChar))
+            unit += *mCurChar++;
         if (unit == _T(""))
             throw IncorrectUnitConversionSyntaxException();
-        tokens_.push_back(Token(UNIT, unit));
+        mTokens.push_back(Token(UNIT, unit));
 
         skipSpaces();
 
-        if (curChar_ != mExpr.end() && _T('-') == *curChar_) {
-            ++curChar_;
-            if (curChar_ != mExpr.end() && _T('>') == *curChar_) {
-                tokens_.push_back(Token(ARROW, _T("->")));
-                ++curChar_;
+        if (mCurChar != mExpr.end() && _T('-') == *mCurChar) {
+            ++mCurChar;
+            if (mCurChar != mExpr.end() && _T('>') == *mCurChar) {
+                mTokens.push_back(Token(ARROW, _T("->")));
+                ++mCurChar;
             } else {
                 throw IncorrectUnitConversionSyntaxException();
             }
@@ -202,22 +202,22 @@ bool Parser::analyzeUnitConversions()
         skipSpaces();
 
         unit = _T("");
-        while (curChar_ != mExpr.end() && isUnitChar(*curChar_)) {
-            unit += *curChar_++;
+        while (mCurChar != mExpr.end() && isUnitChar(*mCurChar)) {
+            unit += *mCurChar++;
         }
         if (unit == _T("")) {
             throw IncorrectUnitConversionSyntaxException();
         }
-        tokens_.push_back(Token(UNIT, unit));
+        mTokens.push_back(Token(UNIT, unit));
 
         skipSpaces();
 
-        if (curChar_ != mExpr.end() && _T(']') == *curChar_) {
-            tokens_.push_back(Token(CLOSING_SQUARE_BRACKET, _T("]")));
+        if (mCurChar != mExpr.end() && _T(']') == *mCurChar) {
+            mTokens.push_back(Token(CLOSING_SQUARE_BRACKET, _T("]")));
         } else {
             throw IncorrectUnitConversionSyntaxException();
         }
-        ++curChar_;
+        ++mCurChar;
         return true;
     }
 
@@ -230,17 +230,17 @@ bool Parser::analyzeUnitConversions()
 */
 bool Parser::analyzeOperators()
 {
-    if (_T('+') == *curChar_) tokens_.push_back(Token(PLUS, _T("+")));
-    else if (_T('-') == *curChar_) tokens_.push_back(Token(MINUS, _T("-")));
-    else if (_T('*') == *curChar_) tokens_.push_back(Token(MULTIPLY, _T("*")));
-    else if (_T('/') == *curChar_) tokens_.push_back(Token(DIVIDE, _T("/")));
-    else if (_T('^') == *curChar_) tokens_.push_back(Token(POWER, _T("^")));
-    else if (_T('(') == *curChar_) tokens_.push_back(Token(OPENING_BRACKET, _T("(")));
-    else if (_T(')') == *curChar_) tokens_.push_back(Token(CLOSING_BRACKET, _T(")")));
-    else if (_T(';') == *curChar_) tokens_.push_back(Token(SEMICOLON, _T(";")));
+    if (_T('+') == *mCurChar) mTokens.push_back(Token(PLUS, _T("+")));
+    else if (_T('-') == *mCurChar) mTokens.push_back(Token(MINUS, _T("-")));
+    else if (_T('*') == *mCurChar) mTokens.push_back(Token(MULTIPLY, _T("*")));
+    else if (_T('/') == *mCurChar) mTokens.push_back(Token(DIVIDE, _T("/")));
+    else if (_T('^') == *mCurChar) mTokens.push_back(Token(POWER, _T("^")));
+    else if (_T('(') == *mCurChar) mTokens.push_back(Token(OPENING_BRACKET, _T("(")));
+    else if (_T(')') == *mCurChar) mTokens.push_back(Token(CLOSING_BRACKET, _T(")")));
+    else if (_T(';') == *mCurChar) mTokens.push_back(Token(SEMICOLON, _T(";")));
     else return false;
 
-    ++curChar_;
+    ++mCurChar;
     return true;
 }
 
@@ -249,22 +249,22 @@ bool Parser::analyzeOperators()
 */
 bool Parser::analyzeIdentifiers()
 {
-    if (isIdentifierChar(*curChar_, true)) {
+    if (isIdentifierChar(*mCurChar, true)) {
         tstring identifier;
-        identifier = *curChar_++;
-        while (curChar_ != mExpr.end() && isIdentifierChar(*curChar_, false)) {
-            identifier += *curChar_++;
+        identifier = *mCurChar++;
+        while (mCurChar != mExpr.end() && isIdentifierChar(*mCurChar, false)) {
+            identifier += *mCurChar++;
         }
 
         tstring imOne = _T("");
         imOne += mContext.numberFormat().imaginaryOneTChar();
         // Imaginary one is not an identifier
         if (identifier == imOne) {
-            --curChar_;
+            --mCurChar;
             return false;
         }
 
-        tokens_.push_back(Token(IDENTIFIER, identifier));
+        mTokens.push_back(Token(IDENTIFIER, identifier));
 
         return true;
     }
@@ -287,71 +287,71 @@ bool Parser::analyzeNumbers()
     const tchar imOne = mContext.numberFormat().imaginaryOneTChar();
 
     // Check if it is a number
-    if (!istdigit(*curChar_) && *curChar_ != decSeparator && *curChar_ != imOne) {
+    if (!istdigit(*mCurChar) && *mCurChar != decSeparator && *mCurChar != imOne) {
         return false;
     }
 
     // Process decimal point at the beginning of the number
-    if (mExpr.end() != curChar_ && decSeparator == *curChar_) {
-        number += *curChar_++;
+    if (mExpr.end() != mCurChar && decSeparator == *mCurChar) {
+        number += *mCurChar++;
         thereIsPoint = true;
 
-        if (mExpr.end() == curChar_) {
+        if (mExpr.end() == mCurChar) {
             throw IncorrectNumberException(number);
         }
     }
 
     // Process digits
-    while (mExpr.end() != curChar_ && istdigit(*curChar_)) {
-        number += *curChar_++;
+    while (mExpr.end() != mCurChar && istdigit(*mCurChar)) {
+        number += *mCurChar++;
     }
 
     // Process decimal point in the middle or at the end of the number
-    if (mExpr.end() != curChar_ && decSeparator == *curChar_) {
+    if (mExpr.end() != mCurChar && decSeparator == *mCurChar) {
         // Throw an exception if there was a decimal point already
         if (thereIsPoint) {
             throw IncorrectNumberException(number);
         }
 
-        number += *curChar_++;
+        number += *mCurChar++;
 
         // Process digits
-        while(mExpr.end() != curChar_ && istdigit(*curChar_)) {
-            number += *curChar_++;
+        while(mExpr.end() != mCurChar && istdigit(*mCurChar)) {
+            number += *mCurChar++;
         }
     }
 
     skipSpaces();
 
     // Process exponential part
-    if (mExpr.end() != curChar_ && (_T('e') == *curChar_ || _T('E') == *curChar_)) {
+    if (mExpr.end() != mCurChar && (_T('e') == *mCurChar || _T('E') == *mCurChar)) {
         // Add 'e'
-        number += *curChar_++;
+        number += *mCurChar++;
         skipSpaces();
         // Add sign after 'e' if it exists
-        if (mExpr.end() != curChar_ && (_T('-') == *curChar_ || _T('+') == *curChar_)) {
-            number += *curChar_++;
+        if (mExpr.end() != mCurChar && (_T('-') == *mCurChar || _T('+') == *mCurChar)) {
+            number += *mCurChar++;
         }
         skipSpaces();
-        if (mExpr.end() == curChar_) {
+        if (mExpr.end() == mCurChar) {
             throw IncorrectNumberException(number);
         }
         // Process exponent digits
-        while(mExpr.end() != curChar_ && istdigit(*curChar_)) {
-            number += *curChar_++;
+        while(mExpr.end() != mCurChar && istdigit(*mCurChar)) {
+            number += *mCurChar++;
         }
     }
 
     if (number != _T("")) {
-        tokens_.push_back(Token(NUMBER, number));
+        mTokens.push_back(Token(NUMBER, number));
     }
 
     skipSpaces();
 
     // Process imaginary one at the end of the number
-    if (mExpr.end() != curChar_ && imOne == *curChar_) {
-        ++curChar_;
-        tokens_.push_back(Token(IMAGINARY_ONE, imOne));
+    if (mExpr.end() != mCurChar && imOne == *mCurChar) {
+        ++mCurChar;
+        mTokens.push_back(Token(IMAGINARY_ONE, imOne));
     }
 
     return true;
@@ -363,13 +363,13 @@ bool Parser::analyzeNumbers()
 bool Parser::skipSpaces()
 {
     // Check if it is a space
-    if (mExpr.end() == curChar_ || !istspace(*curChar_)) {
+    if (mExpr.end() == mCurChar || !istspace(*mCurChar)) {
         return false;
     }
 
     // Skip spaces
-    while (mExpr.end() != curChar_ && istspace(*curChar_)) {
-        ++curChar_;
+    while (mExpr.end() != mCurChar && istspace(*mCurChar)) {
+        ++mCurChar;
     }
 
     return true;
@@ -388,11 +388,11 @@ bool Parser::skipSpaces()
 */
 void Parser::syntaxAnalysis()
 {
-    mCurToken = tokens_.begin();
+    mCurToken = mTokens.begin();
 
     Complex result = parseAssign();
 
-    if (tokens_.end() == mCurToken) mContext.setResult(result);
+    if (mTokens.end() == mCurToken) mContext.setResult(result);
     else if (CLOSING_BRACKET == mCurToken->token) throw TooManyClosingBracketsException();
     else throw IncorrectExpressionException();
 }
@@ -404,11 +404,11 @@ void Parser::syntaxAnalysis()
 */
 Complex Parser::parseAssign()
 {
-    if (mCurToken != tokens_.end() &&
+    if (mCurToken != mTokens.end() &&
         (mCurToken->token == IDENTIFIER || mCurToken->token == IMAGINARY_ONE)) {
         tstring name = mCurToken->str;
         ++mCurToken;
-        if (mCurToken != tokens_.end() && mCurToken->token == ASSIGN) {
+        if (mCurToken != mTokens.end() && mCurToken->token == ASSIGN) {
             if (name == _T("e") || name == _T("pi") || name == _T("res") ||
                 name == _T("result") || name == _T("i") || name == _T("j") ||
                 name == _T("exit") || name == _T("quit") ||
@@ -459,7 +459,7 @@ Complex Parser::parseAddSub()
 {
     Complex result = parseMulDiv();
 
-    while (mCurToken != tokens_.end()) {
+    while (mCurToken != mTokens.end()) {
         if (PLUS == mCurToken->token) {
             ++mCurToken;
             result += parseMulDiv();
@@ -480,7 +480,7 @@ Complex Parser::parseMulDiv()
 {
     Complex result = parsePower();
 
-    while (mCurToken != tokens_.end()) {
+    while (mCurToken != mTokens.end()) {
         if (MULTIPLY == mCurToken->token) {
             ++mCurToken;
             result *= parsePower();
@@ -502,7 +502,7 @@ Complex Parser::parsePower()
 {
     Complex result = parseUnitConversions();
 
-    while (mCurToken != tokens_.end()) {
+    while (mCurToken != mTokens.end()) {
         if (POWER == mCurToken->token) {
             ++mCurToken;
             result = Complex::pow(result, parseUnitConversions());
@@ -524,24 +524,24 @@ Complex Parser::parseUnitConversions()
 {
     Complex result = parseUnaryPlusMinus();
 
-    while (mCurToken != tokens_.end()) {
+    while (mCurToken != mTokens.end()) {
         if (OPENING_SQUARE_BRACKET == mCurToken->token) {
             ++mCurToken;
-            if (mCurToken == tokens_.end() || mCurToken->token != UNIT) {
+            if (mCurToken == mTokens.end() || mCurToken->token != UNIT) {
                 throw IncorrectUnitConversionSyntaxException();
             }
             tstring unit1 = mCurToken->str;
             ++mCurToken;
-            if (mCurToken == tokens_.end() || mCurToken->token != ARROW) {
+            if (mCurToken == mTokens.end() || mCurToken->token != ARROW) {
                 throw IncorrectUnitConversionSyntaxException();
             }
             ++mCurToken;
-            if (mCurToken == tokens_.end() || mCurToken->token != UNIT) {
+            if (mCurToken == mTokens.end() || mCurToken->token != UNIT) {
                 throw IncorrectUnitConversionSyntaxException();
             }
             tstring unit2 = mCurToken->str;
             ++mCurToken;
-            if (mCurToken == tokens_.end() || mCurToken->token != CLOSING_SQUARE_BRACKET) {
+            if (mCurToken == mTokens.end() || mCurToken->token != CLOSING_SQUARE_BRACKET) {
                 throw IncorrectUnitConversionSyntaxException();
             }
             ++mCurToken;
@@ -567,7 +567,7 @@ Complex Parser::parseUnaryPlusMinus()
 {
     bool negative = false;
 
-    while (mCurToken != tokens_.end()) {
+    while (mCurToken != mTokens.end()) {
         if (PLUS == mCurToken->token) {
             ++mCurToken;
         } else if (MINUS == mCurToken->token) {
@@ -588,10 +588,10 @@ Complex Parser::parseUnaryPlusMinus()
 */
 Complex Parser::parseBrackets()
 {
-    if (mCurToken != tokens_.end() && OPENING_BRACKET == mCurToken->token) {
+    if (mCurToken != mTokens.end() && OPENING_BRACKET == mCurToken->token) {
         ++mCurToken;
         Complex result = parseAddSub();
-        if (tokens_.end() == mCurToken || CLOSING_BRACKET != mCurToken->token) {
+        if (mTokens.end() == mCurToken || CLOSING_BRACKET != mCurToken->token) {
             throw NoClosingBracketException();
         }
         ++mCurToken;
@@ -608,7 +608,7 @@ Complex Parser::parseBrackets()
 */
 Complex Parser::parseFunctions()
 {
-    if (mCurToken != tokens_.end() && IDENTIFIER == mCurToken->token) {
+    if (mCurToken != mTokens.end() && IDENTIFIER == mCurToken->token) {
         tstring name = mCurToken->str;
         ++mCurToken;
 
@@ -661,7 +661,7 @@ Complex Parser::parseFunctions()
 */
 Complex Parser::parseConstsVars()
 {
-    if (mCurToken != tokens_.end() && IDENTIFIER == mCurToken->token) {
+    if (mCurToken != mTokens.end() && IDENTIFIER == mCurToken->token) {
         if (_T("pi") == mCurToken->str) {
             ++mCurToken;
             return BigDecimal::PI;
@@ -696,20 +696,20 @@ Complex Parser::parseNumbers()
     bool thereIsResult = false;
     bool isComplex = false;
 
-    if (mCurToken != tokens_.end() && IMAGINARY_ONE == mCurToken->token) {
+    if (mCurToken != mTokens.end() && IMAGINARY_ONE == mCurToken->token) {
         result = 1;
         isComplex = true;
         thereIsResult = true;
         ++mCurToken;
     }
 
-    if (mCurToken != tokens_.end() && NUMBER == mCurToken->token) {
+    if (mCurToken != mTokens.end() && NUMBER == mCurToken->token) {
         result = BigDecimal(mCurToken->str);
         thereIsResult = true;
         ++mCurToken;
     }
     
-    if (mCurToken != tokens_.end() && IMAGINARY_ONE == mCurToken->token) {
+    if (mCurToken != mTokens.end() && IMAGINARY_ONE == mCurToken->token) {
         if (!isComplex) {
             isComplex = true;
             thereIsResult = true;
@@ -733,18 +733,18 @@ Complex Parser::parseNumbers()
 */
 bool Parser::parseFunctionArguments(std::vector<Complex> & args)
 {
-    if (mCurToken != tokens_.end() && OPENING_BRACKET == mCurToken->token) {
+    if (mCurToken != mTokens.end() && OPENING_BRACKET == mCurToken->token) {
         ++mCurToken;
         
         // Parse arguments
         args.push_back(parseAddSub());
-        while (mCurToken != tokens_.end() && mCurToken->token == SEMICOLON) {
+        while (mCurToken != mTokens.end() && mCurToken->token == SEMICOLON) {
             ++mCurToken;
             args.push_back(parseAddSub());
         }
 
         // Check for closing bracket
-        if (mCurToken == tokens_.end() || mCurToken->token != CLOSING_BRACKET) {
+        if (mCurToken == mTokens.end() || mCurToken->token != CLOSING_BRACKET) {
             throw NoClosingBracketException();
         }
 

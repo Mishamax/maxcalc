@@ -59,7 +59,7 @@ private:
     // Properties
 
     Complex mResult;                ///< Result of last calculation.
-    bool mResultExists;                ///< Determines if result exists.
+    bool mResultExists;             ///< Determines if result exists.
     ComplexFormat mNumberFormat;    ///< Number format used for conversions.
     Variables mVars;                ///< Variables.
 };

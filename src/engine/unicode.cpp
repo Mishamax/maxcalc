@@ -90,39 +90,6 @@ tstring & strToLower(tstring & str)
     return str;
 }
 
-/*!
-    Converts all characters of \a str to upper case.
-
-    Returns \a str.
-
-    \ingroup MaxCalcEngine
-*/
-tchar * strToUpper(tchar * str)
-{
-    assert(str);
-
-    for (tchar * pos = str; pos; ++pos) {
-        *pos = totupper(*pos);
-    }
-
-    return str;
-}
-
-/*!
-    Converts all characters of \a str to upper case.
-
-    Returns \a str.
-
-    \ingroup MaxCalcEngine
-*/
-tstring & strToUpper(tstring & str)
-{
-    for (tstring::iterator pos = str.begin(); pos != str.end(); ++pos) {
-        *pos = totupper(*pos);
-    }
-    return str;
-}
-
 // Characters which are recognized as space
 static const tchar * space = _T(" \t\f\v\n\r");
 

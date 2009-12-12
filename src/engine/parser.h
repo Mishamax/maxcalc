@@ -61,9 +61,9 @@ private:
     ///////////////////////////////////////////////////////////////////////////
     // Private variables
 
-    tstring mExpr;                        ///< Expression to be parsed.
-    ParserContext mContext;                ///< Parser context.
-    UnitConversion mUnitConversion;        ///< Unit conversion.
+    tstring mExpr;                          ///< Expression to be parsed.
+    ParserContext mContext;                 ///< Parser context.
+    UnitConversion mUnitConversion;         ///< Unit conversion.
 
 
     ///////////////////////////////////////////////////////////////////////////
@@ -109,12 +109,12 @@ private:
         Token(const Tokens token_, const tchar char_)
         { token = token_; str = char_; }
 
-        Tokens token;                    ///< Token.
+        Tokens token;                   ///< Token.
         tstring str;                    ///< String corresponding to token.
     };
 
-    std::list<Token> tokens_;            ///< List of tokens
-    tstring::const_iterator curChar_;    ///< Current char of expression
+    std::list<Token> mTokens;           ///< List of tokens
+    tstring::const_iterator mCurChar;   ///< Current char of expression
 
     void lexicalAnalysis();
     bool analyzeAssignment();
