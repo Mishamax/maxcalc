@@ -21,8 +21,8 @@
 #define UNITCONVERSION_H
 
 // Local
-#include "unicode.h"
 #include "bigdecimal.h"
+#include "unicode.h"
 
 
 namespace MaxCalcEngine {
@@ -56,9 +56,9 @@ public:
     /*! Unit definition for table of units. */
     struct UnitDef
     {
-        tstring name;
-        Unit unit;
-        Type type;
+        tstring name;   ///< English name of unit.
+        Unit unit;      ///< Unit
+        Type type;      ///< Type of unit.
     };
 
 private:
@@ -77,25 +77,26 @@ private:
     {
         const Unit unit1;
         const Unit unit2;
-        BigDecimal (*convert)(BigDecimal arg);
+        BigDecimal (*convert)(const BigDecimal & arg);
     };
 
     static const SimpleConversion mSimpleConversions[];
     static const ArbitraryConversion mArbitraryConversions[];
 
     // Arbitrary conversions functions.
-    static BigDecimal ctof(BigDecimal arg) { return arg * 1.8 + 32; }
-    static BigDecimal ctok(BigDecimal arg) { return arg + 273.15; }
-    static BigDecimal ftoc(BigDecimal arg) { return (arg + 459.67) * 5.0 / 9.0 - 273.15; }
-    static BigDecimal ftok(BigDecimal arg) { return (arg + 459.67) * 5.0 / 9.0; }
-    static BigDecimal ktoc(BigDecimal arg) { return arg - 273.15; }
-    static BigDecimal ktof(BigDecimal arg) { return (arg - 273.15) * 1.8 + 32; }
+    static BigDecimal ctof(const BigDecimal & arg) { return arg * 1.8 + 32; }
+    static BigDecimal ctok(const BigDecimal & arg) { return arg + 273.15; }
+    static BigDecimal ftoc(const BigDecimal & arg) { return (arg + 459.67) * 5.0 / 9.0 - 273.15; }
+    static BigDecimal ftok(const BigDecimal & arg) { return (arg + 459.67) * 5.0 / 9.0; }
+    static BigDecimal ktoc(const BigDecimal & arg) { return arg - 273.15; }
+    static BigDecimal ktof(const BigDecimal & arg) { return (arg - 273.15) * 1.8 + 32; }
 
 public:
     static BigDecimal convert(const BigDecimal number,
                               const tstring & unit1,
                               const tstring & unit2);
-    inline static const UnitDef * units() { return mUnits; }
+
+    static const UnitDef * units();
 };
 
 } // namespace MaxCalcEngine

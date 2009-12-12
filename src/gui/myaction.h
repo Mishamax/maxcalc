@@ -24,20 +24,20 @@
 
 class MyAction : public QAction
 {
-	Q_OBJECT
+    Q_OBJECT
 
 private:
-	QString action_;
+    QString mAction;    ///< Action which will be passed into executed() signal.
 
 public:
-	MyAction(QObject * parent, const QString & text, const QString & action,
-			 QObject * receiver, const char * member);
+    MyAction(QObject * parent, const QString & text, const QString & action,
+             QObject * receiver, const char * member);
 
 private slots:
-	void execute();
+    void execute();
 
 signals:
-	void executed(const QString & action);
+    void executed(const QString & action); ///< Emited when action is triggered.
 };
 
 #endif // MYACTION_H

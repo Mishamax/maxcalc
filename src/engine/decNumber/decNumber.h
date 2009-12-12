@@ -28,7 +28,7 @@
   #endif
 
 namespace MaxCalcEngine {
-	namespace DecNumber {
+    namespace DecNumber {
 
   /* Bit settings for decNumber.bits                                  */
   #define DECNEG    0x80      /* Sign; 1=negative, 0=positive or zero */
@@ -181,7 +181,7 @@ namespace MaxCalcEngine {
                                     && (((dn)->bits&DECSPECIAL)==0))
   #define decNumberRadix(dn)       (10)
 
-}	// namespace DecNumber
-}	// namespace MaxCalcEngine
+}    // namespace DecNumber
+}    // namespace MaxCalcEngine
 
 #endif

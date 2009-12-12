@@ -26,7 +26,7 @@
 #include "decNumberLocal.h"   // decNumber local types, etc.
 
 namespace MaxCalcEngine {
-	namespace DecNumber {
+    namespace DecNumber {
 
 /* compile-time endian tester [assumes sizeof(Int)>1] */
 static  const  Int mfcone=1;                 // constant 1
@@ -438,5 +438,5 @@ decContext *decContextZeroStatus(decContext *context) {
   return context;
   } // decContextZeroStatus
 
-}	// namespace DecNumber
-}	// namespace MaxCalcEngine
+}    // namespace DecNumber
+}    // namespace MaxCalcEngine

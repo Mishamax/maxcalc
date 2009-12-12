@@ -24,5 +24,6 @@
 #include <iostream>
 #include <clocale>
 #include <cstdlib>
+#include <cstring>
 
 #endif // PCH_H

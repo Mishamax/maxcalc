@@ -33,102 +33,37 @@ class ParserContext
 {
 public:
 
-	///////////////////////////////////////////////////////////////////////////
-	// Constructors
+    ///////////////////////////////////////////////////////////////////////////
+    // Constructors
 
-	explicit ParserContext(const ComplexFormat & numberFormat =
-		ComplexFormat::getDefault());
+    explicit ParserContext(const ComplexFormat & numberFormat =
+        ComplexFormat::getDefault());
 
 
-	///////////////////////////////////////////////////////////////////////////
-	// Accessors
+    ///////////////////////////////////////////////////////////////////////////
+    // Accessors
 
-	inline Complex result() const;
-	inline void setResult(const Complex & result);
-	inline bool resultExists() const;
+    Complex result() const;
+    void setResult(const Complex & result);
+    bool resultExists() const;
 
-	inline ComplexFormat & numberFormat();
-	inline void setNumberFormat(const ComplexFormat & numberFormat);
+    ComplexFormat & numberFormat();
+    void setNumberFormat(const ComplexFormat & numberFormat);
 
-	inline Variables & variables();
-	inline void setVariables(const Variables & vars);
+    Variables & variables();
+    void setVariables(const Variables & vars);
 
 private:
 
-	///////////////////////////////////////////////////////////////////////////
-	// Properties
+    ///////////////////////////////////////////////////////////////////////////
+    // Properties
 
-	Complex result_;				///< Result of last calculation.
-	bool resultExists_;				///< Determines if result exists.
-	ComplexFormat numberFormat_;	///< Number format used for conversions.
-	Variables vars_;				///< Variables.
+    Complex mResult;                ///< Result of last calculation.
+    bool mResultExists;                ///< Determines if result exists.
+    ComplexFormat mNumberFormat;    ///< Number format used for conversions.
+    Variables mVars;                ///< Variables.
 };
 
-
-
-///////////////////////////////////////////////////////////////////////////
-// Inline functions
-
-/*!
-	Gets result of last calculation.
-	\exception ResultDoesNotExistException Result does not exist.
-*/
-inline Complex ParserContext::result() const
-{
-	if (resultExists_)
-		return result_;
-	else
-		throw ResultDoesNotExistException();
-}
-
-/*!
-	Sets result of last calculation.
-*/
-inline void ParserContext::setResult(const Complex & result)
-{
-	result_ = result;
-	resultExists_ = true;
-}
-
-/*!
-	Determines if result of last calculation exists.
-*/
-inline bool ParserContext::resultExists() const
-{
-	return resultExists_;
-}
-
-/*!
-	Gets number format.
-*/
-inline ComplexFormat & ParserContext::numberFormat()
-{
-	return numberFormat_;
-}
-
-/*!
-	Sets number format.
-*/
-inline void ParserContext::setNumberFormat(const ComplexFormat & numberFormat)
-{
-	numberFormat_ = numberFormat;
-}
-
-/*!
-	Gets variables.
-*/
-inline Variables & ParserContext::variables()
-{
-	return vars_;
-}
-
-/*!
-	Sets variables.
-*/
-inline void ParserContext::setVariables(const Variables & vars)
-{
-	vars_ = vars;
-}
 
 } // namespace MaxCalcEngine
 

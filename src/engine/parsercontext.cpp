@@ -24,27 +24,86 @@ namespace MaxCalcEngine {
 
 
 /*!
-	\class ParserContext
-	\brief Represents context used by Parser.
+    \class ParserContext
+    \brief Represents context used by Parser.
 
-	Context is used to store Parser state between calculations and defines
-	behavior of Parser.
-	It includes result of last calculation and number format used to
-	conversions.
+    Context is used to store Parser state between calculations and defines
+    behavior of Parser.
+    It includes result of last calculation and number format used to
+    conversions.
 
-	\sa Parser
-	\ingroup MaxCalcEngine
+    \sa Parser
+    \ingroup MaxCalcEngine
 */
 
 /*!
-	Constucts new ParserContext with given \a numberFormat which will be used
-	for number conversions in Parser.
+    Constucts new ParserContext with given \a numberFormat which will be used
+    for number conversions in Parser.
 */
 ParserContext::ParserContext(const ComplexFormat & numberFormat)
 {
-	result_ = Complex();
-	resultExists_ = false;
-	numberFormat_ = numberFormat;
+    mResult = Complex();
+    mResultExists = false;
+    mNumberFormat = numberFormat;
+}
+
+/*!
+    Gets result of last calculation.
+    \exception ResultDoesNotExistException Result does not exist.
+*/
+Complex ParserContext::result() const
+{
+    if (mResultExists) return mResult;
+    else throw ResultDoesNotExistException();
+}
+
+/*!
+    Sets result of last calculation.
+*/
+void ParserContext::setResult(const Complex & result)
+{
+    mResult = result;
+    mResultExists = true;
+}
+
+/*!
+    Determines if result of last calculation exists.
+*/
+bool ParserContext::resultExists() const
+{
+    return mResultExists;
+}
+
+/*!
+    Gets number format.
+*/
+ComplexFormat & ParserContext::numberFormat()
+{
+    return mNumberFormat;
+}
+
+/*!
+    Sets number format.
+*/
+void ParserContext::setNumberFormat(const ComplexFormat & numberFormat)
+{
+    mNumberFormat = numberFormat;
+}
+
+/*!
+    Gets variables.
+*/
+Variables & ParserContext::variables()
+{
+    return mVars;
+}
+
+/*!
+    Sets variables.
+*/
+void ParserContext::setVariables(const Variables & vars)
+{
+    mVars = vars;
 }
 
 } // namespace MaxCalcEngine

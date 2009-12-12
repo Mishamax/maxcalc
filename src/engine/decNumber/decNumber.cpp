@@ -170,7 +170,7 @@
 #include "decNumberLocal.h"        // decNumber local types, etc.
 
 namespace MaxCalcEngine {
-	namespace DecNumber {
+    namespace DecNumber {
 
 /* Constants */
 // Public lookup table used by the D2U macro
@@ -3678,7 +3678,7 @@ static void decToString(const decNumber *dn, char *string, size_t string_size, F
           }
         e=e-adj;
         }
-	  else {                       // general format
+      else {                       // general format
         if (e <= 5 && e >= -5) {
           adj = e;
           e=e-adj;
@@ -8143,5 +8143,5 @@ static void decFree(void *alloc) {
 #define free(a) decFree(a)
 #endif
 
-}	// namespace DecNumber
-}	// namespace MaxCalcEngine
+}    // namespace DecNumber
+}    // namespace MaxCalcEngine

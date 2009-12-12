@@ -17,14 +17,15 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
+// MaxCalcEngine
+#include "bigdecimal.h"
+#include "unitconversion.h"
 // Local
 #include "mainwindow.h"
 #include "aboutbox.h"
 #include "myaction.h"
-// MaxCalcEngine
-#include "bigdecimal.h"
-#include "unitconversion.h"
 // Qt
+#include <QApplication>
 #include <QDesktopServices>
 #include <QUrl>
 
@@ -32,189 +33,186 @@
 static const QString indent = "    ";
 
 /*!
-	\class MainWindow
-	\brief Main window of calculator.
+    \class MainWindow
+    \brief Main window of calculator.
 
-	\ingroup MaxCalcGui
+    \ingroup MaxCalcGui
 */
 
 using namespace MaxCalcEngine;
 
 /*!
-	Constructs a new main window.
+    Constructs a new main window.
 */
 MainWindow::MainWindow() : QMainWindow(),
-		variablesListWrapper(tr("Variables"), this),
-		functionsListWrapper(tr("Functions"), this)
+        mVariablesListWrapper(tr("Variables"), this),
+        mFunctionsListWrapper(tr("Functions"), this)
 {
-	initUi();
-	initMainMenu();
-	updateVariablesList();
-	initFunctionsList();
+    initUi();
+    initMainMenu();
+    updateVariablesList();
+    initFunctionsList();
 }
 
 /*!
-	Inits UI elements.
+    Inits UI elements.
 */
 void MainWindow::initUi()
 {
-	variablesList = new QListWidget();
-	functionsList = new QListWidget();
+    mVariablesList = new QListWidget();
+    mFunctionsList = new QListWidget();
 
-	setWindowTitle(tr("MaxCalc"));
-	setMinimumSize(500, 350);
-	resize(750, 550);
+    setWindowTitle(tr("MaxCalc"));
+    setMinimumSize(500, 350);
+    resize(750, 550);
 
-	setCentralWidget(&centralWidget);
+    setCentralWidget(&mCentralWidget);
 
-	QFont font = historyBox.currentFont();
-	font.setPixelSize(12);
-    historyBox.setFont(font);
-	historyBox.setReadOnly(true);
+    QFont font = mHistoryBox.currentFont();
+    font.setPixelSize(12);
+    mHistoryBox.setFont(font);
+    mHistoryBox.setReadOnly(true);
 
-	font = inputBox.font();
-	font.setPixelSize(16);
-	inputBox.setFont(font);
+    font = mInputBox.font();
+    font.setPixelSize(16);
+    mInputBox.setFont(font);
 
-	font = okButton.font();
-	font.setPixelSize(14);
-	okButton.setFont(font);
-	okButton.setText(tr("OK"));
-	okButton.setMinimumWidth(30);
-	okButton.setMaximumWidth(30);
+    font = mOkButton.font();
+    font.setPixelSize(14);
+    mOkButton.setFont(font);
+    mOkButton.setText(tr("OK"));
+    mOkButton.setMinimumWidth(30);
+    mOkButton.setMaximumWidth(30);
 
-	bottomLayout.addWidget(&inputBox);
-	bottomLayout.addWidget(&okButton);
+    mBottomLayout.addWidget(&mInputBox);
+    mBottomLayout.addWidget(&mOkButton);
 
-	variablesListWrapper.setWidget(variablesList);
-	functionsListWrapper.setWidget(functionsList);
+    mVariablesListWrapper.setWidget(mVariablesList);
+    mFunctionsListWrapper.setWidget(mFunctionsList);
 
-	layout.addWidget(&historyBox);
-	layout.addLayout(&bottomLayout);
-	
-	addDockWidget(Qt::RightDockWidgetArea, &variablesListWrapper);
-	tabifyDockWidget(&variablesListWrapper, &functionsListWrapper);
-	variablesListWrapper.raise();
+    mLayout.addWidget(&mHistoryBox);
+    mLayout.addLayout(&mBottomLayout);
+    
+    addDockWidget(Qt::RightDockWidgetArea, &mVariablesListWrapper);
+    tabifyDockWidget(&mVariablesListWrapper, &mFunctionsListWrapper);
+    mVariablesListWrapper.raise();
 
-	centralWidget.setLayout(&layout);
+    mCentralWidget.setLayout(&mLayout);
 
-	QObject::connect(this, SIGNAL(expressionCalculated()), &inputBox,
-		SLOT(addTextToHistory()));
-	QObject::connect(&okButton, SIGNAL(clicked()), this,
-		SLOT(onExpressionEntered()));
-	QObject::connect(&inputBox, SIGNAL(returnPressed()), this,
-		SLOT(onExpressionEntered()));
-	QObject::connect(variablesList, SIGNAL(itemActivated(QListWidgetItem *)),
-		this, SLOT(onVariableClicked(QListWidgetItem *)));
-	QObject::connect(functionsList, SIGNAL(itemActivated(QListWidgetItem *)),
-		this, SLOT(onFunctionClicked(QListWidgetItem *)));
+    QObject::connect(this, SIGNAL(expressionCalculated()), &mInputBox,
+        SLOT(addTextToHistory()));
+    QObject::connect(&mOkButton, SIGNAL(clicked()), this,
+        SLOT(onExpressionEntered()));
+    QObject::connect(&mInputBox, SIGNAL(returnPressed()), this,
+        SLOT(onExpressionEntered()));
+    QObject::connect(mVariablesList, SIGNAL(itemActivated(QListWidgetItem *)),
+        this, SLOT(onVariableClicked(QListWidgetItem *)));
+    QObject::connect(mFunctionsList, SIGNAL(itemActivated(QListWidgetItem *)),
+        this, SLOT(onFunctionClicked(QListWidgetItem *)));
 
-	inputBox.setFocus();
+    mInputBox.setFocus();
 }
 
 MainWindow::~MainWindow()
 {
-	delete variablesList;
-	delete functionsList;
+    delete mVariablesList;
+    delete mFunctionsList;
 }
 
 /*!
-	Creates main menu.
+    Creates main menu.
 */
 void MainWindow::initMainMenu()
 {
-	setMenuBar(&mainMenu);
+    setMenuBar(&mMainMenu);
 
-	// File menu
+    // File menu
 
-	QMenu * file = mainMenu.addMenu(tr("&File"));
-	file->addAction(tr("&Exit"), this, SLOT(close()));
+    QMenu * file = mMainMenu.addMenu(tr("&File"));
+    file->addAction(tr("&Exit"), this, SLOT(close()));
 
-	// Commands menu
+    // Commands menu
 
-	QMenu * commands = mainMenu.addMenu(tr("&Commands"));
-	commands->addAction(tr("&Clear history"), &historyBox, SLOT(clear()));
-	commands->addAction(tr("&Delete all variables"), this,
-						SLOT(onDeleteAllVariables()));
+    QMenu * commands = mMainMenu.addMenu(tr("&Commands"));
+    commands->addAction(tr("&Clear history"), &mHistoryBox, SLOT(clear()));
+    commands->addAction(tr("&Delete all variables"), this,
+                        SLOT(onDeleteAllVariables()));
 
     // Settings menu
 
-    QMenu * settings = mainMenu.addMenu(tr("&Settings"));
+    QMenu * settings = mMainMenu.addMenu(tr("&Settings"));
     QAction * action = new QAction(tr("&Variables"), settings);
-	action->setCheckable(true);
-	action->setChecked(true);
-	connect(action, SIGNAL(toggled(bool)), &variablesListWrapper,
-			SLOT(setVisible(bool)));
+    action->setCheckable(true);
+    action->setChecked(true);
+    connect(action, SIGNAL(toggled(bool)), &mVariablesListWrapper,
+            SLOT(setVisible(bool)));
     settings->addAction(action);
     action = new QAction(tr("&Functions"), settings);
-	action->setCheckable(true);
-	action->setChecked(true);
-	connect(action, SIGNAL(toggled(bool)), &functionsListWrapper,
-			SLOT(setVisible(bool)));
+    action->setCheckable(true);
+    action->setChecked(true);
+    connect(action, SIGNAL(toggled(bool)), &mFunctionsListWrapper,
+            SLOT(setVisible(bool)));
     settings->addAction(action);
 //    action = new QAction(tr("&"))
 
-	// Unit conversion menu
+    // Unit conversion menu
 
-	QMenu * unitConversion = mainMenu.addMenu(tr("&Unit conversion"));
-	QMenu * currentUnits = 0;
-	QMenu * firstLevelMenu = 0;
+    QMenu * unitConversion = mMainMenu.addMenu(tr("&Unit conversion"));
+    QMenu * currentUnits = 0;
+    QMenu * firstLevelMenu = 0;
     const UnitConversion::UnitDef * firstLevelCur = 0;
 
-	UnitConversion::Type type = UnitConversion::NO_TYPE;
-	const UnitConversion::UnitDef * cur;
-	for (cur = UnitConversion::units(); cur->unit != UnitConversion::NO_UNIT; ++cur)
-	{
-		if (type != cur->type)
-		{
-			type = cur->type;
-			firstLevelCur = cur;
-			switch (type)
-			{
-			case UnitConversion::LENGTH:
-				currentUnits = unitConversion->addMenu(tr("&Length"));
-				break;
-			case UnitConversion::WEIGHT:
-				currentUnits = unitConversion->addMenu(tr("&Weight"));
-				break;
-			case UnitConversion::TIME:
-				currentUnits = unitConversion->addMenu(tr("&Time"));
-				break;
-			case UnitConversion::SPEED:
-				currentUnits = unitConversion->addMenu(tr("&Speed"));
-				break;
-			case UnitConversion::TEMPERATURE:
-				currentUnits = unitConversion->addMenu(tr("T&emperature"));
-				break;
-			default:
-				currentUnits = unitConversion->addMenu(tr("&Unknown units"));
-				break;
-			}
-		}
+    UnitConversion::Type type = UnitConversion::NO_TYPE;
+    const UnitConversion::UnitDef * cur;
+    for (cur = UnitConversion::units(); cur->unit != UnitConversion::NO_UNIT; ++cur) {
+        if (type != cur->type) {
+            type = cur->type;
+            firstLevelCur = cur;
+            switch (type) {
+            case UnitConversion::LENGTH:
+                currentUnits = unitConversion->addMenu(tr("&Length"));
+                break;
+            case UnitConversion::WEIGHT:
+                currentUnits = unitConversion->addMenu(tr("&Weight"));
+                break;
+            case UnitConversion::TIME:
+                currentUnits = unitConversion->addMenu(tr("&Time"));
+                break;
+            case UnitConversion::SPEED:
+                currentUnits = unitConversion->addMenu(tr("&Speed"));
+                break;
+            case UnitConversion::TEMPERATURE:
+                currentUnits = unitConversion->addMenu(tr("T&emperature"));
+                break;
+            default:
+                currentUnits = unitConversion->addMenu(tr("&Unknown units"));
+                break;
+            }
+        }
 
         firstLevelMenu = currentUnits->addMenu(QString::fromWCharArray(
                 cur->name.c_str()));
-		const UnitConversion::UnitDef * cur2;
-		for (cur2 = firstLevelCur; cur2->type == type; ++cur2)
-		{
-			if (cur2 == cur)
-				continue;
-			QString conversion = QString("[") +
-								 firstLevelMenu->title() +
-								 QString("->") +
+        const UnitConversion::UnitDef * cur2;
+        for (cur2 = firstLevelCur; cur2->type == type; ++cur2) {
+            if (cur2 == cur) {
+                continue;
+            }
+            QString conversion = QString("[") +
+                                 firstLevelMenu->title() +
+                                 QString("->") +
                                  QString::fromWCharArray(cur2->name.c_str()) +
-								 QString("]");
-			MyAction * action = new MyAction(firstLevelMenu,
+                                 QString("]");
+            MyAction * action = new MyAction(firstLevelMenu,
                                              QString::fromWCharArray(cur2->name.c_str()),
-											 conversion, this,
-											 SLOT(onUnitConversion(const QString &)));
-			firstLevelMenu->addAction(action);
-		}
-	}
+                                             conversion, this,
+                                             SLOT(onUnitConversion(const QString &)));
+            firstLevelMenu->addAction(action);
+        }
+    }
 
-	// Help menu
+    // Help menu
 
-	QMenu * help = mainMenu.addMenu(tr("&Help"));
+    QMenu * help = mMainMenu.addMenu(tr("&Help"));
     help->addAction(tr("MaxCalc &Web Site..."), this, SLOT(onHelpWebSite()));
     help->addAction(tr("&Report issue..."), this, SLOT(onHelpReportIssue()));
     help->addSeparator();
@@ -223,163 +221,137 @@ void MainWindow::initMainMenu()
 }
 
 /*!
-	Adds constants to varibables list.
+    Adds constants to varibables list.
 */
 void MainWindow::updateVariablesList()
 {
-	variablesList->clear();
+    mVariablesList->clear();
 
-	variablesList->addItem(tr("e = ") +
+    mVariablesList->addItem(tr("e = ") +
         QString::fromWCharArray(MaxCalcEngine::BigDecimal::E.toWideString().c_str()));
-	variablesList->addItem(tr("pi = ") +
+    mVariablesList->addItem(tr("pi = ") +
         QString::fromWCharArray(MaxCalcEngine::BigDecimal::PI.toWideString().c_str()));
 
-	if (parser.context().resultExists())
-	{
-		variablesList->addItem(tr("res = ") +
-            QString::fromWCharArray(parser.context().result().toWideString().c_str()));
-	}
+    if (mParser.context().resultExists()) {
+        mVariablesList->addItem(tr("res = ") +
+            QString::fromWCharArray(mParser.context().result().toWideString().c_str()));
+    }
 
-	MaxCalcEngine::Variables::const_iterator iter;
-	for (iter = parser.context().variables().begin();
-		iter != parser.context().variables().end(); ++iter)
-	{
-        variablesList->addItem(QString::fromWCharArray(iter->name.c_str()) +
+    MaxCalcEngine::Variables::const_iterator iter;
+    for (iter = mParser.context().variables().begin();
+        iter != mParser.context().variables().end(); ++iter) {
+        mVariablesList->addItem(QString::fromWCharArray(iter->name.c_str()) +
             " = " + QString::fromWCharArray(iter->value.toWideString().c_str()));
-	}
+    }
 }
 
 /*!
-	Adds supported functions to functions list.
+    Adds supported functions to functions list.
 */
 void MainWindow::initFunctionsList()
 {
-	functionsList->addItem(tr("abs"));
-	functionsList->addItem(tr("sqr"));
-	functionsList->addItem(tr("sqrt"));
-	functionsList->addItem(tr("pow"));
-	functionsList->addItem(tr("fact"));
-	functionsList->addItem(tr("sin"));
-	functionsList->addItem(tr("cos"));
-	functionsList->addItem(tr("tan"));
-	functionsList->addItem(tr("cot"));
-	functionsList->addItem(tr("asin"));
-	functionsList->addItem(tr("acos"));
-	functionsList->addItem(tr("atan"));
-	functionsList->addItem(tr("acot"));
-	functionsList->addItem(tr("sinh"));
-	functionsList->addItem(tr("cosh"));
-	functionsList->addItem(tr("tanh"));
-	functionsList->addItem(tr("coth"));
-	functionsList->addItem(tr("asinh"));
-	functionsList->addItem(tr("acosh"));
-	functionsList->addItem(tr("atanh"));
-	functionsList->addItem(tr("acoth"));
-	functionsList->addItem(tr("ln"));
-	functionsList->addItem(tr("log2"));
-	functionsList->addItem(tr("log10"));
-	functionsList->addItem(tr("exp"));
+    mFunctionsList->addItem(tr("abs"));
+    mFunctionsList->addItem(tr("sqr"));
+    mFunctionsList->addItem(tr("sqrt"));
+    mFunctionsList->addItem(tr("pow"));
+    mFunctionsList->addItem(tr("fact"));
+    mFunctionsList->addItem(tr("sin"));
+    mFunctionsList->addItem(tr("cos"));
+    mFunctionsList->addItem(tr("tan"));
+    mFunctionsList->addItem(tr("cot"));
+    mFunctionsList->addItem(tr("asin"));
+    mFunctionsList->addItem(tr("acos"));
+    mFunctionsList->addItem(tr("atan"));
+    mFunctionsList->addItem(tr("acot"));
+    mFunctionsList->addItem(tr("sinh"));
+    mFunctionsList->addItem(tr("cosh"));
+    mFunctionsList->addItem(tr("tanh"));
+    mFunctionsList->addItem(tr("coth"));
+    mFunctionsList->addItem(tr("asinh"));
+    mFunctionsList->addItem(tr("acosh"));
+    mFunctionsList->addItem(tr("atanh"));
+    mFunctionsList->addItem(tr("acoth"));
+    mFunctionsList->addItem(tr("ln"));
+    mFunctionsList->addItem(tr("log2"));
+    mFunctionsList->addItem(tr("log10"));
+    mFunctionsList->addItem(tr("exp"));
 }
 
 /*!
-	Called when expression is entered.
+    Called when expression is entered.
 */
 void MainWindow::onExpressionEntered()
 {
-	QString expr = inputBox.text();
-	expr = expr.trimmed();
+    QString expr = mInputBox.text();
+    expr = expr.trimmed();
 
-	if (expr.isEmpty())
-		return;
-
-	wchar_t * str = new wchar_t[expr.length() + 1];
-	expr.toWCharArray(str);
-    str[expr.length()] = L'\0';
-	parser.setExpression(str);
-
-    historyBox.moveCursor(QTextCursor::End);
-    historyBox.setTextColor(Qt::blue);
-    historyBox.append(inputBox.text());
-
-	try
-	{
-		parser.parse();
-
-		// No error during parsing, output result (otherwise an exception will be caught)
-
-		emit expressionCalculated();
-
-		historyBox.setTextColor(Qt::darkGreen);
-		historyBox.append(indent +
-            QString::fromWCharArray(parser.context().result().toWideString().c_str()));
-		inputBox.clear();
-		inputBox.setFocus();
-		updateVariablesList();
-	}
-	// Parser exceptions
-	catch (ResultDoesNotExistException)
-	{
-		outputError(tr("No result of previous calculations"));
-	}
-	catch (UnknownTokenException & ex)
-	{
-		outputError(QString("Unknown token '%1' in expression")
-                    .arg(QString::fromWCharArray(ex.what().c_str())));
-	}
-    catch (IncorrectNumberException & ex)
-	{
-        QString msg = "Incorrect number";
-        if (ex.what() != _T(""))
-            msg += QString(" '%1'").arg(QString::fromWCharArray(ex.what().c_str()));
-        outputError(msg);
-	}
-	catch (IncorrectExpressionException)
-	{
-		outputError(tr("Incorrect expression"));
-	}
-	catch (NoClosingBracketException)
-	{
-		outputError(tr("No closing bracket"));
-	}
-    catch (TooManyClosingBracketsException)
-    {
-        outputError(tr("Too many closing brackets"));
+    if (expr.isEmpty()) {
+        return;
     }
-    catch (UnknownFunctionException & ex)
-	{
+
+    wchar_t * str = new wchar_t[expr.length() + 1];
+    expr.toWCharArray(str);
+    str[expr.length()] = L'\0';
+    mParser.setExpression(str);
+
+    mHistoryBox.moveCursor(QTextCursor::End);
+    mHistoryBox.setTextColor(Qt::blue);
+    mHistoryBox.append(mInputBox.text());
+
+    try {
+        mParser.parse();
+
+        // No error during parsing, output result (otherwise an exception will be caught)
+
+        emit expressionCalculated();
+
+        mHistoryBox.setTextColor(Qt::darkGreen);
+        mHistoryBox.append(indent +
+            QString::fromWCharArray(mParser.context().result().toWideString().c_str()));
+        mInputBox.clear();
+        mInputBox.setFocus();
+        updateVariablesList();
+    }
+    // Parser exceptions
+    catch (ResultDoesNotExistException) {
+        outputError(tr("No result of previous calculations"));
+    } catch (UnknownTokenException & ex) {
+        outputError(QString("Unknown token '%1' in expression")
+                    .arg(QString::fromWCharArray(ex.what().c_str())));
+    } catch (IncorrectNumberException & ex) {
+        QString msg = "Incorrect number";
+        if (ex.what() != _T("")) {
+            msg += QString(" '%1'").arg(QString::fromWCharArray(ex.what().c_str()));
+        }
+        outputError(msg);
+    } catch (IncorrectExpressionException) {
+        outputError(tr("Incorrect expression"));
+    } catch (NoClosingBracketException) {
+        outputError(tr("No closing bracket"));
+    } catch (TooManyClosingBracketsException) {
+        outputError(tr("Too many closing brackets"));
+    } catch (UnknownFunctionException & ex) {
         outputError(QString("Unknown function '%1'")
                     .arg(QString::fromWCharArray(ex.what().c_str())));
-	}
-    catch (UnknownVariableException & ex)
-	{
+    } catch (UnknownVariableException & ex) {
         outputError(QString("Unknown variable '%1'")
                     .arg(QString::fromWCharArray(ex.what().c_str())));
-	}
-	catch (IncorrectVariableNameException)
-	{
-		outputError(tr("Incorrect name of variable"));
-	}
-	catch (IncorrectUnitConversionSyntaxException)
-	{
-		outputError(tr("Incorrect unit conversion syntax"));
-	}
-    catch (UnknownUnitException & ex)
-    {
+    } catch (IncorrectVariableNameException) {
+        outputError(tr("Incorrect name of variable"));
+    } catch (IncorrectUnitConversionSyntaxException) {
+        outputError(tr("Incorrect unit conversion syntax"));
+    } catch (UnknownUnitException & ex) {
         outputError(QString("Unknown unit '%1'")
                     .arg(QString::fromWCharArray(ex.what().c_str())));
-    }
-    catch (UnknownUnitConversionException & ex)
-	{
+    } catch (UnknownUnitConversionException & ex) {
         outputError(QString("There is no unit conversion '%1'")
                     .arg(QString::fromWCharArray(ex.what().c_str())));
-	}
-	// Invalid argument exceptions
-	catch (InvalidArgumentException & ex)
-	{
+    }
+    // Invalid argument exceptions
+    catch (InvalidArgumentException & ex) {
         QString msg = QString("Invalid argument of function '%1'")
                     .arg(QString::fromWCharArray(ex.what().c_str()));
-        switch (ex.reason())
-        {
+        switch (ex.reason()) {
         case InvalidArgumentException::ZERO:
             msg += " (zero)";
             break;
@@ -417,92 +389,88 @@ void MainWindow::onExpressionEntered()
             break;
         }
         outputError(msg);
-    }
-	catch (InvalidUnitConversionArgumentException & ex)
-	{
-		outputError(QString("Complex argument in unit conversion '%1'")
+    } catch (InvalidUnitConversionArgumentException & ex) {
+        outputError(QString("Complex argument in unit conversion '%1'")
                     .arg(QString::fromWCharArray(ex.what().c_str())));
-	}
-	// Arithmetic exception
-	catch (ArithmeticException & ex)
-	{
-		QString reason;
-		switch (ex.reason())
-		{
-		case ArithmeticException::DIVISION_BY_ZERO:
-			reason = "Division by zero";
-			break;
-		case ArithmeticException::DIVISION_IMPOSSIBLE:
-			reason = "Division impossible";
-			break;
-		case ArithmeticException::OVERFLOW:
-			reason = "Arithmetic overflow";
-			break;
-		case ArithmeticException::UNDERFLOW:
-			reason = "Arithmetic underflow";
-			break;
-		case ArithmeticException::CONVERSION_IMPOSSIBLE:
-			reason = "Arithmetic conversion impossible";
-			break;
-		case ArithmeticException::INVALID_OPERATION_ON_FRACTIONAL_NUMBER:
-			reason = "Invalid operation on fractional number";
-			break;
-		default: // This includes UNKNOWN_REASON
-			reason = "Unknown arithmetic error";
-			break;
-		}
-		outputError(reason);
-	}
-	// Generic parser exception
-	catch (ParserException)
-	{
-		outputError(tr("Unknown error"));
-	}
-	// Generic MaxCalc exception
-	catch (MaxCalcException)
-	{
-		outputError(tr("Unknown error"));
-	}
+    }
+    // Arithmetic exception
+    catch (ArithmeticException & ex) {
+        QString reason;
+        switch (ex.reason()) {
+        case ArithmeticException::DIVISION_BY_ZERO:
+            reason = "Division by zero";
+            break;
+        case ArithmeticException::DIVISION_IMPOSSIBLE:
+            reason = "Division impossible";
+            break;
+        case ArithmeticException::OVERFLOW:
+            reason = "Arithmetic overflow";
+            break;
+        case ArithmeticException::UNDERFLOW:
+            reason = "Arithmetic underflow";
+            break;
+        case ArithmeticException::CONVERSION_IMPOSSIBLE:
+            reason = "Arithmetic conversion impossible";
+            break;
+        case ArithmeticException::INVALID_OPERATION_ON_FRACTIONAL_NUMBER:
+            reason = "Invalid operation on fractional number";
+            break;
+        default: // This includes UNKNOWN_REASON
+            reason = "Unknown arithmetic error";
+            break;
+        }
+        outputError(reason);
+    }
+    // Generic parser exception
+    catch (ParserException) {
+        outputError(tr("Unknown error"));
+    }
+    // Generic MaxCalc exception
+    catch (MaxCalcException) {
+        outputError(tr("Unknown error"));
+    }
 }
 
-void MainWindow::outputError(QString message)
+void MainWindow::outputError(const QString & message)
 {
-	historyBox.setTextColor(Qt::red);
-	historyBox.append(indent + message);
-	inputBox.selectAll();
-	inputBox.setFocus();
+    mHistoryBox.setTextColor(Qt::red);
+    mHistoryBox.append(indent + message);
+    mInputBox.selectAll();
+    mInputBox.setFocus();
 }
 
 /*!
-	Called when variable in the list is clicked.
+    Called when variable in the list is clicked.
 */
 void MainWindow::onVariableClicked(QListWidgetItem * item)
 {
-	QString text = item->text();
-	int equalIndex = text.indexOf(" = ");
-	text.remove(equalIndex, text.length() - equalIndex);
-	inputBox.insert(text);
-	inputBox.setFocus();
+    Q_ASSERT(item);
+    QString text = item->text();
+    int equalIndex = text.indexOf(" = ");
+    text.remove(equalIndex, text.length() - equalIndex);
+    mInputBox.insert(text);
+    mInputBox.setFocus();
 }
 
 /*!
-	Called when function in the list is clicked.
+    Called when function in the list is clicked.
 */
 void MainWindow::onFunctionClicked(QListWidgetItem * item)
 {
-	inputBox.insert(item->text());
-	inputBox.insert("()");
-	inputBox.setCursorPosition(inputBox.cursorPosition() - 1);
-	inputBox.setFocus();
+    Q_ASSERT(item);
+    mInputBox.insert(item->text());
+    mInputBox.insert("()");
+    mInputBox.setCursorPosition(mInputBox.cursorPosition() - 1);
+    mInputBox.setFocus();
 }
 
 /*!
-	Help -> About command.
+    Help -> About command.
 */
 void MainWindow::onHelpAbout()
 {
-	AboutBox aboutBox(this);
-	aboutBox.exec();
+    AboutBox aboutBox(this);
+    aboutBox.exec();
 }
 
 /*!
@@ -522,18 +490,18 @@ void MainWindow::onHelpReportIssue()
 }
 
 /*!
-	Commands -> Delete all variables command.
+    Commands -> Delete all variables command.
 */
 void MainWindow::onDeleteAllVariables()
 {
-	parser.context().variables().removeAll();
-	updateVariablesList();
+    mParser.context().variables().removeAll();
+    updateVariablesList();
 }
 
 /*!
-	Unit conversion menu command handler.
+    Unit conversion menu command handler.
 */
 void MainWindow::onUnitConversion(const QString & conversion)
 {
-	inputBox.insert(conversion);
+    mInputBox.insert(conversion);
 }

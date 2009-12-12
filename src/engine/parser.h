@@ -21,11 +21,10 @@
 #define PARSER_H
 
 // Local
-#include "unicode.h"
 #include "parsercontext.h"
 #include "complex.h"
 #include "unitconversion.h"
-
+#include "unicode.h"
 // STL
 #include <list>
 #include <vector>
@@ -37,170 +36,117 @@ class Parser
 {
 public:
 
-	///////////////////////////////////////////////////////////////////////////
-	// Constructors
+    ///////////////////////////////////////////////////////////////////////////
+    // Constructors
 
-	Parser();
-	Parser(const tstring & expr, const ParserContext & context);
+    Parser();
+    Parser(const tstring & expr, const ParserContext & context);
 
-	///////////////////////////////////////////////////////////////////////////
-	// Public functions
+    ///////////////////////////////////////////////////////////////////////////
+    // Public functions
 
-	ParserContext parse();
+    ParserContext parse();
 
-	///////////////////////////////////////////////////////////////////////////
-	// Accessors
+    ///////////////////////////////////////////////////////////////////////////
+    // Accessors
 
-	inline tstring expression() const;
-	inline void setExpression(const tstring & expr);
+    tstring expression() const;
+    void setExpression(const tstring & expr);
 
-	inline ParserContext & context();
-	inline void setContext(const ParserContext & context);
+    ParserContext & context();
+    void setContext(const ParserContext & context);
 
 private:
 
-	///////////////////////////////////////////////////////////////////////////
-	// Private variables
+    ///////////////////////////////////////////////////////////////////////////
+    // Private variables
 
-	tstring expr_;						///< Expression to be parsed.
-	ParserContext context_;				///< Parser context.
-	UnitConversion unitConversion_;		///< Unit conversion.
-
-
-	///////////////////////////////////////////////////////////////////////////
-	// Utility functions
-
-	void reset();
+    tstring mExpr;                        ///< Expression to be parsed.
+    ParserContext mContext;                ///< Parser context.
+    UnitConversion mUnitConversion;        ///< Unit conversion.
 
 
-	///////////////////////////////////////////////////////////////////////////
-	// Lexical analyzer
+    ///////////////////////////////////////////////////////////////////////////
+    // Utility functions
 
-	/// Enum of tokens.
-	enum Tokens
-	{
-		PLUS,
-		MINUS,
-		MULTIPLY,
-		DIVIDE,
-		POWER,
-		OPENING_BRACKET,
-		CLOSING_BRACKET,
-		SEMICOLON,
-		NUMBER,
-		IMAGINARY_ONE,
-		IDENTIFIER,
-		ASSIGN,
-
-		// Unit conversion
-		UNIT,
-		OPENING_SQUARE_BRACKET,
-		CLOSING_SQUARE_BRACKET,
-		ARROW,
-	};
-
-	/// Represents token with corresponding part of expression.
-	struct Token
-	{
-		/// Constructs new Token from given \a token_ and \a str_
-		inline Token(const Tokens token_, const tstring & str_)
-		{ token = token_; str = str_; }
-
-		/// Constructs new Token from given \a token_ and \a char_
-		inline Token(const Tokens token_, const tchar char_)
-		{ token = token_; str = char_; }
-
-		Tokens token;					///< Token.
-		tstring str;					///< String corresponding to token.
-	};
-
-	std::list<Token> tokens_;			///< List of tokens
-	tstring::const_iterator curChar_;	///< Current char of expression
-
-	void lexicalAnalysis();
-	bool analyzeAssignment();
-	bool analyzeUnitConversions();
-	bool analyzeOperators();
-	bool analyzeNumbers();
-	bool analyzeIdentifiers();
-	bool skipSpaces();
-	inline bool isIdentifierChar(tchar c, bool firstChar);
-	inline bool isUnitChar(tchar c);
+    void reset();
 
 
-	///////////////////////////////////////////////////////////////////////////
-	// Syntax analyzer
+    ///////////////////////////////////////////////////////////////////////////
+    // Lexical analyzer
 
-	std::list<Token>::const_iterator curToken_;	///< Current token in the list of tokens
+    /// Enum of tokens.
+    enum Tokens
+    {
+        PLUS,
+        MINUS,
+        MULTIPLY,
+        DIVIDE,
+        POWER,
+        OPENING_BRACKET,
+        CLOSING_BRACKET,
+        SEMICOLON,
+        NUMBER,
+        IMAGINARY_ONE,
+        IDENTIFIER,
+        ASSIGN,
 
-	void syntaxAnalysis();
-	Complex parseAssign();
-	Complex parseAddSub();
-	Complex parseMulDiv();
-	Complex parsePower();
-	Complex parseUnitConversions();
-	Complex parseUnaryPlusMinus();
-	Complex parseBrackets();
-	Complex parseFunctions();
-	Complex parseConstsVars();
-	Complex parseNumbers();
+        // Unit conversion
+        UNIT,
+        OPENING_SQUARE_BRACKET,
+        CLOSING_SQUARE_BRACKET,
+        ARROW,
+    };
 
-	bool parseFunctionArguments(std::vector<Complex> & args);
+    /// Represents token with corresponding part of expression.
+    struct Token
+    {
+        /// Constructs new Token from given \a token_ and \a str_
+        Token(const Tokens token_, const tstring & str_)
+        { token = token_; str = str_; }
+
+        /// Constructs new Token from given \a token_ and \a char_
+        Token(const Tokens token_, const tchar char_)
+        { token = token_; str = char_; }
+
+        Tokens token;                    ///< Token.
+        tstring str;                    ///< String corresponding to token.
+    };
+
+    std::list<Token> tokens_;            ///< List of tokens
+    tstring::const_iterator curChar_;    ///< Current char of expression
+
+    void lexicalAnalysis();
+    bool analyzeAssignment();
+    bool analyzeUnitConversions();
+    bool analyzeOperators();
+    bool analyzeNumbers();
+    bool analyzeIdentifiers();
+    bool skipSpaces();
+    bool isIdentifierChar(tchar c, bool firstChar);
+    bool isUnitChar(tchar c);
+
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Syntax analyzer
+
+    std::list<Token>::const_iterator mCurToken; ///< Current token in the list of tokens
+
+    void syntaxAnalysis();
+    Complex parseAssign();
+    Complex parseAddSub();
+    Complex parseMulDiv();
+    Complex parsePower();
+    Complex parseUnitConversions();
+    Complex parseUnaryPlusMinus();
+    Complex parseBrackets();
+    Complex parseFunctions();
+    Complex parseConstsVars();
+    Complex parseNumbers();
+
+    bool parseFunctionArguments(std::vector<Complex> & args);
 };
 
-
-///////////////////////////////////////////////////////////////////////////
-// Inline functions
-
-/*!
-	Gets expression.
-*/
-inline tstring Parser::expression() const
-{
-	return expr_;
-}
-
-/*!
-	Sets expression and resets parser state to make new calculation.
-*/
-inline void Parser::setExpression(const tstring & expr)
-{
-	reset();
-	expr_ = expr;
-	strToLower(expr_);
-}
-
-/*!
-	Gets context.
-*/
-inline ParserContext & Parser::context()
-{
-	return context_;
-}
-
-/*!
-	Sets context.
-*/
-inline void Parser::setContext(const ParserContext & context)
-{
-	context_ = context;
-}
-
-/*!
-	Determines if \a c is a character which can be part of an identifier.
-*/
-inline bool Parser::isIdentifierChar(tchar c, bool firstChar)
-{
-	return (c == _T('_') || istalpha(c) || (!firstChar && istdigit(c)));
-}
-
-/*!
-	Determines if \a c is a character which can be part of an unit in unit conversion.
-*/
-inline bool Parser::isUnitChar(tchar c)
-{
-	return (istalpha(c) || c == _T('/'));
-}
 
 } // namespace MaxCalcEngine
 

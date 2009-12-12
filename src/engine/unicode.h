@@ -22,9 +22,6 @@
 
 // STL
 #include <string>
-#include <cctype>
-#include <iostream>
-#include <cwchar>
 
 namespace MaxCalcEngine {
 
@@ -37,24 +34,24 @@ namespace MaxCalcEngine {
 ///////////////////////////////////////////////////////////////////////////
 // Unicode identifiers
 
-#define _T(x) L ## x				///< String literal
+#define _T(x) L ## x                ///< String literal
 
-typedef wchar_t tchar;				///< tchar definition
-typedef std::wstring tstring;		///< tstring definition
+typedef wchar_t tchar;                ///< tchar definition
+typedef std::wstring tstring;        ///< tstring definition
 
 // Character case conversion functions
-#define totlower(c) towlower(c)		///< Converts \a c to lower case
-#define totupper(c) towupper(c)		///< Converts \a c to upper case
+#define totlower(c) towlower(c)        ///< Converts \a c to lower case
+#define totupper(c) towupper(c)        ///< Converts \a c to upper case
 
 // Character handling functions
-#define istdigit(c) iswdigit(c)		///< Determines if \a c is a digit
-#define istalpha(c) iswalpha(c)		///< Determines if \a c is a digit or letter
-#define istspace(c) iswspace(c)		///< Determines if \a c is a space char
+#define istdigit(c) iswdigit(c)        ///< Determines if \a c is a digit
+#define istalpha(c) iswalpha(c)        ///< Determines if \a c is a digit or letter
+#define istspace(c) iswspace(c)        ///< Determines if \a c is a space char
 
 // IO
-#define tcout wcout					///< Standard output stream
-#define tcin wcin					///< Standard input stream
-#define fgetts fgetws				///< Gets string from stream
+#define tcout wcout                    ///< Standard output stream
+#define tcin wcin                    ///< Standard input stream
+#define fgetts fgetws                ///< Gets string from stream
 #define tstringstream wstringstream ///< stringstream
 
 // String functions
@@ -70,25 +67,25 @@ void wideStringToString(const std::wstring & from, std::string & to);
 ///////////////////////////////////////////////////////////////////////////
 // Non-Unicode identifiers
 
-#define _T(x) x						///< String literal
+#define _T(x) x                        ///< String literal
 
-typedef char tchar;					///< tchar definition
-typedef std::string tstring;		///< tstring definition
+typedef char tchar;                    ///< tchar definition
+typedef std::string tstring;        ///< tstring definition
 
 
 // Character case conversion functions
-#define totlower(c) tolower(c)		///< Converts \a c to lower case
-#define totupper(c) toupper(c)		///< Converts \a c to upper case
+#define totlower(c) tolower(c)        ///< Converts \a c to lower case
+#define totupper(c) toupper(c)        ///< Converts \a c to upper case
 
 // Character handling functions
-#define istdigit(c) isdigit(c)		///< Determines if \a c is a digit
-#define istalpha(c) isalpha(c)		///< Determines if \a c is a digit or letter
-#define istspace(c) isspace(c)		///< Determines if \a c is a space char
+#define istdigit(c) isdigit(c)        ///< Determines if \a c is a digit
+#define istalpha(c) isalpha(c)        ///< Determines if \a c is a digit or letter
+#define istspace(c) isspace(c)        ///< Determines if \a c is a space char
 
 // IO
-#define tcout cout					///< Standard output stream
-#define tcin cin					///< Standard input stream
-#define fgetts fgets				///< Gets string from stream
+#define tcout cout                    ///< Standard output stream
+#define tcin cin                    ///< Standard input stream
+#define fgetts fgets                ///< Gets string from stream
 #define tstringstream stringstream  ///< stringstream
 
 // String functions

@@ -1,4 +1,4 @@
-﻿v2.0.0 (IN DEVELOPMENT).
+v2.0.0 (IN DEVELOPMENT).
 
     - Added: Links to Web site and bug tracker in GUI.
     - Changed: Added more error messages; improved exception system.

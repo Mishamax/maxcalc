@@ -11,7 +11,7 @@ include_directories(${QT_QTTEST_INCLUDE_DIR})
 
 # It's needed to solve linking problems under Windows when WIN32 option is specified in ADD_EXECUTABLE()
 if (WIN32)
-	link_libraries(${QT_QTMAIN_LIBRARY})
+    link_libraries(${QT_QTMAIN_LIBRARY})
 endif (WIN32)
 
 # Engine

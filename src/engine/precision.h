@@ -23,42 +23,42 @@
 namespace MaxCalcEngine {
 
 /*!
-	Maximum precision of decNumber in decimal digits.
+    Maximum precision of decNumber in decimal digits.
 
-	The maximum precision of decNumber and thus BigDecimal is hard-written by
-	this macro and cannot be changed at runtime.
-	This macro is used in decNumber.h, so precision.h must always be included
-	before decNumber.h.
+    The maximum precision of decNumber and thus BigDecimal is hard-written by
+    this macro and cannot be changed at runtime.
+    This macro is used in decNumber.h, so precision.h must always be included
+    before decNumber.h.
 
-	The default value is 136 to use 512 bits (32 bytes) of data
-	(see decNumber definition in decNumber.h for details).
+    The default value is 136 to use 512 bits (32 bytes) of data
+    (see decNumber definition in decNumber.h for details).
 
-	\sa BigDecimal
-	\ingroup MaxCalcEngine
+    \sa BigDecimal
+    \ingroup MaxCalcEngine
 */
 #define DECNUMDIGITS 136
 
 /*!
-	Working precision of BigDecimal in decimal digits.
+    Working precision of BigDecimal in decimal digits.
 
-	The default value is equal to DECNUMDIGITS, so MaxCalcEngine use full
-	precision of decNumber.
-	
-	\sa BigDecimal, DECNUMDIGITS
-	\ingroup MaxCalcEngine
+    The default value is equal to DECNUMDIGITS, so MaxCalcEngine use full
+    precision of decNumber.
+    
+    \sa BigDecimal, DECNUMDIGITS
+    \ingroup MaxCalcEngine
 */
 static const int WORKING_PRECISION = DECNUMDIGITS;
 
 
 /*!
-	Default precision used to rounding during conversion from BigDecimal to
-	string and from string to BigDecimal.
+    Default precision used to rounding during conversion from BigDecimal to
+    string and from string to BigDecimal.
 
-	This constant must be less than \a WORKING_PRECISION to eliminate rounding
-	errors.	The default value is 50.
+    This constant must be less than \a WORKING_PRECISION to eliminate rounding
+    errors.    The default value is 50.
 
-	\sa BigDecimal::toString(), WORKING_PRECISION
-	\ingroup MaxCalcEngine
+    \sa BigDecimal::toString(), WORKING_PRECISION
+    \ingroup MaxCalcEngine
 */
 static const int MAX_IO_PRECISION = 50;
 

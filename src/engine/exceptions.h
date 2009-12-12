@@ -20,6 +20,7 @@
 #ifndef EXCEPTION_H
 #define EXCEPTION_H
 
+// Local
 #include "unicode.h"
 
 namespace MaxCalcEngine {
@@ -28,26 +29,27 @@ namespace MaxCalcEngine {
 /// General MaxCalc engine exception
 class MaxCalcException
 {
-	const tstring what_;
+    const tstring mWhat;    ///< Additional info for exception.
 
 public:
-	MaxCalcException() : what_(_T("")) { }
-	
-	MaxCalcException(const tstring & what) : what_(what) {}
+    MaxCalcException() : mWhat(_T("")) {}
+    
+    MaxCalcException(const tstring & what) : mWhat(what) {}
 
-	virtual const tstring & what() const throw()
-	{
-		return what_;
-	}
+    /// Returns additional info for exception.
+    virtual const tstring & what() const throw()
+    {
+        return mWhat;
+    }
 };
 
 /// General parser exception
 class ParserException : public MaxCalcException
 {
 public:
-	ParserException() : MaxCalcException() { }
+    ParserException() : MaxCalcException() {}
 
-	ParserException(const tstring & what) : MaxCalcException(what) {}
+    ParserException(const tstring & what) : MaxCalcException(what) {}
 };
 
 
@@ -62,18 +64,19 @@ public:
                    INVALID_OPERATION_ON_FRACTIONAL_NUMBER};
 
 private:
-    Reasons reason_;
+    Reasons mReason;    ///< Exception reason.
 
 public:
     ArithmeticException(const Reasons reason)
-	{
-		reason_ = reason;
-	}
+    {
+        mReason = reason;
+    }
 
+    /// Returns reason of exception.
     Reasons reason() const throw()
-	{
-		return reason_;
-	}
+    {
+        return mReason;
+    }
 };
 
 
@@ -87,18 +90,19 @@ public:
                    HYPERBOLIC_TANGENT_FUNCTION, HYPERBOLIC_COTANGENT_FUNCTION};
 
 private:
-    Reasons reason_;
+    Reasons mReason;    ///< Exception reason.
 
 public:
     InvalidArgumentException(const tstring & function, const Reasons reason) :
             MaxCalcException(function)
     {
-        reason_ = reason;
+        mReason = reason;
     }
 
+    /// Returns reason of exception.
     Reasons reason() const throw()
     {
-        return reason_;
+        return mReason;
     }
 };
 
@@ -106,8 +110,8 @@ public:
 class InvalidUnitConversionArgumentException : public MaxCalcException
 {
 public:
-	InvalidUnitConversionArgumentException(const tstring & conversion) :
-			MaxCalcException(conversion) { }
+    InvalidUnitConversionArgumentException(const tstring & conversion) :
+            MaxCalcException(conversion) {}
 };
 
 
@@ -121,14 +125,14 @@ class ResultDoesNotExistException : public ParserException {};
 class UnknownTokenException : public ParserException
 {
 public:
-	UnknownTokenException(const tstring & token) : ParserException(token) { }
+    UnknownTokenException(const tstring & token) : ParserException(token) {}
 };
 /// Incorrect number.
 class IncorrectNumberException : public ParserException
 {
 public:
-    IncorrectNumberException() : ParserException() { }
-    IncorrectNumberException(const tstring & num) : ParserException(num) { }
+    IncorrectNumberException() : ParserException() {}
+    IncorrectNumberException(const tstring & num) : ParserException(num) {}
 };
 /// Incorrect expression.
 class IncorrectExpressionException : public ParserException {};
@@ -140,13 +144,13 @@ class TooManyClosingBracketsException : public ParserException {};
 class UnknownFunctionException : public ParserException
 {
 public:
-    UnknownFunctionException(const tstring & func) : ParserException(func) { }
+    UnknownFunctionException(const tstring & func) : ParserException(func) {}
 };
 /// Unknown variable.
 class UnknownVariableException : public ParserException
 {
 public:
-    UnknownVariableException(const tstring & var) : ParserException(var) { }
+    UnknownVariableException(const tstring & var) : ParserException(var) {}
 };
 /// Incorrect variable name.
 class IncorrectVariableNameException : public ParserException {};
@@ -156,13 +160,13 @@ class IncorrectUnitConversionSyntaxException : public ParserException {};
 class UnknownUnitException : public ParserException
 {
 public:
-    UnknownUnitException(const tstring & unit) : ParserException(unit) { }
+    UnknownUnitException(const tstring & unit) : ParserException(unit) {}
 };
 /// Unknown unit conversion.
 class UnknownUnitConversionException : public ParserException
 {
 public:
-    UnknownUnitConversionException(const tstring & c) : ParserException(c) { }
+    UnknownUnitConversionException(const tstring & c) : ParserException(c) {}
 };
 
 } // namespace MaxCalcEngine

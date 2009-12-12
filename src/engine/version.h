@@ -25,19 +25,19 @@
 namespace MaxCalcEngine {
 
 /*!
-	Version number.
+    Version number.
 */
 static const tchar * VERSION = _T("2.0.0");
 /*!
-	Version label.
+    Version label.
 */
 static const tchar * VERSION_LABEL = _T("");
 /*!
-	Web site.
+    Web site.
 */
 static const tchar * WEBSITE = _T("http://code.google.com/p/maxcalc/");
 /*!
-	Copyright.
+    Copyright.
 */
 static const tchar * COPYRIGHT = _T("Copyright (c) 2005-2009 Michael Maximov");
 

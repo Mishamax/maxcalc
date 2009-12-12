@@ -23,23 +23,23 @@
 
 namespace MaxCalcEngine {
 
-	
+    
 /*!
-	\class Complex
-	\brief Represents a complex number.
+    \class Complex
+    \brief Represents a complex number.
 
-	BigDecimal class is used to represent real and imaginary parts of
-	the complex number.
+    BigDecimal class is used to represent real and imaginary parts of
+    the complex number.
 
-	When converting to string, number format is specified by ComplexFormat class.
+    When converting to string, number format is specified by ComplexFormat class.
 
-	\sa BigDecimal, ComplexFormat
-	\ingroup MaxCalcEngine
+    \sa BigDecimal, ComplexFormat
+    \ingroup MaxCalcEngine
 */
 
 
 /*!
-	Imaginary one.
+    Imaginary one.
 */
 const Complex Complex::i = Complex(0, 1);
 
@@ -49,95 +49,95 @@ const Complex Complex::i = Complex(0, 1);
 //****************************************************************************
 
 /*!
-	Default constructor (initializes the number with zero).
+    Default constructor (initializes the number with zero).
 */
 Complex::Complex()
 {
-	re = 0;
-	im = 0;
+    re = 0;
+    im = 0;
 }
 
 /*!
-	Constructs a new instance of Complex class from given \a real and
-	\a imaginary parts.
+    Constructs a new instance of Complex class from given \a real and
+    \a imaginary parts.
 */
 Complex::Complex(const char * real, const char * imaginary,
-				 const ComplexFormat & format) :
-	re(real, format), im(imaginary, format)
+                 const ComplexFormat & format) :
+    re(real, format), im(imaginary, format)
 {
 }
 
 /*!
-	Constructs a new instance of Complex class from given \a real and
-	\a imaginary parts.
+    Constructs a new instance of Complex class from given \a real and
+    \a imaginary parts.
 */
 Complex::Complex(const std::string & real, const std::string & imaginary,
-				 const ComplexFormat & format) :
-	re(real, format), im(imaginary, format)
+                 const ComplexFormat & format) :
+    re(real, format), im(imaginary, format)
 {
 }
 
 #if defined(MAXCALC_UNICODE)
 
 /*!
-	Constructs a new instance of Complex class from given \a real and
-	\a imaginary parts.
+    Constructs a new instance of Complex class from given \a real and
+    \a imaginary parts.
 */
 Complex::Complex(const wchar_t * real, const wchar_t * imaginary,
-				 const ComplexFormat & format) :
-	re(real, format), im(imaginary, format)
+                 const ComplexFormat & format) :
+    re(real, format), im(imaginary, format)
 {
 }
 
 /*!
-	Constructs a new instance of Complex class from given \a real and
-	\a imaginary parts.
+    Constructs a new instance of Complex class from given \a real and
+    \a imaginary parts.
 */
 Complex::Complex(const std::wstring & real, const std::wstring & imaginary,
-				 const ComplexFormat & format) :
-	re(real, format), im(imaginary, format)
+                 const ComplexFormat & format) :
+    re(real, format), im(imaginary, format)
 {
 }
 
 #endif // #if defined(MAXCALC_UNICODE)
 
 /*!
-	Constructs a new instance of Complex class from given \a real and
-	\a imaginary parts.
+    Constructs a new instance of Complex class from given \a real and
+    \a imaginary parts.
 */
 Complex::Complex(const BigDecimal & real, const BigDecimal & imaginary)
 {
-	re = real;
-	im = imaginary;
+    re = real;
+    im = imaginary;
 }
 
 /*!
-	Constructs a new instance of Complex class from given \a real and
-	\a imaginary parts.
+    Constructs a new instance of Complex class from given \a real and
+    \a imaginary parts.
 */
 Complex::Complex(const int real, const int imaginary)
 {
-	re = real;
-	im = imaginary;
+    re = real;
+    im = imaginary;
 }
 
 /*!
-	Constructs a new instance of Complex class from given \a real and
-	\a imaginary parts.
+    Constructs a new instance of Complex class from given \a real and
+    \a imaginary parts.
 */
 Complex::Complex(const unsigned real, const unsigned imaginary)
 {
-	re = real;
-	im = imaginary;
+    re = real;
+    im = imaginary;
 }
 
 /*!
-	Constructs a copy of \a num.
+    Constructs a copy of \a num.
 */
 Complex::Complex(const Complex & num)
 {
-	re = num.re;
-	im = num.im;
+    re = num.re;
+    im = num.im;
 }
 
 
@@ -146,182 +146,197 @@ Complex::Complex(const Complex & num)
 //****************************************************************************
 
 /*!
-	Converts this number to std::string using given ComplexFormat.
+    Converts this number to std::string using given ComplexFormat.
 
-	If \a format is not specified, the default ComplexFormat is used.
+    If \a format is not specified, the default ComplexFormat is used.
 
-	\sa ComplexFormat
+    \sa ComplexFormat
 */
 std::string Complex::toString(const ComplexFormat & format) const
 {
-	std::string rePart = re.toString(format);
-	std::string imPart = BigDecimal::abs(im).toString(format);
-	bool isReZero = re.isZero();
-	bool isImZero = im.isZero();
-	bool isImNegative = im.isNegative();
+    std::string rePart = re.toString(format);
+    std::string imPart = BigDecimal::abs(im).toString(format);
+    bool isReZero = re.isZero();
+    bool isImZero = im.isZero();
+    bool isImNegative = im.isNegative();
 
-	std::string result = "";
+    std::string result = "";
 
-	if (isReZero && isImZero)
-		return "0";
+    if (isReZero && isImZero) {
+        return "0";
+    }
 
-	if (!isReZero)
-		result = rePart;
+    if (!isReZero) {
+        result = rePart;
+    }
 
-	if (!isImZero)
-	{
-		if (!isReZero && !isImNegative)
-		{
-			result += '+';
-		}
-		else if (isImNegative)
-		{
-			result += '-';
-		}
+    if (!isImZero) {
+        if (!isReZero && !isImNegative) {
+            result += '+';
+        } else if (isImNegative) {
+            result += '-';
+        }
 
-		result += imPart + format.imaginaryOneChar();
-	}
+        result += imPart + format.imaginaryOneChar();
+    }
 
-	return result;
+    return result;
 }
 
 #if defined(MAXCALC_UNICODE)
 
 /*!
-	Converts this number to std::wstring using given ComplexFormat.
+    Converts this number to std::wstring using given ComplexFormat.
 
-	If \a format is not specified, the default ComplexFormat is used.
+    If \a format is not specified, the default ComplexFormat is used.
 
-	\sa ComplexFormat
+    \sa ComplexFormat
 */
 std::wstring Complex::toWideString(const ComplexFormat & format) const
 {
-	const std::string str = toString(format);
-	std::wstring wstr;
-	stringToWideString(str, wstr);
-	return wstr;
+    const std::string str = toString(format);
+    std::wstring wstr;
+    stringToWideString(str, wstr);
+    return wstr;
 }
 
 #endif // #if defined(MAXCALC_UNICODE)
 
+/*!
+    Converts this number to tstring using given ComplexFormat.
+
+    If \a format is not specified, the default ComplexFormat is used.
+
+    \sa ComplexFormat, tstring
+*/
+tstring Complex::toTString(const ComplexFormat & format) const
+{
+#if defined(MAXCALC_UNICODE)
+        return toWideString(format);
+#else
+        return toString(format);
+#endif
+}
 
 //****************************************************************************
 // Operators
 //****************************************************************************
 
 /*!
-	Returns the same Complex number as this number.
+    Returns the same Complex number as this number.
 */
 Complex Complex::operator+() const
 {
-	return *this;
+    return *this;
 }
 
 /*!
-	Returns negated number.
+    Returns negated number.
 */
 Complex Complex::operator-() const
 {
-	return Complex(-re, -im);
+    return Complex(-re, -im);
 }
 
 /*!
-	Adds two numbers.
+    Adds two numbers.
 */
 Complex Complex::operator+(const Complex & num) const
 {
-	return Complex(re + num.re, im + num.im);
+    return Complex(re + num.re, im + num.im);
 }
 
 /*!
-	Subtracts two numbers.
+    Subtracts two numbers.
 */
 Complex Complex::operator-(const Complex & num) const
 {
-	return Complex(re - num.re, im - num.im);
+    return Complex(re - num.re, im - num.im);
 }
 
 /*!
-	Multiplies two numbers.
+    Multiplies two numbers.
 */
 Complex Complex::operator*(const Complex & num) const
 {
-	return Complex(re * num.re - im * num.im, re * num.im + im * num.re);
+    return Complex(re * num.re - im * num.im, re * num.im + im * num.re);
 }
 
 /*!
-	Divides two numbers.
+    Divides two numbers.
 
-	\exception DivisionByZeroException \a num == (0, 0) is given.
+    \exception ArithmeticException(DIVISION_BY_ZERO) \a num == (0, 0) is given.
 */
 Complex Complex::operator/(const Complex & num) const
 {
-	BigDecimal sqrt = num.re * num.re + num.im * num.im;
-	if (sqrt.isZero())
-		throw ArithmeticException(ArithmeticException::DIVISION_BY_ZERO);
-	return Complex((re * num.re + im * num.im) / sqrt,
-		(im * num.re - re * num.im) / sqrt);
+    BigDecimal sqrt = num.re * num.re + num.im * num.im;
+    if (sqrt.isZero()) {
+        throw ArithmeticException(ArithmeticException::DIVISION_BY_ZERO);
+    }
+    return Complex((re * num.re + im * num.im) / sqrt,
+        (im * num.re - re * num.im) / sqrt);
 }
 
 /*!
-	Adds \a num to this.
+    Adds \a num to this.
 */
 Complex Complex::operator+=(const Complex & num)
 {
-	return Complex(re += num.re, im += num.im);
+    return Complex(re += num.re, im += num.im);
 }
 
 /*!
-	Subtracts \a num from this.
+    Subtracts \a num from this.
 */
 Complex Complex::operator-=(const Complex & num)
 {
-	return Complex(re -= num.re, im -= num.im);
+    return Complex(re -= num.re, im -= num.im);
 }
 
 /*!
-	Multiplies this by \a num.
+    Multiplies this by \a num.
 */
 Complex Complex::operator*=(const Complex & num)
 {
-	Complex result = Complex(re * num.re - im * num.im,
-		re * num.im + im * num.re);
-	re = result.re;
-	im = result.im;
-	return result;
+    Complex result = Complex(re * num.re - im * num.im,
+        re * num.im + im * num.re);
+    re = result.re;
+    im = result.im;
+    return result;
 }
 
 /*!
-	Divides this by \a num.
+    Divides this by \a num.
 
-	\exception DivisionByZeroException \a num = (0, 0) is given.
+    \exception ArithmeticException(DIVISION_BY_ZERO) \a num == (0, 0) is given.
 */
 Complex Complex::operator/=(const Complex & num)
 {
-	BigDecimal sqrt = num.re * num.re + num.im * num.im;
-	if (sqrt.isZero())
-		throw ArithmeticException(ArithmeticException::DIVISION_BY_ZERO);
-	Complex result = Complex((re * num.re + im * num.im) / sqrt,
-		(im * num.re - re * num.im) / sqrt);
-	re = result.re;
-	im = result.im;
-	return result;
+    BigDecimal sqrt = num.re * num.re + num.im * num.im;
+    if (sqrt.isZero()) {
+        throw ArithmeticException(ArithmeticException::DIVISION_BY_ZERO);
+    }
+    Complex result = Complex((re * num.re + im * num.im) / sqrt,
+        (im * num.re - re * num.im) / sqrt);
+    re = result.re;
+    im = result.im;
+    return result;
 }
 
 /*!
-	Returns \a true if two numbers are equal.
+    Returns \a true if two numbers are equal.
 */
 bool Complex::operator==(const Complex & num) const
 {
-	return (num.re == re) && (num.im == im);
+    return (num.re == re) && (num.im == im);
 }
 
 /*!
-	Returns \a true if two numbers are not equal.
+    Returns \a true if two numbers are not equal.
 */
 bool Complex::operator!=(const Complex & num) const
 {
-	return (re != num.re) || (im != num.im);
+    return (re != num.re) || (im != num.im);
 }
 
 
@@ -330,11 +345,11 @@ bool Complex::operator!=(const Complex & num) const
 //****************************************************************************
 
 /*!
-	Returns true if this is zero.
+    Returns true if this is zero.
 */
 bool Complex::isZero() const
 {
-	return re.isZero() && im.isZero();
+    return re.isZero() && im.isZero();
 }
 
 
@@ -343,347 +358,363 @@ bool Complex::isZero() const
 //****************************************************************************
 
 /*!
-	Calculates square of \a num.
+    Calculates square of \a num.
 
-	sqr(num) = Re(num)^2 + Im(num)^2.
+    sqr(num) = Re(num)^2 + Im(num)^2.
 */
 BigDecimal Complex::sqr(const Complex & num)
 {
-	// z^2 = |z|^2 = Re^2(z) + Im^2(z)
-	return (num.re * num.re + num.im * num.im);
+    // z^2 = |z|^2 = Re^2(z) + Im^2(z)
+    return (num.re * num.re + num.im * num.im);
 }
 
 /*!
-	Calculates absolute value of \a num.
+    Calculates absolute value of \a num.
 
-	abs(num) = sqrt(sqr(num)).
+    abs(num) = sqrt(sqr(num)).
 */
 BigDecimal Complex::abs(const Complex & num)
 {
-	return BigDecimal::sqrt(sqr(num));
+    return BigDecimal::sqrt(sqr(num));
 }
 
 /*!
-	Calculates argument of \a num.
+    Calculates argument of \a num.
 
-	arg(num) = arccos(re(z) / |z|).
+    arg(num) = arccos(re(z) / |z|).
 */
 BigDecimal Complex::arg(const Complex & num)
 {
-	if (num.im.isZero())
-		return (num.re >= 0) ? 0 : BigDecimal::PI;
+    if (num.im.isZero()) {
+        return (num.re >= 0) ? 0 : BigDecimal::PI;
+    }
 
-	BigDecimal arg = BigDecimal::arccos(num.re / abs(num));
-	return (num.im >= 0) ? arg : -arg;
+    BigDecimal arg = BigDecimal::arccos(num.re / abs(num));
+    return (num.im >= 0) ? arg : -arg;
 }
 
 /*!
-	Calculates factorial of \a num.
+    Calculates factorial of \a num.
 
-	\a num must be integer and >= 0.
+    \a num must be integer and >= 0.
 
-	\exception InvalidFactorialArgumentException Fractional or
-		negative \a num is given.
+    \exception InvalidArgumentException Fractional or negative \a num is given.
 */
 BigDecimal Complex::factorial(const Complex & num)
 {
-	if (!num.im.isZero())
+    if (!num.im.isZero()) {
         throw InvalidArgumentException(_T("fact"),
             InvalidArgumentException::FACTORIAL_FUNCTION);
+    }
 
-	return BigDecimal::factorial(num.re);
+    return BigDecimal::factorial(num.re);
 }
 
 /*!
-	Calculates natural logarithm of \a num.
+    Calculates natural logarithm of \a num.
 
-	Ln(num) = ln(|num|) + i*arg(num) + 2*Pi*k*i (k = 0).
+    Ln(num) = ln(|num|) + i*arg(num) + 2*Pi*k*i (k = 0).
 */
 Complex Complex::ln(const Complex & num)
 {
-	if (num.im.isZero() && num.re >= 0)
-		return BigDecimal::ln(num.re);
-	return Complex(0, arg(num)) + BigDecimal::ln(abs(num));
+    if (num.im.isZero() && num.re >= 0) {
+        return BigDecimal::ln(num.re);
+    }
+    return Complex(0, arg(num)) + BigDecimal::ln(abs(num));
 }
 
 /*!
-	Calculates base-2 logarithm of \a num.
+    Calculates base-2 logarithm of \a num.
 
-	log2(num) = ln(num) / ln(2)
+    log2(num) = ln(num) / ln(2)
 */
 Complex Complex::log2(const Complex & num)
 {
-	return ln(num) / ln(2);
+    return ln(num) / ln(2);
 }
 
 /*!
-	Calculates base-10 logarithm of \a num.
+    Calculates base-10 logarithm of \a num.
 
-	log10(num) = ln(num) / ln(10)
+    log10(num) = ln(num) / ln(10)
 */
 Complex Complex::log10(const Complex & num)
 {
-	return ln(num) / ln(10);
+    return ln(num) / ln(10);
 }
 
 /*!
-	Calculates exponent of \a num.
+    Calculates exponent of \a num.
 
-	exp(num) = exp(re(num) + i*im(num)) = exp(re(num)) * exp(i*im(num)) =
-	exp(re(z)) * (cos(im(z)) + i*sin(im(z))).
+    exp(num) = exp(re(num) + i*im(num)) = exp(re(num)) * exp(i*im(num)) =
+    exp(re(z)) * (cos(im(z)) + i*sin(im(z))).
 */
 Complex Complex::exp(const Complex & num)
 {
-	if (num.im.isZero())
-		return BigDecimal::exp(num.re);
-	return Complex(BigDecimal::cos(num.im),
-		BigDecimal::sin(num.im)) * BigDecimal::exp(num.re);
+    if (num.im.isZero()) {
+        return BigDecimal::exp(num.re);
+    }
+    return Complex(BigDecimal::cos(num.im),
+        BigDecimal::sin(num.im)) * BigDecimal::exp(num.re);
 }
 
 /*!
-	Calculates \a num raised in \a power (num^power).
+    Calculates \a num raised in \a power (num^power).
 
-	pow(num, power) = exp(power * ln(num))
+    pow(num, power) = exp(power * ln(num))
 */
 Complex Complex::pow(const Complex & num, const Complex & power)
 {
-	if (num.im.isZero() && power.im.isZero() && num.re >= 0 && power.re >= 0)
-		return BigDecimal::pow(num.re, power.re);
-	// for pow(0, x) - ln(0) will return negative infinity
-	if (num.isZero())
-		return 0;
-	return exp(power * ln(num));	
+    if (num.im.isZero() && power.im.isZero() && num.re >= 0 && power.re >= 0) {
+        return BigDecimal::pow(num.re, power.re);
+    }
+    // for pow(0, x) - ln(0) will return negative infinity
+    if (num.isZero()) {
+        return 0;
+    }
+    return exp(power * ln(num));    
 }
 
 /*!
-	Calculates square root of \a num.
+    Calculates square root of \a num.
 
-	sqrt(num) = pow(num, 0.5)
+    sqrt(num) = pow(num, 0.5)
 */
 Complex Complex::sqrt(const Complex & num)
 {
-	return pow(num, Complex("0.5"));
+    return pow(num, Complex("0.5"));
 }
 
 /*!
-	Calculates sine of \a num.
+    Calculates sine of \a num.
 
-	sin(num) = (exp(i*num) - exp(-i*num)) / 2
+    sin(num) = (exp(i*num) - exp(-i*num)) / 2
 */
 Complex Complex::sin(const Complex & num)
 {
-	if (num.im.isZero())
-		return BigDecimal::sin(num.re);
-	return (exp(i * num) - exp(-i * num)) / 2;
+    if (num.im.isZero()) {
+        return BigDecimal::sin(num.re);
+    }
+    return (exp(i * num) - exp(-i * num)) / 2;
 }
 
 /*!
-	Calculates cosine of \a num.
+    Calculates cosine of \a num.
 
-	cos(num) = (exp(i*num) + exp(-i*num)) / 2
+    cos(num) = (exp(i*num) + exp(-i*num)) / 2
 */
 Complex Complex::cos(const Complex & num)
 {
-	if (num.im.isZero())
-		return BigDecimal::cos(num.re);
-	return (exp(i * num) + exp(-i * num)) / 2;
+    if (num.im.isZero()) {
+        return BigDecimal::cos(num.re);
+    }
+    return (exp(i * num) + exp(-i * num)) / 2;
 }
 
 /*!
-	Calculates tangent of \a num.
+    Calculates tangent of \a num.
 
-	tan(num) = sin(num) / cos(num)
+    tan(num) = sin(num) / cos(num)
 
-	\exception InvalidTanArgumentException cos(num) == 0
+    \exception InvalidArgumentException cos(num) == 0
 */
 Complex Complex::tan(const Complex & num)
 {
-	Complex cosine = cos(num);
-	if (cosine.isZero())
+    Complex cosine = cos(num);
+    if (cosine.isZero()) {
         throw InvalidArgumentException(_T("tan"),
             InvalidArgumentException::TANGENT_FUNCTION);
-	return sin(num) / cosine;
+    }
+    return sin(num) / cosine;
 }
 
 /*!
-	Calculates cotangent of \a num.
+    Calculates cotangent of \a num.
 
-	cot(num) = cos(num) / sin(num)
+    cot(num) = cos(num) / sin(num)
 
-	\exception InvalidCotArgumentException sin(num) == 0
+    \exception InvalidArgumentException sin(num) == 0
 */
 Complex Complex::cot(const Complex & num)
 {
-	Complex sine = sin(num);
-	if (sine.isZero())
+    Complex sine = sin(num);
+    if (sine.isZero()) {
         throw InvalidArgumentException(_T("cot"),
             InvalidArgumentException::COTANGENT_FUNCTION);
-	return cos(num) / sine;
+    }
+    return cos(num) / sine;
 }
 
 /*!
-	Calculates arcsine of \a num.
+    Calculates arcsine of \a num.
 
-	arcsin(num) = -i * ln(i * (num + sqrt(num^2 - 1)))
-	
-	We use square root with minus sign to correctly
-	calculate arcsin for real arguments -1..1.
-	If we use +sqrt(), arcsin(-1..1) will be in range 0..Pi.
-	With -sqrt() it will be -Pi/2..Pi/2 as needed.
+    arcsin(num) = -i * ln(i * (num + sqrt(num^2 - 1)))
+    
+    We use square root with minus sign to correctly
+    calculate arcsin for real arguments -1..1.
+    If we use +sqrt(), arcsin(-1..1) will be in range 0..Pi.
+    With -sqrt() it will be -Pi/2..Pi/2 as needed.
 */
 Complex Complex::arcsin(const Complex & num)
 {
-	if (num.im.isZero() && num.re >= -1 && num.re <= 1)
-		return BigDecimal::arcsin(num.re);
-	return -i * ln(i * (num - sqrt(num * num - 1)));
+    if (num.im.isZero() && num.re >= -1 && num.re <= 1) {
+        return BigDecimal::arcsin(num.re);
+    }
+    return -i * ln(i * (num - sqrt(num * num - 1)));
 }
 
 /*!
-	Calculates arccosine of \a num.
+    Calculates arccosine of \a num.
 
-	arccos(num) = -i * ln(num + sqrt(num^2 - 1))
-	
-	We use +sqrt() to achieve range 0..Pi (see arcsin() description for
-	explanation)
+    arccos(num) = -i * ln(num + sqrt(num^2 - 1))
+    
+    We use +sqrt() to achieve range 0..Pi (see arcsin() description for
+    explanation)
 */
 Complex Complex::arccos(const Complex & num)
 {
-	if (num.im.isZero() && num.re >= -1 && num.re <= 1)
-		return BigDecimal::arccos(num.re);
-	return -i * ln(num + sqrt(num * num - 1));
+    if (num.im.isZero() && num.re >= -1 && num.re <= 1) {
+        return BigDecimal::arccos(num.re);
+    }
+    return -i * ln(num + sqrt(num * num - 1));
 }
 
 /*!
-	Calculates arctangent of \a num.
+    Calculates arctangent of \a num.
 
-	arctan(num) = (i / 2) * ln((i + num) / (i - num))
-	
-	We calculate logarithm as: ln(num) = ln(|num|) + i*arg(num) with k = 0
-	(for arctan() it will work and we will have correct range for real
-	arguments - see arccot() description for explanation)
+    arctan(num) = (i / 2) * ln((i + num) / (i - num))
+    
+    We calculate logarithm as: ln(num) = ln(|num|) + i*arg(num) with k = 0
+    (for arctan() it will work and we will have correct range for real
+    arguments - see arccot() description for explanation)
 */
 Complex Complex::arctan(const Complex & num)
 {
-	// TODO: handle positive infinite when re(num) == 0 and abs(im(a) + im(i)) == 0
-	// TODO: maybe is is better to calculate through arcsin
-	// (http://en.wikipedia.org/wiki/Arctangent)
-	if (num.im.isZero())
-		return BigDecimal::arctan(num.re);
-	return (i / 2) * ln((i + num) / (i - num));
+    // TODO: handle positive infinite when re(num) == 0 and abs(im(a) + im(i)) == 0
+    // TODO: maybe is is better to calculate through arcsin
+    // (http://en.wikipedia.org/wiki/Arctangent)
+
+    if (num.im.isZero()) {
+        return BigDecimal::arctan(num.re);
+    }
+    return (i / 2) * ln((i + num) / (i - num));
 }
 
 /*!
-	Calculates arccotangent of \a num.
+    Calculates arccotangent of \a num.
 
-	arccot(a) = (i / 2) * ln((num - i) / (num + i))
+    arccot(a) = (i / 2) * ln((num - i) / (num + i))
 
-	This formula doesn't work correctly for real arguments.
-	Maybe we should calculate logarithm as Ln(z) = ln(r) + i*arg(z) + 2*Pi*k*i
-	with correct 'k' but it's simpler to use formula
-	arccot(num) = Pi/2 - arctan(num).
-	This works fine for any argument.
+    This formula doesn't work correctly for real arguments.
+    Maybe we should calculate logarithm as Ln(z) = ln(r) + i*arg(z) + 2*Pi*k*i
+    with correct 'k' but it's simpler to use formula
+    arccot(num) = Pi/2 - arctan(num).
+    This works fine for any argument.
 */
 Complex Complex::arccot(const Complex & num)
 {
-	// TODO: check this implementation again (see description)
-	return -arctan(num) + BigDecimal::PI / 2;
+    // TODO: check this implementation again (see description)
+    return -arctan(num) + BigDecimal::PI / 2;
 }
 
 /*!
-	Calculates hyperbolical sine of \a num.
+    Calculates hyperbolical sine of \a num.
 
-	sinh(num) = (exp(num) - exp(-num)) / 2
+    sinh(num) = (exp(num) - exp(-num)) / 2
 */
 Complex Complex::sinh(const Complex & num)
 {
-	// TODO: maybe add sinh() and cosh() to BigDecimal
-//	if (num.im.isZero())
-//		return BigDecimal::sinh(num.re);
-	return (exp(num) - exp(-num)) / 2;
+    // TODO: maybe add sinh() and cosh() to BigDecimal
+//    if (num.im.isZero())
+//        return BigDecimal::sinh(num.re);
+    return (exp(num) - exp(-num)) / 2;
 }
 
 /*!
-	Calculates hyperbolical cosine of \a num.
+    Calculates hyperbolical cosine of \a num.
 
-	cosh(num) = (exp(num) + exp(-num)) / 2
+    cosh(num) = (exp(num) + exp(-num)) / 2
 */
 Complex Complex::cosh(const Complex & num)
 {
-//	if (num.im.isZero())
-//		return BigDecimal::cosh(num.re);
-	return (exp(num) + exp(-num)) / 2;
+    // TODO: maybe add sinh() and cosh() to BigDecimal
+//    if (num.im.isZero())
+//        return BigDecimal::cosh(num.re);
+    return (exp(num) + exp(-num)) / 2;
 }
 
 /*!
-	Calculates hyperbolical tangent of \a num.
+    Calculates hyperbolical tangent of \a num.
 
-	tanh(num) = sinh(num) / cosh(num)
+    tanh(num) = sinh(num) / cosh(num)
 
-	\exception InvalidTanhArgumentException cosh(num) == 0
+    \exception InvalidArgumentException cosh(num) == 0
 */
 Complex Complex::tanh(const Complex & num)
 {
-	Complex cosineh = cosh(num);
-	if (cosineh.isZero())
+    Complex cosineh = cosh(num);
+    if (cosineh.isZero()) {
         throw InvalidArgumentException(_T("tanh"),
             InvalidArgumentException::HYPERBOLIC_TANGENT_FUNCTION);
-	return sinh(num) / cosineh;
+    }
+    return sinh(num) / cosineh;
 }
 
 /*!
-	Calculates hyperbolical cotangent of \a num.
+    Calculates hyperbolical cotangent of \a num.
 
-	coth(num) = cosh(num) / sinh(num)
+    coth(num) = cosh(num) / sinh(num)
 
-	\exception InvalidCothArgumentException sinh(num) == 0
+    \exception InvalidArgumentException sinh(num) == 0
 */
 Complex Complex::coth(const Complex & num)
 {
-	Complex sineh = sinh(num);
-	if (sineh.isZero())
+    Complex sineh = sinh(num);
+    if (sineh.isZero()) {
         throw InvalidArgumentException(_T("coth"),
             InvalidArgumentException::HYPERBOLIC_COTANGENT_FUNCTION);
-	return cosh(num) / sineh;
+    }
+    return cosh(num) / sineh;
 }
 
 /*!
-	Calculates hyperbolical arcsine of \a num.
+    Calculates hyperbolical arcsine of \a num.
 
-	arcsinh(num) = ln(num + sqrt(num^2 + 1))
+    arcsinh(num) = ln(num + sqrt(num^2 + 1))
 */
 Complex Complex::arcsinh(const Complex & num)
 {
-	return ln(num + sqrt(num * num + 1));
+    return ln(num + sqrt(num * num + 1));
 }
 
 /*!
-	Calculates hyperbolical arccosine of \a num.
+    Calculates hyperbolical arccosine of \a num.
 
-	arccosh(num) = ln(num + sqrt(num^2 - 1))
+    arccosh(num) = ln(num + sqrt(num^2 - 1))
 */
 Complex Complex::arccosh(const Complex & num)
 {
-	return ln(num + sqrt(num * num - 1));
+    return ln(num + sqrt(num * num - 1));
 }
 
 /*!
-	Calculates hyperbolical arctangent of \a num.
+    Calculates hyperbolical arctangent of \a num.
 
-	arctanh(num) = ln((1 + num) / (1 - num)) / 2
+    arctanh(num) = ln((1 + num) / (1 - num)) / 2
 */
 Complex Complex::arctanh(const Complex & num)
 {
-	return ln((num + 1) / (-num + 1)) / 2;
+    return ln((num + 1) / (-num + 1)) / 2;
 }
 
 /*!
-	Calculates hyperbolical arccotangent of \a num.
+    Calculates hyperbolical arccotangent of \a num.
 
-	arccoth(num) = ln((num + 1) / (num - 1)) / 2
+    arccoth(num) = ln((num + 1) / (num - 1)) / 2
 */
 Complex Complex::arccoth(const Complex & num)
 {
-	return ln((num + 1) / (num - 1)) / 2;
+    return ln((num + 1) / (num - 1)) / 2;
 }
 
 

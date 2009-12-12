@@ -21,8 +21,8 @@
 #define VARIABLES_H
 
 // Local
-#include "unicode.h"
 #include "complex.h"
+#include "unicode.h"
 //STL
 #include <map>
 #include <iterator>
@@ -32,100 +32,71 @@ namespace MaxCalcEngine {
 
 struct Variable
 {
-	tstring name;		///< Name of variable.
-	Complex value;		///< Value of variable.
+    tstring name;        ///< Name of variable.
+    Complex value;        ///< Value of variable.
 
-	/// Constructs a new variable with specified \a name and \a value.
-	Variable(const tstring & name_ = _T(""), const Complex & value_ = 0)
-	{
-		name = name_;
-		value = value_;
-	}
+    /// Default constructor.
+    Variable()
+    {
+        name = _T("");
+        value = 0;
+    }
+
+    /// Constructs a new variable with specified \a name and \a value.
+    Variable(const tstring & name_, const Complex & value_)
+    {
+        name = name_;
+        value = value_;
+    }
 };
 
 class Variables
 {
 public:
-	class const_iterator;
+    class const_iterator;
 
-	void add(const tstring & name, const Complex & value);
-	void add(const Variable & var);
-	void remove(tstring name);
-	inline void removeAll();
-	Complex operator[] (tstring name);
-	inline size_t count();
-	inline const_iterator begin();
-	inline const_iterator end();
+    void add(const tstring & name, const Complex & value);
+    void add(const Variable & var);
+    void remove(tstring name);
+    void removeAll();
+    Complex operator[] (tstring name);
+    size_t count();
+    const_iterator begin();
+    const_iterator end();
 
 private:
-	typedef std::map<tstring, Variable> VarsMap;
-	VarsMap vars_;
+    typedef std::map<tstring, Variable> VarsMap;
+    VarsMap mVars;
 
 public:
-	class const_iterator : public VarsMap::const_iterator
-	{
-	public:
-		/// Default constructor.
-		const_iterator() : VarsMap::const_iterator()
-		{
-		}
+    class const_iterator : public VarsMap::const_iterator
+    {
+    public:
+        /// Default constructor.
+        const_iterator() : VarsMap::const_iterator()
+        {
+        }
 
-		/// Constructs const_iterator from std::map<tstring, Variable> iterator.
-		const_iterator(const VarsMap::const_iterator & iter) :
-			VarsMap::const_iterator(iter)
-		{
-		}
+        /// Constructs const_iterator from std::map<tstring, Variable> iterator.
+        const_iterator(const VarsMap::const_iterator & iter) :
+            VarsMap::const_iterator(iter)
+        {
+        }
 
-		/// Gets Variable associated with current value.
-		const Variable & operator* ()
-		{
-			return (VarsMap::const_iterator::operator*()).second;
-		}
+        /// Gets Variable associated with current value.
+        const Variable & operator* ()
+        {
+            return (VarsMap::const_iterator::operator*()).second;
+        }
 
-		/// Gets Variable associated with current value.
-		const Variable * operator-> ()
-		{
-			return &((VarsMap::const_iterator::operator*()).second);
-		}
-	};
+        /// Gets Variable associated with current value.
+        const Variable * operator-> ()
+        {
+            return &((VarsMap::const_iterator::operator*()).second);
+        }
+    };
 };
 
-
-///////////////////////////////////////////////////////////////////////////
-// Inline functions
-
-/*!
-	Removes all variables.
-*/
-inline void Variables::removeAll()
-{
-	vars_.clear();
-}
-
-/*!
-	Returns number of variables.
-*/
-inline size_t Variables::count()
-{
-	return vars_.size();
-}
-
-/*!
-	Returns const_iterator pointing to the beginning of variables' map.
-*/
-inline Variables::const_iterator Variables::begin()
-{
-    return const_iterator(vars_.begin());
-}
-
-/*!
-	Returns const_iterator pointing to the next element after the end of
-	variables' map.
-*/
-inline Variables::const_iterator Variables::end()
-{
-    return const_iterator(vars_.end());
-}
 
 } // namespace MaxCalcEngine
 

@@ -22,18 +22,25 @@
 
 // Qt
 #include <QApplication>
-#include <QWidget>
+#include <QDialog>
+#include <QTextBrowser>
+#include <QPushButton>
+#include <QGridLayout>
 #include <QLineEdit>
 #include <QKeyEvent>
-#include <QWidget>
+#include <QList>
 #include <QMainWindow>
 #include <QTextEdit>
 #include <QListWidget>
-#include <QGridLayout>
+#include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QPushButton>
-#include <QList>
 #include <QMenuBar>
-#include <QMenu>
+#include <QDockWidget>
+#include <QAction>
+#include <QSpacerItem>
+#include <QPalette>
+#include <QDesktopServices>
+#include <QUrl>
+
 
 #endif // PCH_H

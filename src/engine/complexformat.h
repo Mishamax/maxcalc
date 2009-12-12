@@ -32,108 +32,48 @@ class ComplexFormat : public BigDecimalFormat
 {
 public:
 
-	///////////////////////////////////////////////////////////////////////////
-	// Enums
+    ///////////////////////////////////////////////////////////////////////////
+    // Enums
 
-	/// Determines if imaginary one is represented by 'i' or 'j'.
-	enum ImaginaryOne { iImaginaryOne, jImaginaryOne };
-
-
-	///////////////////////////////////////////////////////////////////////////
-	// Constructors
-
-	explicit ComplexFormat(
-		const int precision = MAX_IO_PRECISION,
-		const NumberFormat numberFormat = GeneralFormat,
-		const ExponentCase exponentCase = UpperCaseExponent,
-		const DecimalSeparator decimalSeparator = PointDecimalSeparator,
-		const ImaginaryOne imaginaryOne = iImaginaryOne);
+    /// Determines if imaginary one is represented by 'i' or 'j'.
+    enum ImaginaryOne { iImaginaryOne, jImaginaryOne };
 
 
-	///////////////////////////////////////////////////////////////////////////
-	// Public functions
+    ///////////////////////////////////////////////////////////////////////////
+    // Constructors
 
-	static inline ComplexFormat getDefault();
+    explicit ComplexFormat(
+        const int precision = MAX_IO_PRECISION,
+        const NumberFormat numberFormat = GeneralFormat,
+        const ExponentCase exponentCase = UpperCaseExponent,
+        const DecimalSeparator decimalSeparator = PointDecimalSeparator,
+        const ImaginaryOne imaginaryOne = iImaginaryOne);
 
 
-	///////////////////////////////////////////////////////////////////////////
-	// Accessors
+    ///////////////////////////////////////////////////////////////////////////
+    // Public functions
 
-	inline ImaginaryOne imaginaryOne() const;
-	inline void setImaginaryOne(const ImaginaryOne imaginaryOne);
+    static ComplexFormat getDefault();
 
-	inline char imaginaryOneChar() const;
-	inline wchar_t imaginaryOneWideChar() const;
-	inline tchar imaginaryOneTChar() const;
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Accessors
+
+    ImaginaryOne imaginaryOne() const;
+    void setImaginaryOne(const ImaginaryOne imaginaryOne);
+
+    char imaginaryOneChar() const;
+    wchar_t imaginaryOneWideChar() const;
+    tchar imaginaryOneTChar() const;
 
 private:
 
-	///////////////////////////////////////////////////////////////////////////
-	// Properties
+    ///////////////////////////////////////////////////////////////////////////
+    // Properties
 
-	ImaginaryOne imaginaryOne_;		///< Letter used to represent imaginary one
+    ImaginaryOne mImaginaryOne;      ///< Letter used to represent imaginary one
 };
 
-
-///////////////////////////////////////////////////////////////////////////
-// Inline functions
-
-/*!
-	Gets default format.
-*/
-inline ComplexFormat ComplexFormat::getDefault()
-{
-	return ComplexFormat();
-}
-
-/*!
-	Gets letter used to represent imaginary one in Complex number.
-*/
-inline ComplexFormat::ImaginaryOne ComplexFormat::imaginaryOne() const
-{
-	return imaginaryOne_;
-}
-
-/*!
-	Sets letter used to represent imaginary one in Complex number.
-*/
-inline void ComplexFormat::setImaginaryOne(const ImaginaryOne imaginaryOne)
-{
-	imaginaryOne_ = imaginaryOne;
-}
-
-/*!
-	Gets letter used to represent imaginary one in Complex number as char.
-*/
-inline char ComplexFormat::imaginaryOneChar() const
-{
-	if (imaginaryOne_ == iImaginaryOne)
-		return 'i';
-	else
-		return 'j';
-}
-
-/*!
-	Gets letter used to represent imaginary one in Complex number as wchar_t.
-*/
-inline wchar_t ComplexFormat::imaginaryOneWideChar() const
-{
-	if (imaginaryOne_ == iImaginaryOne)
-		return L'i';
-	else
-		return L'j';
-}
-
-/*!
-	Gets letter used to represent imaginary one in Complex number as tchar.
-*/
-inline tchar ComplexFormat::imaginaryOneTChar() const
-{
-	if (imaginaryOne_ == iImaginaryOne)
-		return _T('i');
-	else
-		return _T('j');
-}
 
 } // namespace MaxCalcEngine
 

@@ -24,40 +24,88 @@ namespace MaxCalcEngine {
 
 
 /*!
-	\class ComplexFormat
-	\brief Represents format settings used for convertion from Complex to
-	string.
+    \class ComplexFormat
+    \brief Represents format settings used for convertion from Complex to
+    string.
 
-	ComplexFormat inherits BigDecimalFormat which is used to format real and
-	imaginary parts of the number.
+    ComplexFormat inherits BigDecimalFormat which is used to format real and
+    imaginary parts of the number.
 
-	Character which represents imaginary one can be specified.
-	By default 'i' is used.
+    Character which represents imaginary one can be specified.
+    By default 'i' is used.
 
-	\sa Complex::toString(), BigDecimalFormat
-	\ingroup MaxCalcEngine
+    \sa Complex::toString(), BigDecimalFormat
+    \ingroup MaxCalcEngine
 */
 
 /*!
-	\fn ComplexFormat::getDefault()
-	\brief Returns ComplexFormat with default settings.
-	
-	The defaults are: precision = MAX_IO_PRECISION, numberFormat =
-	GeneralFormat, exponentCase = UpperCaseExponent, imaginaryOne = 'i'.
+    \fn ComplexFormat::getDefault()
+    \brief Returns ComplexFormat with default settings.
+    
+    The defaults are: precision = MAX_IO_PRECISION, numberFormat =
+    GeneralFormat, exponentCase = UpperCaseExponent, imaginaryOne = 'i'.
 */
 
 /*!
-	Constructs a new instance of ComplexFormat.
+    Constructs a new instance of ComplexFormat.
 */
 ComplexFormat::ComplexFormat(const int precision,
-							 const NumberFormat numberFormat,
-							 const ExponentCase exponentCase,
-							 const DecimalSeparator decimalSeparator,
-							 const ImaginaryOne imaginaryOne)
-							 : BigDecimalFormat(precision, numberFormat,
-								exponentCase, decimalSeparator)
+                             const NumberFormat numberFormat,
+                             const ExponentCase exponentCase,
+                             const DecimalSeparator decimalSeparator,
+                             const ImaginaryOne imaginaryOne)
+                             : BigDecimalFormat(precision, numberFormat,
+                                exponentCase, decimalSeparator)
 {
-	imaginaryOne_ = imaginaryOne;
+    mImaginaryOne = imaginaryOne;
+}
+
+/*!
+    Gets default format.
+*/
+ComplexFormat ComplexFormat::getDefault()
+{
+    return ComplexFormat();
+}
+
+/*!
+    Gets letter used to represent imaginary one in Complex number.
+*/
+ComplexFormat::ImaginaryOne ComplexFormat::imaginaryOne() const
+{
+    return mImaginaryOne;
+}
+
+/*!
+    Sets letter used to represent imaginary one in Complex number.
+*/
+void ComplexFormat::setImaginaryOne(const ImaginaryOne imaginaryOne)
+{
+    mImaginaryOne = imaginaryOne;
+}
+
+/*!
+    Gets letter used to represent imaginary one in Complex number as char.
+*/
+char ComplexFormat::imaginaryOneChar() const
+{
+    return (mImaginaryOne == iImaginaryOne) ? 'i' : 'j';
+}
+
+/*!
+    Gets letter used to represent imaginary one in Complex number as wchar_t.
+*/
+wchar_t ComplexFormat::imaginaryOneWideChar() const
+{
+    return (mImaginaryOne == iImaginaryOne) ? L'i' : L'j';
+}
+
+/*!
+    Gets letter used to represent imaginary one in Complex number as tchar.
+*/
+tchar ComplexFormat::imaginaryOneTChar() const
+{
+    return (mImaginaryOne == iImaginaryOne) ? _T('i') : _T('j');
 }
 
 } // namespace MaxCalcEngine

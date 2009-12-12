@@ -35,7 +35,7 @@ using namespace std;
 
 /*!
     Converts \a std::string to \a std::wstring.
-	\ingroup MaxCalcEngine
+    \ingroup MaxCalcEngine
 */
 void stringToWideString(const string & from, wstring & to)
 {
@@ -46,7 +46,7 @@ void stringToWideString(const string & from, wstring & to)
 
 /*!
     Converts \a std::wstring to \a std::string.
-	\ingroup MaxCalcEngine
+    \ingroup MaxCalcEngine
 */
 void wideStringToString(const wstring & from, string & to)
 {
@@ -58,114 +58,114 @@ void wideStringToString(const wstring & from, string & to)
 #endif // #if defined(MAXCALC_UNICODE)
 
 /*!
-	Converts all characters of \a str to lower case.
+    Converts all characters of \a str to lower case.
 
-	Returns \a str.
+    Returns \a str.
 
-	\ingroup MaxCalcEngine
+    \ingroup MaxCalcEngine
 */
 tchar * strToLower(tchar * str)
 {
-	assert(str);
+    assert(str);
 
-	for (tchar * pos = str; pos; ++pos)
-		*pos = totlower(*pos);
+    for (tchar * pos = str; pos; ++pos) {
+        *pos = totlower(*pos);
+    }
 
-	return str;
+    return str;
 }
 
 /*!
-	Converts all characters of \a str to lower case.
+    Converts all characters of \a str to lower case.
 
-	Returns \a str.
+    Returns \a str.
 
-	\ingroup MaxCalcEngine
+    \ingroup MaxCalcEngine
 */
 tstring & strToLower(tstring & str)
 {
-	for (tstring::iterator pos = str.begin(); pos != str.end(); ++pos)
-		*pos = totlower(*pos);
-	return str;
+    for (tstring::iterator pos = str.begin(); pos != str.end(); ++pos) {
+        *pos = totlower(*pos);
+    }
+    return str;
 }
 
 /*!
-	Converts all characters of \a str to upper case.
+    Converts all characters of \a str to upper case.
 
-	Returns \a str.
+    Returns \a str.
 
-	\ingroup MaxCalcEngine
+    \ingroup MaxCalcEngine
 */
 tchar * strToUpper(tchar * str)
 {
-	assert(str);
+    assert(str);
 
-	for (tchar * pos = str; pos; ++pos)
-		*pos = totupper(*pos);
+    for (tchar * pos = str; pos; ++pos) {
+        *pos = totupper(*pos);
+    }
 
-	return str;
+    return str;
 }
 
 /*!
-	Converts all characters of \a str to upper case.
+    Converts all characters of \a str to upper case.
 
-	Returns \a str.
+    Returns \a str.
 
-	\ingroup MaxCalcEngine
+    \ingroup MaxCalcEngine
 */
 tstring & strToUpper(tstring & str)
 {
-	for (tstring::iterator pos = str.begin(); pos != str.end(); ++pos)
-		*pos = totupper(*pos);
-	return str;
+    for (tstring::iterator pos = str.begin(); pos != str.end(); ++pos) {
+        *pos = totupper(*pos);
+    }
+    return str;
 }
 
 // Characters which are recognized as space
 static const tchar * space = _T(" \t\f\v\n\r");
 
 /*!
-	Removes all white spaces at the beginning of \a str.
+    Removes all white spaces at the beginning of \a str.
 
-	Returns \a str.
+    Returns \a str.
 
-	\ingroup MaxCalcEngine
+    \ingroup MaxCalcEngine
 */
 tstring & ltrim(tstring & str)
 {
-	size_t found = str.find_first_not_of(space);
-	if (found != string::npos)
-		str.erase(0, found);
-	else
-		str.clear();
-	return str;
+    size_t found = str.find_first_not_of(space);
+    if (found != string::npos) str.erase(0, found);
+    else str.clear();
+    return str;
 }
 
 /*!
-	Removes all white spaces at the end of \a str.
+    Removes all white spaces at the end of \a str.
 
-	Returns \a str.
+    Returns \a str.
 
-	\ingroup MaxCalcEngine
+    \ingroup MaxCalcEngine
 */
 tstring & rtrim(tstring & str)
 {
-	size_t found = str.find_last_not_of(space);
-	if (found != string::npos)
-		str.erase(found + 1);
-	else
-		str.clear();
-	return str;
+    size_t found = str.find_last_not_of(space);
+    if (found != string::npos) str.erase(found + 1);
+    else str.clear();
+    return str;
 }
 
 /*!
-	Removes all white spaces at the beginning and at the end of \a str.
+    Removes all white spaces at the beginning and at the end of \a str.
 
-	Returns \a str.
+    Returns \a str.
 
-	\ingroup MaxCalcEngine
+    \ingroup MaxCalcEngine
 */
 tstring & trim(tstring & str)
 {
-	return rtrim(ltrim(str));
+    return rtrim(ltrim(str));
 }
 
 } // namespace MaxCalcEngine

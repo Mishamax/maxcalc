@@ -60,7 +60,7 @@
   #endif
 
 namespace MaxCalcEngine {
-	namespace DecNumber {
+    namespace DecNumber {
 
   /* Context for operations, with associated constants                */
   enum rounding {
@@ -256,7 +256,7 @@ namespace MaxCalcEngine {
   extern uint32_t      decContextTestStatus(decContext *, uint32_t);
   extern decContext  * decContextZeroStatus(decContext *);
 
-}	// namespace DecNumber
-}	// namespace MaxCalcEngine
+}    // namespace DecNumber
+}    // namespace MaxCalcEngine
 
 #endif

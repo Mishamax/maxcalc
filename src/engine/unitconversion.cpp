@@ -263,4 +263,13 @@ BigDecimal UnitConversion::convert(const BigDecimal number,
     throw UnknownUnitConversionException(unit1 + _T(" -> ") + unit2);
 }
 
+/*!
+    Returns array of units.
+*/
+const UnitConversion::UnitDef * UnitConversion::units()
+{
+    assert(mUnits);
+    return mUnits;
+}
+
 } // namespace MaxCalcEngine

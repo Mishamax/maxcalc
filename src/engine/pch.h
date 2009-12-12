@@ -25,14 +25,18 @@
 
 // STL
 #include <string>
-#include <clocale>
-#include <iostream>
-#include <cwchar>
 #include <cassert>
-#include <exception>
-#include <sstream>
-#include <cctype>
 #include <list>
 #include <vector>
+#include <map>
+#include <iterator>
+#include <sstream>
+#include <cstdlib>
+
+// CRT (for decNumber)
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
 
 #endif // PCH_H

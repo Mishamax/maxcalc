@@ -26,17 +26,18 @@
 #include <QPushButton>
 #include <QGridLayout>
 
+
 class AboutBox : public QDialog
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	AboutBox(QWidget * parent);
+    AboutBox(QWidget * parent);
 
 private:
-	QGridLayout layout;
-	QTextBrowser label;
-	QPushButton closeButton;
+    QGridLayout mLayout;
+    QTextBrowser mLabel;
+    QPushButton mCloseButton;
 };
 
 #endif // ABOUTBOX_H

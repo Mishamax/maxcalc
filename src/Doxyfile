@@ -616,12 +616,12 @@ EXCLUDE                = "engine/decNumber/" \
                          "debug/" \
                          "release/" \
                          "test" \
-						 "gui/debug/" \
-						 "gui/release/" \
-						 "cli/debug/" \
-						 "cli/release/" \
-						 "engine/debug/" \
-						 "engine/release/"
+                         "gui/debug/" \
+                         "gui/release/" \
+                         "cli/debug/" \
+                         "cli/release/" \
+                         "engine/debug/" \
+                         "engine/release/"
 
 # The EXCLUDE_SYMLINKS tag can be used select whether or not files or 
 # directories that are symbolic links (a Unix filesystem feature) are excluded 

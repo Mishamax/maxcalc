@@ -1,4 +1,4 @@
-ï»¿Parser specification
+Parser specification
 ====================
 
 The parser uses recursive descent algorithm because it is very simple
@@ -14,7 +14,7 @@ in the parser.
                         Rule                                                  |      Description
 ---------------------------------------------------------------------------------------------------------
 script = var_name assignment script | expression                              |  Variable assignment
-expression = op1 | op1 '+' op1 | op1 'â€“' op1                                  |  Add / subtract
+expression = op1 | op1 '+' op1 | op1 '–' op1                                  |  Add / subtract
 op1 = op2 | op2 '*' op2 | op2 '/' op2                                         |  Multiply / divide
 op2 = op3 | op3 '^' op3                                                       |  Power
 op3 = op4 | op4 '['unit_conversion']'                                         |  Unit conversions
@@ -30,5 +30,5 @@ Descriptions:
  * unit_conversion = unit1 '->' unit2
  * const_name = 'e' | 'pi' | 'res'
  * unit1, unit2 - supported units
- * number â€“ a number in a supported format
- * identifier â€“ may contain letters, digits and underscores and must start from letter or underscore.
+ * number – a number in a supported format
+ * identifier – may contain letters, digits and underscores and must start from letter or underscore.

@@ -17,38 +17,15 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
-#ifndef INPUTBOX_H
-#define INPUTBOX_H
+#ifndef PCH_H
+#define PCH_H
 
 // Qt
-#include <QLineEdit>
-#include <QKeyEvent>
-#include <QList>
+#include <QTest>
+// STL
+#include <string>
+#include <ctime>
+#include <cstdlib>
+#include <sstream>
 
-class InputBox : public QLineEdit
-{
-    Q_OBJECT
-
-public:
-    InputBox();
-
-public slots:
-    void addTextToHistory();
-
-protected:
-    virtual void keyPressEvent(QKeyEvent * event);
-
-private:
-    QList<QString> mHistory;
-    QList<QString>::iterator mCurrentHistoryEntry;
-
-    void onKeyUpPressed();
-    void onKeyDownPressed();
-    void onKeyEscapePressed();
-
-private slots:
-    void onTextEdited(const QString & text);
-};
-
-
-#endif // INPUTBOX_H
+#endif // PCH_H

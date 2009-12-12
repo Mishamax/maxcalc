@@ -17,21 +17,21 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
-// Qt
-#include <QApplication>
 //Local
 #include "mainwindow.h"
+// Qt
+#include <QApplication>
 
 /*!
-	\defgroup MaxCalcGui MaxCalc GUI
+    \defgroup MaxCalcGui MaxCalc GUI
 */
 
 int main(int argc, char ** argv)
 {
-	QApplication app(argc, argv);
+    QApplication app(argc, argv);
 
-	MainWindow mainWindow;
-	mainWindow.show();
+    MainWindow mainWindow;
+    mainWindow.show();
 
-	return app.exec();
+    return app.exec();
 }

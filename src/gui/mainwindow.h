@@ -26,60 +26,57 @@
 #include "parser.h"
 #include "parsercontext.h"
 // Qt
-#include <QWidget>
 #include <QMainWindow>
 #include <QTextEdit>
 #include <QListWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
-#include <QList>
 #include <QMenuBar>
-#include <QMenu>
 #include <QDockWidget>
 
 class MainWindow : public QMainWindow
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
-	MainWindow();
-	~MainWindow();
+    MainWindow();
+    ~MainWindow();
 
 signals:
-	/// Emitted when expression is calculated by parser.
-	void expressionCalculated();
+    /// Emitted when expression is calculated by parser.
+    void expressionCalculated();
 
 private:
-	QWidget centralWidget;
-	QVBoxLayout layout;
-	QHBoxLayout bottomLayout;
-	InputBox inputBox;
-	QTextEdit historyBox;
-	QPushButton okButton;
-	QListWidget * variablesList;
-	QDockWidget variablesListWrapper;
-	QListWidget * functionsList;
-	QDockWidget functionsListWrapper;
-	QMenuBar mainMenu;
+    QWidget mCentralWidget;
+    QVBoxLayout mLayout;
+    QHBoxLayout mBottomLayout;
+    InputBox mInputBox;
+    QTextEdit mHistoryBox;
+    QPushButton mOkButton;
+    QListWidget * mVariablesList;
+    QDockWidget mVariablesListWrapper;
+    QListWidget * mFunctionsList;
+    QDockWidget mFunctionsListWrapper;
+    QMenuBar mMainMenu;
 
-	MaxCalcEngine::Parser parser;
+    MaxCalcEngine::Parser mParser;
 
-	void initUi();
-	void initMainMenu();
-	void updateVariablesList();
-	void initFunctionsList();
-	void outputError(QString message);
+    void initUi();
+    void initMainMenu();
+    void updateVariablesList();
+    void initFunctionsList();
+    void outputError(const QString & message);
 
 private slots:
-	void onExpressionEntered();
-	void onVariableClicked(QListWidgetItem * item);
-	void onFunctionClicked(QListWidgetItem * item);
-	void onHelpAbout();
+    void onExpressionEntered();
+    void onVariableClicked(QListWidgetItem * item);
+    void onFunctionClicked(QListWidgetItem * item);
+    void onHelpAbout();
     void onHelpWebSite();
     void onHelpReportIssue();
     void onDeleteAllVariables();
-	void onUnitConversion(const QString & conversion);
+    void onUnitConversion(const QString & conversion);
 };
 
 #endif // MAINWINDOW_H

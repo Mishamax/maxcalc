@@ -26,57 +26,155 @@ namespace MaxCalcEngine {
 
 
 /*!
-	\class BigDecimalFormat
-	\brief Represents format settings used for convertion from BigDecimal
-	to string.
+    \class BigDecimalFormat
+    \brief Represents format settings used for convertion from BigDecimal
+    to string.
 
-	Format of BigDecimal number includes precision used for rounding, format
-	(general, scientific or engineering) and case of 'E' letter when exponent
-	is needed.
+    Format of BigDecimal number includes precision used for rounding, format
+    (general, scientific or engineering) and case of 'E' letter when exponent
+    is needed.
 
-	Precision may not be less than 1 and more than MAX_IO_PRECISION.
-	Default value is MAX_IO_PRECISION.
+    Precision may not be less than 1 and more than MAX_IO_PRECISION.
+    Default value is MAX_IO_PRECISION.
 
-	In general format exponential form is used when exponent is more than 5
-	by absolute	value, otherwise it is not used.
-	Scientific format means that there is just one digit before decimal point
-	when exponent is needed.
-	In engineering format the exponent is multiple of three and there may be
-	up to three digits before decimal point.
-	When exponent is not needed all the formats are the same.
-	By default general format is used.
+    In general format exponential form is used when exponent is more than 5
+    by absolute    value, otherwise it is not used.
+    Scientific format means that there is just one digit before decimal point
+    when exponent is needed.
+    In engineering format the exponent is multiple of three and there may be
+    up to three digits before decimal point.
+    When exponent is not needed all the formats are the same.
+    By default general format is used.
 
-	When exponent is needed, it can be represented as lower or upper case
-	'E' letter.
-	By default upper case 'E' is used.
+    When exponent is needed, it can be represented as lower or upper case
+    'E' letter.
+    By default upper case 'E' is used.
 
-	\sa BigDecimal::toString()
-	\sa MAX_IO_PRECISION
-	\ingroup MaxCalcEngine
+    \sa BigDecimal::toString()
+    \sa MAX_IO_PRECISION
+    \ingroup MaxCalcEngine
 */
 
 /*!
-	\fn BigDecimalFormat::getDefault()
-	\brief Returns BigDecimalFormat with default settings.
+    \fn BigDecimalFormat::getDefault()
+    \brief Returns BigDecimalFormat with default settings.
 
-	The defaults are: precision = MAX_IO_PRECISION, numberFormat =
-	GeneralFormat, exponentCase = UpperCaseExponent.
+    The defaults are: precision = MAX_IO_PRECISION, numberFormat =
+    GeneralFormat, exponentCase = UpperCaseExponent.
 */
 
 /*!
-	Contructs a new instance of BigDecimalFormat with given settings.
+    Contructs a new instance of BigDecimalFormat with given settings.
 */
 BigDecimalFormat::BigDecimalFormat(const int precision,
-								   const NumberFormat numberFormat,
-								   const ExponentCase exponentCase,
-								   const DecimalSeparator decimalSeparator)
+                                   const NumberFormat numberFormat,
+                                   const ExponentCase exponentCase,
+                                   const DecimalSeparator decimalSeparator)
 {
-	assert(precision >= 1 && precision <= MAX_IO_PRECISION);
+    assert(precision >= 1 && precision <= MAX_IO_PRECISION);
 
-	precision_ = precision;
-	numberFormat_ = numberFormat;
-	exponentCase_ = exponentCase;
-	decimalSeparator_ = decimalSeparator;
+    mPrecision = precision;
+    mNumberFormat = numberFormat;
+    mExponentCase = exponentCase;
+    mDecimalSeparator = decimalSeparator;
+}
+
+/*!
+    Gets default format.
+*/
+BigDecimalFormat BigDecimalFormat::getDefault()
+{
+    return BigDecimalFormat();
+}
+
+/*!
+    Gets output precision of BigDecimal number.
+*/
+int BigDecimalFormat::precision() const
+{
+    return mPrecision;
+}
+
+/*!
+    Sets output precision of BigDecimal number.
+*/
+void BigDecimalFormat::setPrecision(const int precision)
+{
+    assert(precision >= 1 && precision <= MAX_IO_PRECISION);
+    mPrecision = precision;
+}
+
+/*!
+    Gets format of BigDecimal number.
+*/
+BigDecimalFormat::NumberFormat BigDecimalFormat::numberFormat() const
+{
+    return mNumberFormat;
+}
+
+/*!
+    Sets format of BigDecimal number.
+*/
+void BigDecimalFormat::setNumberFormat(const NumberFormat numberFormat)
+{
+    mNumberFormat = numberFormat;
+}
+
+/*!
+    Gets case of 'E' letter in BigDecimal number when exponent is needed.
+*/
+BigDecimalFormat::ExponentCase BigDecimalFormat::exponentCase() const
+{
+    return mExponentCase;
+}
+
+/*!
+    Sets case of 'E' letter in BigDecimal number when exponent is needed.
+*/
+void BigDecimalFormat::setExponentCase(const ExponentCase exponentCase)
+{
+    mExponentCase = exponentCase;
+}
+
+/*!
+    Gets decimal separator.
+*/
+BigDecimalFormat::DecimalSeparator BigDecimalFormat::decimalSeparator() const
+{
+    return mDecimalSeparator;
+}
+
+/*!
+    Sets decimal separator.
+*/
+void BigDecimalFormat::setDecimalSeparator(
+    const DecimalSeparator decimalSeparator)
+{
+    mDecimalSeparator = decimalSeparator;
+}
+
+/*!
+    Gets decimal separator as char.
+*/
+char BigDecimalFormat::decimalSeparatorChar() const
+{
+    return (mDecimalSeparator == PointDecimalSeparator) ? '.' : ',';
+}
+
+/*!
+    Gets decimal separator as wchar_t.
+*/
+wchar_t BigDecimalFormat::decimalSeparatorWideChar() const
+{
+    return (mDecimalSeparator == PointDecimalSeparator) ? L'.' : L',';
+}
+
+/*!
+    Gets decimal separator as tchar.
+*/
+tchar BigDecimalFormat::decimalSeparatorTChar() const
+{
+    return (mDecimalSeparator == PointDecimalSeparator) ? _T('.') : _T(',');
 }
 
 } // namespace MaxCalcEngine

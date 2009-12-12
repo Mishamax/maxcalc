@@ -14,6 +14,8 @@ set PATH=%QT_DIR%;%SEVEN_ZIP_PATH%;%PATH%
 
 rem Build static binaries
 
+call clean.bat
+
 pushd ..\src
 pushd engine
 call qmake -config release && nmake clean && nmake release
@@ -32,15 +34,15 @@ mkdir %RELEASE%\tmp
 
 copy ..\src\release\maxcalc.exe %RELEASE%\tmp
 copy ..\Changelog.txt %RELEASE%\tmp
-copy ..\Licenses.txt %RELEASE%\tmp\Licenses.txt
+copy ..\Licenses.txt %RELEASE%\tmp
+todos -p %RELEASE%\tmp\Changelog.txt
+todos -p %RELEASE%\tmp\Licenses.txt
 
 pushd %RELEASE%
-del /Q maxcalc-win-console-%MAXCALC_VERSION%.zip
 pushd tmp
-call 7z a -tzip ..\maxcalc-win-console-%MAXCALC_VERSION%.zip * -mx7
+call 7z a -tzip ..\maxcalc-win-console-%MAXCALC_VERSION%.zip * -mx9
 popd
-del /Q tmp\*
-rmdir /Q tmp
+rmdir /Q /S tmp
 popd
 
 @echo.
@@ -53,26 +55,40 @@ mkdir %RELEASE%\tmp
 
 copy ..\src\release\maxcalcwin.exe %RELEASE%\tmp
 copy ..\Changelog.txt %RELEASE%\tmp
-copy ..\Licenses.txt %RELEASE%\tmp\Licenses.txt
+copy ..\Licenses.txt %RELEASE%\tmp
+todos -p %RELEASE%\tmp\Changelog.txt
+todos -p %RELEASE%\tmp\Licenses.txt
 
 pushd %RELEASE%
-del /Q maxcalc-win-gui-%MAXCALC_VERSION%.zip
 pushd tmp
-call 7z a -tzip ..\maxcalc-win-gui-%MAXCALC_VERSION%.zip * -mx7
+call 7z a -tzip ..\maxcalc-win-gui-%MAXCALC_VERSION%.zip * -mx9
 popd
-del /Q tmp\*
-rmdir /Q tmp
+rmdir /Q /S tmp
 popd
 
 @echo.
 @echo GUI VERSION CREATED
 @echo.
 
+rem Create archive with source
+
+call hg archive -t files %RELEASE%\tmp
+pushd %RELEASE%
+pushd tmp
+call 7z a -tzip ..\maxcalc-src-%MAXCALC_VERSION%.zip * -mx9
+popd
+rmdir /Q /S tmp
+popd
+
+@echo.
+@echo SOURCE ARCHIVE CREATED
+@echo.
+
 rem Create folder for new version
 
 pushd %RELEASE%
 mkdir v%MAXCALC_VERSION%
-move *.zip v%MAXCALC_VERSION%\
+move /Y *.zip v%MAXCALC_VERSION%\
 popd
 
 @echo.

@@ -19,16 +19,36 @@
 
 #include "myaction.h"
 
+/*!
+    \class MyAction
+    \brief Custom QAction with additional \a action member.
+
+    MyAction is used for Unit Converison menus. It emits \a executed(action)
+    signal when \a triggered() is received.
+
+    \ingroup MaxCalcGui
+*/
+
+/*!
+    Constructs new MyAction object.
+*/
 MyAction::MyAction(QObject * parent, const QString & text,
-				   const QString & action, QObject * receiver,
-				   const char * member) : QAction(text, parent)
+                   const QString & action, QObject * receiver,
+                   const char * member) : QAction(text, parent)
 {
-	action_ = action;
-	connect(this, SIGNAL(triggered()), this, SLOT(execute()));
-	connect(this, SIGNAL(executed(const QString &)), receiver, member);
+    Q_ASSERT(parent);
+    Q_ASSERT(receiver);
+    Q_ASSERT(member);
+
+    mAction = action;
+    connect(this, SIGNAL(triggered()), this, SLOT(execute()));
+    connect(this, SIGNAL(executed(const QString &)), receiver, member);
 }
 
+/*!
+    Emits \a executed(mAction) signal.
+*/
 void MyAction::execute()
 {
-	emit executed(action_);
+    emit executed(mAction);
 }

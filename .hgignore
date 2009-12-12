@@ -13,3 +13,4 @@ maxcalc.suo
 *.vcproj*
 object_script.*.Debug
 object_script.*.Release
+doxygen

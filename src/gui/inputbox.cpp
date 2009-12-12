@@ -21,93 +21,86 @@
 #include "inputbox.h"
 
 /*!
-	\class InputBox
-	\brief Input box used to input expression.
+    \class InputBox
+    \brief Input box used to input expression.
 
-	InputBox is based on QLineEdit and has history support.
+    InputBox is based on QLineEdit and has history support.
 
-	\ingroup MaxCalcGui
+    \ingroup MaxCalcGui
 */
 
 /*!
-	Constructs new instance of InputBox.
+    Constructs new instance of InputBox.
 */
 InputBox::InputBox() : QLineEdit()
 {
-	history.append("");
-	currentHistoryEntry = history.begin();
+    mHistory.append("");
+    mCurrentHistoryEntry = mHistory.begin();
 
-	QObject::connect(this, SIGNAL(textEdited(const QString &)), this,
-		SLOT(onTextEdited(const QString &)));
+    QObject::connect(this, SIGNAL(textEdited(const QString &)), this,
+        SLOT(onTextEdited(const QString &)));
 }
 
 /*!
-	Adds current text to history.
+    Adds current text to history.
 */
 void InputBox::addTextToHistory()
 {
-	*history.begin() = text();
-	history.push_front("");
-	currentHistoryEntry = history.begin();
+    *mHistory.begin() = text();
+    mHistory.push_front("");
+    mCurrentHistoryEntry = mHistory.begin();
 }
 
 /*!
-	Processes key events used to work with history.
+    Processes key events used to work with history.
 */
 void InputBox::keyPressEvent(QKeyEvent * event)
 {
-	if (event->key() == Qt::Key_Up)
-		onKeyUpPressed();
-	else if (event->key() == Qt::Key_Down)
-		onKeyDownPressed();
-	else if (event->key() == Qt::Key_Escape)
-		onKeyEscapePressed();
-	else
-		QLineEdit::keyPressEvent(event);
+    Q_ASSERT(event);
+    if (event->key() == Qt::Key_Up) onKeyUpPressed();
+    else if (event->key() == Qt::Key_Down) onKeyDownPressed();
+    else if (event->key() == Qt::Key_Escape) onKeyEscapePressed();
+    else QLineEdit::keyPressEvent(event);
 }
 
 /*!
-	Displays previous history entry.
+    Displays previous history entry.
 */
 void InputBox::onKeyUpPressed()
 {
-	currentHistoryEntry++;
-	if (currentHistoryEntry == history.end())
-	{
-		currentHistoryEntry--;
-	}
-	else
-	{
-		setText(*currentHistoryEntry);
-		setCursorPosition(text().length());
-	}
+    mCurrentHistoryEntry++;
+    if (mCurrentHistoryEntry == mHistory.end()) {
+        mCurrentHistoryEntry--;
+    } else {
+        setText(*mCurrentHistoryEntry);
+        setCursorPosition(text().length());
+    }
 }
 
 /*!
-	Displays next history entry.
+    Displays next history entry.
 */
 void InputBox::onKeyDownPressed()
 {
-	if (currentHistoryEntry != history.begin())
-	{
-		currentHistoryEntry--;
-		setText(*currentHistoryEntry);
-		setCursorPosition(text().length());
-	}
+    if (mCurrentHistoryEntry != mHistory.begin()) {
+        mCurrentHistoryEntry--;
+        setText(*mCurrentHistoryEntry);
+        setCursorPosition(text().length());
+    }
 }
 
 /*!
-	Clears input box by Escape key.
+    Clears input box by Escape key.
 */
 void InputBox::onKeyEscapePressed()
 {
-	clear();
+    clear();
 }
 
 /*!
-	Updates current history entry when text is edited.
+    Updates current history entry when text is edited.
 */
 void InputBox::onTextEdited(const QString & text)
 {
-	*history.begin() = text;
+    *mHistory.begin() = text;
 }

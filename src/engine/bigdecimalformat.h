@@ -35,174 +35,64 @@ class BigDecimalFormat
 {
 public:
 
-	///////////////////////////////////////////////////////////////////////////
-	// Enums
+    ///////////////////////////////////////////////////////////////////////////
+    // Enums
 
-	/// Specifies output formats of BigDecimal number (general, scientific or
-	/// engineering).
-	enum NumberFormat { GeneralFormat, ScientificFormat, EngineeringFormat };
-	/// Specifies case of 'E' letter when exponent is needed.
-	enum ExponentCase { UpperCaseExponent, LowerCaseExponent };
-	/// Specifies decimal separator.
-	enum DecimalSeparator { PointDecimalSeparator, CommaDecimalSeparator };
-
-
-	///////////////////////////////////////////////////////////////////////////
-	// Constructors
-
-	explicit BigDecimalFormat(
-		const int precision = MAX_IO_PRECISION,
-		const NumberFormat numberFormat = GeneralFormat,
-		const ExponentCase exponentCase = UpperCaseExponent,
-		const DecimalSeparator decimalSeparator = PointDecimalSeparator);
+    /// Specifies output formats of BigDecimal number (general, scientific or
+    /// engineering).
+    enum NumberFormat { GeneralFormat, ScientificFormat, EngineeringFormat };
+    /// Specifies case of 'E' letter when exponent is needed.
+    enum ExponentCase { UpperCaseExponent, LowerCaseExponent };
+    /// Specifies decimal separator.
+    enum DecimalSeparator { PointDecimalSeparator, CommaDecimalSeparator };
 
 
-	///////////////////////////////////////////////////////////////////////////
-	// Public functions
+    ///////////////////////////////////////////////////////////////////////////
+    // Constructors
 
-	static inline BigDecimalFormat getDefault();
+    explicit BigDecimalFormat(
+        const int precision = MAX_IO_PRECISION,
+        const NumberFormat numberFormat = GeneralFormat,
+        const ExponentCase exponentCase = UpperCaseExponent,
+        const DecimalSeparator decimalSeparator = PointDecimalSeparator);
 
 
-	///////////////////////////////////////////////////////////////////////////
-	// Accessors
+    ///////////////////////////////////////////////////////////////////////////
+    // Public functions
 
-	inline int precision() const;
-	inline void setPrecision(const int precision);
+    static BigDecimalFormat getDefault();
 
-	inline NumberFormat numberFormat() const;
-	inline void setNumberFormat(const NumberFormat numberFormat);
 
-	inline ExponentCase exponentCase() const;
-	inline void setExponentCase(const ExponentCase exponentCase);
+    ///////////////////////////////////////////////////////////////////////////
+    // Accessors
 
-	inline DecimalSeparator decimalSeparator() const;
-	inline void setDecimalSeparator(const DecimalSeparator decimalSeparator);
+    int precision() const;
+    void setPrecision(const int precision);
 
-	inline char decimalSeparatorChar() const;
-	inline wchar_t decimalSeparatorWideChar() const;
-	inline tchar decimalSeparatorTChar() const;
+    NumberFormat numberFormat() const;
+    void setNumberFormat(const NumberFormat numberFormat);
+
+    ExponentCase exponentCase() const;
+    void setExponentCase(const ExponentCase exponentCase);
+
+    DecimalSeparator decimalSeparator() const;
+    void setDecimalSeparator(const DecimalSeparator decimalSeparator);
+
+    char decimalSeparatorChar() const;
+    wchar_t decimalSeparatorWideChar() const;
+    tchar decimalSeparatorTChar() const;
 
 private:
 
-	///////////////////////////////////////////////////////////////////////////
-	// Properties
+    ///////////////////////////////////////////////////////////////////////////
+    // Properties
 
-	int precision_;							///< Output precision of number.
-	NumberFormat numberFormat_;				///< Format of number.
-	ExponentCase exponentCase_;				///< Case of 'E' letter.
-	DecimalSeparator decimalSeparator_;		///< Decimal separator.
+    int mPrecision;                            ///< Output precision of number.
+    NumberFormat mNumberFormat;                ///< Format of number.
+    ExponentCase mExponentCase;                ///< Case of 'E' letter.
+    DecimalSeparator mDecimalSeparator;        ///< Decimal separator.
 };
 
-
-///////////////////////////////////////////////////////////////////////////
-// Inline functions
-
-/*!
-	Gets default format.
-*/
-inline BigDecimalFormat BigDecimalFormat::getDefault()
-{
-	return BigDecimalFormat();
-}
-
-/*!
-	Gets output precision of BigDecimal number.
-*/
-inline int BigDecimalFormat::precision() const
-{
-	return precision_;
-}
-
-/*!
-	Sets output precision of BigDecimal number.
-*/
-inline void BigDecimalFormat::setPrecision(const int precision)
-{
-	assert(precision >= 1 && precision <= MAX_IO_PRECISION);
-	precision_ = precision;
-}
-
-/*!
-	Gets format of BigDecimal number.
-*/
-inline BigDecimalFormat::NumberFormat BigDecimalFormat::numberFormat() const
-{
-	return numberFormat_;
-}
-
-/*!
-	Sets format of BigDecimal number.
-*/
-inline void BigDecimalFormat::setNumberFormat(const NumberFormat numberFormat)
-{
-	numberFormat_ = numberFormat;
-}
-
-/*!
-	Gets case of 'E' letter in BigDecimal number when exponent is needed.
-*/
-inline BigDecimalFormat::ExponentCase BigDecimalFormat::exponentCase() const
-{
-	return exponentCase_;
-}
-
-/*!
-	Sets case of 'E' letter in BigDecimal number when exponent is needed.
-*/
-inline void BigDecimalFormat::setExponentCase(const ExponentCase exponentCase)
-{
-	exponentCase_ = exponentCase;
-}
-
-/*!
-	Gets decimal separator.
-*/
-inline BigDecimalFormat::DecimalSeparator BigDecimalFormat::decimalSeparator() const
-{
-	return decimalSeparator_;
-}
-
-/*!
-	Sets decimal separator.
-*/
-inline void BigDecimalFormat::setDecimalSeparator(
-	const DecimalSeparator decimalSeparator)
-{
-	decimalSeparator_ = decimalSeparator;
-}
-
-/*!
-	Gets decimal separator as char.
-*/
-inline char BigDecimalFormat::decimalSeparatorChar() const
-{
-	if (decimalSeparator_ == PointDecimalSeparator)
-		return '.';
-	else
-		return ',';
-}
-
-/*!
-	Gets decimal separator as wchar_t.
-*/
-inline wchar_t BigDecimalFormat::decimalSeparatorWideChar() const
-{
-	if (decimalSeparator_ == PointDecimalSeparator)
-		return L'.';
-	else
-		return L',';
-}
-
-/*!
-	Gets decimal separator as tchar.
-*/
-inline tchar BigDecimalFormat::decimalSeparatorTChar() const
-{
-	if (decimalSeparator_ == PointDecimalSeparator)
-		return _T('.');
-	else
-		return _T(',');
-}
 
 } // namespace MaxCalcEngine
 
