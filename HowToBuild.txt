@@ -39,8 +39,8 @@ Prompt (or MinGW environment):
 If you're using MinGW, replace "nmake" with "mingw32-make".
 Compiled binaries will be put to "src\debug" and "src\release" directories.
 
-Using CMake (supported only in development version)
----------------------------------------------------
+Using CMake
+-----------
 
 You can also build MaxCalc using CMake v2.4.4 or higher (2.6 / 2.8 recommended).
 
@@ -80,8 +80,8 @@ To build the sources, execute in "src" directory:
 
 Compiled binaries will be put to "src\debug" and "src\release" directories.
 
-Using CMake (supported only in development version)
----------------------------------------------------
+Using CMake
+-----------
 
 
 You can also build MaxCalc using CMake v2.4.4 or higher (2.6 / 2.8 recommended).

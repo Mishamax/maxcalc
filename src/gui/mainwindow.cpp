@@ -227,13 +227,13 @@ void MainWindow::updateVariablesList()
 {
     mVariablesList->clear();
 
-    mVariablesList->addItem(tr("e = ") +
+    mVariablesList->addItem("e = " +
         QString::fromWCharArray(MaxCalcEngine::BigDecimal::E.toWideString().c_str()));
-    mVariablesList->addItem(tr("pi = ") +
+    mVariablesList->addItem("pi = " +
         QString::fromWCharArray(MaxCalcEngine::BigDecimal::PI.toWideString().c_str()));
 
     if (mParser.context().resultExists()) {
-        mVariablesList->addItem(tr("res = ") +
+        mVariablesList->addItem("res = " +
             QString::fromWCharArray(mParser.context().result().toWideString().c_str()));
     }
 
@@ -250,31 +250,31 @@ void MainWindow::updateVariablesList()
 */
 void MainWindow::initFunctionsList()
 {
-    mFunctionsList->addItem(tr("abs"));
-    mFunctionsList->addItem(tr("sqr"));
-    mFunctionsList->addItem(tr("sqrt"));
-    mFunctionsList->addItem(tr("pow"));
-    mFunctionsList->addItem(tr("fact"));
-    mFunctionsList->addItem(tr("sin"));
-    mFunctionsList->addItem(tr("cos"));
-    mFunctionsList->addItem(tr("tan"));
-    mFunctionsList->addItem(tr("cot"));
-    mFunctionsList->addItem(tr("asin"));
-    mFunctionsList->addItem(tr("acos"));
-    mFunctionsList->addItem(tr("atan"));
-    mFunctionsList->addItem(tr("acot"));
-    mFunctionsList->addItem(tr("sinh"));
-    mFunctionsList->addItem(tr("cosh"));
-    mFunctionsList->addItem(tr("tanh"));
-    mFunctionsList->addItem(tr("coth"));
-    mFunctionsList->addItem(tr("asinh"));
-    mFunctionsList->addItem(tr("acosh"));
-    mFunctionsList->addItem(tr("atanh"));
-    mFunctionsList->addItem(tr("acoth"));
-    mFunctionsList->addItem(tr("ln"));
-    mFunctionsList->addItem(tr("log2"));
-    mFunctionsList->addItem(tr("log10"));
-    mFunctionsList->addItem(tr("exp"));
+    mFunctionsList->addItem("abs");
+    mFunctionsList->addItem("sqr");
+    mFunctionsList->addItem("sqrt");
+    mFunctionsList->addItem("pow");
+    mFunctionsList->addItem("fact");
+    mFunctionsList->addItem("sin");
+    mFunctionsList->addItem("cos");
+    mFunctionsList->addItem("tan");
+    mFunctionsList->addItem("cot");
+    mFunctionsList->addItem("asin");
+    mFunctionsList->addItem("acos");
+    mFunctionsList->addItem("atan");
+    mFunctionsList->addItem("acot");
+    mFunctionsList->addItem("sinh");
+    mFunctionsList->addItem("cosh");
+    mFunctionsList->addItem("tanh");
+    mFunctionsList->addItem("coth");
+    mFunctionsList->addItem("asinh");
+    mFunctionsList->addItem("acosh");
+    mFunctionsList->addItem("atanh");
+    mFunctionsList->addItem("acoth");
+    mFunctionsList->addItem("ln");
+    mFunctionsList->addItem("log2");
+    mFunctionsList->addItem("log10");
+    mFunctionsList->addItem("exp");
 }
 
 /*!
@@ -316,14 +316,15 @@ void MainWindow::onExpressionEntered()
     catch (ResultDoesNotExistException) {
         outputError(tr("No result of previous calculations"));
     } catch (UnknownTokenException & ex) {
-        outputError(QString("Unknown token '%1' in expression")
+        outputError(tr("Unknown token '%1' in expression")
                     .arg(QString::fromWCharArray(ex.what().c_str())));
     } catch (IncorrectNumberException & ex) {
-        QString msg = "Incorrect number";
-        if (ex.what() != _T("")) {
-            msg += QString(" '%1'").arg(QString::fromWCharArray(ex.what().c_str()));
+        if (ex.what() == _T("")) {
+            outputError(tr("Incorrect number"));
+        } else {
+            outputError(tr("Incorrect number '%1'")
+                        .arg(QString::fromWCharArray(ex.what().c_str())));
         }
-        outputError(msg);
     } catch (IncorrectExpressionException) {
         outputError(tr("Incorrect expression"));
     } catch (NoClosingBracketException) {
@@ -331,57 +332,57 @@ void MainWindow::onExpressionEntered()
     } catch (TooManyClosingBracketsException) {
         outputError(tr("Too many closing brackets"));
     } catch (UnknownFunctionException & ex) {
-        outputError(QString("Unknown function '%1'")
+        outputError(tr("Unknown function '%1'")
                     .arg(QString::fromWCharArray(ex.what().c_str())));
     } catch (UnknownVariableException & ex) {
-        outputError(QString("Unknown variable '%1'")
+        outputError(tr("Unknown variable '%1'")
                     .arg(QString::fromWCharArray(ex.what().c_str())));
     } catch (IncorrectVariableNameException) {
         outputError(tr("Incorrect name of variable"));
     } catch (IncorrectUnitConversionSyntaxException) {
         outputError(tr("Incorrect unit conversion syntax"));
     } catch (UnknownUnitException & ex) {
-        outputError(QString("Unknown unit '%1'")
+        outputError(tr("Unknown unit '%1'")
                     .arg(QString::fromWCharArray(ex.what().c_str())));
     } catch (UnknownUnitConversionException & ex) {
-        outputError(QString("There is no unit conversion '%1'")
+        outputError(tr("There is no unit conversion '%1'")
                     .arg(QString::fromWCharArray(ex.what().c_str())));
     }
     // Invalid argument exceptions
     catch (InvalidArgumentException & ex) {
-        QString msg = QString("Invalid argument of function '%1'")
+        QString msg = tr("Invalid argument of function '%1'")
                     .arg(QString::fromWCharArray(ex.what().c_str()));
         switch (ex.reason()) {
         case InvalidArgumentException::ZERO:
-            msg += " (zero)";
+            msg += tr(" (zero)");
             break;
         case InvalidArgumentException::NEGATIVE:
-            msg += " (negative number)";
+            msg += tr(" (negative number)");
             break;
         case InvalidArgumentException::ZERO_OR_NEGATIVE:
-            msg += " (zero or negative number)";
+            msg += tr(" (zero or negative number)");
             break;
         case InvalidArgumentException::POWER_FUNCTION:
-            msg += " (zero or negative number in negative degree)";
+            msg += tr(" (zero or negative number in negative degree)");
             break;
         case InvalidArgumentException::FACTORIAL_FUNCTION:
-            msg += " (negative, fractional or complex number)";
+            msg += tr(" (negative, fractional or complex number)");
             break;
         case InvalidArgumentException::TANGENT_FUNCTION:
-            msg += " (cos(arg) = 0)";
+            msg += tr(" (cos(arg) = 0)");
             break;
         case InvalidArgumentException::COTANGENT_FUNCTION:
-            msg += " (sin(arg) = 0)";
+            msg += tr(" (sin(arg) = 0)");
             break;
         case InvalidArgumentException::ARCSINE_FUNCTION:
         case InvalidArgumentException::ARCCOSINE_FUNCTION:
-            msg += " (abs(arg) > 1)";
+            msg += tr(" (abs(arg) > 1)");
             break;
         case InvalidArgumentException::HYPERBOLIC_TANGENT_FUNCTION:
-            msg += " (cosh(arg) = 0)";
+            msg += tr(" (cosh(arg) = 0)");
             break;
         case InvalidArgumentException::HYPERBOLIC_COTANGENT_FUNCTION:
-            msg += " (sinh(arg) = 0)";
+            msg += tr(" (sinh(arg) = 0)");
             break;
         case InvalidArgumentException::UNKNOWN:
         default:
@@ -390,7 +391,7 @@ void MainWindow::onExpressionEntered()
         }
         outputError(msg);
     } catch (InvalidUnitConversionArgumentException & ex) {
-        outputError(QString("Complex argument in unit conversion '%1'")
+        outputError(tr("Complex argument in unit conversion '%1'")
                     .arg(QString::fromWCharArray(ex.what().c_str())));
     }
     // Arithmetic exception
@@ -398,25 +399,25 @@ void MainWindow::onExpressionEntered()
         QString reason;
         switch (ex.reason()) {
         case ArithmeticException::DIVISION_BY_ZERO:
-            reason = "Division by zero";
+            reason = tr("Division by zero");
             break;
         case ArithmeticException::DIVISION_IMPOSSIBLE:
-            reason = "Division impossible";
+            reason = tr("Division impossible");
             break;
         case ArithmeticException::OVERFLOW:
-            reason = "Arithmetic overflow";
+            reason = tr("Arithmetic overflow");
             break;
         case ArithmeticException::UNDERFLOW:
-            reason = "Arithmetic underflow";
+            reason = tr("Arithmetic underflow");
             break;
         case ArithmeticException::CONVERSION_IMPOSSIBLE:
-            reason = "Arithmetic conversion impossible";
+            reason = tr("Arithmetic conversion impossible");
             break;
         case ArithmeticException::INVALID_OPERATION_ON_FRACTIONAL_NUMBER:
-            reason = "Invalid operation on fractional number";
+            reason = tr("Invalid operation on fractional number");
             break;
         default: // This includes UNKNOWN_REASON
-            reason = "Unknown arithmetic error";
+            reason = tr("Unknown arithmetic error");
             break;
         }
         outputError(reason);

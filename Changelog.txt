@@ -4,6 +4,7 @@ v2.0.0 (IN DEVELOPMENT).
     - Changed: Added more error messages; improved exception system.
     - Fixed: Bug with history highlighting in graphical version.
     - Internal: Improved program portability; added CMake build system support.
+    - Internal: Code greatly cleaned up.
 
 v1.9.3 Milestone-4 (19-Sep-2009).
 
