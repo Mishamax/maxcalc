@@ -404,10 +404,10 @@ void MainWindow::onExpressionEntered()
         case ArithmeticException::DIVISION_IMPOSSIBLE:
             reason = tr("Division impossible");
             break;
-        case ArithmeticException::OVERFLOW:
+        case ArithmeticException::ARITHMETIC_OVERFLOW:
             reason = tr("Arithmetic overflow");
             break;
-        case ArithmeticException::UNDERFLOW:
+        case ArithmeticException::ARITHMETIC_UNDERFLOW:
             reason = tr("Arithmetic underflow");
             break;
         case ArithmeticException::CONVERSION_IMPOSSIBLE:

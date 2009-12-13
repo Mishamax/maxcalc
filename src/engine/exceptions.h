@@ -60,7 +60,8 @@ class ArithmeticException : public MaxCalcException
 {
 public:
     enum Reasons { UNKNOWN_REASON, DIVISION_BY_ZERO, DIVISION_IMPOSSIBLE,
-                   OVERFLOW, UNDERFLOW, CONVERSION_IMPOSSIBLE,
+                   ARITHMETIC_OVERFLOW, ARITHMETIC_UNDERFLOW,
+                   CONVERSION_IMPOSSIBLE,
                    INVALID_OPERATION_ON_FRACTIONAL_NUMBER};
 
 private:
