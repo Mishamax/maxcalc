@@ -17,6 +17,7 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
+
 // MaxCalcEngine
 #include "bigdecimal.h"
 #include "unitconversion.h"
@@ -24,6 +25,7 @@
 #include "mainwindow.h"
 #include "aboutbox.h"
 #include "myaction.h"
+#include "miceventhandler.h"
 // Qt
 #include <QApplication>
 #include <QDesktopServices>
@@ -39,6 +41,9 @@ static const QString indent = "    ";
     \ingroup MaxCalcGui
 */
 
+const _ATL_FUNC_INFO MICEventHandler<MainWindow>::mOnMICInsertInfo = {CC_STDCALL, VT_I4, 1, {VT_BSTR}};
+const _ATL_FUNC_INFO MICEventHandler<MainWindow>::mOnMICCloseInfo = {CC_STDCALL, VT_I4, 0, {VT_EMPTY}};
+
 using namespace MaxCalcEngine;
 
 /*!
@@ -52,6 +57,13 @@ MainWindow::MainWindow() : QMainWindow(),
     initMainMenu();
     updateVariablesList();
     initFunctionsList();
+
+    // Show Math Input Control
+    CoInitialize(NULL);
+    mic.CoCreateInstance(CLSID_MathInputControl);
+    Initialize(mic);
+    DispEventAdvise(mic);
+    mic->Show();
 }
 
 /*!
@@ -404,10 +416,10 @@ void MainWindow::onExpressionEntered()
         case ArithmeticException::DIVISION_IMPOSSIBLE:
             reason = tr("Division impossible");
             break;
-        case ArithmeticException::OVERFLOW:
+        case ArithmeticException::ARITHMETIC_OVERFLOW:
             reason = tr("Arithmetic overflow");
             break;
-        case ArithmeticException::UNDERFLOW:
+        case ArithmeticException::ARITHMETIC_UNDERFLOW:
             reason = tr("Arithmetic underflow");
             break;
         case ArithmeticException::CONVERSION_IMPOSSIBLE:
@@ -505,4 +517,12 @@ void MainWindow::onDeleteAllVariables()
 void MainWindow::onUnitConversion(const QString & conversion)
 {
     mInputBox.insert(conversion);
+}
+
+/*!
+    Handles MathML input from Math Input Control.
+*/
+void MainWindow::onMathInput(BSTR mathml)
+{
+    mInputBox.insert(QString::fromWCharArray(mathml));
 }

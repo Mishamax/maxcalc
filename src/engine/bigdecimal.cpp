@@ -1346,9 +1346,9 @@ void BigDecimal::checkContextStatus(const decContext & context)
         } else if (context.status & DEC_Division_impossible) {
             throw ArithmeticException(ArithmeticException::DIVISION_IMPOSSIBLE);
         } else if (context.status & DEC_Overflow) {
-            throw ArithmeticException(ArithmeticException::OVERFLOW);
+            throw ArithmeticException(ArithmeticException::ARITHMETIC_OVERFLOW);
         } else if (context.status & DEC_Underflow) {
-            throw ArithmeticException(ArithmeticException::UNDERFLOW);
+            throw ArithmeticException(ArithmeticException::ARITHMETIC_UNDERFLOW);
         } else if (context.status & DEC_Conversion_syntax) {
             throw ArithmeticException(ArithmeticException::CONVERSION_IMPOSSIBLE);
         } else if (context.status & DEC_Insufficient_storage) {

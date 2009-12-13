@@ -338,10 +338,10 @@ void runParser(Parser & parser)
         case ArithmeticException::DIVISION_IMPOSSIBLE:
             reason = _T("Division impossible");
             break;
-        case ArithmeticException::OVERFLOW:
+        case ArithmeticException::ARITHMETIC_OVERFLOW:
             reason = _T("Arithmetic overflow");
             break;
-        case ArithmeticException::UNDERFLOW:
+        case ArithmeticException::ARITHMETIC_UNDERFLOW:
             reason = _T("Arithmetic underflow");
             break;
         case ArithmeticException::CONVERSION_IMPOSSIBLE:

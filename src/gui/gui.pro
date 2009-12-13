@@ -10,14 +10,16 @@ HEADERS += \
         mainwindow.h \
         inputbox.h \
         aboutbox.h \
-        myaction.h
+        myaction.h \
+        miceventhandler.h
 
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
         inputbox.cpp \
         aboutbox.cpp \
-        myaction.cpp
+        myaction.cpp \
+        miceventhandler.cpp
 
 PRECOMPILED_HEADER = pch.h
 

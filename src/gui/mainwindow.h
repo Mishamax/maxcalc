@@ -20,11 +20,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-// Local
-#include "inputbox.h"
 // MaxCalcEngine
 #include "parser.h"
 #include "parsercontext.h"
+// Local
+#include "inputbox.h"
+#include "miceventhandler.h"
 // Qt
 #include <QMainWindow>
 #include <QTextEdit>
@@ -35,13 +36,15 @@
 #include <QMenuBar>
 #include <QDockWidget>
 
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow, public MICEventHandler<MainWindow>
 {
     Q_OBJECT
 
 public:
     MainWindow();
     ~MainWindow();
+
+    void onMathInput(BSTR mathml);
 
 signals:
     /// Emitted when expression is calculated by parser.
@@ -61,6 +64,9 @@ private:
     QMenuBar mMainMenu;
 
     MaxCalcEngine::Parser mParser;
+
+    // Math Input Control
+    CComPtr<IMathInputControl> mic;
 
     void initUi();
     void initMainMenu();
