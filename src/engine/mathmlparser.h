@@ -38,10 +38,13 @@ public:
 private:
     CMarkup xml;                            ///< CMarkup XML parser
 
-    bool parseRow(tstring & result);
-    bool parseI(tstring & result);
-    bool parseN(tstring & result);
-    bool parseO(tstring & result);
+    tstring parseOneLevel();
+    tstring parseRow();
+    tstring parseFrac();
+    tstring parseI();
+    tstring parseN();
+    tstring parseO();
+
 };
 
 

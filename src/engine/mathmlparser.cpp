@@ -61,14 +61,11 @@ tstring MathMLParser::parse()
     tstring result = _T("");
 
     // Root <math> element
-    if (!xml.FindElem(_T("math")) || !xml.IntoElem()) {
-        throw MaxCalcException();
-    }
-    if (!parseRow(result)) {
+    if (!xml.FindElem(_T("m:math")) || !xml.IntoElem()) {
         throw MaxCalcException();
     }
 
-    return result;
+    return parseOneLevel();
 }
 
 
@@ -77,61 +74,83 @@ tstring MathMLParser::parse()
 //****************************************************************************
 
 /*!
-    Parses <mrow> tag.
-    Looks for <mn> tag within <mrow> and parses it.
+    Parses MathML tags that on single level (like within one <mrow> or within
+    main <math> tag).
 */
-bool MathMLParser::parseRow(tstring & result)
+tstring MathMLParser::parseOneLevel()
 {
-    if (!xml.FindElem(_T("mrow")) || !xml.IntoElem()) return false;
-    bool found = true;
-    while (found) {
-        if (parseI(result)) { found = true; continue; }
-        if (parseN(result)) { found = true; continue; }
-        if (parseO(result)) { found = true; continue; }
-        found = false;
+    tstring result;
+    while (xml.FindElem()) {
+        tstring tag = xml.GetTagName();
+        if (tag == _T("m:mi")) {
+            result += parseI();
+        } else if (tag == _T("m:mn")) {
+            result += parseN();
+        } else if (tag == _T("m:mo")) {
+            result += parseO();
+        } else if (tag == _T("m:mrow")) {
+            result += parseRow();
+        } else if (tag == _T("m:mfrac")) {
+            result += parseFrac();
+        }
     }
-    if (!xml.OutOfElem()) return false;
-    return true;
+    return result;
 }
 
 /*!
-    Parses <mi> tag (identifier).
-    Adds the content of the tag to \a result.
+    Parses <mrow> tag.
 */
-bool MathMLParser::parseI(tstring & result)
+tstring MathMLParser::parseRow()
 {
-    if (!xml.FindElem(_T("mi"))) return false;
-    tstring data = xml.GetData();
-    if (data == _T("")) return false;
-    result += data;
-    return true;
-}
-
-
-/*!
-    Parses <mn> tag (number).
-    Adds the content of the tag to \a result.
-*/
-bool MathMLParser::parseN(tstring & result)
-{
-    if (!xml.FindElem(_T("mn"))) return false;
-    tstring data = xml.GetData();
-    if (data == _T("")) return false;
-    result += data;
-    return true;
+    xml.IntoElem();
+    tstring result = parseOneLevel();
+    xml.OutOfElem();
+    return result;
 }
 
 /*!
-    Parses <mo> tag (operator).
-    Adds the content of the tag to \a result.
+    Parses <mfrac> tag.
+    Assumes that <mfrac> contains two <mrow> tags.
 */
-bool MathMLParser::parseO(tstring & result)
+tstring MathMLParser::parseFrac()
 {
-    if (!xml.FindElem(_T("mo"))) return false;
+    tstring result;
+    xml.IntoElem();
+    xml.FindElem();
+    if (xml.GetTagName() != _T("m:mrow")) throw MaxCalcException();
+    result += _T("((") + parseRow() + _T(")");
+    result += _T("/");
+    xml.FindElem();
+    if (xml.GetTagName() != _T("m:mrow")) throw MaxCalcException();
+    result += _T("(") + parseRow() + _T("))");
+    xml.OutOfElem();
+    return result;
+}
+
+/*!
+    Parses <mi> tag.
+*/
+tstring MathMLParser::parseI()
+{
+    return xml.GetData();
+}
+
+/*!
+    Parses <mn> tag.
+*/
+tstring MathMLParser::parseN()
+{
+    return xml.GetData();
+}
+
+/*!
+    Parses <mo> tag.
+*/
+tstring MathMLParser::parseO()
+{
     tstring data = xml.GetData();
-    if (data == _T("")) return false;
-    result += data;
-    return true;
+    if (data == _T("\x22C5")) return _T("*");
+    else return data;
 }
 
 } // namespace MaxCalcEngine

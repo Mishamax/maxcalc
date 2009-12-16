@@ -71,6 +71,7 @@ private:
     QDockWidget mFunctionsListWrapper;
     QMenuBar mMainMenu;
     QActionGroup * mAngleUnitActionGroup;
+    QLineEdit mMathMLInput;
 
     MaxCalcEngine::Parser mParser;
 

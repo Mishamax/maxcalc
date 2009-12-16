@@ -21,6 +21,7 @@
 // MaxCalcEngine
 #include "bigdecimal.h"
 #include "unitconversion.h"
+#include "mathmlparser.h"
 // Local
 #include "mainwindow.h"
 #include "aboutbox.h"
@@ -32,6 +33,7 @@
 #include <QApplication>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QMessageBox>
 
 /// Indentation used for output
 static const QString indent = "    ";
@@ -110,6 +112,7 @@ void MainWindow::initUi()
 
     mLayout.addWidget(&mHistoryBox);
     mLayout.addLayout(&mBottomLayout);
+    mLayout.addWidget(&mMathMLInput);
     
     addDockWidget(Qt::RightDockWidgetArea, &mVariablesListWrapper);
     tabifyDockWidget(&mVariablesListWrapper, &mFunctionsListWrapper);
@@ -576,6 +579,21 @@ void MainWindow::onSettingsGrads()
 */
 void MainWindow::onMathInput(BSTR mathml)
 {
-    mInputBox.insert(QString::fromWCharArray(mathml));
+    QString input = QString::fromWCharArray(mathml);
+    mMathMLInput.setText(input);
+    MathMLParser parser(mathml);
+    QString result;
+    try {
+        result = QString::fromWCharArray(parser.parse().c_str());
+    } catch (...) {
+        mInputBox.setText("MathMLParser exception!");
+        return;
+    }
+    if (result == "") {
+        mInputBox.setText("Empty string");
+    } else {
+        mInputBox.setText(result);
+        mOkButton.click();
+    }
 }
 #endif
