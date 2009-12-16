@@ -20,11 +20,14 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-// Local
-#include "inputbox.h"
 // MaxCalcEngine
 #include "parser.h"
 #include "parsercontext.h"
+// Local
+#include "inputbox.h"
+#if defined(MAXCALC_MATHML)
+#include "miceventhandler.h"
+#endif
 // Qt
 #include <QMainWindow>
 #include <QTextEdit>
@@ -37,12 +40,19 @@
 #include <QActionGroup>
 
 class MainWindow : public QMainWindow
+#if defined(MAXCALC_MATHML)
+, public MICEventHandler<MainWindow>
+#endif
 {
     Q_OBJECT
 
 public:
     MainWindow();
     ~MainWindow();
+
+#if defined(MAXCALC_MATHML)
+    void onMathInput(BSTR mathml);
+#endif
 
 signals:
     /// Emitted when expression is calculated by parser.
@@ -63,6 +73,11 @@ private:
     QActionGroup * mAngleUnitActionGroup;
 
     MaxCalcEngine::Parser mParser;
+
+#if defined(MAXCALC_MATHML)
+    // Math Input Control
+    CComPtr<IMathInputControl> mic;
+#endif
 
     void initUi();
     void initMainMenu();

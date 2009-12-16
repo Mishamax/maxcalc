@@ -32,6 +32,10 @@ SOURCES += \
         variables.cpp \
         unitconversion.cpp
 
+maxcalc_mathml {
+    DEFINES += MAXCALC_MATHML
+}
+
 PRECOMPILED_HEADER = pch.h
 
 CONFIG(debug, debug|release) {

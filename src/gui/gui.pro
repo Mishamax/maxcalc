@@ -19,6 +19,12 @@ SOURCES += \
         aboutbox.cpp \
         myaction.cpp
 
+maxcalc_mathml {
+    HEADERS += miceventhandler.h
+    SOURCES += miceventhandler.cpp
+    DEFINES += MAXCALC_MATHML
+}
+
 PRECOMPILED_HEADER = pch.h
 
 INCLUDEPATH += ../engine

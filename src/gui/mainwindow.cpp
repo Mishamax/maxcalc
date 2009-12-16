@@ -17,6 +17,7 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
+
 // MaxCalcEngine
 #include "bigdecimal.h"
 #include "unitconversion.h"
@@ -24,6 +25,9 @@
 #include "mainwindow.h"
 #include "aboutbox.h"
 #include "myaction.h"
+#if defined(MAXCALC_MATHML)
+#include "miceventhandler.h"
+#endif
 // Qt
 #include <QApplication>
 #include <QDesktopServices>
@@ -39,6 +43,11 @@ static const QString indent = "    ";
     \ingroup MaxCalcGui
 */
 
+#if defined(MAXCALC_MATHML)
+const _ATL_FUNC_INFO MICEventHandler<MainWindow>::mOnMICInsertInfo = {CC_STDCALL, VT_I4, 1, {VT_BSTR}};
+const _ATL_FUNC_INFO MICEventHandler<MainWindow>::mOnMICCloseInfo = {CC_STDCALL, VT_I4, 0, {VT_EMPTY}};
+#endif
+
 using namespace MaxCalcEngine;
 
 /*!
@@ -52,6 +61,15 @@ MainWindow::MainWindow() : QMainWindow(),
     initMainMenu();
     updateVariablesList();
     initFunctionsList();
+
+#if defined(MAXCALC_MATHML)
+    // Show Math Input Control
+    CoInitialize(NULL);
+    mic.CoCreateInstance(CLSID_MathInputControl);
+    Initialize(mic);
+    DispEventAdvise(mic);
+    mic->Show();
+#endif
 }
 
 /*!
@@ -551,3 +569,13 @@ void MainWindow::onSettingsGrads()
 {
     mParser.context().setAngleUnit(ParserContext::GRADS);
 }
+
+#if defined(MAXCALC_MATHML)
+/*!
+    Handles MathML input from Math Input Control.
+*/
+void MainWindow::onMathInput(BSTR mathml)
+{
+    mInputBox.insert(QString::fromWCharArray(mathml));
+}
+#endif
