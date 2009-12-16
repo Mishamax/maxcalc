@@ -32,11 +32,10 @@ SOURCES += \
         variables.cpp \
         unitconversion.cpp
 
-maxcalc_mathml {
-    HEADERS += Markup.h mathmlparser.h
-    SOURCES += Markup.cpp mathmlparser.cpp
-    DEFINES += MAXCALC_MATHML
-}
+# MathML support
+HEADERS += Markup.h mathmlparser.h
+SOURCES += Markup.cpp mathmlparser.cpp
+DEFINES += MAXCALC_MATHML
 
 PRECOMPILED_HEADER = pch.h
 
