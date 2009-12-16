@@ -33,6 +33,8 @@ SOURCES += \
         unitconversion.cpp
 
 maxcalc_mathml {
+    HEADERS += Markup.h mathmlparser.h
+    SOURCES += Markup.cpp mathmlparser.cpp
     DEFINES += MAXCALC_MATHML
 }
 
