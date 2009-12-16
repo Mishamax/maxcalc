@@ -34,6 +34,12 @@ class ParserContext
 public:
 
     ///////////////////////////////////////////////////////////////////////////
+    // Enums
+
+    /// Determines angle unit
+    enum AngleUnit { RADIANS, DEGREES, GRADS };
+
+    ///////////////////////////////////////////////////////////////////////////
     // Constructors
 
     explicit ParserContext(const ComplexFormat & numberFormat =
@@ -45,13 +51,24 @@ public:
 
     Complex result() const;
     void setResult(const Complex & result);
-    bool resultExists() const;
 
-    ComplexFormat & numberFormat();
-    void setNumberFormat(const ComplexFormat & numberFormat);
+    /// Returns true if there is result of previous calculation.
+    bool resultExists() const { return mResultExists; }
 
-    Variables & variables();
-    void setVariables(const Variables & vars);
+    /// Gets number format.
+    ComplexFormat & numberFormat() { return mNumberFormat; }
+    /// Sets number format.
+    void setNumberFormat(const ComplexFormat & format) {mNumberFormat = format; }
+
+    /// Gets variables.
+    Variables & variables() { return mVars; }
+    /// Sets variables.
+    void setVariables(const Variables & vars) { mVars = vars; }
+
+    /// Gets angle unit.
+    AngleUnit angleUnit() const { return mAngleUnit; }
+    /// Sets angle unit.
+    void setAngleUnit(const AngleUnit unit) { mAngleUnit = unit; }
 
 private:
 
@@ -62,6 +79,7 @@ private:
     bool mResultExists;             ///< Determines if result exists.
     ComplexFormat mNumberFormat;    ///< Number format used for conversions.
     Variables mVars;                ///< Variables.
+    AngleUnit mAngleUnit;           ///< Angle unit.
 };
 
 

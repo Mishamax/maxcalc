@@ -27,12 +27,14 @@ namespace MaxCalcEngine {
     \class ParserContext
     \brief Represents context used by Parser.
 
-    Context is used to store Parser state between calculations and defines
-    behavior of Parser.
-    It includes result of last calculation and number format used to
-    conversions.
+    Context is used to store Parser state between calculations and it defines
+    behavior of Parser. The state includes:
+     * Result of last calculation.
+     * Number format.
+     * Variables.
+     * Angle unit.
 
-    \sa Parser
+    \sa Parser, ComplexFormat, Variables
     \ingroup MaxCalcEngine
 */
 
@@ -45,6 +47,7 @@ ParserContext::ParserContext(const ComplexFormat & numberFormat)
     mResult = Complex();
     mResultExists = false;
     mNumberFormat = numberFormat;
+    mAngleUnit = RADIANS;
 }
 
 /*!
@@ -64,46 +67,6 @@ void ParserContext::setResult(const Complex & result)
 {
     mResult = result;
     mResultExists = true;
-}
-
-/*!
-    Determines if result of last calculation exists.
-*/
-bool ParserContext::resultExists() const
-{
-    return mResultExists;
-}
-
-/*!
-    Gets number format.
-*/
-ComplexFormat & ParserContext::numberFormat()
-{
-    return mNumberFormat;
-}
-
-/*!
-    Sets number format.
-*/
-void ParserContext::setNumberFormat(const ComplexFormat & numberFormat)
-{
-    mNumberFormat = numberFormat;
-}
-
-/*!
-    Gets variables.
-*/
-Variables & ParserContext::variables()
-{
-    return mVars;
-}
-
-/*!
-    Sets variables.
-*/
-void ParserContext::setVariables(const Variables & vars)
-{
-    mVars = vars;
 }
 
 } // namespace MaxCalcEngine

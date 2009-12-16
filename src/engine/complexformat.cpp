@@ -89,7 +89,7 @@ void ComplexFormat::setImaginaryOne(const ImaginaryOne imaginaryOne)
 */
 char ComplexFormat::imaginaryOneChar() const
 {
-    return (mImaginaryOne == iImaginaryOne) ? 'i' : 'j';
+    return (mImaginaryOne == IMAGINARY_ONE_I) ? 'i' : 'j';
 }
 
 /*!
@@ -97,7 +97,7 @@ char ComplexFormat::imaginaryOneChar() const
 */
 wchar_t ComplexFormat::imaginaryOneWideChar() const
 {
-    return (mImaginaryOne == iImaginaryOne) ? L'i' : L'j';
+    return (mImaginaryOne == IMAGINARY_ONE_I) ? L'i' : L'j';
 }
 
 /*!
@@ -105,7 +105,7 @@ wchar_t ComplexFormat::imaginaryOneWideChar() const
 */
 tchar ComplexFormat::imaginaryOneTChar() const
 {
-    return (mImaginaryOne == iImaginaryOne) ? _T('i') : _T('j');
+    return (mImaginaryOne == IMAGINARY_ONE_I) ? _T('i') : _T('j');
 }
 
 } // namespace MaxCalcEngine

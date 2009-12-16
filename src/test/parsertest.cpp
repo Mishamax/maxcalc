@@ -371,6 +371,32 @@ void ParserTest::functionsTrig()
 
     PARSER_TEST(parser, _T("asin(sin(1))"), "1" );
     PARSER_TEST(parser, _T("acos(cos(1))"), "1" );
+
+    parser.context().setAngleUnit(ParserContext::DEGREES);
+    PARSER_TEST(parser, _T("sin(30)"), "0.5" );
+    PARSER_TEST(parser, _T("cos(60)"), "0.5" );
+    PARSER_TEST(parser, _T("tg(135)"), "-1" );
+    PARSER_TEST(parser, _T("ctg(45)"), "1" );
+    PARSER_TEST(parser, _T("arcsin(-0.5)"), "-30" );
+    PARSER_TEST(parser, _T("arccos(1)"), "0" );
+    PARSER_TEST(parser, _T("arctg(0)"), "0" );
+    PARSER_TEST(parser, _T("arcctg(0)"), "90" );
+
+    parser.context().setAngleUnit(ParserContext::GRADS);
+    PARSER_TEST(parser, _T("sin(100/3)"), "0.5" );
+    PARSER_TEST(parser, _T("cos(200/3)"), "0.5" );
+    PARSER_TEST(parser, _T("tg(150)"), "-1" );
+    PARSER_TEST(parser, _T("ctg(50)"), "1" );
+    PARSER_TEST(parser, _T("arcsin(-sqrt(2)/2)"), "-50" );
+    PARSER_TEST(parser, _T("arccos(1)"), "0" );
+    PARSER_TEST(parser, _T("arctg(0)"), "0" );
+    PARSER_TEST(parser, _T("arcctg(0)"), "100" );
+
+    parser.context().setAngleUnit(ParserContext::RADIANS);
+    PARSER_TEST(parser, _T("sin(pi/6)"), "0.5" );
+    PARSER_TEST(parser, _T("cos(pi/3)"), "0.5" );
+    PARSER_TEST(parser, _T("tg(3*pi/4)"), "-1" );
+    PARSER_TEST(parser, _T("ctg(pi/4)"), "1" );
 }
 
 void ParserTest::functionsLog()

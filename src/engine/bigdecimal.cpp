@@ -252,7 +252,7 @@ std::string BigDecimal::toString(const BigDecimalFormat & format) const
     delete[] str;
 
     // Replace 'E' with 'e' if needed
-    if (format.exponentCase() == BigDecimalFormat::LowerCaseExponent) {
+    if (format.exponentCase() == BigDecimalFormat::LOWER_CASE_EXPONENT) {
         size_t expPos = s.find('E');
         if (expPos != std::string::npos) s.replace(expPos, 1, "e");
     }
@@ -1318,7 +1318,7 @@ void BigDecimal::construct(const std::string & str,
     NEW_CONTEXT(context);
 
     std::string s = str;
-    if (format.decimalSeparator() != BigDecimalFormat::PointDecimalSeparator) {
+    if (format.decimalSeparator() != BigDecimalFormat::POINT_DECIMAL_SEPARATOR) {
         size_t pos = str.find(format.decimalSeparatorChar());
         if (pos != std::string::npos) {
             s.replace(pos, 1, ".");

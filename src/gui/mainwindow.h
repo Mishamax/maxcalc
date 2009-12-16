@@ -34,6 +34,7 @@
 #include <QPushButton>
 #include <QMenuBar>
 #include <QDockWidget>
+#include <QActionGroup>
 
 class MainWindow : public QMainWindow
 {
@@ -59,6 +60,7 @@ private:
     QListWidget * mFunctionsList;
     QDockWidget mFunctionsListWrapper;
     QMenuBar mMainMenu;
+    QActionGroup * mAngleUnitActionGroup;
 
     MaxCalcEngine::Parser mParser;
 
@@ -77,6 +79,9 @@ private slots:
     void onHelpReportIssue();
     void onDeleteAllVariables();
     void onUnitConversion(const QString & conversion);
+    void onSettingsRadians();
+    void onSettingsDegrees();
+    void onSettingsGrads();
 };
 
 #endif // MAINWINDOW_H

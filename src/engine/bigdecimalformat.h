@@ -40,11 +40,11 @@ public:
 
     /// Specifies output formats of BigDecimal number (general, scientific or
     /// engineering).
-    enum NumberFormat { GeneralFormat, ScientificFormat, EngineeringFormat };
+    enum NumberFormat { GENERAL_FORMAT, SCIENTIFIC_FORMAT, ENGINEERING_FORMAT };
     /// Specifies case of 'E' letter when exponent is needed.
-    enum ExponentCase { UpperCaseExponent, LowerCaseExponent };
+    enum ExponentCase { UPPER_CASE_EXPONENT, LOWER_CASE_EXPONENT };
     /// Specifies decimal separator.
-    enum DecimalSeparator { PointDecimalSeparator, CommaDecimalSeparator };
+    enum DecimalSeparator { POINT_DECIMAL_SEPARATOR, COMMA_DECIMAL_SEPARATOR };
 
 
     ///////////////////////////////////////////////////////////////////////////
@@ -52,9 +52,9 @@ public:
 
     explicit BigDecimalFormat(
         const int precision = MAX_IO_PRECISION,
-        const NumberFormat numberFormat = GeneralFormat,
-        const ExponentCase exponentCase = UpperCaseExponent,
-        const DecimalSeparator decimalSeparator = PointDecimalSeparator);
+        const NumberFormat numberFormat = GENERAL_FORMAT,
+        const ExponentCase exponentCase = UPPER_CASE_EXPONENT,
+        const DecimalSeparator decimalSeparator = POINT_DECIMAL_SEPARATOR);
 
 
     ///////////////////////////////////////////////////////////////////////////

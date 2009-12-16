@@ -36,7 +36,7 @@ public:
     // Enums
 
     /// Determines if imaginary one is represented by 'i' or 'j'.
-    enum ImaginaryOne { iImaginaryOne, jImaginaryOne };
+    enum ImaginaryOne { IMAGINARY_ONE_I, IMAGINARY_ONE_J };
 
 
     ///////////////////////////////////////////////////////////////////////////
@@ -44,10 +44,10 @@ public:
 
     explicit ComplexFormat(
         const int precision = MAX_IO_PRECISION,
-        const NumberFormat numberFormat = GeneralFormat,
-        const ExponentCase exponentCase = UpperCaseExponent,
-        const DecimalSeparator decimalSeparator = PointDecimalSeparator,
-        const ImaginaryOne imaginaryOne = iImaginaryOne);
+        const NumberFormat numberFormat = GENERAL_FORMAT,
+        const ExponentCase exponentCase = UPPER_CASE_EXPONENT,
+        const DecimalSeparator decimalSeparator = POINT_DECIMAL_SEPARATOR,
+        const ImaginaryOne imaginaryOne = IMAGINARY_ONE_I);
 
 
     ///////////////////////////////////////////////////////////////////////////

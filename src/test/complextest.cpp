@@ -39,28 +39,33 @@ void ComplexTest::complexFormatDefault()
     COMPARE(actual.imaginaryOne(), expected.imaginaryOne());
 
     COMPARE(actual.precision(), MAX_IO_PRECISION);
-    COMPARE(actual.numberFormat(), ComplexFormat::GeneralFormat);
-    COMPARE(actual.exponentCase(), ComplexFormat::UpperCaseExponent);
+    COMPARE(actual.numberFormat(), ComplexFormat::GENERAL_FORMAT);
+    COMPARE(actual.exponentCase(), ComplexFormat::UPPER_CASE_EXPONENT);
     COMPARE(actual.imaginaryOneChar(), 'i');
 }
 
 void ComplexTest::complexFormatCustom()
 {
-    ComplexFormat actual(MAX_IO_PRECISION, ComplexFormat::EngineeringFormat, ComplexFormat::LowerCaseExponent,
-        ComplexFormat::PointDecimalSeparator, ComplexFormat::jImaginaryOne);
+    ComplexFormat actual(MAX_IO_PRECISION,
+                         ComplexFormat::ENGINEERING_FORMAT,
+                         ComplexFormat::LOWER_CASE_EXPONENT,
+                         ComplexFormat::POINT_DECIMAL_SEPARATOR,
+                         ComplexFormat::IMAGINARY_ONE_J);
 
     COMPARE(actual.precision(), MAX_IO_PRECISION);
-    COMPARE(actual.numberFormat(), ComplexFormat::EngineeringFormat);
-    COMPARE(actual.exponentCase(), ComplexFormat::LowerCaseExponent);
+    COMPARE(actual.numberFormat(), ComplexFormat::ENGINEERING_FORMAT);
+    COMPARE(actual.exponentCase(), ComplexFormat::LOWER_CASE_EXPONENT);
     COMPARE(actual.decimalSeparatorChar(), '.');
     COMPARE(actual.imaginaryOneChar(), 'j');
 
-    actual = ComplexFormat(1, ComplexFormat::ScientificFormat, ComplexFormat::UpperCaseExponent,
-        ComplexFormat::CommaDecimalSeparator, ComplexFormat::iImaginaryOne);
+    actual = ComplexFormat(1, ComplexFormat::SCIENTIFIC_FORMAT,
+                           ComplexFormat::UPPER_CASE_EXPONENT,
+                           ComplexFormat::COMMA_DECIMAL_SEPARATOR,
+                           ComplexFormat::IMAGINARY_ONE_I);
 
     COMPARE(actual.precision(), 1);
-    COMPARE(actual.numberFormat(), ComplexFormat::ScientificFormat);
-    COMPARE(actual.exponentCase(), ComplexFormat::UpperCaseExponent);
+    COMPARE(actual.numberFormat(), ComplexFormat::SCIENTIFIC_FORMAT);
+    COMPARE(actual.exponentCase(), ComplexFormat::UPPER_CASE_EXPONENT);
     COMPARE(actual.decimalSeparatorChar(), ',');
     COMPARE(actual.imaginaryOneChar(), 'i');
 }
@@ -70,12 +75,12 @@ void ComplexTest::complexFormatAccessors()
     ComplexFormat actual;
 
     actual.setPrecision(MAX_IO_PRECISION / 2);
-    actual.setNumberFormat(ComplexFormat::EngineeringFormat);
-    actual.setExponentCase(ComplexFormat::LowerCaseExponent);
+    actual.setNumberFormat(ComplexFormat::ENGINEERING_FORMAT);
+    actual.setExponentCase(ComplexFormat::LOWER_CASE_EXPONENT);
 
     COMPARE(actual.precision(), MAX_IO_PRECISION / 2);
-    COMPARE(actual.numberFormat(), ComplexFormat::EngineeringFormat);
-    COMPARE(actual.exponentCase(), ComplexFormat::LowerCaseExponent);
+    COMPARE(actual.numberFormat(), ComplexFormat::ENGINEERING_FORMAT);
+    COMPARE(actual.exponentCase(), ComplexFormat::LOWER_CASE_EXPONENT);
 
     actual.setPrecision(MAX_IO_PRECISION);
     COMPARE(actual.precision(), MAX_IO_PRECISION);
@@ -83,7 +88,7 @@ void ComplexTest::complexFormatAccessors()
     actual.setPrecision(1);
     COMPARE(actual.precision(), 1);
 
-    actual.setImaginaryOne(ComplexFormat::jImaginaryOne);
+    actual.setImaginaryOne(ComplexFormat::IMAGINARY_ONE_J);
     COMPARE(actual.imaginaryOneChar(), 'j');
 }
 

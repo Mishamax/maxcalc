@@ -171,6 +171,10 @@ void printHelp()
     tcout << indent << _T("#vars - Display list of variables.") << endl;
     tcout << indent << _T("#del <variable> - Delete <variable>.") << endl;
     tcout << indent << _T("#delall - Delete all variables.") << endl;
+    tcout << indent << _T("#angles - Display current angle unit.") << endl;
+    tcout << indent << _T("#radians - Set angle unit to radians.") << endl;
+    tcout << indent << _T("#degrees - Set angle unit to degrees.") << endl;
+    tcout << indent << _T("#grads - Set angle unit to grads.") << endl;
     tcout << indent << _T("#ver - Display version information.") << endl;
     tcout << indent << _T("help - Get this help.") << endl;
     tcout << indent << _T("exit - Close the program.") << endl;
@@ -238,6 +242,23 @@ bool parseCommand(const tstring & expr, ParserContext & context)
         context.variables().removeAll();
     } else if (cmd.substr(0, 4) == _T("#del")) {
         deleteVariable(context, cmd.substr(4, cmd.length()-4));
+    } else if (cmd == _T("#angle") || cmd == _T("#angles")) {
+        if (context.angleUnit() == ParserContext::RADIANS) {
+            tcout << _T("Radians") << endl;
+        } else if (context.angleUnit() == ParserContext::DEGREES) {
+            tcout << _T("Degrees") << endl;
+        } else {
+            tcout << _T("Grads") << endl;
+        }
+    } else if (cmd == _T("#radian") || cmd == _T("#radians")) {
+        context.setAngleUnit(ParserContext::RADIANS);
+        tcout << _T("Angle unit is set to radians") << endl;
+    } else if (cmd == _T("#degree") || cmd == _T("#degrees")) {
+        context.setAngleUnit(ParserContext::DEGREES);
+        tcout << _T("Angle unit is set to degrees") << endl;
+    } else if (cmd == _T("#grad") || cmd == _T("#grads")) {
+        context.setAngleUnit(ParserContext::GRADS);
+        tcout << _T("Angle unit is set to grads") << endl;
     } else {
         tcout << indent << _T("Unknown command '") << cmd << _T("'.") << endl;
     }
@@ -318,6 +339,9 @@ void runParser(Parser & parser)
             break;
         case InvalidArgumentException::HYPERBOLIC_COTANGENT_FUNCTION:
             tcout << _T(" (sinh(arg) = 0)");
+            break;
+        case InvalidArgumentException::COMPLEX_ANGLE:
+            tcout << _T(" (cannot convert complex angle from/to radians)");
             break;
         case InvalidArgumentException::UNKNOWN:
         default:

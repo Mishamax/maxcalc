@@ -117,6 +117,7 @@ MainWindow::~MainWindow()
 {
     delete mVariablesList;
     delete mFunctionsList;
+    delete mAngleUnitActionGroup;
 }
 
 /*!
@@ -129,7 +130,7 @@ void MainWindow::initMainMenu()
     // File menu
 
     QMenu * file = mMainMenu.addMenu(tr("&File"));
-    file->addAction(tr("&Exit"), this, SLOT(close()));
+    file->addAction(tr("&Exit"), this, SLOT(close()), tr("Ctrl+Q"));
 
     // Commands menu
 
@@ -141,7 +142,22 @@ void MainWindow::initMainMenu()
     // Settings menu
 
     QMenu * settings = mMainMenu.addMenu(tr("&Settings"));
-    QAction * action = new QAction(tr("&Variables"), settings);
+    QAction * action;
+    mAngleUnitActionGroup = new QActionGroup(this);
+    action = settings->addAction(tr("&Radians"), this, SLOT(onSettingsRadians()), tr("F2"));
+    action->setCheckable(true);
+    action->setChecked(true);
+    mAngleUnitActionGroup->addAction(action);
+    action = settings->addAction(tr("&Degrees"), this, SLOT(onSettingsDegrees()), tr("F3"));
+    action->setCheckable(true);
+    mAngleUnitActionGroup->addAction(action);
+    action = settings->addAction(tr("&Grads"), this, SLOT(onSettingsGrads()), tr("F4"));
+    action->setCheckable(true);
+    mAngleUnitActionGroup->addAction(action);
+
+    settings->addSeparator();
+
+    action = new QAction(tr("&Variables"), settings);
     action->setCheckable(true);
     action->setChecked(true);
     connect(action, SIGNAL(toggled(bool)), &mVariablesListWrapper,
@@ -153,7 +169,6 @@ void MainWindow::initMainMenu()
     connect(action, SIGNAL(toggled(bool)), &mFunctionsListWrapper,
             SLOT(setVisible(bool)));
     settings->addAction(action);
-//    action = new QAction(tr("&"))
 
     // Unit conversion menu
 
@@ -384,6 +399,9 @@ void MainWindow::onExpressionEntered()
         case InvalidArgumentException::HYPERBOLIC_COTANGENT_FUNCTION:
             msg += tr(" (sinh(arg) = 0)");
             break;
+        case InvalidArgumentException::COMPLEX_ANGLE:
+            msg += tr(" (cannot convert complex angle from/to radians)");
+            break;
         case InvalidArgumentException::UNKNOWN:
         default:
             // Add nothing
@@ -432,6 +450,9 @@ void MainWindow::onExpressionEntered()
     }
 }
 
+/*!
+    Prints error message into history box and focuses input box.
+*/
 void MainWindow::outputError(const QString & message)
 {
     mHistoryBox.setTextColor(Qt::red);
@@ -505,4 +526,28 @@ void MainWindow::onDeleteAllVariables()
 void MainWindow::onUnitConversion(const QString & conversion)
 {
     mInputBox.insert(conversion);
+}
+
+/*!
+    Settings -> Radians command.
+*/
+void MainWindow::onSettingsRadians()
+{
+    mParser.context().setAngleUnit(ParserContext::RADIANS);
+}
+
+/*!
+    Settings -> Degrees command.
+*/
+void MainWindow::onSettingsDegrees()
+{
+    mParser.context().setAngleUnit(ParserContext::DEGREES);
+}
+
+/*!
+    Settings -> Grads command.
+*/
+void MainWindow::onSettingsGrads()
+{
+    mParser.context().setAngleUnit(ParserContext::GRADS);
 }

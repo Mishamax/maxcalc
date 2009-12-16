@@ -158,7 +158,7 @@ void BigDecimalFormat::setDecimalSeparator(
 */
 char BigDecimalFormat::decimalSeparatorChar() const
 {
-    return (mDecimalSeparator == PointDecimalSeparator) ? '.' : ',';
+    return (mDecimalSeparator == POINT_DECIMAL_SEPARATOR) ? '.' : ',';
 }
 
 /*!
@@ -166,7 +166,7 @@ char BigDecimalFormat::decimalSeparatorChar() const
 */
 wchar_t BigDecimalFormat::decimalSeparatorWideChar() const
 {
-    return (mDecimalSeparator == PointDecimalSeparator) ? L'.' : L',';
+    return (mDecimalSeparator == POINT_DECIMAL_SEPARATOR) ? L'.' : L',';
 }
 
 /*!
@@ -174,7 +174,7 @@ wchar_t BigDecimalFormat::decimalSeparatorWideChar() const
 */
 tchar BigDecimalFormat::decimalSeparatorTChar() const
 {
-    return (mDecimalSeparator == PointDecimalSeparator) ? _T('.') : _T(',');
+    return (mDecimalSeparator == POINT_DECIMAL_SEPARATOR) ? _T('.') : _T(',');
 }
 
 } // namespace MaxCalcEngine
