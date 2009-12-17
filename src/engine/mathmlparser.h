@@ -41,6 +41,10 @@ private:
     tstring parseOneLevel();
     tstring parseRow();
     tstring parseFrac();
+    tstring parseSup();
+    tstring parseFenced();
+    tstring parseSqrt();
+    tstring parseRoot();
     tstring parseI();
     tstring parseN();
     tstring parseO();

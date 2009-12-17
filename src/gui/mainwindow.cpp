@@ -590,7 +590,7 @@ void MainWindow::onMathInput(BSTR mathml)
         return;
     }
     if (result == "") {
-        mInputBox.setText("Empty string");
+        mInputBox.setText("MathML recognition failed!");
     } else {
         mInputBox.setText(result);
         mOkButton.click();

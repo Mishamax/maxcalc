@@ -82,17 +82,16 @@ tstring MathMLParser::parseOneLevel()
     tstring result;
     while (xml.FindElem()) {
         tstring tag = xml.GetTagName();
-        if (tag == _T("m:mi")) {
-            result += parseI();
-        } else if (tag == _T("m:mn")) {
-            result += parseN();
-        } else if (tag == _T("m:mo")) {
-            result += parseO();
-        } else if (tag == _T("m:mrow")) {
-            result += parseRow();
-        } else if (tag == _T("m:mfrac")) {
-            result += parseFrac();
-        }
+
+        if (tag == _T("m:mi")) result += parseI();
+        else if (tag == _T("m:mn")) result += parseN();
+        else if (tag == _T("m:mo")) result += parseO();
+        else if (tag == _T("m:mrow")) result += parseRow();
+        else if (tag == _T("m:mfrac")) result += parseFrac();
+        else if (tag == _T("m:msup")) result += parseSup();
+        else if (tag == _T("m:mfenced")) result += parseFenced();
+        else if (tag == _T("m:msqrt")) result += parseSqrt();
+        else if (tag == _T("m:mroot")) result += parseRoot();
     }
     return result;
 }
@@ -109,7 +108,7 @@ tstring MathMLParser::parseRow()
 }
 
 /*!
-    Parses <mfrac> tag.
+    Parses <mfrac> tag (fraction).
     Assumes that <mfrac> contains two <mrow> tags.
 */
 tstring MathMLParser::parseFrac()
@@ -118,8 +117,7 @@ tstring MathMLParser::parseFrac()
     xml.IntoElem();
     xml.FindElem();
     if (xml.GetTagName() != _T("m:mrow")) throw MaxCalcException();
-    result += _T("((") + parseRow() + _T(")");
-    result += _T("/");
+    result += _T("((") + parseRow() + _T(") / ");
     xml.FindElem();
     if (xml.GetTagName() != _T("m:mrow")) throw MaxCalcException();
     result += _T("(") + parseRow() + _T("))");
@@ -128,15 +126,79 @@ tstring MathMLParser::parseFrac()
 }
 
 /*!
-    Parses <mi> tag.
+    Parses <msup> tag (power).
+    Assumes that <msup> contains two <mrow> tags.
 */
-tstring MathMLParser::parseI()
+tstring MathMLParser::parseSup()
 {
-    return xml.GetData();
+    tstring result;
+    xml.IntoElem();
+    xml.FindElem();
+    if (xml.GetTagName() != _T("m:mrow")) throw MaxCalcException();
+    result += _T("pow(") + parseRow() + _T("; ");
+    xml.FindElem();
+    if (xml.GetTagName() != _T("m:mrow")) throw MaxCalcException();
+    result += parseRow() + _T(")");
+    xml.OutOfElem();
+    return result;
 }
 
 /*!
-    Parses <mn> tag.
+    Parses <mfenced> tag (brackets).
+*/
+tstring MathMLParser::parseFenced()
+{
+    tstring result;
+    tstring open = xml.GetAttrib(_T("open"));
+    tstring close = xml.GetAttrib(_T("close"));
+    xml.IntoElem();
+    result += open + parseOneLevel() + close;
+    xml.OutOfElem();
+    return result;
+}
+
+/*!
+    Parses <msqrt> tag (square root).
+*/
+tstring MathMLParser::parseSqrt()
+{
+    tstring result;
+    xml.IntoElem();
+    result += _T("sqrt(") + parseOneLevel() + _T(")");
+    xml.OutOfElem();
+    return result;
+}
+
+/*!
+    Parses <mroot> tag (root).
+    Assumes that <msup> contains two <mrow> tags.
+*/
+tstring MathMLParser::parseRoot()
+{
+    tstring result;
+    xml.IntoElem();
+    xml.FindElem();
+    if (xml.GetTagName() != _T("m:mrow")) throw MaxCalcException();
+    result += _T("pow(") + parseRow() + _T("; 1/(");
+    xml.FindElem();
+    if (xml.GetTagName() != _T("m:mrow")) throw MaxCalcException();
+    result += parseRow() + _T("))");
+    xml.OutOfElem();
+    return result;
+}
+
+/*!
+    Parses <mi> tag (identifier).
+*/
+tstring MathMLParser::parseI()
+{
+    tstring data = xml.GetData();
+    if (data == _T("\x2148")) return _T("i");   // imaginary one
+    else return data;
+}
+
+/*!
+    Parses <mn> tag (number).
 */
 tstring MathMLParser::parseN()
 {
@@ -144,13 +206,16 @@ tstring MathMLParser::parseN()
 }
 
 /*!
-    Parses <mo> tag.
+    Parses <mo> tag (operator).
 */
 tstring MathMLParser::parseO()
 {
     tstring data = xml.GetData();
-    if (data == _T("\x22C5")) return _T("*");
-    else return data;
+    if (data == _T("\x22C5")) return _T("*");   // multiply
+    if (data == _T("\x2215")) return _T("/");   // divide
+    if (data == _T("\x2061")) return _T("");    // invisible multiplication
+    if (data == _T("\x2192")) return _T("->");  // arrow (unit conversion)
+    return data;
 }
 
 } // namespace MaxCalcEngine
