@@ -112,7 +112,9 @@ void MainWindow::initUi()
 
     mLayout.addWidget(&mHistoryBox);
     mLayout.addLayout(&mBottomLayout);
+#if defined(MAXCALC_MATHML)
     mLayout.addWidget(&mMathMLInput);
+#endif
     
     addDockWidget(Qt::RightDockWidgetArea, &mVariablesListWrapper);
     tabifyDockWidget(&mVariablesListWrapper, &mFunctionsListWrapper);
