@@ -41,6 +41,8 @@
 #include <QPalette>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QSystemTrayIcon>
+#include <QSettings>
 
 
 #endif // PCH_H

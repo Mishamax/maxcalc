@@ -3,11 +3,6 @@ Features
     Save history between sessions
     Scripts execution (it's inconvenient to type the same formulas 10 times)
     Help is needed
-    Degrees <-> radians conversion
     Decimal separators support (. ,)
-    Links to bugzilla / e-mail!!!
     Auto-updater?
-
-
-Major features
-    MathML input support; Windows 7 Math Input Panel support (see branch "mathml")
+    Tray icon, minimize to tray

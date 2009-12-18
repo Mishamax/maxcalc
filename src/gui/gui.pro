@@ -19,6 +19,8 @@ SOURCES += \
         aboutbox.cpp \
         myaction.cpp
 
+RESOURCES += resources.qrc
+
 PRECOMPILED_HEADER = pch.h
 
 INCLUDEPATH += ../engine

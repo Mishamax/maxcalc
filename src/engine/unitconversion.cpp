@@ -268,7 +268,6 @@ BigDecimal UnitConversion::convert(const BigDecimal number,
 */
 const UnitConversion::UnitDef * UnitConversion::units()
 {
-    assert(mUnits);
     return mUnits;
 }
 

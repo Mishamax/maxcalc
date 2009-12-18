@@ -28,6 +28,10 @@
 #include <QApplication>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QActionGroup>
+#include <QListWidget>
+#include <QSystemTrayIcon>
+#include <QSettings>
 
 /// Indentation used for output
 static const QString indent = "    ";
@@ -46,12 +50,25 @@ using namespace MaxCalcEngine;
 */
 MainWindow::MainWindow() : QMainWindow(),
         mVariablesListWrapper(tr("Variables"), this),
-        mFunctionsListWrapper(tr("Functions"), this)
+        mFunctionsListWrapper(tr("Functions"), this),
+        mTrayIcon(0), mTrayContextMenu(0),
+        mSettingFileName(QApplication::applicationDirPath() + "./maxcalc.ini")
 {
+    initSettings();
     initUi();
     initMainMenu();
     updateVariablesList();
     initFunctionsList();
+}
+
+/*!
+    Reads settings.
+*/
+void MainWindow::initSettings()
+{
+    QSettings settings(mSettingFileName, QSettings::IniFormat);
+    mCloseToTray = settings.value("CloseToTray", false).toBool();
+    onSettingsCloseToTray(mCloseToTray);
 }
 
 /*!
@@ -62,7 +79,7 @@ void MainWindow::initUi()
     mVariablesList = new QListWidget();
     mFunctionsList = new QListWidget();
 
-    setWindowTitle(tr("MaxCalc"));
+    setWindowTitle("MaxCalc");
     setMinimumSize(500, 350);
     resize(750, 550);
 
@@ -118,6 +135,14 @@ MainWindow::~MainWindow()
     delete mVariablesList;
     delete mFunctionsList;
     delete mAngleUnitActionGroup;
+    if (mTrayIcon) {
+        mTrayIcon->hide();
+        delete mTrayIcon;
+        delete mTrayContextMenu;
+    }
+
+    QSettings settings(mSettingFileName, QSettings::IniFormat);
+    settings.setValue("CloseToTray", mCloseToTray);
 }
 
 /*!
@@ -130,14 +155,15 @@ void MainWindow::initMainMenu()
     // File menu
 
     QMenu * file = mMainMenu.addMenu(tr("&File"));
-    file->addAction(tr("&Exit"), this, SLOT(close()), tr("Ctrl+Q"));
+    file->addAction(tr("&Quit"), QApplication::instance(), SLOT(quit()), tr("Ctrl+Q"));
 
     // Commands menu
 
     QMenu * commands = mMainMenu.addMenu(tr("&Commands"));
-    commands->addAction(tr("&Clear history"), &mHistoryBox, SLOT(clear()));
+    commands->addAction(tr("Clear &history"), &mHistoryBox, SLOT(clear()),
+                        tr("Ctrl+H"));
     commands->addAction(tr("&Delete all variables"), this,
-                        SLOT(onDeleteAllVariables()));
+                        SLOT(onDeleteAllVariables()), tr("Ctrl+D"));
 
     // Settings menu
 
@@ -157,18 +183,25 @@ void MainWindow::initMainMenu()
 
     settings->addSeparator();
 
-    action = new QAction(tr("&Variables"), settings);
+    action = settings->addAction(tr("&Variables"));
     action->setCheckable(true);
     action->setChecked(true);
     connect(action, SIGNAL(toggled(bool)), &mVariablesListWrapper,
             SLOT(setVisible(bool)));
-    settings->addAction(action);
-    action = new QAction(tr("&Functions"), settings);
+    action = settings->addAction(tr("&Functions"));
     action->setCheckable(true);
     action->setChecked(true);
     connect(action, SIGNAL(toggled(bool)), &mFunctionsListWrapper,
             SLOT(setVisible(bool)));
-    settings->addAction(action);
+
+    if (QSystemTrayIcon::isSystemTrayAvailable()) {
+        settings->addSeparator();
+        action = settings->addAction(tr("&Close to tray"));
+        action->setCheckable(true);
+        action->setChecked(mCloseToTray);
+        connect(action, SIGNAL(toggled(bool)), this,
+                SLOT(onSettingsCloseToTray(bool)));
+    }
 
     // Unit conversion menu
 
@@ -231,7 +264,7 @@ void MainWindow::initMainMenu()
     help->addAction(tr("MaxCalc &Web Site..."), this, SLOT(onHelpWebSite()));
     help->addAction(tr("&Report issue..."), this, SLOT(onHelpReportIssue()));
     help->addSeparator();
-    help->addAction(tr("About &MaxCalc"), this, SLOT(onHelpAbout()));
+    help->addAction(tr("About &MaxCalc"), this, SLOT(onHelpAbout()), tr("F1"));
     help->addAction(tr("About &Qt"), QApplication::instance(), SLOT(aboutQt()));
 }
 
@@ -308,6 +341,7 @@ void MainWindow::onExpressionEntered()
     expr.toWCharArray(str);
     str[expr.length()] = L'\0';
     mParser.setExpression(str);
+    delete[] str;
 
     mHistoryBox.moveCursor(QTextCursor::End);
     mHistoryBox.setTextColor(Qt::blue);
@@ -550,4 +584,69 @@ void MainWindow::onSettingsDegrees()
 void MainWindow::onSettingsGrads()
 {
     mParser.context().setAngleUnit(ParserContext::GRADS);
+}
+
+/*!
+    Settings -> Close to tray command.
+*/
+void MainWindow::onSettingsCloseToTray(bool addIcon)
+{
+    mCloseToTray = addIcon;
+
+    if (addIcon && !mTrayIcon) {
+        // Create tray icon
+        mTrayIcon = new QSystemTrayIcon(QIcon(":/appicon.ico"));
+        connect(mTrayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
+                this, SLOT(onTrayIconClicked(QSystemTrayIcon::ActivationReason)));
+        mTrayIcon->setToolTip("MaxCalc");
+        mTrayContextMenu = new QMenu();
+        mTrayContextMenu->addAction(tr("&Minimize"), this,
+                                    SLOT(onTrayMinimizeRestory()));
+        mTrayContextMenu->addAction(tr("&Quit"), QApplication::instance(),
+                                    SLOT(quit()));
+        mTrayIcon->setContextMenu(mTrayContextMenu);
+        mTrayIcon->show();
+    } else if (mTrayIcon) {
+        // Delete tray icon
+        mTrayIcon->hide();
+        delete mTrayIcon;
+        mTrayIcon = 0;
+        delete mTrayContextMenu;
+        mTrayContextMenu = 0;
+    }
+}
+
+/*!
+    Close window event.
+*/
+void MainWindow::closeEvent(QCloseEvent * event)
+{
+    if (mCloseToTray) {
+        hide();
+        event->ignore();
+    }
+}
+
+/*!
+    Tray icon clicked.
+*/
+void MainWindow::onTrayIconClicked(QSystemTrayIcon::ActivationReason reason)
+{
+    if (reason == QSystemTrayIcon::Trigger) {
+        setVisible(!isVisible());
+        if (isVisible()) {
+            activateWindow();
+            mTrayContextMenu->actions().at(0)->setText("&Minimize");
+        } else {
+            mTrayContextMenu->actions().at(0)->setText("&Restore");
+        }
+    }
+}
+
+/*!
+    Tray -> Minimize / Restory clicked.
+*/
+void MainWindow::onTrayMinimizeRestory()
+{
+    onTrayIconClicked(QSystemTrayIcon::Trigger);
 }

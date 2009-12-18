@@ -34,7 +34,10 @@
 #include <QPushButton>
 #include <QMenuBar>
 #include <QDockWidget>
-#include <QActionGroup>
+#include <QSystemTrayIcon>
+
+class QListWidget;
+class QActionGroup;
 
 class MainWindow : public QMainWindow
 {
@@ -49,6 +52,8 @@ signals:
     void expressionCalculated();
 
 private:
+
+    // Window elements
     QWidget mCentralWidget;
     QVBoxLayout mLayout;
     QHBoxLayout mBottomLayout;
@@ -62,13 +67,26 @@ private:
     QMenuBar mMainMenu;
     QActionGroup * mAngleUnitActionGroup;
 
+    // Tray icon
+    QSystemTrayIcon * mTrayIcon;
+    QMenu * mTrayContextMenu;
+
+    // Settings
+    QString mSettingFileName;
+    bool mCloseToTray;
+
+    // Parser
     MaxCalcEngine::Parser mParser;
 
+    void initSettings();
     void initUi();
     void initMainMenu();
     void updateVariablesList();
     void initFunctionsList();
     void outputError(const QString & message);
+
+protected:
+    void closeEvent(QCloseEvent * event);
 
 private slots:
     void onExpressionEntered();
@@ -82,6 +100,9 @@ private slots:
     void onSettingsRadians();
     void onSettingsDegrees();
     void onSettingsGrads();
+    void onSettingsCloseToTray(bool addIcon);
+    void onTrayIconClicked(QSystemTrayIcon::ActivationReason reason);
+    void onTrayMinimizeRestory();
 };
 
 #endif // MAINWINDOW_H
