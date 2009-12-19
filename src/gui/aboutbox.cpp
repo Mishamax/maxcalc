@@ -69,6 +69,7 @@ AboutBox::AboutBox(QWidget * parent) : QDialog(parent)
     mLabel.setPalette(p);
     mLabel.setLineWrapMode(QTextEdit::NoWrap);
     mLabel.document()->adjustSize();
+    mLabel.setMinimumSize(mLabel.document()->size().toSize());
     mLabel.setMaximumSize(mLabel.document()->size().toSize());
 
     mCloseButton.setText(tr("&Close"));

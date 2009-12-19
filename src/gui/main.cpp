@@ -17,10 +17,11 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
-//Local
+// Local
 #include "mainwindow.h"
+#include "qtsingleapplication/qtsingleapplication.h"
 // Qt
-#include <QApplication>
+#include <QSettings>
 
 /*!
     \defgroup MaxCalcGui MaxCalc GUI
@@ -28,9 +29,21 @@
 
 int main(int argc, char ** argv)
 {
-    QApplication app(argc, argv);
+    QtSingleApplication app(argc, argv);
+
+    QString settingsFile = QApplication::applicationDirPath() + "/maxcalc.ini";
+    QSettings settings(settingsFile, QSettings::IniFormat);
+    bool singleInstanceMode = settings.value("SingleInstanceMode", false).toBool();
+
+    if (singleInstanceMode && app.isRunning()) {
+        app.sendMessage("");
+        return 0;
+    }
 
     MainWindow mainWindow;
+    app.setActivationWindow(&mainWindow);
+    QObject::connect(&app, SIGNAL(messageReceived(const QString &)),
+                     &mainWindow, SLOT(activate(const QString &)));
     mainWindow.show();
 
     return app.exec();

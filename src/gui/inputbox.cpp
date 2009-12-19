@@ -32,7 +32,7 @@
 /*!
     Constructs new instance of InputBox.
 */
-InputBox::InputBox() : QLineEdit()
+InputBox::InputBox(QWidget * parent) : QLineEdit(parent)
 {
     mHistory.append("");
     mCurrentHistoryEntry = mHistory.begin();

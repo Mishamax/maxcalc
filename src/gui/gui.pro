@@ -4,6 +4,9 @@ unix:TARGET = maxcalcgui
 
 CONFIG += qt debug_and_release warn_on precompile_header
 win32:CONFIG += windows
+QT += network
+
+include(qtsingleapplication/qtsingleapplication.pri)
 
 HEADERS += \
         pch.h \

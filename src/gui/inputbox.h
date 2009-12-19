@@ -30,7 +30,7 @@ class InputBox : public QLineEdit
     Q_OBJECT
 
 public:
-    InputBox();
+    InputBox(QWidget * parent = 0);
 
 public slots:
     void addTextToHistory();

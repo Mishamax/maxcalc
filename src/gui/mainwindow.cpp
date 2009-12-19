@@ -18,12 +18,14 @@
  *****************************************************************************/
 
 // MaxCalcEngine
-#include "bigdecimal.h"
+#include "parser.h"
+#include "parsercontext.h"
 #include "unitconversion.h"
 // Local
 #include "mainwindow.h"
 #include "aboutbox.h"
 #include "myaction.h"
+#include "inputbox.h"
 // Qt
 #include <QApplication>
 #include <QDesktopServices>
@@ -32,6 +34,13 @@
 #include <QListWidget>
 #include <QSystemTrayIcon>
 #include <QSettings>
+#include <QDockWidget>
+#include <QTextEdit>
+#include <QListWidget>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QPushButton>
+#include <QMenuBar>
 
 /// Indentation used for output
 static const QString indent = "    ";
@@ -48,151 +57,208 @@ using namespace MaxCalcEngine;
 /*!
     Constructs a new main window.
 */
-MainWindow::MainWindow() : QMainWindow(),
-        mVariablesListWrapper(tr("Variables"), this),
-        mFunctionsListWrapper(tr("Functions"), this),
-        mTrayIcon(0), mTrayContextMenu(0),
-        mSettingFileName(QApplication::applicationDirPath() + "./maxcalc.ini")
+MainWindow::MainWindow() : QMainWindow(), mTrayIcon(0), mTrayContextMenu(0),
+        mSettingFileName(QApplication::applicationDirPath() + "/maxcalc.ini")
 {
-    initSettings();
-    initUi();
-    initMainMenu();
+    // Create Parser first, so that we can read its settings into it
+    mParser = new Parser();
+
+    readSettings();
+    createUi();
+    createMainMenu();
     updateVariablesList();
-    initFunctionsList();
+    createFunctionsList();
+}
+
+MainWindow::~MainWindow()
+{
+    saveSettings();
+
+    // Delete tray icon
+    if (mTrayIcon) {
+        mTrayIcon->hide();
+        delete mTrayContextMenu;
+        delete mTrayIcon;
+    }
+
+    // Delete main menu
+    delete mAngleUnitActionGroup;
+    delete mMainMenu;
+
+    // Delete UI
+    delete mVariablesList;
+    delete mFunctionsList;
+    delete mVariablesListWrapper;
+    delete mFunctionsListWrapper;
+    delete mOkButton;
+    delete mInputBox;
+    delete mHistoryBox;
+    delete mBottomLayout;
+    delete mLayout;
+    delete mCentralWidget;
 }
 
 /*!
     Reads settings.
 */
-void MainWindow::initSettings()
+void MainWindow::readSettings()
 {
     QSettings settings(mSettingFileName, QSettings::IniFormat);
-    mCloseToTray = settings.value("CloseToTray", false).toBool();
-    onSettingsCloseToTray(mCloseToTray);
+    mCloseToTray = QSystemTrayIcon::isSystemTrayAvailable() ?
+                   settings.value("CloseToTray", false).toBool() :
+                   false;
+    addRemoveTrayIcon(mCloseToTray);
+    mShowFunctions = settings.value("ShowFunctions", true).toBool();
+    mShowVariables = settings.value("ShowVariables", true).toBool();
+    mSingleInstanceMode = settings.value("SingleInstanceMode", false).toBool();
+    mParser->context().setAngleUnit(
+            (ParserContext::AngleUnit)settings.value("AngleUnit", 0).toInt());
+}
+
+/*!
+    Saves settings.
+*/
+void MainWindow::saveSettings()
+{
+    QSettings settings(mSettingFileName, QSettings::IniFormat);
+    settings.setValue("CloseToTray", mCloseToTray);
+    settings.setValue("ShowFunctions", mShowFunctions);
+    settings.setValue("ShowVariables", mShowVariables);
+    settings.setValue("SingleInstanceMode", mSingleInstanceMode);
+    settings.setValue("AngleUnit", mParser->context().angleUnit());
 }
 
 /*!
     Inits UI elements.
 */
-void MainWindow::initUi()
+void MainWindow::createUi()
 {
-    mVariablesList = new QListWidget();
-    mFunctionsList = new QListWidget();
-
+    // Set window parameters
     setWindowTitle("MaxCalc");
     setMinimumSize(500, 350);
     resize(750, 550);
 
-    setCentralWidget(&mCentralWidget);
+    // Create central widget
+    mCentralWidget = new QWidget(this);
+    setCentralWidget(mCentralWidget);
 
-    QFont font = mHistoryBox.currentFont();
+    // Create history box
+    mHistoryBox = new QTextEdit(this);
+    QFont font = mHistoryBox->currentFont();
     font.setPixelSize(12);
-    mHistoryBox.setFont(font);
-    mHistoryBox.setReadOnly(true);
+    mHistoryBox->setFont(font);
+    mHistoryBox->setReadOnly(true);
 
-    font = mInputBox.font();
+    // Create input box
+    mInputBox = new InputBox(this);
+    font = mInputBox->font();
     font.setPixelSize(16);
-    mInputBox.setFont(font);
+    mInputBox->setFont(font);
 
-    font = mOkButton.font();
+    // Create OK button
+    mOkButton = new QPushButton(this);
+    font = mOkButton->font();
     font.setPixelSize(14);
-    mOkButton.setFont(font);
-    mOkButton.setText(tr("OK"));
-    mOkButton.setMinimumWidth(30);
-    mOkButton.setMaximumWidth(30);
+    mOkButton->setFont(font);
+    mOkButton->setText(tr("OK"));
+    mOkButton->setMinimumWidth(30);
+    mOkButton->setMaximumWidth(30);
 
-    mBottomLayout.addWidget(&mInputBox);
-    mBottomLayout.addWidget(&mOkButton);
+    // Create bottom layout (with input box and OK button)
+    mBottomLayout = new QHBoxLayout();
+    mBottomLayout->addWidget(mInputBox);
+    mBottomLayout->addWidget(mOkButton);
 
-    mVariablesListWrapper.setWidget(mVariablesList);
-    mFunctionsListWrapper.setWidget(mFunctionsList);
+    // Create main layout
+    mLayout = new QVBoxLayout();
+    mLayout->addWidget(mHistoryBox);
+    mLayout->addLayout(mBottomLayout);
+    mCentralWidget->setLayout(mLayout);
 
-    mLayout.addWidget(&mHistoryBox);
-    mLayout.addLayout(&mBottomLayout);
-    
-    addDockWidget(Qt::RightDockWidgetArea, &mVariablesListWrapper);
-    tabifyDockWidget(&mVariablesListWrapper, &mFunctionsListWrapper);
-    mVariablesListWrapper.raise();
+    // Create functions and variables lists
+    mVariablesList = new QListWidget();
+    mFunctionsList = new QListWidget();
+    mVariablesListWrapper = new QDockWidget(tr("Variables"), this);
+    mFunctionsListWrapper = new QDockWidget(tr("Functions"), this);
+    mVariablesListWrapper->setWidget(mVariablesList);
+    mFunctionsListWrapper->setWidget(mFunctionsList);
+    addDockWidget(Qt::RightDockWidgetArea, mVariablesListWrapper);
+    tabifyDockWidget(mVariablesListWrapper, mFunctionsListWrapper);
+    mVariablesListWrapper->raise();
+    mVariablesListWrapper->setVisible(mShowVariables);
+    mFunctionsListWrapper->setVisible(mShowFunctions);
 
-    mCentralWidget.setLayout(&mLayout);
-
-    QObject::connect(this, SIGNAL(expressionCalculated()), &mInputBox,
+    // Connect
+    QObject::connect(this, SIGNAL(expressionCalculated()), mInputBox,
         SLOT(addTextToHistory()));
-    QObject::connect(&mOkButton, SIGNAL(clicked()), this,
+    QObject::connect(mOkButton, SIGNAL(clicked()), this,
         SLOT(onExpressionEntered()));
-    QObject::connect(&mInputBox, SIGNAL(returnPressed()), this,
+    QObject::connect(mInputBox, SIGNAL(returnPressed()), this,
         SLOT(onExpressionEntered()));
     QObject::connect(mVariablesList, SIGNAL(itemActivated(QListWidgetItem *)),
         this, SLOT(onVariableClicked(QListWidgetItem *)));
     QObject::connect(mFunctionsList, SIGNAL(itemActivated(QListWidgetItem *)),
         this, SLOT(onFunctionClicked(QListWidgetItem *)));
 
-    mInputBox.setFocus();
-}
-
-MainWindow::~MainWindow()
-{
-    delete mVariablesList;
-    delete mFunctionsList;
-    delete mAngleUnitActionGroup;
-    if (mTrayIcon) {
-        mTrayIcon->hide();
-        delete mTrayIcon;
-        delete mTrayContextMenu;
-    }
-
-    QSettings settings(mSettingFileName, QSettings::IniFormat);
-    settings.setValue("CloseToTray", mCloseToTray);
+    // Set focus
+    mInputBox->setFocus();
 }
 
 /*!
     Creates main menu.
 */
-void MainWindow::initMainMenu()
+void MainWindow::createMainMenu()
 {
-    setMenuBar(&mMainMenu);
+    mMainMenu = new QMenuBar(this);
+    setMenuBar(mMainMenu);
 
     // File menu
 
-    QMenu * file = mMainMenu.addMenu(tr("&File"));
+    QMenu * file = mMainMenu->addMenu(tr("&File"));
     file->addAction(tr("&Quit"), QApplication::instance(), SLOT(quit()), tr("Ctrl+Q"));
 
     // Commands menu
 
-    QMenu * commands = mMainMenu.addMenu(tr("&Commands"));
-    commands->addAction(tr("Clear &history"), &mHistoryBox, SLOT(clear()),
+    QMenu * commands = mMainMenu->addMenu(tr("&Commands"));
+    commands->addAction(tr("Clear &history"), mHistoryBox, SLOT(clear()),
                         tr("Ctrl+H"));
     commands->addAction(tr("&Delete all variables"), this,
                         SLOT(onDeleteAllVariables()), tr("Ctrl+D"));
 
     // Settings menu
 
-    QMenu * settings = mMainMenu.addMenu(tr("&Settings"));
+    QMenu * settings = mMainMenu->addMenu(tr("&Settings"));
     QAction * action;
     mAngleUnitActionGroup = new QActionGroup(this);
     action = settings->addAction(tr("&Radians"), this, SLOT(onSettingsRadians()), tr("F2"));
     action->setCheckable(true);
-    action->setChecked(true);
+    action->setChecked(mParser->context().angleUnit() == ParserContext::RADIANS);
     mAngleUnitActionGroup->addAction(action);
     action = settings->addAction(tr("&Degrees"), this, SLOT(onSettingsDegrees()), tr("F3"));
     action->setCheckable(true);
+    action->setChecked(mParser->context().angleUnit() == ParserContext::DEGREES);
     mAngleUnitActionGroup->addAction(action);
     action = settings->addAction(tr("&Grads"), this, SLOT(onSettingsGrads()), tr("F4"));
     action->setCheckable(true);
+    action->setChecked(mParser->context().angleUnit() == ParserContext::GRADS);
     mAngleUnitActionGroup->addAction(action);
 
     settings->addSeparator();
 
-    action = settings->addAction(tr("&Variables"));
+    action = settings->addAction(tr("Show &variables"));
     action->setCheckable(true);
-    action->setChecked(true);
-    connect(action, SIGNAL(toggled(bool)), &mVariablesListWrapper,
+    action->setChecked(mShowVariables);
+    connect(action, SIGNAL(toggled(bool)), mVariablesListWrapper,
             SLOT(setVisible(bool)));
-    action = settings->addAction(tr("&Functions"));
+    connect(action, SIGNAL(toggled(bool)), this,
+            SLOT(onDockWidgetToggled(bool)));
+    action = settings->addAction(tr("Show &functions"));
     action->setCheckable(true);
-    action->setChecked(true);
-    connect(action, SIGNAL(toggled(bool)), &mFunctionsListWrapper,
+    action->setChecked(mShowFunctions);
+    connect(action, SIGNAL(toggled(bool)), mFunctionsListWrapper,
             SLOT(setVisible(bool)));
+    connect(action, SIGNAL(toggled(bool)), this,
+            SLOT(onDockWidgetToggled(bool)));
 
     if (QSystemTrayIcon::isSystemTrayAvailable()) {
         settings->addSeparator();
@@ -200,12 +266,17 @@ void MainWindow::initMainMenu()
         action->setCheckable(true);
         action->setChecked(mCloseToTray);
         connect(action, SIGNAL(toggled(bool)), this,
-                SLOT(onSettingsCloseToTray(bool)));
+                SLOT(addRemoveTrayIcon(bool)));
     }
+    action = settings->addAction(tr("&Single instance mode"));
+    action->setCheckable(true);
+    action->setChecked(mSingleInstanceMode);
+    connect(action, SIGNAL(toggled(bool)), this,
+            SLOT(onSettingsSingleInstanceMode(bool)));
 
     // Unit conversion menu
 
-    QMenu * unitConversion = mMainMenu.addMenu(tr("&Unit conversion"));
+    QMenu * unitConversion = mMainMenu->addMenu(tr("&Unit conversion"));
     QMenu * currentUnits = 0;
     QMenu * firstLevelMenu = 0;
     const UnitConversion::UnitDef * firstLevelCur = 0;
@@ -260,7 +331,7 @@ void MainWindow::initMainMenu()
 
     // Help menu
 
-    QMenu * help = mMainMenu.addMenu(tr("&Help"));
+    QMenu * help = mMainMenu->addMenu(tr("&Help"));
     help->addAction(tr("MaxCalc &Web Site..."), this, SLOT(onHelpWebSite()));
     help->addAction(tr("&Report issue..."), this, SLOT(onHelpReportIssue()));
     help->addSeparator();
@@ -269,7 +340,8 @@ void MainWindow::initMainMenu()
 }
 
 /*!
-    Adds constants to varibables list.
+    Updates list of varibables from \a mParser.
+     Also adds 'e' and 'pi' constants and 'res' variable at the beginning.
 */
 void MainWindow::updateVariablesList()
 {
@@ -280,14 +352,14 @@ void MainWindow::updateVariablesList()
     mVariablesList->addItem("pi = " +
         QString::fromWCharArray(MaxCalcEngine::BigDecimal::PI.toWideString().c_str()));
 
-    if (mParser.context().resultExists()) {
+    if (mParser->context().resultExists()) {
         mVariablesList->addItem("res = " +
-            QString::fromWCharArray(mParser.context().result().toWideString().c_str()));
+            QString::fromWCharArray(mParser->context().result().toWideString().c_str()));
     }
 
     MaxCalcEngine::Variables::const_iterator iter;
-    for (iter = mParser.context().variables().begin();
-        iter != mParser.context().variables().end(); ++iter) {
+    for (iter = mParser->context().variables().begin();
+        iter != mParser->context().variables().end(); ++iter) {
         mVariablesList->addItem(QString::fromWCharArray(iter->name.c_str()) +
             " = " + QString::fromWCharArray(iter->value.toWideString().c_str()));
     }
@@ -296,7 +368,7 @@ void MainWindow::updateVariablesList()
 /*!
     Adds supported functions to functions list.
 */
-void MainWindow::initFunctionsList()
+void MainWindow::createFunctionsList()
 {
     mFunctionsList->addItem("abs");
     mFunctionsList->addItem("sqr");
@@ -330,71 +402,73 @@ void MainWindow::initFunctionsList()
 */
 void MainWindow::onExpressionEntered()
 {
-    QString expr = mInputBox.text();
+    // Get expression from input box
+    QString expr = mInputBox->text();
     expr = expr.trimmed();
-
     if (expr.isEmpty()) {
         return;
     }
-
     wchar_t * str = new wchar_t[expr.length() + 1];
     expr.toWCharArray(str);
     str[expr.length()] = L'\0';
-    mParser.setExpression(str);
+    mParser->setExpression(str);
     delete[] str;
 
-    mHistoryBox.moveCursor(QTextCursor::End);
-    mHistoryBox.setTextColor(Qt::blue);
-    mHistoryBox.append(mInputBox.text());
+    // Add expression to history
+    mHistoryBox->moveCursor(QTextCursor::End);
+    mHistoryBox->setTextColor(Qt::blue);
+    mHistoryBox->append(mInputBox->text());
 
     try {
-        mParser.parse();
+        mParser->parse();
 
         // No error during parsing, output result (otherwise an exception will be caught)
 
+        // Add expression to input box history
         emit expressionCalculated();
 
-        mHistoryBox.setTextColor(Qt::darkGreen);
-        mHistoryBox.append(indent +
-            QString::fromWCharArray(mParser.context().result().toWideString().c_str()));
-        mInputBox.clear();
-        mInputBox.setFocus();
+        // Add result to history, clear input box, update variables
+        mHistoryBox->setTextColor(Qt::darkGreen);
+        mHistoryBox->append(indent +
+            QString::fromWCharArray(mParser->context().result().toWideString().c_str()));
+        mInputBox->clear();
+        mInputBox->setFocus();
         updateVariablesList();
     }
     // Parser exceptions
     catch (ResultDoesNotExistException) {
-        outputError(tr("No result of previous calculations"));
+        printError(tr("No result of previous calculations"));
     } catch (UnknownTokenException & ex) {
-        outputError(tr("Unknown token '%1' in expression")
+        printError(tr("Unknown token '%1' in expression")
                     .arg(QString::fromWCharArray(ex.what().c_str())));
     } catch (IncorrectNumberException & ex) {
         if (ex.what() == _T("")) {
-            outputError(tr("Incorrect number"));
+            printError(tr("Incorrect number"));
         } else {
-            outputError(tr("Incorrect number '%1'")
+            printError(tr("Incorrect number '%1'")
                         .arg(QString::fromWCharArray(ex.what().c_str())));
         }
     } catch (IncorrectExpressionException) {
-        outputError(tr("Incorrect expression"));
+        printError(tr("Incorrect expression"));
     } catch (NoClosingBracketException) {
-        outputError(tr("No closing bracket"));
+        printError(tr("No closing bracket"));
     } catch (TooManyClosingBracketsException) {
-        outputError(tr("Too many closing brackets"));
+        printError(tr("Too many closing brackets"));
     } catch (UnknownFunctionException & ex) {
-        outputError(tr("Unknown function '%1'")
+        printError(tr("Unknown function '%1'")
                     .arg(QString::fromWCharArray(ex.what().c_str())));
     } catch (UnknownVariableException & ex) {
-        outputError(tr("Unknown variable '%1'")
+        printError(tr("Unknown variable '%1'")
                     .arg(QString::fromWCharArray(ex.what().c_str())));
     } catch (IncorrectVariableNameException) {
-        outputError(tr("Incorrect name of variable"));
+        printError(tr("Incorrect name of variable"));
     } catch (IncorrectUnitConversionSyntaxException) {
-        outputError(tr("Incorrect unit conversion syntax"));
+        printError(tr("Incorrect unit conversion syntax"));
     } catch (UnknownUnitException & ex) {
-        outputError(tr("Unknown unit '%1'")
+        printError(tr("Unknown unit '%1'")
                     .arg(QString::fromWCharArray(ex.what().c_str())));
     } catch (UnknownUnitConversionException & ex) {
-        outputError(tr("There is no unit conversion '%1'")
+        printError(tr("There is no unit conversion '%1'")
                     .arg(QString::fromWCharArray(ex.what().c_str())));
     }
     // Invalid argument exceptions
@@ -441,9 +515,9 @@ void MainWindow::onExpressionEntered()
             // Add nothing
             break;
         }
-        outputError(msg);
+        printError(msg);
     } catch (InvalidUnitConversionArgumentException & ex) {
-        outputError(tr("Complex argument in unit conversion '%1'")
+        printError(tr("Complex argument in unit conversion '%1'")
                     .arg(QString::fromWCharArray(ex.what().c_str())));
     }
     // Arithmetic exception
@@ -472,27 +546,27 @@ void MainWindow::onExpressionEntered()
             reason = tr("Unknown arithmetic error");
             break;
         }
-        outputError(reason);
+        printError(reason);
     }
     // Generic parser exception
     catch (ParserException) {
-        outputError(tr("Unknown error"));
+        printError(tr("Unknown error"));
     }
     // Generic MaxCalc exception
     catch (MaxCalcException) {
-        outputError(tr("Unknown error"));
+        printError(tr("Unknown error"));
     }
 }
 
 /*!
     Prints error message into history box and focuses input box.
 */
-void MainWindow::outputError(const QString & message)
+void MainWindow::printError(const QString & message)
 {
-    mHistoryBox.setTextColor(Qt::red);
-    mHistoryBox.append(indent + message);
-    mInputBox.selectAll();
-    mInputBox.setFocus();
+    mHistoryBox->setTextColor(Qt::red);
+    mHistoryBox->append(indent + message);
+    mInputBox->selectAll();
+    mInputBox->setFocus();
 }
 
 /*!
@@ -504,8 +578,8 @@ void MainWindow::onVariableClicked(QListWidgetItem * item)
     QString text = item->text();
     int equalIndex = text.indexOf(" = ");
     text.remove(equalIndex, text.length() - equalIndex);
-    mInputBox.insert(text);
-    mInputBox.setFocus();
+    mInputBox->insert(text);
+    mInputBox->setFocus();
 }
 
 /*!
@@ -514,10 +588,10 @@ void MainWindow::onVariableClicked(QListWidgetItem * item)
 void MainWindow::onFunctionClicked(QListWidgetItem * item)
 {
     Q_ASSERT(item);
-    mInputBox.insert(item->text());
-    mInputBox.insert("()");
-    mInputBox.setCursorPosition(mInputBox.cursorPosition() - 1);
-    mInputBox.setFocus();
+    mInputBox->insert(item->text());
+    mInputBox->insert("()");
+    mInputBox->setCursorPosition(mInputBox->cursorPosition() - 1);
+    mInputBox->setFocus();
 }
 
 /*!
@@ -550,7 +624,7 @@ void MainWindow::onHelpReportIssue()
 */
 void MainWindow::onDeleteAllVariables()
 {
-    mParser.context().variables().removeAll();
+    mParser->context().variables().removeAll();
     updateVariablesList();
 }
 
@@ -559,7 +633,7 @@ void MainWindow::onDeleteAllVariables()
 */
 void MainWindow::onUnitConversion(const QString & conversion)
 {
-    mInputBox.insert(conversion);
+    mInputBox->insert(conversion);
 }
 
 /*!
@@ -567,7 +641,7 @@ void MainWindow::onUnitConversion(const QString & conversion)
 */
 void MainWindow::onSettingsRadians()
 {
-    mParser.context().setAngleUnit(ParserContext::RADIANS);
+    mParser->context().setAngleUnit(ParserContext::RADIANS);
 }
 
 /*!
@@ -575,7 +649,7 @@ void MainWindow::onSettingsRadians()
 */
 void MainWindow::onSettingsDegrees()
 {
-    mParser.context().setAngleUnit(ParserContext::DEGREES);
+    mParser->context().setAngleUnit(ParserContext::DEGREES);
 }
 
 /*!
@@ -583,13 +657,13 @@ void MainWindow::onSettingsDegrees()
 */
 void MainWindow::onSettingsGrads()
 {
-    mParser.context().setAngleUnit(ParserContext::GRADS);
+    mParser->context().setAngleUnit(ParserContext::GRADS);
 }
 
 /*!
-    Settings -> Close to tray command.
+    Adds or removes tray icon depending on \a addIcon parameter.
 */
-void MainWindow::onSettingsCloseToTray(bool addIcon)
+void MainWindow::addRemoveTrayIcon(bool addIcon)
 {
     mCloseToTray = addIcon;
 
@@ -601,7 +675,7 @@ void MainWindow::onSettingsCloseToTray(bool addIcon)
         mTrayIcon->setToolTip("MaxCalc");
         mTrayContextMenu = new QMenu();
         mTrayContextMenu->addAction(tr("&Minimize"), this,
-                                    SLOT(onTrayMinimizeRestory()));
+                                    SLOT(onTrayMinimizeRestore()));
         mTrayContextMenu->addAction(tr("&Quit"), QApplication::instance(),
                                     SLOT(quit()));
         mTrayIcon->setContextMenu(mTrayContextMenu);
@@ -622,7 +696,7 @@ void MainWindow::onSettingsCloseToTray(bool addIcon)
 void MainWindow::closeEvent(QCloseEvent * event)
 {
     if (mCloseToTray) {
-        hide();
+        onTrayIconClicked(QSystemTrayIcon::Trigger);
         event->ignore();
     }
 }
@@ -636,17 +710,48 @@ void MainWindow::onTrayIconClicked(QSystemTrayIcon::ActivationReason reason)
         setVisible(!isVisible());
         if (isVisible()) {
             activateWindow();
-            mTrayContextMenu->actions().at(0)->setText("&Minimize");
+            mTrayContextMenu->actions().at(0)->setText(tr("&Minimize"));
         } else {
-            mTrayContextMenu->actions().at(0)->setText("&Restore");
+            mTrayContextMenu->actions().at(0)->setText(tr("&Restore"));
         }
     }
 }
 
 /*!
-    Tray -> Minimize / Restory clicked.
+    Tray -> Minimize / Restore clicked.
 */
-void MainWindow::onTrayMinimizeRestory()
+void MainWindow::onTrayMinimizeRestore()
 {
     onTrayIconClicked(QSystemTrayIcon::Trigger);
+}
+
+/*!
+    Called when a dock widget (functions or variables list) is toggled.
+    Updates mShowFunctions and mShowVariables.
+*/
+void MainWindow::onDockWidgetToggled(bool /*visible*/)
+{
+    mShowFunctions = mFunctionsListWrapper->isVisible();
+    mShowVariables = mVariablesListWrapper->isVisible();
+}
+
+/*!
+    Settings -> Single instance mode command.
+*/
+void MainWindow::onSettingsSingleInstanceMode(bool active)
+{
+    mSingleInstanceMode = active;
+    saveSettings();
+}
+
+/*!
+    Called when single instance window needs to be activated.
+*/
+void MainWindow::activate(const QString & /*str*/)
+{
+    if (!isVisible()) {
+        onTrayIconClicked(QSystemTrayIcon::Trigger);
+    }
+    activateWindow();
+    raise();
 }

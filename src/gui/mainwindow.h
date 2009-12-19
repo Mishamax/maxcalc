@@ -20,24 +20,26 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-// Local
-#include "inputbox.h"
-// MaxCalcEngine
-#include "parser.h"
-#include "parsercontext.h"
 // Qt
 #include <QMainWindow>
-#include <QTextEdit>
-#include <QListWidget>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QPushButton>
-#include <QMenuBar>
-#include <QDockWidget>
 #include <QSystemTrayIcon>
 
+// Forward declarations
+class QWidget;
+class QVBoxLayout;
+class QHBoxLayout;
+class QTextEdit;
+class QPushButton;
 class QListWidget;
+class QListWidgetItem;
+class QDockWidget;
+class QMenuBar;
 class QActionGroup;
+class InputBox;
+namespace MaxCalcEngine {
+    class Parser;
+}
+
 
 class MainWindow : public QMainWindow
 {
@@ -54,17 +56,17 @@ signals:
 private:
 
     // Window elements
-    QWidget mCentralWidget;
-    QVBoxLayout mLayout;
-    QHBoxLayout mBottomLayout;
-    InputBox mInputBox;
-    QTextEdit mHistoryBox;
-    QPushButton mOkButton;
+    QWidget * mCentralWidget;
+    QVBoxLayout * mLayout;
+    QHBoxLayout * mBottomLayout;
+    InputBox * mInputBox;
+    QTextEdit * mHistoryBox;
+    QPushButton * mOkButton;
     QListWidget * mVariablesList;
-    QDockWidget mVariablesListWrapper;
+    QDockWidget * mVariablesListWrapper;
     QListWidget * mFunctionsList;
-    QDockWidget mFunctionsListWrapper;
-    QMenuBar mMainMenu;
+    QDockWidget * mFunctionsListWrapper;
+    QMenuBar * mMainMenu;
     QActionGroup * mAngleUnitActionGroup;
 
     // Tray icon
@@ -74,16 +76,20 @@ private:
     // Settings
     QString mSettingFileName;
     bool mCloseToTray;
+    bool mShowFunctions;
+    bool mShowVariables;
+    bool mSingleInstanceMode;
 
     // Parser
-    MaxCalcEngine::Parser mParser;
+    MaxCalcEngine::Parser * mParser;
 
-    void initSettings();
-    void initUi();
-    void initMainMenu();
+    void readSettings();
+    void saveSettings();
+    void createUi();
+    void createMainMenu();
     void updateVariablesList();
-    void initFunctionsList();
-    void outputError(const QString & message);
+    void createFunctionsList();
+    void printError(const QString & message);
 
 protected:
     void closeEvent(QCloseEvent * event);
@@ -100,9 +106,14 @@ private slots:
     void onSettingsRadians();
     void onSettingsDegrees();
     void onSettingsGrads();
-    void onSettingsCloseToTray(bool addIcon);
+    void onSettingsSingleInstanceMode(bool active);
+    void addRemoveTrayIcon(bool addIcon);
     void onTrayIconClicked(QSystemTrayIcon::ActivationReason reason);
-    void onTrayMinimizeRestory();
+    void onTrayMinimizeRestore();
+    void onDockWidgetToggled(bool visible);
+
+public slots:
+    void activate(const QString & str);
 };
 
 #endif // MAINWINDOW_H
