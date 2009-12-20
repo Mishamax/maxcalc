@@ -24,6 +24,11 @@ SOURCES += \
 
 RESOURCES += resources.qrc
 
+# MathML support
+HEADERS += miceventhandler.h
+SOURCES += miceventhandler.cpp
+DEFINES += MAXCALC_MATHML
+
 PRECOMPILED_HEADER = pch.h
 
 INCLUDEPATH += ../engine

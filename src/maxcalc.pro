@@ -1,6 +1,7 @@
 CONFIG += ordered
 TEMPLATE = subdirs
 
+
 wince* {
     SUBDIRS += engine gui
 } else {
