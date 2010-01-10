@@ -29,6 +29,7 @@
 #include <clocale>
 #include <cstdlib>
 #include <cstring>
+#include <vector>
 
 using namespace std;
 using namespace MaxCalcEngine;
