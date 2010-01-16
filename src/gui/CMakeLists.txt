@@ -2,6 +2,7 @@
 # Add Qt
 set(QT_MIN_VERSION "4.2.0")
 find_package(Qt4 REQUIRED)
+set(QT_USE_QTNETWORK true)
 include(${QT_USE_FILE})
 
 # It's needed to solve linking problems under Windows when WIN32 option is specified in ADD_EXECUTABLE()
@@ -20,16 +21,26 @@ set(SOURCES
     inputbox.cpp
     main.cpp
     mainwindow.cpp
-    myaction.cpp)
+    myaction.cpp
+    qtsingleapplication/qtsingleapplication.cpp
+    qtsingleapplication/qtlocalpeer.cpp
+    qtsingleapplication/qtlockedfile.cpp)
 
 set(MOC_HEADERS
     aboutbox.h
     inputbox.h
     mainwindow.h
-    myaction.h)
+    myaction.h
+    qtsingleapplication/qtsingleapplication.h
+    qtsingleapplication/qtlocalpeer.h
+    qtsingleapplication/qtlockedfile.h)
+
 
 if (WIN32)
+    set (SOURCES ${SOURCES} qtsingleapplication/qtlockedfile_win.cpp)
     set (RESOURCES resources.rc)
+else (WIN32)
+    set (SOURCES ${SOURCES} qtsingleapplication/qtlockedfile_unix.cpp)
 endif (WIN32)
 
 if (MSVC)

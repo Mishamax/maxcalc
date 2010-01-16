@@ -29,6 +29,7 @@
 #include <clocale>
 #include <cstdlib>
 #include <cstring>
+#include <vector>
 
 using namespace std;
 using namespace MaxCalcEngine;
@@ -164,46 +165,42 @@ void printVersion(bool displayCopyright)
 */
 void printHelp()
 {
-    tcout <<  _T("Commands:") << endl;
+    tcout <<  _T("General commands:") << endl;
     tcout << indent << _T("#funcs - Display list of built-in functions.") << endl;
     tcout << indent << _T("#convs - Display list of unit conversions.") << endl;
     tcout << indent << _T("#consts - Display list of built-in constants.") << endl;
     tcout << indent << _T("#vars - Display list of variables.") << endl;
-    tcout << indent << _T("#del <variable> - Delete <variable>.") << endl;
-    tcout << indent << _T("#delall - Delete all variables.") << endl;
-    tcout << indent << _T("#angles - Display current angle unit.") << endl;
-    tcout << indent << _T("#radians - Set angle unit to radians.") << endl;
-    tcout << indent << _T("#degrees - Set angle unit to degrees.") << endl;
-    tcout << indent << _T("#grads - Set angle unit to grads.") << endl;
+    tcout << indent << _T("#del [<var>] - Delete <var> (all variables if no argument specified).") << endl;
+    tcout << indent << _T("#angles [radians / degrees / grads] - Display / set current angle unit.") << endl;
     tcout << indent << _T("#ver - Display version information.") << endl;
-    tcout << indent << _T("help - Get this help.") << endl;
+    tcout << indent << _T("help - Display this help.") << endl;
     tcout << indent << _T("exit - Close the program.") << endl;
     tcout << endl;
 }
 
 /*!
-    Delete variable \a name from \a context.
+    Splits \a cmd into list of arguments (space-separated).
 */
-void deleteVariable(ParserContext & context, tstring name)
+vector<tstring> splitCommand(const tstring & cmd)
 {
-    trim(name);
-    
-    if (name == _T("")) {
-        tcout << indent << _T("Syntax: #del <variable>") << endl;
-        return;
+    tstring space = _T(" \t\f\v\n\r");
+    vector<tstring> args;
+
+    size_t space_pos = 0, start_pos = 0;
+
+    while (true) {
+        space_pos = cmd.find_first_of(space, start_pos);
+        if (space_pos == tstring::npos) {
+            args.push_back(cmd.substr(start_pos, cmd.length() - start_pos));
+            break;
+        } else {
+            args.push_back(cmd.substr(start_pos, space_pos - start_pos));
+        }
+
+        start_pos = cmd.find_first_not_of(space, space_pos);
     }
 
-    if (context.resultExists() && (name == _T("res") || name == _T("result"))) {
-        tcout << indent << _T("Built-in variable '") << name <<
-                _T("' cannot be deleted.") << endl;
-        return;
-    }
-
-    try {
-        context.variables().remove(name);
-    } catch (...) {
-        tcout << indent << _T("Unknown variable '") << name << _T("'.") << endl;
-    }
+    return args;
 }
 
 /*!
@@ -212,7 +209,7 @@ void deleteVariable(ParserContext & context, tstring name)
 
     Returns true if a command was found and parsed, false otherwise.
 */
-bool parseCommand(const tstring & expr, ParserContext & context)
+bool executeCommand(const tstring & expr, ParserContext & context)
 {
     tstring cmd = expr;
     strToLower(cmd);
@@ -222,43 +219,75 @@ bool parseCommand(const tstring & expr, ParserContext & context)
         exit(0);
     }
 
-    if (cmd[0] != _T('#') && cmd != _T("help")) {
+    if (cmd == _T("help") || cmd == _T("#help")) {
+        printHelp();
+        return true;
+    }
+
+    if (cmd[0] != _T('#')) {
         return false;
     }
 
-    if (cmd == _T("#funcs")) {
+    vector<tstring> args = splitCommand(cmd);
+    tstring & name = args[0];
+
+    if (name == _T("#funcs")) {
         printFunctions();
-    } else if (cmd == _T("#convs")) {
+    } else if (name == _T("#convs")) {
         printUnitConversions();
-    } else if (cmd == _T("#consts")) {
+    } else if (name == _T("#consts")) {
         printConstants(context);
-    } else if (cmd == _T("#vars")) {
+    } else if (name == _T("#vars")) {
         printVariables(context);
-    } else if (cmd == _T("#ver") || cmd == _T("#version")) {
+    } else if (name == _T("#ver") || name == _T("#version")) {
         printVersion(true);
-    } else if (cmd == _T("#help") || cmd == _T("help")) {
-        printHelp();
-    } else if (cmd == _T("#delall")) {
-        context.variables().removeAll();
-    } else if (cmd.substr(0, 4) == _T("#del")) {
-        deleteVariable(context, cmd.substr(4, cmd.length()-4));
-    } else if (cmd == _T("#angle") || cmd == _T("#angles")) {
-        if (context.angleUnit() == ParserContext::RADIANS) {
-            tcout << _T("Radians") << endl;
-        } else if (context.angleUnit() == ParserContext::DEGREES) {
-            tcout << _T("Degrees") << endl;
+    } else if (name == _T("#del") || name == _T("#delete")) {
+        if (args.size() == 1) {
+            context.variables().removeAll();
+            tcout << "Deleted all variables." << endl;
         } else {
-            tcout << _T("Grads") << endl;
+            for (size_t i = 1; i < args.size(); ++i) {
+                tstring & var = args[i];
+                if (var == _T("res") || var == _T("result")) {
+                    tcout << _T("Built-in variable '") << var <<
+                            _T("' cannot be deleted.") << endl;
+                    continue;
+                }
+                if (var == _T("e") || var == _T("pi")) {
+                    tcout << _T("Built-in constant '") << var <<
+                            _T("' cannot be deleted.") << endl;
+                    continue;
+                }
+                try {
+                    context.variables().remove(var);
+                    tcout << "Deleted variable '" << var << "'." << endl;
+                } catch (...) {
+                    tcout << _T("Unknown variable '") << var << _T("'.") << endl;
+                }
+            }
         }
-    } else if (cmd == _T("#radian") || cmd == _T("#radians")) {
-        context.setAngleUnit(ParserContext::RADIANS);
-        tcout << _T("Angle unit is set to radians") << endl;
-    } else if (cmd == _T("#degree") || cmd == _T("#degrees")) {
-        context.setAngleUnit(ParserContext::DEGREES);
-        tcout << _T("Angle unit is set to degrees") << endl;
-    } else if (cmd == _T("#grad") || cmd == _T("#grads")) {
-        context.setAngleUnit(ParserContext::GRADS);
-        tcout << _T("Angle unit is set to grads") << endl;
+    } else if (name == _T("#angle") || name == _T("#angles")) {
+        if (args.size() == 1) {
+            if (context.angleUnit() == ParserContext::RADIANS) {
+                tcout << _T("Radians") << endl;
+            } else if (context.angleUnit() == ParserContext::DEGREES) {
+                tcout << _T("Degrees") << endl;
+            } else {
+                tcout << _T("Grads") << endl;
+            }
+        } else {
+            tstring & unit = args[1];
+            if (unit == _T("radian") || unit == _T("radians")) {
+                context.setAngleUnit(ParserContext::RADIANS);
+                tcout << _T("Angle unit is set to radians.") << endl;
+            } else if (unit == _T("degree") || unit == _T("degrees")) {
+                context.setAngleUnit(ParserContext::DEGREES);
+                tcout << _T("Angle unit is set to degrees.") << endl;
+            } else if (unit == _T("grad") || unit == _T("grads")) {
+                context.setAngleUnit(ParserContext::GRADS);
+                tcout << _T("Angle unit is set to grads.") << endl;
+            }
+        }
     } else {
         tcout << indent << _T("Unknown command '") << cmd << _T("'.") << endl;
     }
@@ -440,14 +469,18 @@ int main(int argc, char ** argv)
         tcout << _T("> ");
         getline(tcin, expr);
 
+        if (tcin.eof()) {
+            tcout << endl;
+            break;
+        }
+
         trim(expr);
 
-        if (expr.empty() || parseCommand(expr, parser.context())) {
+        if (expr.empty() || executeCommand(expr, parser.context())) {
             continue;
         }
 
         parser.setExpression(expr);
-        tcout << indent;
         runParser(parser);
         tcout << endl;
     }

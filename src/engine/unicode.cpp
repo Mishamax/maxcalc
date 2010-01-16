@@ -25,6 +25,9 @@
 // STL
 #include <cstdlib>
 #include <cassert>
+#include <cwctype>
+#else
+#include <cctype>
 #endif
 
 namespace MaxCalcEngine {
