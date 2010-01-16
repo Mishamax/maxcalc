@@ -469,6 +469,11 @@ int main(int argc, char ** argv)
         tcout << _T("> ");
         getline(tcin, expr);
 
+        if (tcin.eof()) {
+            tcout << endl;
+            break;
+        }
+
         trim(expr);
 
         if (expr.empty() || executeCommand(expr, parser.context())) {
