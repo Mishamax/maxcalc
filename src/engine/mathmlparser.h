@@ -49,6 +49,7 @@ private:
     tstring parseN();
     tstring parseO();
 
+    void findAndReplace(tstring & str, const tchar what, const tstring & replacement);
 };
 
 

@@ -193,8 +193,24 @@ tstring MathMLParser::parseRoot()
 tstring MathMLParser::parseI()
 {
     tstring data = xml.GetData();
-    if (data == _T("\x2148")) return _T("i");   // imaginary one
-    else return data;
+    xml.SavePos(_T("mi"));
+    if (xml.FindElem()) {
+        if (xml.GetTagName() == _T("m:mi")) {
+            xml.SetData(data + xml.GetData());
+            data = _T("");
+        } else if (xml.GetTagName() == _T("m:msup")) {
+            if (xml.IntoElem() && xml.FindElem() && xml.GetTagName() == _T("m:mrow")) {
+                if (xml.IntoElem() && xml.FindElem() && xml.GetTagName() == _T("m:mi")) {
+                    xml.SetData(data + xml.GetData());
+                    data = _T("");
+                }
+            }
+        }
+    }
+    xml.RestorePos(_T("mi"));
+    if (data == _T("")) xml.RemoveElem();
+    findAndReplace(data, _T('\x2148'), _T("i"));    // imaginary one
+    return data;
 }
 
 /*!
@@ -211,11 +227,19 @@ tstring MathMLParser::parseN()
 tstring MathMLParser::parseO()
 {
     tstring data = xml.GetData();
-    if (data == _T("\x22C5")) return _T("*");   // multiply
-    if (data == _T("\x2215")) return _T("/");   // divide
-    if (data == _T("\x2061")) return _T("");    // invisible multiplication
-    if (data == _T("\x2192")) return _T("->");  // arrow (unit conversion)
+    findAndReplace(data, _T('\x22C5'), _T("*"));    // multiply
+    findAndReplace(data, _T('\x2215'), _T("/"));    // divide
+    findAndReplace(data, _T('\x2061'), _T(""));     // invisible multiplication
+    findAndReplace(data, _T('\x2192'), _T("->"));   // arrow (unit conversion)
     return data;
+}
+
+void MathMLParser::findAndReplace(tstring & str, const tchar what, const tstring & replacement)
+{
+    size_t pos = 0;
+    while ((pos = str.find(what)) != tstring::npos) {
+        str.replace(pos, 1, replacement);
+    }
 }
 
 } // namespace MaxCalcEngine
