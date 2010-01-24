@@ -127,6 +127,7 @@ void MainWindow::saveSettings()
     settings.setValue("ShowVariables", mShowVariables);
     settings.setValue("SingleInstanceMode", mSingleInstanceMode);
     settings.setValue("AngleUnit", mParser->context().angleUnit());
+    settings.sync();
 }
 
 /*!
@@ -213,11 +214,6 @@ void MainWindow::createMainMenu()
     mMainMenu = new QMenuBar(this);
     setMenuBar(mMainMenu);
 
-    // File menu
-
-    QMenu * file = mMainMenu->addMenu(tr("&File"));
-    file->addAction(tr("&Quit"), QApplication::instance(), SLOT(quit()), tr("Ctrl+Q"));
-
     // Commands menu
 
     QMenu * commands = mMainMenu->addMenu(tr("&Commands"));
@@ -225,6 +221,8 @@ void MainWindow::createMainMenu()
                         tr("Ctrl+H"));
     commands->addAction(tr("&Delete all variables"), this,
                         SLOT(onDeleteAllVariables()), tr("Ctrl+D"));
+    commands->addSeparator();
+    commands->addAction(tr("&Quit"), QApplication::instance(), SLOT(quit()), tr("Ctrl+Q"));
 
     // Settings menu
 
@@ -743,10 +741,6 @@ void MainWindow::onSettingsSingleInstanceMode(bool active)
 {
     mSingleInstanceMode = active;
     saveSettings();
-    QMessageBox msgBox;
-    msgBox.setWindowTitle("MaxCalc");
-    msgBox.setText(tr("Please restart the application (File -> Quit) for this setting to take effect."));
-    msgBox.exec();
 }
 
 /*!
