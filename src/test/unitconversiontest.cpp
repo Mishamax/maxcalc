@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,13 +32,13 @@ using namespace std;
 
 void UnitConversionTest::convert()
 {
-    FAIL_TEST(UnitConversion::convert(0, _T(""), _T("")), "Unknown unit", UnknownUnitException);
-    FAIL_TEST(UnitConversion::convert(0, _T("m"), _T("")), "Unknown unit", UnknownUnitException);
-    FAIL_TEST(UnitConversion::convert(0, _T(""), _T("cm")), "Unknown unit", UnknownUnitException);
-    FAIL_TEST(UnitConversion::convert(0, _T("m"), _T("m/s")), "Unknown conversion", UnknownUnitConversionException);
-    FAIL_TEST(UnitConversion::convert(0, _T("q"), _T("m/s")), "Unknown unit", UnknownUnitException);
-    FAIL_TEST(UnitConversion::convert(0, _T("m"), _T("m/sq")), "Unknown unit", UnknownUnitException);
-    FAIL_TEST(UnitConversion::convert(0, _T("qwe"), _T("rty")), "Unknown unit", UnknownUnitException);
+    FAIL_TEST(UnitConversion::convert(0, _T(""), _T("")), "Unknown unit", ParserException);
+    FAIL_TEST(UnitConversion::convert(0, _T("m"), _T("")), "Unknown unit", ParserException);
+    FAIL_TEST(UnitConversion::convert(0, _T(""), _T("cm")), "Unknown unit", ParserException);
+    FAIL_TEST(UnitConversion::convert(0, _T("m"), _T("m/s")), "Unknown conversion", ParserException);
+    FAIL_TEST(UnitConversion::convert(0, _T("q"), _T("m/s")), "Unknown unit", ParserException);
+    FAIL_TEST(UnitConversion::convert(0, _T("m"), _T("m/sq")), "Unknown unit", ParserException);
+    FAIL_TEST(UnitConversion::convert(0, _T("qwe"), _T("rty")), "Unknown unit", ParserException);
     COMPARE_BIGDECIMAL(UnitConversion::convert(0, _T("oz"), _T("g")), 0);
     COMPARE_BIGDECIMAL(UnitConversion::convert(0, _T("g"), _T("oz")), 0);
     COMPARE_BIGDECIMAL(UnitConversion::convert(0, _T("c"), _T("f")), 32);

@@ -14,3 +14,4 @@ maxcalc.suo
 object_script.*.Debug
 object_script.*.Release
 doxygen
+src/gui/translations/*.qm

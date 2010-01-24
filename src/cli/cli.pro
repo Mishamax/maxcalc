@@ -4,8 +4,8 @@ TARGET = maxcalc
 CONFIG -= qt
 CONFIG += debug_and_release warn_on console precompile_header
 
-HEADERS += pch.h
-SOURCES += main.cpp
+HEADERS += pch.h ../engine/i18n.h
+SOURCES += main.cpp ../engine/i18n.cpp
 
 PRECOMPILED_HEADER = pch.h
 
@@ -22,5 +22,5 @@ CONFIG(release, debug|release) {
     LIBS += -L../release -lmaxcalcengine
 }
 
-DEFINES += MAXCALC_UNICODE
+DEFINES += MAXCALC_UNICODE MAXCALC_NO_I18N
 win32:DEFINES += WIN32

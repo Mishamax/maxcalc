@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #include "version.h"
 #include "unitconversion.h"
 #include "unicode.h"
+#include "i18n.h"
 // STL
 #include <iostream>
 #include <clocale>
@@ -302,120 +303,14 @@ void runParser(Parser & parser)
 {
     try {
         tcout << parser.parse().result().toString().c_str();
-    }
-    // Parser exceptions
-    catch (ResultDoesNotExistException) {
-        tcout << _T("No result of previous calculations");
-    } catch (UnknownTokenException & ex) {
-        tcout << _T("Unknown token '") << ex.what().c_str() <<
-                _T("' in expression");
-    } catch (IncorrectNumberException & ex) {
-        tcout << _T("Incorrect number");
-        if (ex.what() != _T("")) {
-            tcout << _T("'") << ex.what().c_str() << _T("'");
-        }
-    } catch (IncorrectExpressionException) {
-        tcout << _T("Incorrect expression");
-    } catch (NoClosingBracketException) {
-        tcout << _T("No closing bracket");
-    } catch (TooManyClosingBracketsException) {
-        tcout << _T("Too many closing brackets");
-    } catch (UnknownFunctionException & ex) {
-        tcout << _T("Unknown function '") << ex.what().c_str() << _T("'");
-    } catch (UnknownVariableException & ex) {
-        tcout << _T("Unknown variable '") << ex.what().c_str() << _T("'");
-    } catch (IncorrectVariableNameException) {
-        tcout << _T("Incorrect name of variable");
-    } catch (IncorrectUnitConversionSyntaxException) {
-        tcout << _T("Incorrect unit conversion syntax");
-    } catch (UnknownUnitException & ex) {
-        tcout << _T("Unknown unit '") << ex.what().c_str() << _T("'");
-    } catch (UnknownUnitConversionException & ex) {
-        tcout << _T("There is no unit conversion '") << ex.what().c_str() << _T("'");
-    }
-    // Invalid argument exceptions
-    catch (InvalidArgumentException & ex) {
-        tcout << _T("Invalid argument of function '") << ex.what().c_str() <<
-                _T("'");
-        switch (ex.reason()) {
-        case InvalidArgumentException::ZERO:
-            tcout << _T(" (zero)");
-            break;
-        case InvalidArgumentException::NEGATIVE:
-            tcout << _T(" (negative number)");
-            break;
-        case InvalidArgumentException::ZERO_OR_NEGATIVE:
-            tcout << _T(" (zero or negative number)");
-            break;
-        case InvalidArgumentException::POWER_FUNCTION:
-            tcout << _T(" (zero or negative number in negative degree)");
-            break;
-        case InvalidArgumentException::FACTORIAL_FUNCTION:
-            tcout << _T(" (negative, fractional or complex number)");
-            break;
-        case InvalidArgumentException::TANGENT_FUNCTION:
-            tcout << _T(" (cos(arg) = 0)");
-            break;
-        case InvalidArgumentException::COTANGENT_FUNCTION:
-            tcout << _T(" (sin(arg) = 0)");
-            break;
-        case InvalidArgumentException::ARCSINE_FUNCTION:
-        case InvalidArgumentException::ARCCOSINE_FUNCTION:
-            tcout << _T(" (abs(arg) > 1)");
-            break;
-        case InvalidArgumentException::HYPERBOLIC_TANGENT_FUNCTION:
-            tcout << _T(" (cosh(arg) = 0)");
-            break;
-        case InvalidArgumentException::HYPERBOLIC_COTANGENT_FUNCTION:
-            tcout << _T(" (sinh(arg) = 0)");
-            break;
-        case InvalidArgumentException::COMPLEX_ANGLE:
-            tcout << _T(" (cannot convert complex angle from/to radians)");
-            break;
-        case InvalidArgumentException::UNKNOWN:
-        default:
-            // Add nothing
-            break;
-        }
-    } catch (InvalidUnitConversionArgumentException & ex) {
-        tcout << _T("Complex argument in unit conversion '") <<
-                ex.what().c_str() << _T("'");
-    }
-    // Arithmetic exception
-    catch (ArithmeticException & ex) {
-        tstring reason;
-        switch (ex.reason()) {
-        case ArithmeticException::DIVISION_BY_ZERO:
-            reason = _T("Division by zero");
-            break;
-        case ArithmeticException::DIVISION_IMPOSSIBLE:
-            reason = _T("Division impossible");
-            break;
-        case ArithmeticException::ARITHMETIC_OVERFLOW:
-            reason = _T("Arithmetic overflow");
-            break;
-        case ArithmeticException::ARITHMETIC_UNDERFLOW:
-            reason = _T("Arithmetic underflow");
-            break;
-        case ArithmeticException::CONVERSION_IMPOSSIBLE:
-            reason = _T("Arithmetic conversion impossible");
-            break;
-        case ArithmeticException::INVALID_OPERATION_ON_FRACTIONAL_NUMBER:
-            reason = _T("Invalid operation on fractional number");
-            break;
-        default: // This includes UNKNOWN_REASON
-            reason = _T("Unknown arithmetic error");
-            break;
-        }
-        tcout << reason;
-    }
-    // Generic parser exception
-    catch (ParserException) {
-        tcout << _T("Unknown error");
-    }
-    // Generic MaxCalc exception
-    catch (MaxCalcException) {
-        tcout << _T("Unknown error");
+    } catch (ParserException & ex) {
+        tcout << I18n::parserExceptionToString(ex).c_str();
+    } catch (InvalidArgumentException & ex) {
+        tcout << I18n::invalidArgumentExceptionToString(ex).c_str();
+    } catch (ArithmeticException & ex) {
+        tcout << I18n::arithmeticExceptionToString(ex).c_str();
+    } catch (MaxCalcException & ex) {
+        tcout << I18n::maxCalcExceptionToString(ex).c_str();
     }
 }
 

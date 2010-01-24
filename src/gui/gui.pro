@@ -13,16 +13,20 @@ HEADERS += \
         mainwindow.h \
         inputbox.h \
         aboutbox.h \
-        myaction.h
+        myaction.h \
+        ../engine/i18n.h
 
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
         inputbox.cpp \
         aboutbox.cpp \
-        myaction.cpp
+        myaction.cpp \
+        ../engine/i18n.cpp
 
 RESOURCES += resources.qrc
+
+TRANSLATIONS = translations/maxcalcgui_ru.ts
 
 PRECOMPILED_HEADER = pch.h
 
@@ -39,7 +43,7 @@ CONFIG(release, debug|release) {
     LIBS += -L../release -lmaxcalcengine
 }
 
-DEFINES += MAXCALC_UNICODE
+DEFINES += MAXCALC_UNICODE MAXCALC_QT_I18N
 win32:DEFINES += WIN32
 
 RC_FILE = resources.rc

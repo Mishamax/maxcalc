@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 #include "aboutbox.h"
 #include "myaction.h"
 #include "inputbox.h"
+#include "../engine/i18n.h"
 // Qt
 #include <QApplication>
 #include <QDesktopServices>
@@ -433,127 +434,14 @@ void MainWindow::onExpressionEntered()
         mInputBox->clear();
         mInputBox->setFocus();
         updateVariablesList();
-    }
-    // Parser exceptions
-    catch (ResultDoesNotExistException) {
-        printError(tr("No result of previous calculations"));
-    } catch (UnknownTokenException & ex) {
-        printError(tr("Unknown token '%1' in expression")
-                    .arg(QString::fromWCharArray(ex.what().c_str())));
-    } catch (IncorrectNumberException & ex) {
-        if (ex.what() == _T("")) {
-            printError(tr("Incorrect number"));
-        } else {
-            printError(tr("Incorrect number '%1'")
-                        .arg(QString::fromWCharArray(ex.what().c_str())));
-        }
-    } catch (IncorrectExpressionException) {
-        printError(tr("Incorrect expression"));
-    } catch (NoClosingBracketException) {
-        printError(tr("No closing bracket"));
-    } catch (TooManyClosingBracketsException) {
-        printError(tr("Too many closing brackets"));
-    } catch (UnknownFunctionException & ex) {
-        printError(tr("Unknown function '%1'")
-                    .arg(QString::fromWCharArray(ex.what().c_str())));
-    } catch (UnknownVariableException & ex) {
-        printError(tr("Unknown variable '%1'")
-                    .arg(QString::fromWCharArray(ex.what().c_str())));
-    } catch (IncorrectVariableNameException) {
-        printError(tr("Incorrect name of variable"));
-    } catch (IncorrectUnitConversionSyntaxException) {
-        printError(tr("Incorrect unit conversion syntax"));
-    } catch (UnknownUnitException & ex) {
-        printError(tr("Unknown unit '%1'")
-                    .arg(QString::fromWCharArray(ex.what().c_str())));
-    } catch (UnknownUnitConversionException & ex) {
-        printError(tr("There is no unit conversion '%1'")
-                    .arg(QString::fromWCharArray(ex.what().c_str())));
-    }
-    // Invalid argument exceptions
-    catch (InvalidArgumentException & ex) {
-        QString msg = tr("Invalid argument of function '%1'")
-                    .arg(QString::fromWCharArray(ex.what().c_str()));
-        switch (ex.reason()) {
-        case InvalidArgumentException::ZERO:
-            msg += tr(" (zero)");
-            break;
-        case InvalidArgumentException::NEGATIVE:
-            msg += tr(" (negative number)");
-            break;
-        case InvalidArgumentException::ZERO_OR_NEGATIVE:
-            msg += tr(" (zero or negative number)");
-            break;
-        case InvalidArgumentException::POWER_FUNCTION:
-            msg += tr(" (zero or negative number in negative degree)");
-            break;
-        case InvalidArgumentException::FACTORIAL_FUNCTION:
-            msg += tr(" (negative, fractional or complex number)");
-            break;
-        case InvalidArgumentException::TANGENT_FUNCTION:
-            msg += tr(" (cos(arg) = 0)");
-            break;
-        case InvalidArgumentException::COTANGENT_FUNCTION:
-            msg += tr(" (sin(arg) = 0)");
-            break;
-        case InvalidArgumentException::ARCSINE_FUNCTION:
-        case InvalidArgumentException::ARCCOSINE_FUNCTION:
-            msg += tr(" (abs(arg) > 1)");
-            break;
-        case InvalidArgumentException::HYPERBOLIC_TANGENT_FUNCTION:
-            msg += tr(" (cosh(arg) = 0)");
-            break;
-        case InvalidArgumentException::HYPERBOLIC_COTANGENT_FUNCTION:
-            msg += tr(" (sinh(arg) = 0)");
-            break;
-        case InvalidArgumentException::COMPLEX_ANGLE:
-            msg += tr(" (cannot convert complex angle from/to radians)");
-            break;
-        case InvalidArgumentException::UNKNOWN:
-        default:
-            // Add nothing
-            break;
-        }
-        printError(msg);
-    } catch (InvalidUnitConversionArgumentException & ex) {
-        printError(tr("Complex argument in unit conversion '%1'")
-                    .arg(QString::fromWCharArray(ex.what().c_str())));
-    }
-    // Arithmetic exception
-    catch (ArithmeticException & ex) {
-        QString reason;
-        switch (ex.reason()) {
-        case ArithmeticException::DIVISION_BY_ZERO:
-            reason = tr("Division by zero");
-            break;
-        case ArithmeticException::DIVISION_IMPOSSIBLE:
-            reason = tr("Division impossible");
-            break;
-        case ArithmeticException::ARITHMETIC_OVERFLOW:
-            reason = tr("Arithmetic overflow");
-            break;
-        case ArithmeticException::ARITHMETIC_UNDERFLOW:
-            reason = tr("Arithmetic underflow");
-            break;
-        case ArithmeticException::CONVERSION_IMPOSSIBLE:
-            reason = tr("Arithmetic conversion impossible");
-            break;
-        case ArithmeticException::INVALID_OPERATION_ON_FRACTIONAL_NUMBER:
-            reason = tr("Invalid operation on fractional number");
-            break;
-        default: // This includes UNKNOWN_REASON
-            reason = tr("Unknown arithmetic error");
-            break;
-        }
-        printError(reason);
-    }
-    // Generic parser exception
-    catch (ParserException) {
-        printError(tr("Unknown error"));
-    }
-    // Generic MaxCalc exception
-    catch (MaxCalcException) {
-        printError(tr("Unknown error"));
+    } catch (ParserException & ex) {
+        printError(I18n::parserExceptionToString(ex));
+    } catch (InvalidArgumentException & ex) {
+        printError(I18n::invalidArgumentExceptionToString(ex));
+    } catch (ArithmeticException & ex) {
+        printError(I18n::arithmeticExceptionToString(ex));
+    } catch (MaxCalcException & ex) {
+        printError(I18n::maxCalcExceptionToString(ex));
     }
 }
 

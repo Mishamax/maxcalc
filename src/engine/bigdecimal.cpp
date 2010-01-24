@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -1346,9 +1346,9 @@ void BigDecimal::checkContextStatus(const decContext & context)
         } else if (context.status & DEC_Division_impossible) {
             throw ArithmeticException(ArithmeticException::DIVISION_IMPOSSIBLE);
         } else if (context.status & DEC_Overflow) {
-            throw ArithmeticException(ArithmeticException::ARITHMETIC_OVERFLOW);
+            throw ArithmeticException(ArithmeticException::OVERFLOW);
         } else if (context.status & DEC_Underflow) {
-            throw ArithmeticException(ArithmeticException::ARITHMETIC_UNDERFLOW);
+            throw ArithmeticException(ArithmeticException::UNDERFLOW);
         } else if (context.status & DEC_Conversion_syntax) {
             throw ArithmeticException(ArithmeticException::CONVERSION_IMPOSSIBLE);
         } else if (context.status & DEC_Insufficient_storage) {
@@ -1358,7 +1358,7 @@ void BigDecimal::checkContextStatus(const decContext & context)
             // DEC_Invalid_context should never occur so we just throw ArithmeticException;
             // DEC_Invalid_operation is checked right after operations where it can occur;
             //        when it is not checked it's OK to throw ArithmeticException.
-            throw ArithmeticException(ArithmeticException::UNKNOWN_REASON);
+            throw ArithmeticException(ArithmeticException::GENERIC);
         }
     }
 }

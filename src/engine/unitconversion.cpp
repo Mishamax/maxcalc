@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (CELSIUS) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -245,8 +245,8 @@ BigDecimal UnitConversion::convert(const BigDecimal number,
     }
 
     // Check that units are found
-    if (u1 == NO_UNIT) throw UnknownUnitException(unit1);
-    if (u2 == NO_UNIT) throw UnknownUnitException(unit2);
+    if (u1 == NO_UNIT) throw ParserException(ParserException::UNKNOWN_UNIT, unit1);
+    if (u2 == NO_UNIT) throw ParserException(ParserException::UNKNOWN_UNIT, unit2);
 
     // Look up simple conversions table
     for (const SimpleConversion * sc = mSimpleConversions; sc->unit1 != NO_UNIT; ++sc) {
@@ -260,7 +260,8 @@ BigDecimal UnitConversion::convert(const BigDecimal number,
     }
 
     // There is no such conversion
-    throw UnknownUnitConversionException(unit1 + _T(" -> ") + unit2);
+    throw ParserException(ParserException::UNKNOWN_UNIT_CONVERSION,
+                          unit1 + _T(" -> ") + unit2);
 }
 
 /*!

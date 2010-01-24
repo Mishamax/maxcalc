@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -137,7 +137,7 @@ void Parser::lexicalAnalysis()
         // Token couldn't be parsed
         tstring ex = _T("");
         ex += *mCurChar;
-        throw UnknownTokenException(ex);
+        throw ParserException(ParserException::UNKNOWN_TOKEN, ex);
     }
 }
 
@@ -182,7 +182,7 @@ bool Parser::analyzeUnitConversions()
         while (mCurChar != mExpr.end() && isUnitChar(*mCurChar))
             unit += *mCurChar++;
         if (unit == _T(""))
-            throw IncorrectUnitConversionSyntaxException();
+            throw ParserException(ParserException::INVALID_UNIT_CONVERSION_SYNTAX);
         mTokens.push_back(Token(UNIT, unit));
 
         skipSpaces();
@@ -193,10 +193,10 @@ bool Parser::analyzeUnitConversions()
                 mTokens.push_back(Token(ARROW, _T("->")));
                 ++mCurChar;
             } else {
-                throw IncorrectUnitConversionSyntaxException();
+                throw ParserException(ParserException::INVALID_UNIT_CONVERSION_SYNTAX);
             }
         } else {
-            throw IncorrectUnitConversionSyntaxException();
+            throw ParserException(ParserException::INVALID_UNIT_CONVERSION_SYNTAX);
         }
 
         skipSpaces();
@@ -206,7 +206,7 @@ bool Parser::analyzeUnitConversions()
             unit += *mCurChar++;
         }
         if (unit == _T("")) {
-            throw IncorrectUnitConversionSyntaxException();
+            throw ParserException(ParserException::INVALID_UNIT_CONVERSION_SYNTAX);
         }
         mTokens.push_back(Token(UNIT, unit));
 
@@ -215,7 +215,7 @@ bool Parser::analyzeUnitConversions()
         if (mCurChar != mExpr.end() && _T(']') == *mCurChar) {
             mTokens.push_back(Token(CLOSING_SQUARE_BRACKET, _T("]")));
         } else {
-            throw IncorrectUnitConversionSyntaxException();
+            throw ParserException(ParserException::INVALID_UNIT_CONVERSION_SYNTAX);
         }
         ++mCurChar;
         return true;
@@ -297,7 +297,7 @@ bool Parser::analyzeNumbers()
         thereIsPoint = true;
 
         if (mExpr.end() == mCurChar) {
-            throw IncorrectNumberException(number);
+            throw ParserException(ParserException::INVALID_NUMBER);
         }
     }
 
@@ -310,7 +310,7 @@ bool Parser::analyzeNumbers()
     if (mExpr.end() != mCurChar && decSeparator == *mCurChar) {
         // Throw an exception if there was a decimal point already
         if (thereIsPoint) {
-            throw IncorrectNumberException(number);
+            throw ParserException(ParserException::INVALID_NUMBER, number);
         }
 
         number += *mCurChar++;
@@ -334,7 +334,7 @@ bool Parser::analyzeNumbers()
         }
         skipSpaces();
         if (mExpr.end() == mCurChar) {
-            throw IncorrectNumberException(number);
+            throw ParserException(ParserException::INVALID_NUMBER, number);
         }
         // Process exponent digits
         while(mExpr.end() != mCurChar && istdigit(*mCurChar)) {
@@ -393,8 +393,8 @@ void Parser::syntaxAnalysis()
     Complex result = parseAssign();
 
     if (mTokens.end() == mCurToken) mContext.setResult(result);
-    else if (CLOSING_BRACKET == mCurToken->token) throw TooManyClosingBracketsException();
-    else throw IncorrectExpressionException();
+    else if (CLOSING_BRACKET == mCurToken->token) throw ParserException(ParserException::TOO_MANY_CLOSING_BRACKETS);
+    else throw ParserException(ParserException::INVALID_EXPRESSION);
 }
 
 /*!
@@ -413,7 +413,7 @@ Complex Parser::parseAssign()
                 name == _T("result") || name == _T("i") || name == _T("j") ||
                 name == _T("exit") || name == _T("quit") ||
                 name == _T("help")) {
-                throw IncorrectVariableNameException();
+                throw ParserException(ParserException::INVALID_VARIABLE_NAME);
             }
 
             tchar op = mCurToken->str[0];
@@ -528,26 +528,26 @@ Complex Parser::parseUnitConversions()
         if (OPENING_SQUARE_BRACKET == mCurToken->token) {
             ++mCurToken;
             if (mCurToken == mTokens.end() || mCurToken->token != UNIT) {
-                throw IncorrectUnitConversionSyntaxException();
+                throw ParserException(ParserException::INVALID_UNIT_CONVERSION_SYNTAX);
             }
             tstring unit1 = mCurToken->str;
             ++mCurToken;
             if (mCurToken == mTokens.end() || mCurToken->token != ARROW) {
-                throw IncorrectUnitConversionSyntaxException();
+                throw ParserException(ParserException::INVALID_UNIT_CONVERSION_SYNTAX);
             }
             ++mCurToken;
             if (mCurToken == mTokens.end() || mCurToken->token != UNIT) {
-                throw IncorrectUnitConversionSyntaxException();
+                throw ParserException(ParserException::INVALID_UNIT_CONVERSION_SYNTAX);
             }
             tstring unit2 = mCurToken->str;
             ++mCurToken;
             if (mCurToken == mTokens.end() || mCurToken->token != CLOSING_SQUARE_BRACKET) {
-                throw IncorrectUnitConversionSyntaxException();
+                throw ParserException(ParserException::INVALID_UNIT_CONVERSION_SYNTAX);
             }
             ++mCurToken;
 
             if (!result.im.isZero()) {
-                throw InvalidUnitConversionArgumentException(
+                throw ParserException(ParserException::INVALID_UNIT_CONVERSION_ARGUMENT,
                         _T("[") + unit1 + _T("->") + unit2 + _T("]"));
             }
 
@@ -592,7 +592,7 @@ Complex Parser::parseBrackets()
         ++mCurToken;
         Complex result = parseAddSub();
         if (mTokens.end() == mCurToken || CLOSING_BRACKET != mCurToken->token) {
-            throw NoClosingBracketException();
+            throw ParserException(ParserException::NO_CLOSING_BRACKET);
         }
         ++mCurToken;
         return result;
@@ -644,7 +644,7 @@ Complex Parser::parseFunctions()
             else if (name == _T("log2") && args.size() == 1) return Complex::log2(args[0]);
             else if (name == _T("log10") && args.size() == 1) return Complex::log10(args[0]);
             else if (name == _T("exp") && args.size() == 1) return Complex::exp(args[0]);
-            else throw UnknownFunctionException(name); // Unknown function
+            else throw ParserException(ParserException::UNKNOWN_FUNCTION);
 
             // TODO: correctly report known function with incorrect number
             // of arguments
@@ -671,7 +671,7 @@ Complex Parser::parseConstsVars()
         } else if (_T("res") == mCurToken->str || _T("result") == mCurToken->str) {
             ++mCurToken;
             if (mContext.resultExists()) return mContext.result();
-            else throw ResultDoesNotExistException();
+            else throw ParserException(ParserException::NO_PREVIOUS_RESULT);
         } else {
             // Variables.operator[] will throw UnknownVariableException if
             // curToken_->str doesn't exist
@@ -715,7 +715,7 @@ Complex Parser::parseNumbers()
             thereIsResult = true;
             ++mCurToken;
         } else {
-            throw IncorrectNumberException();
+            throw ParserException(ParserException::INVALID_NUMBER);
         }
     }
     
@@ -723,7 +723,7 @@ Complex Parser::parseNumbers()
         return isComplex ? Complex(0, result) : result;
     }
 
-    throw IncorrectExpressionException();
+    throw ParserException(ParserException::INVALID_EXPRESSION);
 }
 
 /*!
@@ -745,7 +745,7 @@ bool Parser::parseFunctionArguments(std::vector<Complex> & args)
 
         // Check for closing bracket
         if (mCurToken == mTokens.end() || mCurToken->token != CLOSING_BRACKET) {
-            throw NoClosingBracketException();
+            throw ParserException(ParserException::NO_CLOSING_BRACKET);
         }
 
         ++mCurToken;

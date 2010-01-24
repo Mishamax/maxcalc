@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ ParserContext::ParserContext(const ComplexFormat & numberFormat)
 Complex ParserContext::result() const
 {
     if (mResultExists) return mResult;
-    else throw ResultDoesNotExistException();
+    else throw ParserException(ParserException::NO_PREVIOUS_RESULT);
 }
 
 /*!

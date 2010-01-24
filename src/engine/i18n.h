@@ -17,39 +17,38 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
-// Local
-#include "mainwindow.h"
-#include "qtsingleapplication/qtsingleapplication.h"
-// Qt
-#include <QSettings>
-#include <QTranslator>
+#ifndef I18N_H
+#define I18N_H
 
-/*!
-    \defgroup MaxCalcGui MaxCalc GUI
-*/
+#include "unicode.h"
+#include "exceptions.h"
 
-int main(int argc, char ** argv)
+#if defined(MAXCALC_QT_I18N)
+#include <QCoreApplication>
+#define i18n_string QString
+#else
+#define Q_DECLARE_TR_FUNCTIONS(className)
+#define i18n_string tstring
+#endif
+
+namespace MaxCalcEngine {
+
+class I18n
 {
-    QtSingleApplication app(argc, argv);
+    Q_DECLARE_TR_FUNCTIONS(I18n)
 
-    QString settingsFile = QApplication::applicationDirPath() + "/maxcalc.ini";
-    QSettings settings(settingsFile, QSettings::IniFormat);
-    bool singleInstanceMode = settings.value("SingleInstanceMode", false).toBool();
+public:
+    static i18n_string maxCalcExceptionToString(MaxCalcException & ex);
+    static i18n_string parserExceptionToString(ParserException & ex);
+    static i18n_string arithmeticExceptionToString(ArithmeticException & ex);
+    static i18n_string invalidArgumentExceptionToString(InvalidArgumentException & ex);
 
-    if (singleInstanceMode && app.isRunning()) {
-        app.sendMessage("");
-        return 0;
-    }
+private:
+    static i18n_string addArg(const i18n_string str, const tstring & arg);
+    static i18n_string addArg(const i18n_string str, const tstring & arg1,
+                              const i18n_string arg2);
+};
 
-    QTranslator translator;
-    translator.load(QString("maxcalcgui_") + QLocale::system().name());
-    app.installTranslator(&translator);
+}; // namespace MaxCalcEngine
 
-    MainWindow mainWindow;
-    app.setActivationWindow(&mainWindow);
-    QObject::connect(&app, SIGNAL(messageReceived(const QString &)),
-                     &mainWindow, SLOT(activate(const QString &)));
-    mainWindow.show();
-
-    return app.exec();
-}
+#endif // I18N_H

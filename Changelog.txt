@@ -1,8 +1,11 @@
 v2.0.0 (IN DEVELOPMENT).
 
-    - Added: Links to Web site and bug tracker in GUI.
-    - Changed: Added more error messages; improved exception system.
-    - Fixed: Bug with history highlighting in graphical version.
+    - Added: radians / degrees / grads support.
+    - Added: close to system tray and single instance mode (GUI).
+    - Added: Russian localization (GUI).
+    - Added: Links to Web site and bug tracker (GUI).
+    - Changed: Added more error messages; improved internal exception system.
+    - Fixed: Bug with history highlighting (GUI).
     - Internal: Improved program portability; added CMake build system support.
     - Internal: Code greatly cleaned up.
 

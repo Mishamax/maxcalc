@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,13 +32,13 @@ void ParserTest::basic()
 {
     ParserContext context;
     Parser parser(_T(""), context);
-    FAIL_TEST(parser.parse(), "Empty expression", IncorrectExpressionException);
-    FAIL_TEST(parser.context().result(), "No result", ResultDoesNotExistException);
+    FAIL_TEST(parser.parse(), "Empty expression", ParserException);
+    FAIL_TEST(parser.context().result(), "No result", ParserException);
     context = parser.context();
-    FAIL_TEST(context.result(), "No result", ResultDoesNotExistException);
+    FAIL_TEST(context.result(), "No result", ParserException);
 
     PARSER_TEST(parser, _T("0"), 0);
-    PARSER_FAIL_TEST(parser, _T("     "), "Empty expression", IncorrectExpressionException);
+    PARSER_FAIL_TEST(parser, _T("     "), "Empty expression", ParserException);
     PARSER_TEST(parser, _T("  0 "), 0);
 }
 
@@ -204,21 +204,21 @@ void ParserTest::brackets()
     PARSER_TEST(parser, _T("2*(1+3)"), 8);
     PARSER_TEST(parser, _T("2^(3^2)"), 512);
     PARSER_TEST(parser, _T("2^-(2)"), "0.25");
-    PARSER_FAIL_TEST(parser, _T("(1)(2)"), "Incorrect expression", IncorrectExpressionException);
-    PARSER_FAIL_TEST(parser, _T("(1))"), "Too many brackets", TooManyClosingBracketsException);
-    PARSER_FAIL_TEST(parser, _T("(1)+2)"), "Too many brackets", TooManyClosingBracketsException);
-    PARSER_FAIL_TEST(parser, _T("(1)+2)/2"), "Too many brackets", TooManyClosingBracketsException);
-    PARSER_FAIL_TEST(parser, _T("sin(pi/2))"), "Too many brackets", TooManyClosingBracketsException);
-    PARSER_FAIL_TEST(parser, _T("sin(pi)/2))"), "Too many brackets", TooManyClosingBracketsException);
-    PARSER_FAIL_TEST(parser, _T("sin(cos(pi))+1)"), "Too many brackets", TooManyClosingBracketsException);
+    PARSER_FAIL_TEST(parser, _T("(1)(2)"), "Incorrect expression", ParserException);
+    PARSER_FAIL_TEST(parser, _T("(1))"), "Too many brackets", ParserException);
+    PARSER_FAIL_TEST(parser, _T("(1)+2)"), "Too many brackets", ParserException);
+    PARSER_FAIL_TEST(parser, _T("(1)+2)/2"), "Too many brackets", ParserException);
+    PARSER_FAIL_TEST(parser, _T("sin(pi/2))"), "Too many brackets", ParserException);
+    PARSER_FAIL_TEST(parser, _T("sin(pi)/2))"), "Too many brackets", ParserException);
+    PARSER_FAIL_TEST(parser, _T("sin(cos(pi))+1)"), "Too many brackets", ParserException);
 }
 
 void ParserTest::constsAndVars()
 {
     Parser parser;
 
-    PARSER_FAIL_TEST(parser, _T("res"), "No result", ResultDoesNotExistException);
-    PARSER_FAIL_TEST(parser, _T("result"), "No result", ResultDoesNotExistException);
+    PARSER_FAIL_TEST(parser, _T("res"), "No result", ParserException);
+    PARSER_FAIL_TEST(parser, _T("result"), "No result", ParserException);
     PARSER_TEST(parser, _T("e"), BigDecimal::E);
     PARSER_TEST(parser, _T("pi"), BigDecimal::PI);
     PARSER_TEST(parser, _T("res"), BigDecimal::PI);
@@ -229,7 +229,7 @@ void ParserTest::userVars()
 {
     Parser parser;
 
-    PARSER_FAIL_TEST(parser, _T("x"), "Unknown variable", UnknownVariableException);
+    PARSER_FAIL_TEST(parser, _T("x"), "Unknown variable", ParserException);
     PARSER_TEST(parser, _T("x=2"), 2);
     PARSER_TEST(parser, _T("x"), 2);
     PARSER_TEST(parser, _T("X=pi/e"), BigDecimal::PI / BigDecimal::E);
@@ -243,20 +243,20 @@ void ParserTest::userVars()
     PARSER_TEST(parser, _T("imaginary1"), Complex::i);
     PARSER_TEST(parser, _T("_fh8743yr43_ry847yr_=0"), 0);
     PARSER_TEST(parser, _T("_fh8743yr43_ry847yr_"), 0);
-    PARSER_FAIL_TEST(parser, _T("1x=1"), "Incorrect variable name", IncorrectExpressionException);
+    PARSER_FAIL_TEST(parser, _T("1x=1"), "Incorrect variable name", ParserException);
     PARSER_TEST(parser, _T("_1x=0"), 0);
     PARSER_TEST(parser, _T("res"), 0);
     PARSER_TEST(parser, _T("_res=10"), 10);
     PARSER_TEST(parser, _T("_res"), 10);
-    PARSER_FAIL_TEST(parser, _T("res=1"), "Incorrect variable name", IncorrectVariableNameException);
-    PARSER_FAIL_TEST(parser, _T("e=1"), "Incorrect variable name", IncorrectVariableNameException);
-    PARSER_FAIL_TEST(parser, _T("pi=1"), "Incorrect variable name", IncorrectVariableNameException);
-    PARSER_FAIL_TEST(parser, _T("i=1"), "Incorrect variable name", IncorrectVariableNameException);
-    PARSER_FAIL_TEST(parser, _T("j=1"), "Incorrect variable name", IncorrectVariableNameException);
-    PARSER_FAIL_TEST(parser, _T("result=1"), "Incorrect variable name", IncorrectVariableNameException);
-    PARSER_FAIL_TEST(parser, _T("quit=1"), "Incorrect variable name", IncorrectVariableNameException);
-    PARSER_FAIL_TEST(parser, _T("exit=1"), "Incorrect variable name", IncorrectVariableNameException);
-    PARSER_FAIL_TEST(parser, _T("help=1"), "Incorrect variable name", IncorrectVariableNameException);
+    PARSER_FAIL_TEST(parser, _T("res=1"), "Incorrect variable name", ParserException);
+    PARSER_FAIL_TEST(parser, _T("e=1"), "Incorrect variable name", ParserException);
+    PARSER_FAIL_TEST(parser, _T("pi=1"), "Incorrect variable name", ParserException);
+    PARSER_FAIL_TEST(parser, _T("i=1"), "Incorrect variable name", ParserException);
+    PARSER_FAIL_TEST(parser, _T("j=1"), "Incorrect variable name", ParserException);
+    PARSER_FAIL_TEST(parser, _T("result=1"), "Incorrect variable name", ParserException);
+    PARSER_FAIL_TEST(parser, _T("quit=1"), "Incorrect variable name", ParserException);
+    PARSER_FAIL_TEST(parser, _T("exit=1"), "Incorrect variable name", ParserException);
+    PARSER_FAIL_TEST(parser, _T("help=1"), "Incorrect variable name", ParserException);
     PARSER_TEST(parser, _T("res_=10"), 10);
     PARSER_TEST(parser, _T("res_"), 10);
     PARSER_TEST(parser, _T("erespii=101"), 101);
@@ -266,8 +266,8 @@ void ParserTest::userVars()
     PARSER_TEST(parser, _T("x = y = 1"), 1);
     PARSER_TEST(parser, _T("x"), 1);
     PARSER_TEST(parser, _T("y"), 1);
-    PARSER_FAIL_TEST(parser, _T("x = y+1 = 1"), "Incorrent expression", IncorrectExpressionException);
-    PARSER_FAIL_TEST(parser, _T("x/2 = y = 1"), "Incorrent expression", IncorrectExpressionException);
+    PARSER_FAIL_TEST(parser, _T("x = y+1 = 1"), "Incorrent expression", ParserException);
+    PARSER_FAIL_TEST(parser, _T("x/2 = y = 1"), "Incorrent expression", ParserException);
 
     tstring var = _T("");
     for (int i = 0; i < 100; ++i) {
@@ -296,8 +296,8 @@ void ParserTest::userVars()
     PARSER_TEST(parser, _T("x ^= 2"), 4);
     PARSER_TEST(parser, _T("x *= y = z = 2"), 8);
     PARSER_TEST(parser, _T("x *= y += z ^= 2"), 48);
-    PARSER_FAIL_TEST(parser, _T("new_var *= 2"), "Unknown variable", UnknownVariableException);
-    PARSER_FAIL_TEST(parser, _T("x = new_var *= 2"), "Unknown variable", UnknownVariableException);
+    PARSER_FAIL_TEST(parser, _T("new_var *= 2"), "Unknown variable", ParserException);
+    PARSER_FAIL_TEST(parser, _T("x = new_var *= 2"), "Unknown variable", ParserException);
 }
 
 void ParserTest::functions()
@@ -305,17 +305,17 @@ void ParserTest::functions()
     Parser parser;
 
     PARSER_TEST(parser, _T("abs(-1)"), 1);
-    PARSER_FAIL_TEST(parser, _T("abs(1"), "Incorrect expression", NoClosingBracketException);
+    PARSER_FAIL_TEST(parser, _T("abs(1"), "Incorrect expression", ParserException);
     PARSER_TEST(parser, _T("sqr(-2)"), 4);
     PARSER_TEST(parser, _T("sqrt(-4)"), Complex::i * 2);
     PARSER_TEST(parser, _T("pow(2; -2)"), "0.25");
-    PARSER_FAIL_TEST(parser, _T("pow(2 -2)"), "Incorrect expression", UnknownFunctionException);
-    PARSER_FAIL_TEST(parser, _T("pow(2;; -2)"), "Incorrect expression", IncorrectExpressionException);
-    PARSER_FAIL_TEST(parser, _T("pow(2; -2; 3)"), "Incorrect expression", UnknownFunctionException);
-    PARSER_FAIL_TEST(parser, _T("pow(2; 3"), "Incorrect expression", NoClosingBracketException);
-    PARSER_FAIL_TEST(parser, _T("sin 3"), "Incorrect expression", UnknownVariableException);
-    PARSER_FAIL_TEST(parser, _T("sin3)"), "Incorrect expression", UnknownVariableException);
-    PARSER_FAIL_TEST(parser, _T("sin 3)"), "Incorrect expression", UnknownVariableException);
+    PARSER_FAIL_TEST(parser, _T("pow(2 -2)"), "Incorrect expression", ParserException);
+    PARSER_FAIL_TEST(parser, _T("pow(2;; -2)"), "Incorrect expression", ParserException);
+    PARSER_FAIL_TEST(parser, _T("pow(2; -2; 3)"), "Incorrect expression", ParserException);
+    PARSER_FAIL_TEST(parser, _T("pow(2; 3"), "Incorrect expression", ParserException);
+    PARSER_FAIL_TEST(parser, _T("sin 3"), "Incorrect expression", ParserException);
+    PARSER_FAIL_TEST(parser, _T("sin3)"), "Incorrect expression", ParserException);
+    PARSER_FAIL_TEST(parser, _T("sin 3)"), "Incorrect expression", ParserException);
 }
 
 void ParserTest::functionsBasic()
@@ -409,10 +409,10 @@ void ParserTest::functionsLog()
 void ParserTest::fails()
 {
     Parser parser;
-    PARSER_FAIL_TEST(parser, _T("/"), "Incorrect expression", IncorrectExpressionException);
-    FAIL_TEST(parser.context().result(), "No result", ResultDoesNotExistException);
-    PARSER_FAIL_TEST(parser, _T("1+"), "Incorrect expression", IncorrectExpressionException);
-    PARSER_FAIL_TEST(parser, _T(" 1 * "), "Incorrect expression", IncorrectExpressionException);
+    PARSER_FAIL_TEST(parser, _T("/"), "Incorrect expression", ParserException);
+    FAIL_TEST(parser.context().result(), "No result", ParserException);
+    PARSER_FAIL_TEST(parser, _T("1+"), "Incorrect expression", ParserException);
+    PARSER_FAIL_TEST(parser, _T(" 1 * "), "Incorrect expression", ParserException);
 }
 
 void ParserTest::realWorld()
@@ -446,18 +446,18 @@ void ParserTest::unitConversions()
 {
     Parser parser;
 
-    PARSER_FAIL_TEST(parser, _T("1[qwe]"), "Incorrect conversion", IncorrectUnitConversionSyntaxException);
-    PARSER_FAIL_TEST(parser, _T("1[qwe"), "Incorrect conversion", IncorrectUnitConversionSyntaxException);
-    PARSER_FAIL_TEST(parser, _T("1["), "Incorrect conversion", IncorrectUnitConversionSyntaxException);
-    PARSER_FAIL_TEST(parser, _T("1[in->]"), "Incorrect conversion", IncorrectUnitConversionSyntaxException);
-    PARSER_FAIL_TEST(parser, _T("1[in-]"), "Incorrect conversion", IncorrectUnitConversionSyntaxException);
-    PARSER_FAIL_TEST(parser, _T("[in->ft]"), "Incorrect expression", IncorrectExpressionException);
-    PARSER_FAIL_TEST(parser, _T("0 [in->ft] [c->f] [ft->in"), "Incorrect conversion", IncorrectUnitConversionSyntaxException);
-    PARSER_FAIL_TEST(parser, _T("0[unit->unit]"), "Unknown unit", UnknownUnitException);
-    PARSER_FAIL_TEST(parser, _T("0[unit->km]"), "Unknown unit", UnknownUnitException);
-    PARSER_FAIL_TEST(parser, _T("0[mile->unit]"), "Unknown unit", UnknownUnitException);
-    PARSER_FAIL_TEST(parser, _T("0[in->c]"), "Unknown conversion", UnknownUnitConversionException);
-    PARSER_FAIL_TEST(parser, _T("i[in->c]"), "Invalid conversion argument", InvalidUnitConversionArgumentException);
+    PARSER_FAIL_TEST(parser, _T("1[qwe]"), "Incorrect conversion", ParserException);
+    PARSER_FAIL_TEST(parser, _T("1[qwe"), "Incorrect conversion", ParserException);
+    PARSER_FAIL_TEST(parser, _T("1["), "Incorrect conversion", ParserException);
+    PARSER_FAIL_TEST(parser, _T("1[in->]"), "Incorrect conversion", ParserException);
+    PARSER_FAIL_TEST(parser, _T("1[in-]"), "Incorrect conversion", ParserException);
+    PARSER_FAIL_TEST(parser, _T("[in->ft]"), "Incorrect expression", ParserException);
+    PARSER_FAIL_TEST(parser, _T("0 [in->ft] [c->f] [ft->in"), "Incorrect conversion", ParserException);
+    PARSER_FAIL_TEST(parser, _T("0[unit->unit]"), "Unknown unit", ParserException);
+    PARSER_FAIL_TEST(parser, _T("0[unit->km]"), "Unknown unit", ParserException);
+    PARSER_FAIL_TEST(parser, _T("0[mile->unit]"), "Unknown unit", ParserException);
+    PARSER_FAIL_TEST(parser, _T("0[in->c]"), "Unknown conversion", ParserException);
+    PARSER_FAIL_TEST(parser, _T("i[in->c]"), "Invalid conversion argument", ParserException);
     PARSER_TEST(parser, _T("1[ft->in]"), "12");
     PARSER_TEST(parser, _T("  1  [  ft  ->  in  ]  "), "12");
     PARSER_TEST(parser, _T("0 [c->f]"), "32");

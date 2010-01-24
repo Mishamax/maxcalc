@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -87,7 +87,7 @@ void Variables::add(const Variable & var)
 void Variables::remove(tstring name)
 {
     if (!mVars.erase(strToLower(name))) {
-        throw UnknownVariableException(name);
+        throw ParserException(ParserException::UNKNOWN_VARIABLE, name);
     }
 }
 
@@ -100,7 +100,7 @@ Complex Variables::operator[] (tstring name)
 {
     VarsMap::const_iterator iter = mVars.find(strToLower(name));
 
-    if (iter == mVars.end()) throw UnknownVariableException(name);
+    if (iter == mVars.end()) throw ParserException(ParserException::UNKNOWN_VARIABLE, name);
     else return iter->second.value;
 }
 

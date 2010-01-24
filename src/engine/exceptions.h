@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,10 +26,12 @@
 namespace MaxCalcEngine {
 
 
-/// General MaxCalc engine exception
+//------------------------------------------------------------------------------
+/// General MaxCalc engine exception.
 class MaxCalcException
 {
-    const tstring mWhat;    ///< Additional info for exception.
+    /// Additional info for exception.
+    const tstring mWhat;
 
 public:
     MaxCalcException() : mWhat(_T("")) {}
@@ -43,29 +45,75 @@ public:
     }
 };
 
-/// General parser exception
+
+//------------------------------------------------------------------------------
+/// Parser exception.
 class ParserException : public MaxCalcException
 {
 public:
-    ParserException() : MaxCalcException() {}
+    /// Reasons for exception.
+    enum Reasons
+    {
+        NO_PREVIOUS_RESULT,                 ///< Result of previous calculation does not exist.
+        UNKNOWN_TOKEN,                      ///< Unknown token.
+        INVALID_NUMBER,                     ///< Invalid number.
+        INVALID_EXPRESSION,                 ///< Invalid expression.
+        NO_CLOSING_BRACKET,                 ///< No closing bracket.
+        TOO_MANY_CLOSING_BRACKETS,          ///< Too many closing brackets.
+        UNKNOWN_FUNCTION,                   ///< Unknown function.
+        UNKNOWN_VARIABLE,                   ///< Unknown variable.
+        INVALID_VARIABLE_NAME,              ///< Invalid variable name.
+        INVALID_UNIT_CONVERSION_SYNTAX,     ///< Invalid unit conversion syntax.
+        UNKNOWN_UNIT,                       ///< Unknown unit in unit conversion.
+        UNKNOWN_UNIT_CONVERSION,            ///< Unknown unit conversion.
+        INVALID_UNIT_CONVERSION_ARGUMENT    ///< Invalid unit conversion argument (complex number).
+    };
 
-    ParserException(const tstring & what) : MaxCalcException(what) {}
+private:
+    /// Reason for exception.
+    Reasons mReason;
+
+public:
+    ParserException(const Reasons reason)
+    {
+        mReason = reason;
+    }
+
+    ParserException(const Reasons reason, const tstring & what) : MaxCalcException(what)
+    {
+        mReason = reason;
+    }
+
+    /// Returns reason of exception.
+    Reasons reason() const throw()
+    {
+        return mReason;
+    }
 };
 
 
-
-
-/// General arithmetic exception
+//------------------------------------------------------------------------------
+/// Arithmetic exception.
+/// It can be generated in BigDecimal and Complex classes. Most arithmetic
+/// exceptions correspond to decNumber errors which are checked in BigDecimal.
 class ArithmeticException : public MaxCalcException
 {
 public:
-    enum Reasons { UNKNOWN_REASON, DIVISION_BY_ZERO, DIVISION_IMPOSSIBLE,
-                   ARITHMETIC_OVERFLOW, ARITHMETIC_UNDERFLOW,
-                   CONVERSION_IMPOSSIBLE,
-                   INVALID_OPERATION_ON_FRACTIONAL_NUMBER};
+    /// Reasons for exception.
+    enum Reasons
+    {
+        GENERIC,                            ///< Generic reason (DEC_Invalid_context or DEC_Invalid_operation).
+        DIVISION_BY_ZERO,                   ///< Division by zero (DEC_Division_by_zero or DEC_Division_undefined).
+        DIVISION_IMPOSSIBLE,                ///< Division impossible (DEC_Division_impossible).
+        OVERFLOW,                           ///< Arithmetic overflow (DEC_Overflow).
+        UNDERFLOW,                          ///< Arithmetic underflow (DEC_Overflow).
+        CONVERSION_IMPOSSIBLE,              ///< Conversion to different type is impossible (DEC_Conversion_syntax).
+        INVALID_OPERATION_ON_FRACTIONAL_NUMBER  ///< Invalid operation on fractional number (like logical operation).
+    };
 
 private:
-    Reasons mReason;    ///< Exception reason.
+    /// Reason for exception.
+    Reasons mReason;
 
 public:
     ArithmeticException(const Reasons reason)
@@ -81,18 +129,31 @@ public:
 };
 
 
+//------------------------------------------------------------------------------
 /// Invalid function argument exception.
 class InvalidArgumentException : public MaxCalcException
 {
 public:
-    enum Reasons { UNKNOWN, ZERO, NEGATIVE, ZERO_OR_NEGATIVE, POWER_FUNCTION,
-                   FACTORIAL_FUNCTION, TANGENT_FUNCTION, COTANGENT_FUNCTION,
-                   ARCSINE_FUNCTION, ARCCOSINE_FUNCTION,
-                   HYPERBOLIC_TANGENT_FUNCTION, HYPERBOLIC_COTANGENT_FUNCTION,
-                   COMPLEX_ANGLE };
+    /// Reasons for exception.
+    enum Reasons
+    {
+        ZERO,                               ///< Zero.
+        NEGATIVE,                           ///< Negative number.
+        ZERO_OR_NEGATIVE,                   ///< Zero or negative number.
+        POWER_FUNCTION,                     ///< Invalid argument in pow().
+        FACTORIAL_FUNCTION,                 ///< Invalid argument in fact().
+        TANGENT_FUNCTION,                   ///< Invalid argument in tan().
+        COTANGENT_FUNCTION,                 ///< Invalid argument in cot().
+        ARCSINE_FUNCTION,                   ///< Invalid argument in asin().
+        ARCCOSINE_FUNCTION,                 ///< Invalid argument in acos().
+        HYPERBOLIC_TANGENT_FUNCTION,        ///< Invalid argument in tanh().
+        HYPERBOLIC_COTANGENT_FUNCTION,      ///< Invalid argument in coth().
+        COMPLEX_ANGLE                       ///< Complex angle.
+    };
 
 private:
-    Reasons mReason;    ///< Exception reason.
+    /// Reason for exception.
+    Reasons mReason;
 
 public:
     InvalidArgumentException(const tstring & function, const Reasons reason) :
@@ -108,68 +169,6 @@ public:
     }
 };
 
-/// Invalid unit conversion argument (complex number).
-class InvalidUnitConversionArgumentException : public MaxCalcException
-{
-public:
-    InvalidUnitConversionArgumentException(const tstring & conversion) :
-            MaxCalcException(conversion) {}
-};
-
-
-
-///////////////////////////////////////////////////////////////////////////
-// Parser exceptions
-
-/// Result of previous calculation does not exist.
-class ResultDoesNotExistException : public ParserException {};
-/// Unknown token.
-class UnknownTokenException : public ParserException
-{
-public:
-    UnknownTokenException(const tstring & token) : ParserException(token) {}
-};
-/// Incorrect number.
-class IncorrectNumberException : public ParserException
-{
-public:
-    IncorrectNumberException() : ParserException() {}
-    IncorrectNumberException(const tstring & num) : ParserException(num) {}
-};
-/// Incorrect expression.
-class IncorrectExpressionException : public ParserException {};
-/// No closing bracket.
-class NoClosingBracketException : public ParserException {};
-/// No closing bracket.
-class TooManyClosingBracketsException : public ParserException {};
-/// Unknown function.
-class UnknownFunctionException : public ParserException
-{
-public:
-    UnknownFunctionException(const tstring & func) : ParserException(func) {}
-};
-/// Unknown variable.
-class UnknownVariableException : public ParserException
-{
-public:
-    UnknownVariableException(const tstring & var) : ParserException(var) {}
-};
-/// Incorrect variable name.
-class IncorrectVariableNameException : public ParserException {};
-/// Incorrect unit conversion syntax.
-class IncorrectUnitConversionSyntaxException : public ParserException {};
-/// Unknown unit in unit conversion.
-class UnknownUnitException : public ParserException
-{
-public:
-    UnknownUnitException(const tstring & unit) : ParserException(unit) {}
-};
-/// Unknown unit conversion.
-class UnknownUnitConversionException : public ParserException
-{
-public:
-    UnknownUnitConversionException(const tstring & c) : ParserException(c) {}
-};
 
 } // namespace MaxCalcEngine
 

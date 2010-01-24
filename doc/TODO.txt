@@ -5,4 +5,4 @@ Features
     Help is needed
     Decimal separators support (. ,)
     Auto-updater?
-    Tray icon, minimize to tray
+    Minimize to tray
