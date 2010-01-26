@@ -2,7 +2,7 @@ TEMPLATE = lib
 TARGET = maxcalcengine
 
 CONFIG -= qt
-CONFIG += staticlib debug_and_release warn_on precompile_header
+CONFIG += staticlib debug_and_release warn_on precompile_header create_prl
 
 include(decNumber/decNumber.pri)
 

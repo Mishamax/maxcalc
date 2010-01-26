@@ -82,7 +82,6 @@ Parser::Parser(const tstring & expr, const ParserContext & context)
 */
 ParserContext & Parser::parse()
 {
-    mContext.numberFormat().decimalSeparator = BigDecimalFormat::DOT_SEPARATOR;
     try {
         lexicalAnalysis();
         syntaxAnalysis();
@@ -257,10 +256,8 @@ bool Parser::analyzeIdentifiers()
             identifier += *mCurChar++;
         }
 
-        tstring imOne = _T("");
-        imOne += mContext.numberFormat().imaginaryOneTChar();
         // Imaginary one is not an identifier
-        if (identifier == imOne) {
+        if (identifier.length() == 1 && isImaginaryOne(identifier[0])) {
             --mCurChar;
             return false;
         }
@@ -284,18 +281,14 @@ bool Parser::analyzeNumbers()
     tstring number = _T("");
     bool thereIsPoint = false;
 
-    const tchar imOne = mContext.numberFormat().imaginaryOneTChar();
-
     // Check if it is a number
-    if (!istdigit(*mCurChar) && !isDecimalSeparator(*mCurChar) && *mCurChar != imOne) {
+    if (!istdigit(*mCurChar) && !isDecimalSeparator(*mCurChar) &&
+        !isImaginaryOne(*mCurChar)) {
         return false;
     }
 
     // Process decimal point at the beginning of the number
     if (mExpr.end() != mCurChar && isDecimalSeparator(*mCurChar)) {
-        if (*mCurChar == _T(',')) {
-            mContext.numberFormat().decimalSeparator = BigDecimalFormat::COMMA_SEPARATOR;
-        }
         number += *mCurChar++;
         thereIsPoint = true;
 
@@ -316,9 +309,6 @@ bool Parser::analyzeNumbers()
             throw ParserException(ParserException::INVALID_NUMBER, number);
         }
 
-        if (*mCurChar == _T(',')) {
-            mContext.numberFormat().decimalSeparator = BigDecimalFormat::COMMA_SEPARATOR;
-        }
         number += *mCurChar++;
 
         // Process digits
@@ -355,9 +345,8 @@ bool Parser::analyzeNumbers()
     skipSpaces();
 
     // Process imaginary one at the end of the number
-    if (mExpr.end() != mCurChar && imOne == *mCurChar) {
-        ++mCurChar;
-        mTokens.push_back(Token(IMAGINARY_ONE, imOne));
+    if (mExpr.end() != mCurChar && isImaginaryOne(*mCurChar)) {
+        mTokens.push_back(Token(IMAGINARY_ONE, *mCurChar++));
     }
 
     return true;
@@ -818,6 +807,14 @@ bool Parser::isUnitChar(tchar c)
 bool Parser::isDecimalSeparator(tchar c)
 {
     return (c == _T(',') || c == _T('.'));
+}
+
+/*!
+    Determines if \a c is an imaginary one ('i' or 'j').
+*/
+bool Parser::isImaginaryOne(tchar c)
+{
+    return (c == _T('i') || c == _T('j'));
 }
 
 /*!

@@ -2,9 +2,10 @@ TEMPLATE = app
 win32:TARGET = maxcalcwin
 unix:TARGET = maxcalcgui
 
-CONFIG += qt debug_and_release warn_on precompile_header
+CONFIG += qt debug_and_release warn_on precompile_header link_prl
 win32:CONFIG += windows
 QT += network
+PRE_TARGETDEPS += maxcalcengine
 
 include(qtsingleapplication/qtsingleapplication.pri)
 

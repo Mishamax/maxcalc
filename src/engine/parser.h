@@ -126,6 +126,7 @@ private:
     bool isIdentifierChar(tchar c, bool firstChar);
     bool isUnitChar(tchar c);
     bool isDecimalSeparator(tchar c);
+    bool isImaginaryOne(tchar c);
 
 
     ///////////////////////////////////////////////////////////////////////////
