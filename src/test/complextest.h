@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,8 +30,6 @@ class ComplexTest : public QObject
 private slots:
     // ComplexFormat tests
     void complexFormatDefault();
-    void complexFormatCustom();
-    void complexFormatAccessors();
 
     // Constructors
     void fromString();

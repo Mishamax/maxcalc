@@ -302,7 +302,8 @@ bool executeCommand(const tstring & expr, ParserContext & context)
 void runParser(Parser & parser)
 {
     try {
-        tcout << parser.parse().result().toString().c_str();
+        ParserContext & context = parser.parse();
+        tcout << context.result().toTString(context.numberFormat()).c_str();
     } catch (ParserException & ex) {
         tcout << I18n::parserExceptionToString(ex).c_str();
     } catch (InvalidArgumentException & ex) {

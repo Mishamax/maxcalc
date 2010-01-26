@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,57 +31,11 @@ using namespace MaxCalcEngine;
 void BigDecimalTest::bigDecimalFormatDefault()
 {
     BigDecimalFormat actual;
-    BigDecimalFormat expected = BigDecimalFormat::getDefault();
 
-    COMPARE(actual.precision(), expected.precision());
-    COMPARE(actual.numberFormat(), expected.numberFormat());
-    COMPARE(actual.exponentCase(), expected.exponentCase());
-    COMPARE(actual.decimalSeparator(), expected.decimalSeparator());
-
-    COMPARE(actual.precision(), MAX_IO_PRECISION);
-    COMPARE(actual.numberFormat(), BigDecimalFormat::GENERAL_FORMAT);
-    COMPARE(actual.exponentCase(), BigDecimalFormat::UPPER_CASE_EXPONENT);
-    COMPARE(actual.decimalSeparator(), BigDecimalFormat::POINT_DECIMAL_SEPARATOR);
-}
-
-void BigDecimalTest::bigDecimalFormatCustom()
-{
-    BigDecimalFormat actual(MAX_IO_PRECISION, BigDecimalFormat::ENGINEERING_FORMAT, BigDecimalFormat::LOWER_CASE_EXPONENT,
-        BigDecimalFormat::COMMA_DECIMAL_SEPARATOR);
-
-    COMPARE(actual.precision(), MAX_IO_PRECISION);
-    COMPARE(actual.numberFormat(), BigDecimalFormat::ENGINEERING_FORMAT);
-    COMPARE(actual.exponentCase(), BigDecimalFormat::LOWER_CASE_EXPONENT);
-    COMPARE(actual.decimalSeparator(), BigDecimalFormat::COMMA_DECIMAL_SEPARATOR);
-
-    actual = BigDecimalFormat(1, BigDecimalFormat::SCIENTIFIC_FORMAT, BigDecimalFormat::UPPER_CASE_EXPONENT,
-        BigDecimalFormat::POINT_DECIMAL_SEPARATOR);
-
-    COMPARE(actual.precision(), 1);
-    COMPARE(actual.numberFormat(), BigDecimalFormat::SCIENTIFIC_FORMAT);
-    COMPARE(actual.exponentCase(), BigDecimalFormat::UPPER_CASE_EXPONENT);
-    COMPARE(actual.decimalSeparator(), BigDecimalFormat::POINT_DECIMAL_SEPARATOR);
-}
-
-void BigDecimalTest::bigDecimalFormatAccessors()
-{
-    BigDecimalFormat actual;
-
-    actual.setPrecision(MAX_IO_PRECISION / 2);
-    actual.setNumberFormat(BigDecimalFormat::ENGINEERING_FORMAT);
-    actual.setExponentCase(BigDecimalFormat::LOWER_CASE_EXPONENT);
-
-    COMPARE(actual.precision(), MAX_IO_PRECISION / 2);
-    COMPARE(actual.numberFormat(), BigDecimalFormat::ENGINEERING_FORMAT);
-    COMPARE(actual.exponentCase(), BigDecimalFormat::LOWER_CASE_EXPONENT);
-
-    actual.setPrecision(MAX_IO_PRECISION);
-
-    COMPARE(actual.precision(), MAX_IO_PRECISION);
-
-    actual.setPrecision(1);
-
-    COMPARE(actual.precision(), 1);
+    COMPARE(actual.precision, MAX_IO_PRECISION);
+    COMPARE(actual.numberFormat, BigDecimalFormat::GENERAL_FORMAT);
+    COMPARE(actual.exponentCase, BigDecimalFormat::UPPER_CASE_EXPONENT);
+    COMPARE(actual.decimalSeparator, BigDecimalFormat::DOT_SEPARATOR);
 }
 
 void BigDecimalTest::fromString()

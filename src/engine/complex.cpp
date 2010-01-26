@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -61,9 +61,8 @@ Complex::Complex()
     Constructs a new instance of Complex class from given \a real and
     \a imaginary parts.
 */
-Complex::Complex(const char * real, const char * imaginary,
-                 const ComplexFormat & format) :
-    re(real, format), im(imaginary, format)
+Complex::Complex(const char * real, const char * imaginary) :
+        re(real), im(imaginary)
 {
 }
 
@@ -71,9 +70,8 @@ Complex::Complex(const char * real, const char * imaginary,
     Constructs a new instance of Complex class from given \a real and
     \a imaginary parts.
 */
-Complex::Complex(const std::string & real, const std::string & imaginary,
-                 const ComplexFormat & format) :
-    re(real, format), im(imaginary, format)
+Complex::Complex(const std::string & real, const std::string & imaginary) :
+        re(real), im(imaginary)
 {
 }
 
@@ -83,9 +81,8 @@ Complex::Complex(const std::string & real, const std::string & imaginary,
     Constructs a new instance of Complex class from given \a real and
     \a imaginary parts.
 */
-Complex::Complex(const wchar_t * real, const wchar_t * imaginary,
-                 const ComplexFormat & format) :
-    re(real, format), im(imaginary, format)
+Complex::Complex(const wchar_t * real, const wchar_t * imaginary) :
+        re(real), im(imaginary)
 {
 }
 
@@ -93,9 +90,8 @@ Complex::Complex(const wchar_t * real, const wchar_t * imaginary,
     Constructs a new instance of Complex class from given \a real and
     \a imaginary parts.
 */
-Complex::Complex(const std::wstring & real, const std::wstring & imaginary,
-                 const ComplexFormat & format) :
-    re(real, format), im(imaginary, format)
+Complex::Complex(const std::wstring & real, const std::wstring & imaginary) :
+        re(real), im(imaginary)
 {
 }
 

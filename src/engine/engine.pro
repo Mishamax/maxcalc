@@ -24,8 +24,6 @@ HEADERS += \
 SOURCES += \
         bigdecimal.cpp \
         complex.cpp \
-        bigdecimalformat.cpp \
-        complexformat.cpp \
         unicode.cpp \
         parsercontext.cpp \
         parser.cpp \

@@ -80,8 +80,9 @@ Parser::Parser(const tstring & expr, const ParserContext & context)
 
     \exception ParserException parse() throws many exceptions based on ParserException.
 */
-ParserContext Parser::parse()
+ParserContext & Parser::parse()
 {
+    mContext.numberFormat().decimalSeparator = BigDecimalFormat::DOT_SEPARATOR;
     try {
         lexicalAnalysis();
         syntaxAnalysis();
@@ -283,16 +284,18 @@ bool Parser::analyzeNumbers()
     tstring number = _T("");
     bool thereIsPoint = false;
 
-    const tchar decSeparator = mContext.numberFormat().decimalSeparatorTChar();
     const tchar imOne = mContext.numberFormat().imaginaryOneTChar();
 
     // Check if it is a number
-    if (!istdigit(*mCurChar) && *mCurChar != decSeparator && *mCurChar != imOne) {
+    if (!istdigit(*mCurChar) && !isDecimalSeparator(*mCurChar) && *mCurChar != imOne) {
         return false;
     }
 
     // Process decimal point at the beginning of the number
-    if (mExpr.end() != mCurChar && decSeparator == *mCurChar) {
+    if (mExpr.end() != mCurChar && isDecimalSeparator(*mCurChar)) {
+        if (*mCurChar == _T(',')) {
+            mContext.numberFormat().decimalSeparator = BigDecimalFormat::COMMA_SEPARATOR;
+        }
         number += *mCurChar++;
         thereIsPoint = true;
 
@@ -307,12 +310,15 @@ bool Parser::analyzeNumbers()
     }
 
     // Process decimal point in the middle or at the end of the number
-    if (mExpr.end() != mCurChar && decSeparator == *mCurChar) {
+    if (mExpr.end() != mCurChar && isDecimalSeparator(*mCurChar)) {
         // Throw an exception if there was a decimal point already
         if (thereIsPoint) {
             throw ParserException(ParserException::INVALID_NUMBER, number);
         }
 
+        if (*mCurChar == _T(',')) {
+            mContext.numberFormat().decimalSeparator = BigDecimalFormat::COMMA_SEPARATOR;
+        }
         number += *mCurChar++;
 
         // Process digits
@@ -804,6 +810,14 @@ bool Parser::isIdentifierChar(tchar c, bool firstChar)
 bool Parser::isUnitChar(tchar c)
 {
     return (istalpha(c) || c == _T('/'));
+}
+
+/*!
+    Determines if \a c is a decamal separator ('.' or ',').
+*/
+bool Parser::isDecimalSeparator(tchar c)
+{
+    return (c == _T(',') || c == _T('.'));
 }
 
 /*!

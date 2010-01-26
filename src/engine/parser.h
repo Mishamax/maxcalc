@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ public:
     ///////////////////////////////////////////////////////////////////////////
     // Public functions
 
-    ParserContext parse();
+    ParserContext & parse();
 
     ///////////////////////////////////////////////////////////////////////////
     // Accessors
@@ -125,6 +125,7 @@ private:
     bool skipSpaces();
     bool isIdentifierChar(tchar c, bool firstChar);
     bool isUnitChar(tchar c);
+    bool isDecimalSeparator(tchar c);
 
 
     ///////////////////////////////////////////////////////////////////////////

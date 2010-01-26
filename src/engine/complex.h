@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -47,15 +47,11 @@ public:
     // Constructors
 
     Complex();
-    Complex(const char * real, const char * imaginary = "0",
-        const ComplexFormat & format = ComplexFormat::getDefault());
-    Complex(const std::string & real, const std::string & imaginary = "0",
-        const ComplexFormat & format = ComplexFormat::getDefault());
+    Complex(const char * real, const char * imaginary = "0");
+    Complex(const std::string & real, const std::string & imaginary = "0");
 #if defined(MAXCALC_UNICODE)
-    Complex(const wchar_t * real, const wchar_t * imaginary = L"0",
-        const ComplexFormat & format = ComplexFormat::getDefault());
-    Complex(const std::wstring & real, const std::wstring & imaginary = L"0",
-        const ComplexFormat & format = ComplexFormat::getDefault());
+    Complex(const wchar_t * real, const wchar_t * imaginary = L"0");
+    Complex(const std::wstring & real, const std::wstring & imaginary = L"0");
 #endif
     Complex(const BigDecimal & real, const BigDecimal & imaginary = 0);
     Complex(const int real, const int imaginary = 0);
@@ -66,14 +62,11 @@ public:
     ///////////////////////////////////////////////////////////////////////////
     // Conversion functions
 
-    std::string toString(const ComplexFormat & format =
-        ComplexFormat::getDefault()) const;
+    std::string toString(const ComplexFormat & format = ComplexFormat()) const;
 #if defined(MAXCALC_UNICODE)
-    std::wstring toWideString(const ComplexFormat & format =
-        ComplexFormat::getDefault()) const;
+    std::wstring toWideString(const ComplexFormat & format = ComplexFormat()) const;
 #endif
-    tstring toTString(const ComplexFormat & format =
-        ComplexFormat::getDefault()) const;
+    tstring toTString(const ComplexFormat & format = ComplexFormat()) const;
 
 
     ///////////////////////////////////////////////////////////////////////////

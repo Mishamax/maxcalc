@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -28,50 +28,50 @@
 namespace MaxCalcEngine {
 
 
-class ComplexFormat : public BigDecimalFormat
+/*!
+    \class ComplexFormat
+    \brief Represents format settings used for convertion from Complex to
+    string.
+
+    ComplexFormat inherits BigDecimalFormat which is used to format real and
+    imaginary parts of the number.
+
+    Character which represents imaginary one can be specified.
+    By default 'i' is used.
+
+    \sa Complex::toString(), BigDecimalFormat
+    \ingroup MaxCalcEngine
+*/
+struct ComplexFormat : public BigDecimalFormat
 {
-public:
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Enums
-
     /// Determines if imaginary one is represented by 'i' or 'j'.
     enum ImaginaryOne { IMAGINARY_ONE_I, IMAGINARY_ONE_J };
 
+    ImaginaryOne imaginaryOne;      ///< Letter used to represent imaginary one.
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Constructors
-
+    /// Constructs a new instance of ComplexFormat.
     explicit ComplexFormat(
-        const int precision = MAX_IO_PRECISION,
-        const NumberFormat numberFormat = GENERAL_FORMAT,
-        const ExponentCase exponentCase = UPPER_CASE_EXPONENT,
-        const DecimalSeparator decimalSeparator = POINT_DECIMAL_SEPARATOR,
-        const ImaginaryOne imaginaryOne = IMAGINARY_ONE_I);
+        const int precision_ = MAX_IO_PRECISION,
+        const NumberFormat numberFormat_ = GENERAL_FORMAT,
+        const ExponentCase exponentCase_ = UPPER_CASE_EXPONENT,
+        const DecimalSeparator decimalSeparator_ = DOT_SEPARATOR,
+        const ImaginaryOne imaginaryOne_ = IMAGINARY_ONE_I)
+            : BigDecimalFormat(precision_, numberFormat_, exponentCase_,
+                               decimalSeparator_), imaginaryOne(imaginaryOne_)
+    {
+    }
 
+    /// Returns imaginary one as a character ('i' or 'j').
+    char imaginaryOneChar() const
+    {
+        return (imaginaryOne == IMAGINARY_ONE_I) ? 'i' : 'j';
+    }
 
-    ///////////////////////////////////////////////////////////////////////////
-    // Public functions
-
-    static ComplexFormat getDefault();
-
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Accessors
-
-    ImaginaryOne imaginaryOne() const;
-    void setImaginaryOne(const ImaginaryOne imaginaryOne);
-
-    char imaginaryOneChar() const;
-    wchar_t imaginaryOneWideChar() const;
-    tchar imaginaryOneTChar() const;
-
-private:
-
-    ///////////////////////////////////////////////////////////////////////////
-    // Properties
-
-    ImaginaryOne mImaginaryOne;      ///< Letter used to represent imaginary one
+    /// Returns imaginary one as a character ('i' or 'j').
+    tchar imaginaryOneTChar() const
+    {
+        return (imaginaryOne == IMAGINARY_ONE_I) ? _T('i') : _T('j');
+    }
 };
 
 

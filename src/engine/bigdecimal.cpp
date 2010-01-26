@@ -128,10 +128,9 @@ BigDecimal::BigDecimal()
 
     \exception ArithmeticException(CONVERSION_IMPOSSIBLE) Given \a str is incorrect.
 */
-BigDecimal::BigDecimal(const std::string & str,
-                       const BigDecimalFormat & format)
+BigDecimal::BigDecimal(const std::string & str)
 {
-    construct(str, format);
+    construct(str);
 }
 
 /*!
@@ -139,11 +138,10 @@ BigDecimal::BigDecimal(const std::string & str,
 
     \exception ArithmeticException(CONVERSION_IMPOSSIBLE) Given \a str is incorrect.
 */
-BigDecimal::BigDecimal(const char * str,
-                       const BigDecimalFormat & format)
+BigDecimal::BigDecimal(const char * str)
 {
     assert(str);
-    construct(str, format);
+    construct(str);
 }
 
 #if defined(MAXCALC_UNICODE)
@@ -153,12 +151,11 @@ BigDecimal::BigDecimal(const char * str,
 
     \exception ArithmeticException(CONVERSION_IMPOSSIBLE) Given \a str is incorrect.
 */
-BigDecimal::BigDecimal(const std::wstring & str,
-                       const BigDecimalFormat & format)
+BigDecimal::BigDecimal(const std::wstring & str)
 {
     std::string s;
     wideStringToString(str, s);
-    construct(s, format);
+    construct(s);
 }
 
 /*!
@@ -166,13 +163,12 @@ BigDecimal::BigDecimal(const std::wstring & str,
 
     \exception ArithmeticException(CONVERSION_IMPOSSIBLE) Given \a str is incorrect.
 */
-BigDecimal::BigDecimal(const wchar_t * str,
-                       const BigDecimalFormat & format)
+BigDecimal::BigDecimal(const wchar_t * str)
 {
     assert(str);
     std::string s;
     wideStringToString(std::wstring(str), s);
-    construct(s, format);
+    construct(s);
 }
 
 #endif // #if defined(MAXCALC_UNICODE)
@@ -208,7 +204,7 @@ BigDecimal::BigDecimal(const double num)
 {
     std::stringstream stream;
     stream << num;
-    construct(stream.str().c_str(), BigDecimalFormat::getDefault());
+    construct(stream.str().c_str());
 }
 
 
@@ -226,7 +222,7 @@ BigDecimal::BigDecimal(const double num)
 */
 std::string BigDecimal::toString(const BigDecimalFormat & format) const
 {
-    NEW_PRECISE_CONTEXT(context, format.precision());
+    NEW_PRECISE_CONTEXT(context, format.precision);
 
     decNumber num;
 
@@ -240,11 +236,11 @@ std::string BigDecimal::toString(const BigDecimalFormat & format) const
         checkContextStatus(context);
     }
 
-    size_t size = format.precision() + 14;
+    size_t size = format.precision + 14;
     char * str = new char[size];
 
     // Make conversion
-    decNumberToString(&num, str, size, (uint8_t)format.numberFormat());
+    decNumberToString(&num, str, size, (uint8_t)format.numberFormat);
 
     // Convert char* to std::string
     std::string s(str);
@@ -252,9 +248,15 @@ std::string BigDecimal::toString(const BigDecimalFormat & format) const
     delete[] str;
 
     // Replace 'E' with 'e' if needed
-    if (format.exponentCase() == BigDecimalFormat::LOWER_CASE_EXPONENT) {
+    if (format.exponentCase == BigDecimalFormat::LOWER_CASE_EXPONENT) {
         size_t expPos = s.find('E');
         if (expPos != std::string::npos) s.replace(expPos, 1, "e");
+    }
+
+    // Replace '.' with ',' if needed
+    if (format.decimalSeparator == BigDecimalFormat::COMMA_SEPARATOR) {
+        size_t expPos = s.find('.');
+        if (expPos != std::string::npos) s.replace(expPos, 1, ",");
     }
 
     return s;
@@ -1312,17 +1314,16 @@ BigDecimal::BigDecimal(const decNumber & num)
 
     \exception ArithmeticException(CONVERSION_IMPOSSIBLE) Given \a str is incorrect.
 */
-void BigDecimal::construct(const std::string & str,
-                           const BigDecimalFormat & format)
+void BigDecimal::construct(const std::string & str)
 {
     NEW_CONTEXT(context);
 
     std::string s = str;
-    if (format.decimalSeparator() != BigDecimalFormat::POINT_DECIMAL_SEPARATOR) {
-        size_t pos = str.find(format.decimalSeparatorChar());
-        if (pos != std::string::npos) {
-            s.replace(pos, 1, ".");
-        }
+
+    // Replace ',' decimal separator with '.'
+    size_t pos = str.find(_T(','));
+    if (pos != std::string::npos) {
+        s.replace(pos, 1, ".");
     }
 
     // Construct number

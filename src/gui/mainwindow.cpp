@@ -420,7 +420,7 @@ void MainWindow::onExpressionEntered()
     mHistoryBox->append(mInputBox->text());
 
     try {
-        mParser->parse();
+        ParserContext & context = mParser->parse();
 
         // No error during parsing, output result (otherwise an exception will be caught)
 
@@ -430,7 +430,7 @@ void MainWindow::onExpressionEntered()
         // Add result to history, clear input box, update variables
         mHistoryBox->setTextColor(Qt::darkGreen);
         mHistoryBox->append(indent +
-            QString::fromWCharArray(mParser->context().result().toWideString().c_str()));
+            QString::fromWCharArray(context.result().toWideString(context.numberFormat()).c_str()));
         mInputBox->clear();
         mInputBox->setFocus();
         updateVariablesList();

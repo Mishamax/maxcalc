@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -31,67 +31,13 @@ using namespace MaxCalcEngine;
 void ComplexTest::complexFormatDefault()
 {
     ComplexFormat actual;
-    ComplexFormat expected = ComplexFormat::getDefault();
 
-    COMPARE(actual.precision(), expected.precision());
-    COMPARE(actual.numberFormat(), expected.numberFormat());
-    COMPARE(actual.exponentCase(), expected.exponentCase());
-    COMPARE(actual.imaginaryOne(), expected.imaginaryOne());
-
-    COMPARE(actual.precision(), MAX_IO_PRECISION);
-    COMPARE(actual.numberFormat(), ComplexFormat::GENERAL_FORMAT);
-    COMPARE(actual.exponentCase(), ComplexFormat::UPPER_CASE_EXPONENT);
+    COMPARE(actual.precision, MAX_IO_PRECISION);
+    COMPARE(actual.numberFormat, ComplexFormat::GENERAL_FORMAT);
+    COMPARE(actual.exponentCase, ComplexFormat::UPPER_CASE_EXPONENT);
+    COMPARE(actual.decimalSeparator, ComplexFormat::DOT_SEPARATOR);
     COMPARE(actual.imaginaryOneChar(), 'i');
 }
-
-void ComplexTest::complexFormatCustom()
-{
-    ComplexFormat actual(MAX_IO_PRECISION,
-                         ComplexFormat::ENGINEERING_FORMAT,
-                         ComplexFormat::LOWER_CASE_EXPONENT,
-                         ComplexFormat::POINT_DECIMAL_SEPARATOR,
-                         ComplexFormat::IMAGINARY_ONE_J);
-
-    COMPARE(actual.precision(), MAX_IO_PRECISION);
-    COMPARE(actual.numberFormat(), ComplexFormat::ENGINEERING_FORMAT);
-    COMPARE(actual.exponentCase(), ComplexFormat::LOWER_CASE_EXPONENT);
-    COMPARE(actual.decimalSeparatorChar(), '.');
-    COMPARE(actual.imaginaryOneChar(), 'j');
-
-    actual = ComplexFormat(1, ComplexFormat::SCIENTIFIC_FORMAT,
-                           ComplexFormat::UPPER_CASE_EXPONENT,
-                           ComplexFormat::COMMA_DECIMAL_SEPARATOR,
-                           ComplexFormat::IMAGINARY_ONE_I);
-
-    COMPARE(actual.precision(), 1);
-    COMPARE(actual.numberFormat(), ComplexFormat::SCIENTIFIC_FORMAT);
-    COMPARE(actual.exponentCase(), ComplexFormat::UPPER_CASE_EXPONENT);
-    COMPARE(actual.decimalSeparatorChar(), ',');
-    COMPARE(actual.imaginaryOneChar(), 'i');
-}
-
-void ComplexTest::complexFormatAccessors()
-{
-    ComplexFormat actual;
-
-    actual.setPrecision(MAX_IO_PRECISION / 2);
-    actual.setNumberFormat(ComplexFormat::ENGINEERING_FORMAT);
-    actual.setExponentCase(ComplexFormat::LOWER_CASE_EXPONENT);
-
-    COMPARE(actual.precision(), MAX_IO_PRECISION / 2);
-    COMPARE(actual.numberFormat(), ComplexFormat::ENGINEERING_FORMAT);
-    COMPARE(actual.exponentCase(), ComplexFormat::LOWER_CASE_EXPONENT);
-
-    actual.setPrecision(MAX_IO_PRECISION);
-    COMPARE(actual.precision(), MAX_IO_PRECISION);
-
-    actual.setPrecision(1);
-    COMPARE(actual.precision(), 1);
-
-    actual.setImaginaryOne(ComplexFormat::IMAGINARY_ONE_J);
-    COMPARE(actual.imaginaryOneChar(), 'j');
-}
-
 
 void ComplexTest::fromString()
 {

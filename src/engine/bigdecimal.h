@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -43,15 +43,11 @@ public:
     // Constructors
     
     BigDecimal();
-    BigDecimal(const std::string & str, const BigDecimalFormat & format =
-        BigDecimalFormat::getDefault());
-    BigDecimal(const char * str, const BigDecimalFormat & format =
-        BigDecimalFormat::getDefault());
+    BigDecimal(const std::string & str);
+    BigDecimal(const char * str);
 #if defined(MAXCALC_UNICODE)
-    BigDecimal(const std::wstring & str, const BigDecimalFormat & format =
-        BigDecimalFormat::getDefault());
-    BigDecimal(const wchar_t * str, const BigDecimalFormat & format =
-        BigDecimalFormat::getDefault());
+    BigDecimal(const std::wstring & str);
+    BigDecimal(const wchar_t * str);
 #endif
     BigDecimal(const BigDecimal & num);
     BigDecimal(const int num);
@@ -62,14 +58,11 @@ public:
     ///////////////////////////////////////////////////////////////////////////
     // Conversion functions
     
-    std::string toString(const BigDecimalFormat & format =
-        BigDecimalFormat::getDefault()) const;
+    std::string toString(const BigDecimalFormat & format = BigDecimalFormat()) const;
 #if defined(MAXCALC_UNICODE)
-    std::wstring toWideString(const BigDecimalFormat & format =
-        BigDecimalFormat::getDefault()) const;
+    std::wstring toWideString(const BigDecimalFormat & format = BigDecimalFormat()) const;
 #endif
-    tstring toTString(const BigDecimalFormat & format =
-        BigDecimalFormat::getDefault()) const;
+    tstring toTString(const BigDecimalFormat & format = BigDecimalFormat()) const;
 
     int toInt() const;
     unsigned toUInt() const;
@@ -167,7 +160,7 @@ private:
     // Internal functions
     
     BigDecimal(const DecNumber::decNumber & num);
-    void construct(const std::string & str, const BigDecimalFormat & format);
+    void construct(const std::string & str);
 
     static void checkContextStatus(const DecNumber::decContext & context);
     static int compare(const DecNumber::decNumber & n1,
