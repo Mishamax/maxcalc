@@ -2,7 +2,7 @@ TEMPLATE = app
 TARGET = maxcalctest
 
 CONFIG += qt qtestlib debug_and_release warn_on console precompile_header link_prl
-PRE_TARGETDEPS += maxcalcengine
+PRE_TARGETDEPS += ../engine
 
 QT = core
 

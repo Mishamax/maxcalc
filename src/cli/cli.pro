@@ -3,7 +3,7 @@ TARGET = maxcalc
 
 CONFIG -= qt
 CONFIG += debug_and_release warn_on console precompile_header link_prl
-PRE_TARGETDEPS += maxcalcengine
+PRE_TARGETDEPS += ../engine
 
 HEADERS += pch.h ../engine/i18n.h
 SOURCES += main.cpp ../engine/i18n.cpp

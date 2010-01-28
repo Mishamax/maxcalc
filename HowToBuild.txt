@@ -83,7 +83,6 @@ Compiled binaries will be put to "src\debug" and "src\release" directories.
 Using CMake
 -----------
 
-
 You can also build MaxCalc using CMake v2.4.4 or higher (2.6 / 2.8 recommended).
 
 Execute in "src" directory:

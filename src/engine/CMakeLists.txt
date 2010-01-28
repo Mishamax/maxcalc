@@ -1,7 +1,6 @@
 
-# Macros
+# Remove MSVC compiler warnings about insecure functions
 if (MSVC)
-    # Remove MSVC compiler warnings about insecure functions
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif (MSVC)
 
@@ -10,9 +9,7 @@ set(SOURCES
     decNumber/decContext.cpp
     decNumber/decNumber.cpp
     bigdecimal.cpp
-    bigdecimalformat.cpp
     complex.cpp
-    complexformat.cpp
     parser.cpp
     parsercontext.cpp
     unicode.cpp

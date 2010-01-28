@@ -1,13 +1,20 @@
 v2.0.0 (IN DEVELOPMENT).
 
-    - Added: radians / degrees / grads support.
-    - Added: close to system tray and single instance mode (GUI).
+    - Added: Radians / degrees / grads support.
+    - Added: Comma decimal separator support.
+    - Added: Support for 'j' as imaginary one.
+    - Added: Close to system tray and single instance mode (GUI).
     - Added: Russian localization (GUI).
     - Added: Links to Web site and bug tracker (GUI).
-    - Changed: Added more error messages; improved internal exception system.
-    - Fixed: Bug with history highlighting (GUI).
-    - Internal: Improved program portability; added CMake build system support.
-    - Internal: Code greatly cleaned up.
+    - Added: Save settings to .ini file (GUI).
+    - Added: Command line arguments support on Linux (Console).
+    - Added: More error messages; improved internal exception system.
+    - Improved: Menu structure (GUI).
+    - Improved: Syntax of commands (Console).
+    - Fixed: History highlighting (GUI).
+    - Fixed: EOF handling (Console).
+    - Internal: Improved code portability; added CMake build system support.
+    - Internal: Code is greatly cleaned up.
 
 v1.9.3 Milestone-4 (19-Sep-2009).
 

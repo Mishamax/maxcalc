@@ -23,6 +23,7 @@
 // Qt
 #include <QSettings>
 #include <QTranslator>
+#include <QLocale>
 
 /*!
     \defgroup MaxCalcGui MaxCalc GUI
