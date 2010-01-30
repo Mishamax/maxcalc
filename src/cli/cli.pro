@@ -5,12 +5,14 @@ CONFIG -= qt
 CONFIG += debug_and_release warn_on console precompile_header link_prl
 PRE_TARGETDEPS += ../engine
 
-HEADERS += pch.h ../engine/i18n.h
-SOURCES += main.cpp ../engine/i18n.cpp
+include(../i18n/i18n.pri)
+
+HEADERS += pch.h
+SOURCES += main.cpp
 
 PRECOMPILED_HEADER = pch.h
 
-INCLUDEPATH += ../engine
+INCLUDEPATH += ../engine ../i18n
 
 CONFIG(debug, debug|release) {
     DEFINES += _DEBUG

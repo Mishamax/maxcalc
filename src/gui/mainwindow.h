@@ -52,6 +52,7 @@ public:
 signals:
     /// Emitted when expression is calculated by parser.
     void expressionCalculated();
+    void minimizeToTray();
 
 private:
 
@@ -75,6 +76,7 @@ private:
 
     // Settings
     QString mSettingFileName;
+    bool mMinimizeToTray;
     bool mCloseToTray;
     bool mShowFunctions;
     bool mShowVariables;
@@ -92,6 +94,7 @@ private:
     void printError(const QString & message);
 
 protected:
+    void changeEvent(QEvent * event);
     void closeEvent(QCloseEvent * event);
 
 private slots:
@@ -106,6 +109,8 @@ private slots:
     void onSettingsRadians();
     void onSettingsDegrees();
     void onSettingsGrads();
+    void onSettingsMinimizeToTray(bool active);
+    void onSettingsCloseToTray(bool active);
     void onSettingsSingleInstanceMode(bool active);
     void addRemoveTrayIcon(bool addIcon);
     void onTrayIconClicked(QSystemTrayIcon::ActivationReason reason);

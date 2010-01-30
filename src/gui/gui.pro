@@ -8,22 +8,21 @@ QT += network
 PRE_TARGETDEPS += ../engine
 
 include(qtsingleapplication/qtsingleapplication.pri)
+include(../i18n/i18n.pri)
 
 HEADERS += \
         pch.h \
         mainwindow.h \
         inputbox.h \
         aboutbox.h \
-        myaction.h \
-        ../engine/i18n.h
+        myaction.h
 
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
         inputbox.cpp \
         aboutbox.cpp \
-        myaction.cpp \
-        ../engine/i18n.cpp
+        myaction.cpp
 
 RESOURCES += resources.qrc
 
@@ -31,7 +30,7 @@ TRANSLATIONS = translations/maxcalcgui_ru.ts
 
 PRECOMPILED_HEADER = pch.h
 
-INCLUDEPATH += ../engine
+INCLUDEPATH += ../engine ../i18n
 
 CONFIG(debug, debug|release) {
     DEFINES += _DEBUG

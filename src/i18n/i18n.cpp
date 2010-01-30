@@ -18,6 +18,7 @@
  *****************************************************************************/
 
 #include "i18n.h"
+#include "unitconversion.h"
 
 #if defined(MAXCALC_NO_I18N)
 #define tr(s) _T(s)
@@ -25,11 +26,45 @@
 
 namespace MaxCalcEngine {
 
+/*!
+    \class I18n
+    \brief Internationalization helper for engine.
+
+    This class is compiled in frond-ends (both CLI and GUI) and contains
+    functions which are front-end-dependend and therefore cannot be compiled in
+    the engine.
+
+    The problem is that different front-ends use different i18n methods
+    (Qt or gettext or absence of i18n) and also different types to represent
+    translated strings (STL string, QString). However it is not convenient
+    to put string from engine into front-end because it will cause their
+    duplication in every front-end. To avoid this all such strings and
+    related functions are put into this class.
+
+    Translated string has \a i18n_string type which is defined as
+    \a MaxCalcEngine::tstring (no i18n) or \a QString (Qt i18n).
+
+    Behavior of this class depends on a macro with which it was compiled.
+    To disable i18n use \a MAXCALC_NO_I18N, to enable Qt i18n use
+    \a MAXCALC_QT_I18N.
+
+    When no i18n is used all strings are returned as they are.
+    For Qt all strings are translated using \a tr() macro with context \a I18n.
+
+    \ingroup MaxCalcEngine
+*/
+
+/*!
+    Returns string describing \a MaxCalcException.
+*/
 i18n_string I18n::maxCalcExceptionToString(MaxCalcException & /*ex*/)
 {
     return tr("Error in expression");
 }
 
+/*!
+    Returns string describing \a ParserException.
+*/
 i18n_string I18n::parserExceptionToString(ParserException & ex)
 {
     i18n_string str;
@@ -80,6 +115,9 @@ i18n_string I18n::parserExceptionToString(ParserException & ex)
     return str;
 }
 
+/*!
+    Returns string describing \a ArithmeticException.
+*/
 i18n_string I18n::arithmeticExceptionToString(ArithmeticException & ex)
 {
     i18n_string str;
@@ -112,6 +150,9 @@ i18n_string I18n::arithmeticExceptionToString(ArithmeticException & ex)
     return str;
 }
 
+/*!
+    Returns string describing \a InvalidArgumentException.
+*/
 i18n_string I18n::invalidArgumentExceptionToString(InvalidArgumentException & ex)
 {
     i18n_string arg;
@@ -158,6 +199,9 @@ i18n_string I18n::invalidArgumentExceptionToString(InvalidArgumentException & ex
     return addArg(tr("Invalid argument of function '%1' (%2)"), ex.what(), arg);
 }
 
+/*!
+    Replaces '%1' in \a str with \a arg.
+*/
 i18n_string I18n::addArg(const i18n_string str, const tstring & arg)
 {
 #if defined(MAXCALC_NO_I18N)
@@ -172,6 +216,9 @@ i18n_string I18n::addArg(const i18n_string str, const tstring & arg)
 #endif
 }
 
+/*!
+    Replaces '%1' and '%2' in \a str with \a arg1 and \a arg2.
+*/
 i18n_string I18n::addArg(const i18n_string str, const tstring & arg1,
                          const i18n_string arg2)
 {

@@ -26,7 +26,7 @@
 #include "aboutbox.h"
 #include "myaction.h"
 #include "inputbox.h"
-#include "../engine/i18n.h"
+#include "i18n.h"
 // Qt
 #include <QApplication>
 #include <QDesktopServices>
@@ -43,6 +43,7 @@
 #include <QPushButton>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QTimer>
 
 /// Indentation used for output
 static const QString indent = "    ";
@@ -106,10 +107,13 @@ MainWindow::~MainWindow()
 void MainWindow::readSettings()
 {
     QSettings settings(mSettingFileName, QSettings::IniFormat);
+    mMinimizeToTray = QSystemTrayIcon::isSystemTrayAvailable() ?
+                      settings.value("MinimizeToTray", false).toBool() :
+                      false;
     mCloseToTray = QSystemTrayIcon::isSystemTrayAvailable() ?
                    settings.value("CloseToTray", false).toBool() :
                    false;
-    addRemoveTrayIcon(mCloseToTray);
+    addRemoveTrayIcon(mCloseToTray || mMinimizeToTray);
     mShowFunctions = settings.value("ShowFunctions", true).toBool();
     mShowVariables = settings.value("ShowVariables", true).toBool();
     mSingleInstanceMode = settings.value("SingleInstanceMode", false).toBool();
@@ -123,6 +127,7 @@ void MainWindow::readSettings()
 void MainWindow::saveSettings()
 {
     QSettings settings(mSettingFileName, QSettings::IniFormat);
+    settings.setValue("MinimizeToTray", mMinimizeToTray);
     settings.setValue("CloseToTray", mCloseToTray);
     settings.setValue("ShowFunctions", mShowFunctions);
     settings.setValue("ShowVariables", mShowVariables);
@@ -262,11 +267,18 @@ void MainWindow::createMainMenu()
 
     if (QSystemTrayIcon::isSystemTrayAvailable()) {
         settings->addSeparator();
+        action = settings->addAction(tr("&Minimize to tray"));
+        action->setCheckable(true);
+        action->setChecked(mMinimizeToTray);
+        connect(action, SIGNAL(toggled(bool)), this,
+                SLOT(onSettingsMinimizeToTray(bool)));
         action = settings->addAction(tr("&Close to tray"));
         action->setCheckable(true);
         action->setChecked(mCloseToTray);
         connect(action, SIGNAL(toggled(bool)), this,
-                SLOT(addRemoveTrayIcon(bool)));
+                SLOT(onSettingsCloseToTray(bool)));
+        connect(this, SIGNAL(minimizeToTray()), this,
+                SLOT(onTrayMinimizeRestore()), Qt::QueuedConnection);
     }
     action = settings->addAction(tr("&Single instance mode"));
     action->setCheckable(true);
@@ -548,12 +560,28 @@ void MainWindow::onSettingsGrads()
 }
 
 /*!
+    Settings -> Minimize to tray command.
+*/
+void MainWindow::onSettingsMinimizeToTray(bool active)
+{
+    mMinimizeToTray = active;
+    addRemoveTrayIcon(mMinimizeToTray || mCloseToTray);
+}
+
+/*!
+    Settings -> Close to tray command.
+*/
+void MainWindow::onSettingsCloseToTray(bool active)
+{
+    mCloseToTray = active;
+    addRemoveTrayIcon(mMinimizeToTray || mCloseToTray);
+}
+
+/*!
     Adds or removes tray icon depending on \a addIcon parameter.
 */
 void MainWindow::addRemoveTrayIcon(bool addIcon)
 {
-    mCloseToTray = addIcon;
-
     if (addIcon && !mTrayIcon) {
         // Create tray icon
         mTrayIcon = new QSystemTrayIcon(QIcon(":/appicon.ico"));
@@ -567,7 +595,7 @@ void MainWindow::addRemoveTrayIcon(bool addIcon)
                                     SLOT(quit()));
         mTrayIcon->setContextMenu(mTrayContextMenu);
         mTrayIcon->show();
-    } else if (mTrayIcon) {
+    } else if (!addIcon && mTrayIcon) {
         // Delete tray icon
         mTrayIcon->hide();
         delete mTrayIcon;
@@ -585,6 +613,19 @@ void MainWindow::closeEvent(QCloseEvent * event)
     if (mCloseToTray) {
         onTrayIconClicked(QSystemTrayIcon::Trigger);
         event->ignore();
+    } else {
+        QMainWindow::closeEvent(event);
+    }
+}
+
+void MainWindow::changeEvent(QEvent * event)
+{
+    if (mMinimizeToTray && event->type() == QEvent::WindowStateChange &&
+        isMinimized()) {
+        event->ignore();
+        emit minimizeToTray();
+    } else {
+        QMainWindow::changeEvent(event);
     }
 }
 
@@ -594,12 +635,17 @@ void MainWindow::closeEvent(QCloseEvent * event)
 void MainWindow::onTrayIconClicked(QSystemTrayIcon::ActivationReason reason)
 {
     if (reason == QSystemTrayIcon::Trigger) {
-        setVisible(!isVisible());
-        if (isVisible()) {
+        if (!isVisible()) {
+            showNormal();
             activateWindow();
-            mTrayContextMenu->actions().at(0)->setText(tr("&Minimize"));
+            if (mTrayContextMenu) {
+                mTrayContextMenu->actions().at(0)->setText(tr("&Minimize"));
+            }
         } else {
-            mTrayContextMenu->actions().at(0)->setText(tr("&Restore"));
+            hide();
+            if (mTrayContextMenu) {
+                mTrayContextMenu->actions().at(0)->setText(tr("&Restore"));
+            }
         }
     }
 }
@@ -640,5 +686,4 @@ void MainWindow::activate(const QString & /*str*/)
         onTrayIconClicked(QSystemTrayIcon::Trigger);
     }
     activateWindow();
-    raise();
 }

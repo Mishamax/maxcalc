@@ -20,8 +20,12 @@
 #ifndef I18N_H
 #define I18N_H
 
+// Engine
 #include "unicode.h"
 #include "exceptions.h"
+#include "parsercontext.h"
+// STL
+#include <vector>
 
 #if defined(MAXCALC_QT_I18N)
 #include <QCoreApplication>
