@@ -1,8 +1,10 @@
 TEMPLATE = lib
 TARGET = maxcalcengine
 
+include(../maxcalc_config.pri)
+
 CONFIG -= qt
-CONFIG += staticlib debug_and_release warn_on precompile_header create_prl
+CONFIG += staticlib debug_and_release warn_on precompile_header
 
 include(decNumber/decNumber.pri)
 
@@ -41,5 +43,6 @@ CONFIG(release, debug|release) {
     DESTDIR = ../release
 }
 
-DEFINES += MAXCALC_UNICODE _CRT_SECURE_NO_WARNINGS
-win32:DEFINES += WIN32
+maxcalc_unicode:DEFINES += MAXCALC_UNICODE
+maxcalc_gettext:DEFINES += MAXCALC_GETTEXT
+win32:DEFINES += WIN32 _CRT_SECURE_NO_WARNINGS

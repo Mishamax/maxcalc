@@ -26,7 +26,6 @@
 #include "aboutbox.h"
 #include "myaction.h"
 #include "inputbox.h"
-#include "i18n.h"
 // Qt
 #include <QApplication>
 #include <QDesktopServices>
@@ -446,14 +445,8 @@ void MainWindow::onExpressionEntered()
         mInputBox->clear();
         mInputBox->setFocus();
         updateVariablesList();
-    } catch (ParserException & ex) {
-        printError(I18n::parserExceptionToString(ex));
-    } catch (InvalidArgumentException & ex) {
-        printError(I18n::invalidArgumentExceptionToString(ex));
-    } catch (ArithmeticException & ex) {
-        printError(I18n::arithmeticExceptionToString(ex));
     } catch (MaxCalcException & ex) {
-        printError(I18n::maxCalcExceptionToString(ex));
+        printError(QString::fromStdWString(ex.toString()));
     }
 }
 

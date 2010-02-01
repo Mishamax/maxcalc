@@ -2,13 +2,13 @@ TEMPLATE = app
 win32:TARGET = maxcalcwin
 unix:TARGET = maxcalcgui
 
-CONFIG += qt debug_and_release warn_on precompile_header link_prl
+include(../maxcalc_config.pri)
+
+CONFIG += qt debug_and_release warn_on precompile_header
 win32:CONFIG += windows
 QT += network
-PRE_TARGETDEPS += ../engine
 
 include(qtsingleapplication/qtsingleapplication.pri)
-include(../i18n/i18n.pri)
 
 HEADERS += \
         pch.h \
@@ -30,7 +30,7 @@ TRANSLATIONS = translations/maxcalcgui_ru.ts
 
 PRECOMPILED_HEADER = pch.h
 
-INCLUDEPATH += ../engine ../i18n
+INCLUDEPATH += ../engine
 
 CONFIG(debug, debug|release) {
     DEFINES += _DEBUG
@@ -43,7 +43,9 @@ CONFIG(release, debug|release) {
     LIBS += -L../release -lmaxcalcengine
 }
 
-DEFINES += MAXCALC_UNICODE MAXCALC_QT_I18N
-win32:DEFINES += WIN32
+win32:maxcalc_gettext:LIBS += -L../intl_win -lintl
 
-RC_FILE = resources.rc
+maxcalc_unicode:DEFINES += MAXCALC_UNICODE
+maxcalc_gettext:DEFINES += MAXCALC_GETTEXT
+win32:DEFINES += WIN32
+win32:RC_FILE = resources.rc

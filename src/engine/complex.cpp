@@ -190,10 +190,7 @@ std::string Complex::toString(const ComplexFormat & format) const
 */
 std::wstring Complex::toWideString(const ComplexFormat & format) const
 {
-    const std::string str = toString(format);
-    std::wstring wstr;
-    stringToWideString(str, wstr);
-    return wstr;
+    return stringToWideString(toString(format));
 }
 
 #endif // #if defined(MAXCALC_UNICODE)

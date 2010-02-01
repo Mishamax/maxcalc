@@ -3,13 +3,31 @@ project(MAXCALC)
 
 cmake_minimum_required(VERSION 2.4.4)
 
+### Options ###
+
+# Unicode build.
+# Note that only engine and cli can be built without unicode support
+# (so that basic console version can be created).
+# To build gui end test projects, unicode must be enabled.
+option(MAXCALC_UNICODE "Enable Unicode support (note that without unicode only console version (engine and cli) can be built)" ON)
+
+# GetText support.
+# This enables localization.
+option(MAXCALC_GETTEXT "Enable GetText localization support" ON)
+
+
 # To eliminate warning when linking to Qt4
 if (COMMAND cmake_policy)
     cmake_policy(SET CMP0003 NEW)
 endif (COMMAND cmake_policy)
 
 # Macros
-add_definitions(-DMAXCALC_UNICODE)
+if (MAXCALC_UNICODE)
+	add_definitions(-DMAXCALC_UNICODE)
+endif (MAXCALC_UNICODE)
+if (MAXCALC_GETTEXT)
+	add_definitions(-DMAXCALC_GETTEXT)
+endif (MAXCALC_GETTEXT)
 if (WIN32)
     add_definitions(-DWIN32)
 endif (WIN32)
@@ -17,5 +35,7 @@ endif (WIN32)
 
 add_subdirectory(engine)
 add_subdirectory(cli)
-add_subdirectory(gui)
-add_subdirectory(test)
+if (MAXCALC_UNICODE)
+	add_subdirectory(gui)
+	add_subdirectory(test)
+endif (MAXCALC_UNICODE)

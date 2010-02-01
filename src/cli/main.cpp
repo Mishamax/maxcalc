@@ -24,7 +24,6 @@
 #include "version.h"
 #include "unitconversion.h"
 #include "unicode.h"
-#include "i18n.h"
 // STL
 #include <iostream>
 #include <clocale>
@@ -304,14 +303,8 @@ void runParser(Parser & parser)
     try {
         ParserContext & context = parser.parse();
         tcout << context.result().toTString(context.numberFormat()).c_str();
-    } catch (ParserException & ex) {
-        tcout << I18n::parserExceptionToString(ex).c_str();
-    } catch (InvalidArgumentException & ex) {
-        tcout << I18n::invalidArgumentExceptionToString(ex).c_str();
-    } catch (ArithmeticException & ex) {
-        tcout << I18n::arithmeticExceptionToString(ex).c_str();
     } catch (MaxCalcException & ex) {
-        tcout << I18n::maxCalcExceptionToString(ex).c_str();
+        tcout << ex.toString().c_str();
     }
 }
 
@@ -330,7 +323,7 @@ bool parseCmdLineArgs(int argc, char ** argv)
         string str(expr);
         tstring tstr;
 #if defined(MAXCALC_UNICODE)
-        stringToWideString(str, tstr);
+        tstr = stringToWideString(str);
 #else
         tstr = str;
 #endif

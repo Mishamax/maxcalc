@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,8 +21,11 @@
 // Local
 #include "unicode.h"
 
-#if defined(MAXCALC_UNICODE)
 // STL
+#include <cassert>
+#include <cstdarg>
+#include <sstream>
+#if defined(MAXCALC_UNICODE)
 #include <cstdlib>
 #include <cassert>
 #include <cwctype>
@@ -40,22 +43,26 @@ using namespace std;
     Converts \a std::string to \a std::wstring.
     \ingroup MaxCalcEngine
 */
-void stringToWideString(const string & from, wstring & to)
+wstring stringToWideString(const string & from)
 {
     wchar_t * toStr = new wchar_t[from.length() + 1];
     mbstowcs(toStr, from.c_str(), from.length() + 1);
-    to.assign(toStr);
+    wstring str = toStr;
+    delete[] toStr;
+    return str;
 }
 
 /*!
     Converts \a std::wstring to \a std::string.
     \ingroup MaxCalcEngine
 */
-void wideStringToString(const wstring & from, string & to)
+string wideStringToString(const wstring & from)
 {
     char * toStr = new char[from.length() + 1];
     wcstombs(toStr, from.c_str(), from.length() + 1);
-    to.assign(toStr);
+    string str = toStr;
+    delete[] toStr;
+    return str;
 }
 
 #endif // #if defined(MAXCALC_UNICODE)
@@ -137,5 +144,30 @@ tstring & trim(tstring & str)
 {
     return rtrim(ltrim(str));
 }
+
+/*!
+    Replaces '%i' in \a str with arguments.
+*/
+tstring format(const tstring & str, const tstring * arg, ...)
+{
+    assert(arg);
+    va_list vl;
+    va_start(vl, arg);
+    tstring result = str;
+    size_t pos = tstring::npos;
+    const tstring * replacement = arg;
+    for (int i = 1; true; ++i) {
+        tstringstream ss;
+        ss << _T("%") << i;
+        pos = result.find(ss.str());
+        if (pos == tstring::npos) break;
+        assert(replacement);
+        result.replace(pos, 2, *replacement);
+        replacement = va_arg(vl, const tstring *);
+    }
+    va_end(vl);
+    return result;
+}
+
 
 } // namespace MaxCalcEngine

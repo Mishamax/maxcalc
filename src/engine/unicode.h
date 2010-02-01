@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -58,8 +58,8 @@ typedef std::wstring tstring;           ///< tstring definition
 
 
 // String conversion functions
-void stringToWideString(const std::string & from, std::wstring & to);
-void wideStringToString(const std::wstring & from, std::string & to);
+std::wstring stringToWideString(const std::string & from);
+std::string wideStringToString(const std::wstring & from);
 
 #else // #if defined(MAXCALC_UNICODE)
 
@@ -89,7 +89,6 @@ typedef std::string tstring;            ///< tstring definition
 // String functions
 #define tstrcmp strcmp
 
-
 #endif // #if defined(MAXCALC_UNICODE)
 
 
@@ -104,6 +103,29 @@ tstring & strToLower(tstring & str);
 tstring & ltrim(tstring & str);
 tstring & rtrim(tstring & str);
 tstring & trim(tstring & str);
+
+
+///////////////////////////////////////////////////////////////////////////
+// Localization
+
+#if defined(WIN32)
+#include "../intl_win/libintl.h"
+#else
+#include <libintl.h>
+#endif
+
+#if defined(MAXCALC_GETTEXT)
+#if defined(MAXCALC_UNICODE)
+#define _(str) stringToWideString(gettext(str)).c_str()
+#else
+#define _(str) gettext(str)
+#endif
+#else
+#define _(str) _T(str)
+#endif
+
+// Formatting function
+tstring format(const tstring & str, const tstring * arg, ...);
 
 } // namespace MaxCalcEngine
 

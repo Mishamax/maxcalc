@@ -1,15 +1,15 @@
 
-# Macros
-add_definitions(-DMAXCALC_NO_I18N)
-
 # Engine
 include_directories(${MAXCALC_SOURCE_DIR}/engine)
-link_directories(${MAXCALC_BINARY_DIR}/engine)
+if (WIN32 AND MAXCALC_GETTEXT)
+    link_directories(${MAXCALC_BINARY_DIR}/engine ${MAXCALC_SOURCE_DIR}/intl_win)
+else (WIN32 AND MAXCALC_GETTEXT)
+    link_directories(${MAXCALC_BINARY_DIR}/engine)
+endif (WIN32 AND MAXCALC_GETTEXT)
 
 # Files
 set(SOURCES
-    main.cpp
-    ../engine/i18n.cpp)
+    main.cpp)
 
 if (MSVC)
     set_source_files_properties(${SOURCES} PROPERTIES COMPILE_FLAGS /Zc:wchar_t-)
@@ -17,4 +17,8 @@ endif (MSVC)
 
 # Executable
 add_executable(maxcalc ${SOURCES})
-target_link_libraries(maxcalc engine)
+if (WIN32 AND MAXCALC_GETTEXT)
+    target_link_libraries(maxcalc engine intl)
+else (WIN32 AND MAXCALC_GETTEXT)
+    target_link_libraries(maxcalc engine)
+endif (WIN32 AND MAXCALC_GETTEXT)

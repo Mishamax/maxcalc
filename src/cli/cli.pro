@@ -1,18 +1,17 @@
 TEMPLATE = app
 TARGET = maxcalc
 
-CONFIG -= qt
-CONFIG += debug_and_release warn_on console precompile_header link_prl
-PRE_TARGETDEPS += ../engine
+include(../maxcalc_config.pri)
 
-include(../i18n/i18n.pri)
+CONFIG -= qt
+CONFIG += debug_and_release warn_on console precompile_header
 
 HEADERS += pch.h
 SOURCES += main.cpp
 
 PRECOMPILED_HEADER = pch.h
 
-INCLUDEPATH += ../engine ../i18n
+INCLUDEPATH += ../engine
 
 CONFIG(debug, debug|release) {
     DEFINES += _DEBUG
@@ -25,5 +24,8 @@ CONFIG(release, debug|release) {
     LIBS += -L../release -lmaxcalcengine
 }
 
-DEFINES += MAXCALC_UNICODE MAXCALC_NO_I18N
+win32:maxcalc_gettext:LIBS += -L../intl_win -lintl
+
+maxcalc_unicode:DEFINES += MAXCALC_UNICODE
+maxcalc_gettext:DEFINES += MAXCALC_GETTEXT
 win32:DEFINES += WIN32

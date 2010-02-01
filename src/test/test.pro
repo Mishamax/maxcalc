@@ -1,8 +1,9 @@
 TEMPLATE = app
 TARGET = maxcalctest
 
-CONFIG += qt qtestlib debug_and_release warn_on console precompile_header link_prl
-PRE_TARGETDEPS += ../engine
+include(../maxcalc_config.pri)
+
+CONFIG += qt qtestlib debug_and_release warn_on console precompile_header
 
 QT = core
 
@@ -36,6 +37,8 @@ CONFIG(release, debug|release) {
     LIBS += -L../release -lmaxcalcengine
 }
 
-DEFINES += MAXCALC_UNICODE
+win32:maxcalc_gettext:LIBS += -L../intl_win -lintl
 
+maxcalc_unicode:DEFINES += MAXCALC_UNICODE
+maxcalc_gettext:DEFINES += MAXCALC_GETTEXT
 win32:DEFINES += WIN32 _CRT_SECURE_NO_WARNINGS

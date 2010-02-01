@@ -30,7 +30,8 @@ namespace MaxCalcEngine {
 /// General MaxCalc engine exception.
 class MaxCalcException
 {
-    /// Additional info for exception.
+protected:
+    /// Additional info for the exception.
     const tstring mWhat;
 
 public:
@@ -38,8 +39,14 @@ public:
     
     MaxCalcException(const tstring & what) : mWhat(what) {}
 
-    /// Returns additional info for exception.
+    /// Returns additional info for the exception.
     virtual const tstring & what() const throw()
+    {
+        return mWhat;
+    }
+
+    /// Returns user-friendly string message for the exception.
+    virtual const tstring toString() const throw()
     {
         return mWhat;
     }
@@ -69,7 +76,7 @@ public:
         INVALID_UNIT_CONVERSION_ARGUMENT    ///< Invalid unit conversion argument (complex number).
     };
 
-private:
+protected:
     /// Reason for exception.
     Reasons mReason;
 
@@ -88,6 +95,56 @@ public:
     Reasons reason() const throw()
     {
         return mReason;
+    }
+
+    virtual const tstring toString() const throw()
+    {
+        tstring str;
+        switch (mReason)
+        {
+        case NO_PREVIOUS_RESULT:
+            str = _("Previous result does not exist");
+            break;
+        case UNKNOWN_TOKEN:
+            str = format(_("Unknown token '%1'"), &mWhat);
+            break;
+        case INVALID_NUMBER:
+            if (mWhat == _T("")) str = _("Invalid number");
+            else str = format(_("Invalid number '%1'"), &mWhat);
+            break;
+        case NO_CLOSING_BRACKET:
+            str = _("No closing bracket");
+            break;
+        case TOO_MANY_CLOSING_BRACKETS:
+            str = _("Too many closing brackets");
+            break;
+        case UNKNOWN_FUNCTION:
+            str = format(_("Unknown function '%1'"), &mWhat);
+            break;
+        case UNKNOWN_VARIABLE:
+            str = format(_("Unknown variable '%1'"), &mWhat);
+            break;
+        case INVALID_VARIABLE_NAME:
+            str = _("Invalid variable name");
+            break;
+        case INVALID_UNIT_CONVERSION_SYNTAX:
+            str = _("Invalid unit conversion syntax");
+            break;
+        case UNKNOWN_UNIT:
+            str = format(_("Unknown unit '%1'"), &mWhat);
+            break;
+        case UNKNOWN_UNIT_CONVERSION:
+            str = format(_("Unknown unit conversion '%1'"), &mWhat);
+            break;
+        case INVALID_UNIT_CONVERSION_ARGUMENT:
+            str = format(_("Complex argument in unit conversion '%1'"), &mWhat);
+            break;
+        case INVALID_EXPRESSION:
+        default:
+            str = _("Error in expression");
+            break;
+        }
+        return str;
     }
 };
 
@@ -111,7 +168,7 @@ public:
         INVALID_OPERATION_ON_FRACTIONAL_NUMBER  ///< Invalid operation on fractional number (like logical operation).
     };
 
-private:
+protected:
     /// Reason for exception.
     Reasons mReason;
 
@@ -125,6 +182,38 @@ public:
     Reasons reason() const throw()
     {
         return mReason;
+    }
+
+    virtual const tstring toString() const throw()
+    {
+        tstring str;
+        switch (mReason)
+        {
+        case ArithmeticException::DIVISION_BY_ZERO:
+            str = _("Division by zero");
+            break;
+        case ArithmeticException::DIVISION_IMPOSSIBLE:
+            str = _("Division impossible");
+            break;
+        case ArithmeticException::OVERFLOW:
+            str = _("Arithmetic overflow");
+            break;
+        case ArithmeticException::UNDERFLOW:
+            str = _("Arithmetic underflow");
+            break;
+        case ArithmeticException::CONVERSION_IMPOSSIBLE:
+            str = _("Invalid number");
+            break;
+        case ArithmeticException::INVALID_OPERATION_ON_FRACTIONAL_NUMBER:
+            str = _("Invalid operation on fractional number");
+            break;
+        case ArithmeticException::GENERIC:
+        default:
+            // This includes ArithmeticException::GENERIC
+            str = _("Arithmetic error");
+            break;
+        }
+        return str;
     }
 };
 
@@ -151,7 +240,7 @@ public:
         COMPLEX_ANGLE                       ///< Complex angle.
     };
 
-private:
+protected:
     /// Reason for exception.
     Reasons mReason;
 
@@ -166,6 +255,52 @@ public:
     Reasons reason() const throw()
     {
         return mReason;
+    }
+
+    virtual const tstring toString() const throw()
+    {
+        tstring arg;
+        switch (mReason)
+        {
+        case InvalidArgumentException::ZERO:
+            arg = _("zero");
+            break;
+        case InvalidArgumentException::NEGATIVE:
+            arg = _("negative number");
+            break;
+        case InvalidArgumentException::ZERO_OR_NEGATIVE:
+            arg = _("zero or negative number");
+            break;
+        case InvalidArgumentException::POWER_FUNCTION:
+            arg = _("zero or negative number in negative degree");
+            break;
+        case InvalidArgumentException::FACTORIAL_FUNCTION:
+            arg = _("negative, fractional or complex number");
+            break;
+        case InvalidArgumentException::TANGENT_FUNCTION:
+            arg = _("cos(argument) = 0");
+            break;
+        case InvalidArgumentException::COTANGENT_FUNCTION:
+            arg = _("sin(argument) = 0");
+            break;
+        case InvalidArgumentException::ARCSINE_FUNCTION:
+        case InvalidArgumentException::ARCCOSINE_FUNCTION:
+            arg = _("abs(argument) > 1");
+            break;
+        case InvalidArgumentException::HYPERBOLIC_TANGENT_FUNCTION:
+            arg = _("cosh(argument) = 0");
+            break;
+        case InvalidArgumentException::HYPERBOLIC_COTANGENT_FUNCTION:
+            arg = _("sinh(argument) = 0");
+            break;
+        case InvalidArgumentException::COMPLEX_ANGLE:
+            arg = _("cannot convert complex angle from/to radians");
+            break;
+        default:
+            // Add nothing
+            return format(_("Invalid argument of function '%1'"), &mWhat);
+        }
+        return format(_("Invalid argument of function '%1' (%2)"), &mWhat, &arg);
     }
 };
 

@@ -153,9 +153,7 @@ BigDecimal::BigDecimal(const char * str)
 */
 BigDecimal::BigDecimal(const std::wstring & str)
 {
-    std::string s;
-    wideStringToString(str, s);
-    construct(s);
+    construct(wideStringToString(str));
 }
 
 /*!
@@ -166,9 +164,7 @@ BigDecimal::BigDecimal(const std::wstring & str)
 BigDecimal::BigDecimal(const wchar_t * str)
 {
     assert(str);
-    std::string s;
-    wideStringToString(std::wstring(str), s);
-    construct(s);
+    construct(wideStringToString(str));
 }
 
 #endif // #if defined(MAXCALC_UNICODE)
@@ -273,10 +269,7 @@ std::string BigDecimal::toString(const BigDecimalFormat & format) const
 */
 std::wstring BigDecimal::toWideString(const BigDecimalFormat & format) const
 {
-    const std::string str = toString(format);
-    std::wstring wstr;
-    stringToWideString(str, wstr);
-    return wstr;
+    return stringToWideString(toString(format));
 }
 
 #endif // #if defined(MAXCALC_UNICODE)

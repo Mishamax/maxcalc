@@ -1,9 +1,4 @@
 
-# Remove MSVC compiler warnings about insecure functions
-if (MSVC)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-endif (MSVC)
-
 # Files
 set(SOURCES
     decNumber/decContext.cpp
@@ -17,6 +12,7 @@ set(SOURCES
     variables.cpp)
 
 if (MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
     set_source_files_properties(${SOURCES} PROPERTIES COMPILE_FLAGS /Zc:wchar_t-)
 endif (MSVC)
 

@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ AboutBox::AboutBox(QWidget * parent) : QDialog(parent)
     }
     labelText += _T("built: ");
     MaxCalcEngine::tstring date;
-    MaxCalcEngine::stringToWideString(__DATE__, date);
+    date = MaxCalcEngine::stringToWideString(__DATE__);
     labelText += date;
     labelText += _T(")<br>");
     labelText += MaxCalcEngine::COPYRIGHT;

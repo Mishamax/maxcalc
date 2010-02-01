@@ -639,7 +639,7 @@ Complex Parser::parseFunctions()
             else if (name == _T("log2") && args.size() == 1) return Complex::log2(args[0]);
             else if (name == _T("log10") && args.size() == 1) return Complex::log10(args[0]);
             else if (name == _T("exp") && args.size() == 1) return Complex::exp(args[0]);
-            else throw ParserException(ParserException::UNKNOWN_FUNCTION);
+            else throw ParserException(ParserException::UNKNOWN_FUNCTION, name);
 
             // TODO: correctly report known function with incorrect number
             // of arguments

@@ -10,13 +10,13 @@ if (WIN32)
     link_libraries(${QT_QTMAIN_LIBRARY})
 endif (WIN32)
 
-# Macros
-add_definitions(-DMAXCALC_QT_I18N)
-
-
 # Engine
 include_directories(${MAXCALC_SOURCE_DIR}/engine)
-link_directories(${MAXCALC_BINARY_DIR}/engine)
+if (WIN32 AND MAXCALC_GETTEXT)
+    link_directories(${MAXCALC_BINARY_DIR}/engine ${MAXCALC_SOURCE_DIR}/intl_win)
+else (WIN32 AND MAXCALC_GETTEXT)
+    link_directories(${MAXCALC_BINARY_DIR}/engine)
+endif (WIN32 AND MAXCALC_GETTEXT)
 
 
 # Files
@@ -26,7 +26,6 @@ set(SOURCES
     main.cpp
     mainwindow.cpp
     myaction.cpp
-    ../engine/i18n.cpp
     qtsingleapplication/qtsingleapplication.cpp
     qtsingleapplication/qtlocalpeer.cpp
     qtsingleapplication/qtlockedfile.cpp)
@@ -36,13 +35,10 @@ set(MOC_HEADERS
     inputbox.h
     mainwindow.h
     myaction.h
-    ../engine/i18n.h
     qtsingleapplication/qtsingleapplication.h
     qtsingleapplication/qtlocalpeer.h
     qtsingleapplication/qtlockedfile.h)
 
-set(LANG translations/maxcalcgui_ru.ts)
-	
 if (WIN32)
     set (SOURCES ${SOURCES} qtsingleapplication/qtlockedfile_win.cpp)
     set (WIN32_RESOURCES resources.rc)
@@ -56,14 +52,17 @@ endif (MSVC)
 
 qt4_add_resources(QT_RESOURCES resources.qrc)
 qt4_wrap_cpp(MOC_SOURCES ${MOC_HEADERS})
-qt4_add_translation(TRANSLATIONS ${LANG})
 
 # Executable
 if (WIN32)
     # WIN32 is specified on Windows to remove console
-    add_executable(maxcalcwin WIN32 ${SOURCES} ${MOC_SOURCES} ${WIN32_RESOURCES} ${QT_RESOURCES} ${TRANSLATIONS})
-    target_link_libraries(maxcalcwin ${QT_LIBRARIES} engine)
+    add_executable(maxcalcwin WIN32 ${SOURCES} ${MOC_SOURCES} ${WIN32_RESOURCES} ${QT_RESOURCES})
+	if (MAXCALC_GETTEXT)
+		target_link_libraries(maxcalcwin ${QT_LIBRARIES} engine intl)
+	else (MAXCALC_GETTEXT)
+		target_link_libraries(maxcalcwin ${QT_LIBRARIES} engine)
+	endif (MAXCALC_GETTEXT)
 else (WIN32)
-    add_executable(maxcalcgui ${SOURCES} ${MOC_SOURCES} ${QT_RESOURCES} ${TRANSLATIONS})
+    add_executable(maxcalcgui ${SOURCES} ${MOC_SOURCES} ${QT_RESOURCES})
     target_link_libraries(maxcalcgui ${QT_LIBRARIES} engine)
 endif (WIN32)
