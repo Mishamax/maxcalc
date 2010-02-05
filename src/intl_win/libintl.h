@@ -308,7 +308,7 @@ extern char *bind_textdomain_codeset (const char *__domainname,
    or gettext() but for which the format string could be the return value
    of _() or gettext() need to add this #include.  Oh well.  */
 
-#if !0
+#if 0
 
 #include <stdio.h>
 #include <stddef.h>
@@ -328,7 +328,7 @@ extern int fprintf (FILE *, const char *, ...);
 extern int vfprintf (FILE *, const char *, va_list);
 
 #undef printf
-#if defined __NetBSD__ || defined __BEOS__ || defined __CYGWIN__
+#if defined __NetBSD__ || defined __BEOS__ || defined __CYGWIN__ || defined __MINGW32__
 /* Don't break __attribute__((format(printf,M,N))).
    This redefinition is only possible because the libc in NetBSD, Cygwin,
    mingw does not have a function __printf__.  */

@@ -36,8 +36,7 @@ set(MOC_HEADERS
     mainwindow.h
     myaction.h
     qtsingleapplication/qtsingleapplication.h
-    qtsingleapplication/qtlocalpeer.h
-    qtsingleapplication/qtlockedfile.h)
+    qtsingleapplication/qtlocalpeer.h)
 
 if (WIN32)
     set (SOURCES ${SOURCES} qtsingleapplication/qtlockedfile_win.cpp)

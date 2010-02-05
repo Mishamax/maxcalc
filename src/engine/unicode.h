@@ -108,21 +108,26 @@ tstring & trim(tstring & str);
 ///////////////////////////////////////////////////////////////////////////
 // Localization
 
+
+#if defined(MAXCALC_GETTEXT)
+
 #if defined(WIN32)
 #include "../intl_win/libintl.h"
 #else
 #include <libintl.h>
 #endif
 
-#if defined(MAXCALC_GETTEXT)
 #if defined(MAXCALC_UNICODE)
 #define _(str) stringToWideString(gettext(str)).c_str()
 #else
 #define _(str) gettext(str)
 #endif
-#else
+
+#else // defined(MAXCALC_GETTEXT)
+
 #define _(str) _T(str)
-#endif
+
+#endif // defined(MAXCALC_GETTEXT)
 
 // Formatting function
 tstring format(const tstring & str, const tstring * arg, ...);

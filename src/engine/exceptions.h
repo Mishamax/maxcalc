@@ -159,11 +159,11 @@ public:
     /// Reasons for exception.
     enum Reasons
     {
-        GENERIC,                            ///< Generic reason (DEC_Invalid_context or DEC_Invalid_operation).
+        GENERIC_REASON,                     ///< Generic reason (DEC_Invalid_context or DEC_Invalid_operation).
         DIVISION_BY_ZERO,                   ///< Division by zero (DEC_Division_by_zero or DEC_Division_undefined).
         DIVISION_IMPOSSIBLE,                ///< Division impossible (DEC_Division_impossible).
-        OVERFLOW,                           ///< Arithmetic overflow (DEC_Overflow).
-        UNDERFLOW,                          ///< Arithmetic underflow (DEC_Overflow).
+        ARITHMETIC_OVERFLOW,                ///< Arithmetic overflow (DEC_Overflow).
+        ARITHMETIC_UNDERFLOW,               ///< Arithmetic underflow (DEC_Overflow).
         CONVERSION_IMPOSSIBLE,              ///< Conversion to different type is impossible (DEC_Conversion_syntax).
         INVALID_OPERATION_ON_FRACTIONAL_NUMBER  ///< Invalid operation on fractional number (like logical operation).
     };
@@ -195,10 +195,10 @@ public:
         case ArithmeticException::DIVISION_IMPOSSIBLE:
             str = _("Division impossible");
             break;
-        case ArithmeticException::OVERFLOW:
+        case ArithmeticException::ARITHMETIC_OVERFLOW:
             str = _("Arithmetic overflow");
             break;
-        case ArithmeticException::UNDERFLOW:
+        case ArithmeticException::ARITHMETIC_UNDERFLOW:
             str = _("Arithmetic underflow");
             break;
         case ArithmeticException::CONVERSION_IMPOSSIBLE:
@@ -207,9 +207,8 @@ public:
         case ArithmeticException::INVALID_OPERATION_ON_FRACTIONAL_NUMBER:
             str = _("Invalid operation on fractional number");
             break;
-        case ArithmeticException::GENERIC:
+        case ArithmeticException::GENERIC_REASON:
         default:
-            // This includes ArithmeticException::GENERIC
             str = _("Arithmetic error");
             break;
         }
