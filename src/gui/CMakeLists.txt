@@ -46,7 +46,7 @@ else (WIN32)
 endif (WIN32)
 
 if (MSVC)
-    set_source_files_properties(${SOURCES} ${MOC_SOURCES} PROPERTIES COMPILE_FLAGS /Zc:wchar_t-)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:wchar_t-")
 endif (MSVC)
 
 qt4_add_resources(QT_RESOURCES resources.qrc)

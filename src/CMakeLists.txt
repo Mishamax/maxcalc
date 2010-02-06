@@ -13,7 +13,7 @@ option(MAXCALC_UNICODE "Enable Unicode support (note that without unicode only c
 
 # GetText support.
 # This enables localization.
-option(MAXCALC_GETTEXT "Enable GetText localization support" ON)
+option(MAXCALC_GETTEXT "Enable GetText localization support" OFF)
 
 
 # To eliminate warning when linking to Qt4

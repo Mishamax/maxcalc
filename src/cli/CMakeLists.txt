@@ -11,12 +11,20 @@ endif (WIN32 AND MAXCALC_GETTEXT)
 set(SOURCES
     main.cpp)
 
+if (WIN32)
+    set (WIN32_RESOURCES resources.rc)
+endif (WIN32)
+
 if (MSVC)
-    set_source_files_properties(${SOURCES} PROPERTIES COMPILE_FLAGS /Zc:wchar_t-)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:wchar_t-")
 endif (MSVC)
 
 # Executable
-add_executable(maxcalc ${SOURCES})
+if (WIN32)
+    add_executable(maxcalc ${SOURCES} ${WIN32_RESOURCES})
+else (WIN32)
+    add_executable(maxcalc ${SOURCES})
+endif (WIN32)
 if (WIN32 AND MAXCALC_GETTEXT)
     target_link_libraries(maxcalc engine intl)
 else (WIN32 AND MAXCALC_GETTEXT)

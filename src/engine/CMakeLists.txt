@@ -13,7 +13,7 @@ set(SOURCES
 
 if (MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-    set_source_files_properties(${SOURCES} PROPERTIES COMPILE_FLAGS /Zc:wchar_t-)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:wchar_t-")
 endif (MSVC)
 
 # Library

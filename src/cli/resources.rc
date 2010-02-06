@@ -1,7 +1,5 @@
 #include "winver.h"
 
-IDI_ICON1               ICON    DISCARDABLE     "appicon.ico"
-
 VS_VERSION_INFO VERSIONINFO
  FILEVERSION 2,0,0,0
  PRODUCTVERSION 2,0,0,0
@@ -21,8 +19,8 @@ BEGIN
         BEGIN
             VALUE "FileDescription", "MaxCalc Calculator"
             VALUE "FileVersion", "2.0.0.0"
-            VALUE "InternalName", "maxcalcwin.exe"
-            VALUE "OriginalFilename", "maxcalcwin.exe"
+            VALUE "InternalName", "maxcalc.exe"
+            VALUE "OriginalFilename", "maxcalc.exe"
             VALUE "LegalCopyright", "Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)"
             VALUE "ProductName", "MaxCalc"
             VALUE "ProductVersion", "2.0.0.0"

@@ -142,6 +142,9 @@ void MainWindow::createUi()
 {
     // Set window parameters
     setWindowTitle("MaxCalc");
+#if !defined(WIN32)
+    setWindowIcon(QIcon(":/appicon.png"));
+#endif
     setMinimumSize(500, 350);
     resize(750, 550);
 
@@ -577,7 +580,7 @@ void MainWindow::addRemoveTrayIcon(bool addIcon)
 {
     if (addIcon && !mTrayIcon) {
         // Create tray icon
-        mTrayIcon = new QSystemTrayIcon(QIcon(":/appicon.ico"));
+        mTrayIcon = new QSystemTrayIcon(QIcon(":/appicon.png"));
         connect(mTrayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
                 this, SLOT(onTrayIconClicked(QSystemTrayIcon::ActivationReason)));
         mTrayIcon->setToolTip("MaxCalc");
