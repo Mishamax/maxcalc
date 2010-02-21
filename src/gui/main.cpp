@@ -19,11 +19,16 @@
 
 // Local
 #include "mainwindow.h"
-#include "qtsingleapplication/qtsingleapplication.h"
 // Qt
 #include <QSettings>
 #include <QTranslator>
 #include <QLocale>
+
+#if defined(MAXCALC_SINGLE_INSTANCE_MODE)
+#include "qtsingleapplication/qtsingleapplication.h"
+#else
+#include <QApplication>
+#endif
 
 /*!
     \defgroup MaxCalcGui MaxCalc GUI
@@ -31,6 +36,7 @@
 
 int main(int argc, char ** argv)
 {
+#if defined(MAXCALC_SINGLE_INSTANCE_MODE)
     QtSingleApplication app(argc, argv);
 
     QString settingsFile = QApplication::applicationDirPath() + "/maxcalc.ini";
@@ -41,13 +47,20 @@ int main(int argc, char ** argv)
         app.sendMessage("");
         return 0;
     }
+#else
+    QApplication app(argc, argv);
+#endif
 
     QTranslator translator;
     translator.load(QString("maxcalcgui_") + QLocale::system().name());
     app.installTranslator(&translator);
 
     MainWindow mainWindow;
+
+#if defined(MAXCALC_SINGLE_INSTANCE_MODE)
     app.setActivationWindow(&mainWindow);
+#endif
+
     QObject::connect(&app, SIGNAL(messageReceived(const QString &)),
                      &mainWindow, SLOT(activate(const QString &)));
     mainWindow.show();

@@ -115,7 +115,9 @@ void MainWindow::readSettings()
     addRemoveTrayIcon(mCloseToTray || mMinimizeToTray);
     mShowFunctions = settings.value("ShowFunctions", true).toBool();
     mShowVariables = settings.value("ShowVariables", true).toBool();
+#if defined(MAXCALC_SINGLE_INSTANCE_MODE)
     mSingleInstanceMode = settings.value("SingleInstanceMode", false).toBool();
+#endif
     mParser->context().setAngleUnit(
             (ParserContext::AngleUnit)settings.value("AngleUnit", 0).toInt());
 }
@@ -130,7 +132,9 @@ void MainWindow::saveSettings()
     settings.setValue("CloseToTray", mCloseToTray);
     settings.setValue("ShowFunctions", mShowFunctions);
     settings.setValue("ShowVariables", mShowVariables);
+#if defined(MAXCALC_SINGLE_INSTANCE_MODE)
     settings.setValue("SingleInstanceMode", mSingleInstanceMode);
+#endif
     settings.setValue("AngleUnit", mParser->context().angleUnit());
     settings.sync();
 }
@@ -282,11 +286,14 @@ void MainWindow::createMainMenu()
         connect(this, SIGNAL(minimizeToTray()), this,
                 SLOT(onTrayMinimizeRestore()), Qt::QueuedConnection);
     }
+
+#if defined(MAXCALC_SINGLE_INSTANCE_MODE)
     action = settings->addAction(tr("&Single instance mode"));
     action->setCheckable(true);
     action->setChecked(mSingleInstanceMode);
     connect(action, SIGNAL(toggled(bool)), this,
             SLOT(onSettingsSingleInstanceMode(bool)));
+#endif
 
     // Unit conversion menu
 
@@ -664,6 +671,7 @@ void MainWindow::onDockWidgetToggled(bool /*visible*/)
     mShowVariables = mVariablesListWrapper->isVisible();
 }
 
+#if defined(MAXCALC_SINGLE_INSTANCE_MODE)
 /*!
     Settings -> Single instance mode command.
 */
@@ -672,6 +680,7 @@ void MainWindow::onSettingsSingleInstanceMode(bool active)
     mSingleInstanceMode = active;
     saveSettings();
 }
+#endif
 
 /*!
     Called when single instance window needs to be activated.

@@ -2,7 +2,12 @@
 # Add Qt
 set(QT_MIN_VERSION "4.2.0")
 find_package(Qt4 REQUIRED)
+
+# Enable single instance mode only on Qt 4.4 and higher
+if (${QT_VERSION_MINOR} AND ${QT_VERSION_MINOR} GREATER 3)
 set(QT_USE_QTNETWORK true)
+endif (${QT_VERSION_MINOR} AND ${QT_VERSION_MINOR} GREATER 3)
+
 include(${QT_USE_FILE})
 
 # It's needed to solve linking problems under Windows when WIN32 option is specified in ADD_EXECUTABLE()
@@ -18,31 +23,43 @@ else (WIN32 AND MAXCALC_GETTEXT)
     link_directories(${MAXCALC_BINARY_DIR}/engine)
 endif (WIN32 AND MAXCALC_GETTEXT)
 
-
 # Files
 set(SOURCES
     aboutbox.cpp
     inputbox.cpp
     main.cpp
     mainwindow.cpp
-    myaction.cpp
-    qtsingleapplication/qtsingleapplication.cpp
-    qtsingleapplication/qtlocalpeer.cpp
-    qtsingleapplication/qtlockedfile.cpp)
+    myaction.cpp)
 
 set(MOC_HEADERS
     aboutbox.h
     inputbox.h
     mainwindow.h
-    myaction.h
-    qtsingleapplication/qtsingleapplication.h
-    qtsingleapplication/qtlocalpeer.h)
+    myaction.h)
+
+# Enable single instance mode only on Qt 4.4 and higher
+if (${QT_VERSION_MINOR} AND ${QT_VERSION_MINOR} GREATER 3)
+
+    set (SOURCES ${SOURCES}
+        qtsingleapplication/qtsingleapplication.cpp
+        qtsingleapplication/qtlocalpeer.cpp
+        qtsingleapplication/qtlockedfile.cpp)
+    set(MOC_HEADERS ${MOC_HEADERS}
+        qtsingleapplication/qtsingleapplication.h
+        qtsingleapplication/qtlocalpeer.h)
+
+    if (WIN32)
+        set (SOURCES ${SOURCES} qtsingleapplication/qtlockedfile_win.cpp)
+    else (WIN32)
+        set (SOURCES ${SOURCES} qtsingleapplication/qtlockedfile_unix.cpp)
+    endif (WIN32)
+    
+    add_definitions(-DMAXCALC_SINGLE_INSTANCE_MODE)
+
+endif (${QT_VERSION_MINOR} AND ${QT_VERSION_MINOR} GREATER 3)
 
 if (WIN32)
-    set (SOURCES ${SOURCES} qtsingleapplication/qtlockedfile_win.cpp)
     set (WIN32_RESOURCES resources.rc)
-else (WIN32)
-    set (SOURCES ${SOURCES} qtsingleapplication/qtlockedfile_unix.cpp)
 endif (WIN32)
 
 if (MSVC)
@@ -56,11 +73,11 @@ qt4_wrap_cpp(MOC_SOURCES ${MOC_HEADERS})
 if (WIN32)
     # WIN32 is specified on Windows to remove console
     add_executable(maxcalcwin WIN32 ${SOURCES} ${MOC_SOURCES} ${WIN32_RESOURCES} ${QT_RESOURCES})
-	if (MAXCALC_GETTEXT)
-		target_link_libraries(maxcalcwin ${QT_LIBRARIES} engine intl)
-	else (MAXCALC_GETTEXT)
-		target_link_libraries(maxcalcwin ${QT_LIBRARIES} engine)
-	endif (MAXCALC_GETTEXT)
+    if (MAXCALC_GETTEXT)
+        target_link_libraries(maxcalcwin ${QT_LIBRARIES} engine intl)
+    else (MAXCALC_GETTEXT)
+        target_link_libraries(maxcalcwin ${QT_LIBRARIES} engine)
+    endif (MAXCALC_GETTEXT)
 else (WIN32)
     add_executable(maxcalcgui ${SOURCES} ${MOC_SOURCES} ${QT_RESOURCES})
     target_link_libraries(maxcalcgui ${QT_LIBRARIES} engine)

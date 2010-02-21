@@ -80,7 +80,9 @@ private:
     bool mCloseToTray;
     bool mShowFunctions;
     bool mShowVariables;
+#if defined(MAXCALC_SINGLE_INSTANCE_MODE)
     bool mSingleInstanceMode;
+#endif
 
     // Parser
     MaxCalcEngine::Parser * mParser;
@@ -111,7 +113,9 @@ private slots:
     void onSettingsGrads();
     void onSettingsMinimizeToTray(bool active);
     void onSettingsCloseToTray(bool active);
+#if defined(MAXCALC_SINGLE_INSTANCE_MODE)
     void onSettingsSingleInstanceMode(bool active);
+#endif
     void addRemoveTrayIcon(bool addIcon);
     void onTrayIconClicked(QSystemTrayIcon::ActivationReason reason);
     void onTrayMinimizeRestore();
