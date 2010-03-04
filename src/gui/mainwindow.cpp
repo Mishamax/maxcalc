@@ -42,7 +42,6 @@
 #include <QPushButton>
 #include <QMenuBar>
 #include <QMessageBox>
-#include <QTimer>
 
 /// Indentation used for output
 static const QString indent = "    ";
@@ -679,6 +678,10 @@ void MainWindow::onSettingsSingleInstanceMode(bool active)
 {
     mSingleInstanceMode = active;
     saveSettings();
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("MaxCalc");
+    msgBox.setText(tr("Please restart the program (File -> Quit) for this setting to take effect."));
+    msgBox.exec();
 }
 #endif
 

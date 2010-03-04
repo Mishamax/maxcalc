@@ -21,8 +21,6 @@
 #include "mainwindow.h"
 // Qt
 #include <QSettings>
-#include <QTranslator>
-#include <QLocale>
 
 #if defined(MAXCALC_SINGLE_INSTANCE_MODE)
 #include "qtsingleapplication/qtsingleapplication.h"
@@ -50,10 +48,6 @@ int main(int argc, char ** argv)
 #else
     QApplication app(argc, argv);
 #endif
-
-    QTranslator translator;
-    translator.load(QString("maxcalcgui_") + QLocale::system().name());
-    app.installTranslator(&translator);
 
     MainWindow mainWindow;
 

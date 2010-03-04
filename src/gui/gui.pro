@@ -30,8 +30,6 @@ SOURCES += \
 
 RESOURCES += resources.qrc
 
-TRANSLATIONS = translations/maxcalcgui_ru.ts
-
 PRECOMPILED_HEADER = pch.h
 
 INCLUDEPATH += ../engine
