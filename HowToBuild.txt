@@ -10,87 +10,45 @@ To get the latest development version, use Mercurial:
     hg clone https://maxcalc.googlecode.com/hg/ maxcalc
 
 
-Building on Windows
-===================
+Prerequisites
+=============
 
-Prerequisites:
-
- * Qt v4.2 or higher (4.4 or higher is recommended) built with the same
-    environment as MaxCalc.
-
- * You can use MSVC or MinGW compiler:
-
-  * Microsoft Visual Studio 2005 or 2008 (Express Edition should also work
-        if you install Platform SDK).
-  * MinGW with gcc4 (gcc3 doesn't work due to bad Unicode support). If you use
-        official Qt SDK, you need version 4.6 because earlier versions include
-        old gcc3 compiler.
+ * Qt v4.2 or higher (4.4 or higher is recommended to enable all features).
+ * Compiler: gcc 4 or Microsoft Visual Studio 2005 / 2008 / 2010.
 
 
-Using qmake (recommended)
-------------------------
+Variant 1: Using qmake
+======================
 
-To build the sources, execute in "src" directory from Visual Studio Command
-Prompt (or MinGW environment):
-
-    qmake
-    nmake debug OR nmake release
-
-If you're using MinGW, replace "nmake" with "mingw32-make".
-Compiled binaries will be put to "src\debug" and "src\release" directories.
-
-Using CMake
------------
-
-You can also build MaxCalc using CMake v2.4.4 or higher (2.6 / 2.8 recommended).
-
-Using Visual Studio (from Visual Studio Command Prompt) execute these commands
-in "src" directory:
-
-    mkdir build
-    cd build
-    cmake -G "NMake Makefiles" ..
-    nmake
-
-Using MinGW (from MinGW environment):
-
-    mkdir build
-    cd build
-    cmake -G "MinGW Makefiles" ..
-    mingw32-make
-
-This will create debug build.
-To create Release build add "-D CMAKE_BUILD_TYPE=Release" to "cmake" command.
-
-
-Building on Linux
-=================
-
-Prerequisites:
- * Qt v4.2 or higher (4.4 or higher is recommended).
- * gcc 4.
-
-Using qmake (recommended)
--------------------------
-
-To build the sources, execute in "src" directory:
-
-    qmake
-    make debug OR make release
-
-Compiled binaries will be put to "src\debug" and "src\release" directories.
-
-Using CMake
------------
-
-You can also build MaxCalc using CMake v2.4.4 or higher (2.6 / 2.8 recommended).
+Change build options, if neccessary, in `maxcalc_config.pri` file.
 
 Execute in "src" directory:
 
-    mkdir build
-    cd build
-    cmake -G "Unix Makefiles" ..
+    qmake
     make
 
-This will create debug build.
-To create Release build add "-D CMAKE_BUILD_TYPE=Release" to "cmake" command.
+If you're using Visual Studio, replace "make" with "nmake"
+If you're using MinGW, replace "make" with "mingw32-make".
+You can specify build type by adding `CONFIG += debug`, `CONFIG += release`
+or `CONFIG += debug_and_release` parameter to `qmake`.
+Compiled binaries will be put in `src\debug` or `src\release` directories.
+
+
+Variant 2: Using CMake
+======================
+
+You can also build MaxCalc using CMake v2.4.4 or higher (2.6 / 2.8 recommended).
+
+You need to use separate directory for build:
+
+    cd src
+    mkdir build
+    cd build
+    cmake ..
+    make
+
+If you're using Visual Studio, replace `make` with `nmake`.
+If you're using MinGW, replace `make` with `mingw32-make`.
+To change build options, use `cmake -i ..` instead of plain cmake (or use `cmake-gui`).
+You may need to specify generator by adding `-G "<generator>"` (see `cmake -h` for help).
+

@@ -23,6 +23,7 @@
 
 // Local
 #include "precision.h"
+#include "unicode.h"
 
 namespace MaxCalcEngine {
 
@@ -84,6 +85,18 @@ public:
             : precision(precision_), numberFormat(numberFormat_),
               exponentCase(exponentCase_), decimalSeparator(decimalSeparator_)
     {
+    }
+
+    /// Returns decimal separator as a character ('.' or ',').
+    char decimalSeparatorChar() const
+    {
+        return (decimalSeparator == DOT_SEPARATOR) ? '.' : ',';
+    }
+
+    /// Returns decimal separator as a character ('.' or ',').
+    tchar decimalSeparatorTChar() const
+    {
+        return (decimalSeparator == DOT_SEPARATOR) ? _T('.') : _T(',');
     }
 };
 

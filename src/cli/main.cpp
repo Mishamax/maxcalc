@@ -30,6 +30,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <vector>
+#include <sstream>
 
 using namespace std;
 using namespace MaxCalcEngine;
@@ -171,7 +172,8 @@ void printHelp()
     tcout << indent << _T("#consts - Display list of built-in constants.") << endl;
     tcout << indent << _T("#vars - Display list of variables.") << endl;
     tcout << indent << _T("#del [<var>] - Delete <var> (all variables if no argument specified).") << endl;
-    tcout << indent << _T("#angles [radians / degrees / grads] - Display / set current angle unit.") << endl;
+    tcout << indent << _T("#angles [radians / degrees / grads] - Display / set angle unit.") << endl;
+    tcout << indent << _T("#output [, / . / i / j / <precision>] - Display / set output settings.") << endl;
     tcout << indent << _T("#ver - Display version information.") << endl;
     tcout << indent << _T("help - Display this help.") << endl;
     tcout << indent << _T("exit - Close the program.") << endl;
@@ -201,6 +203,14 @@ vector<tstring> splitCommand(const tstring & cmd)
     }
 
     return args;
+}
+
+int ttoi(const tstring & str)
+{
+    tstringstream ss(str);
+    int num = 0;
+    ss >> num;
+    return num;
 }
 
 /*!
@@ -286,8 +296,29 @@ bool executeCommand(const tstring & expr, ParserContext & context)
             } else if (unit == _T("grad") || unit == _T("grads")) {
                 context.setAngleUnit(ParserContext::GRADS);
                 tcout << _T("Angle unit is set to grads.") << endl;
+            } else {
+                tcout << _T("Unknown parameter '") << unit << _T("'") << endl;
             }
         }
+    } else if (name == _T("#output")) {
+        ComplexFormat & format = context.numberFormat();
+        for (size_t i = 1; i < args.size(); ++i) {
+            if (args[i] == _T(".")) format.decimalSeparator = ComplexFormat::DOT_SEPARATOR;
+            else if (args[i] == _T(",")) format.decimalSeparator = ComplexFormat::COMMA_SEPARATOR;
+            else if (args[i] == _T("i")) format.imaginaryOne = ComplexFormat::IMAGINARY_ONE_I;
+            else if (args[i] == _T("j")) format.imaginaryOne = ComplexFormat::IMAGINARY_ONE_J;
+            else if (istdigit(args[i][0])) format.precision = ttoi(args[i].c_str());
+            else tcout << _T("Unknown parameter '") <<  args[i] << _T("'") << endl;
+
+            if (format.precision <= 0 || format.precision > MAX_IO_PRECISION) {
+                format.precision = MAX_IO_PRECISION;
+                tcout << _T("Invalid output precision '") << args[i] << _T("'") << endl;
+            }
+        }
+        tcout << _T("Output settings:") << endl <<
+            indent << _T("Precision = ") << format.precision << _T(" digits") << endl <<
+            indent << _T("Decimal separator = '") << format.decimalSeparatorTChar() << _T("'") << endl <<
+            indent << _T("Imaginary one = '") << format.imaginaryOneTChar() << _T("'") << endl;
     } else {
         tcout << indent << _T("Unknown command '") << cmd << _T("'.") << endl;
     }
