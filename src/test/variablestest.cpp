@@ -49,11 +49,11 @@ void VariablesTest::stress()
     Variables vars;
     wstring name;
     int rand1, rand2;
-    std::tstringstream ss;
+    tstringstream ss;
 
     srand((unsigned)time(0));
     for (int i = 0; i < 10000; ++i) {
-        std::tstringstream ss;
+        tstringstream ss;
         ss << i;
         name = L"Variable#";
         name += ss.str();
@@ -66,7 +66,7 @@ void VariablesTest::stress()
     COMPARE(vars.count(), size_t(10000));
 
     for (int i = 2500; i < 7500; ++i) {
-        std::tstringstream ss;
+        tstringstream ss;
         ss << i;
         name = L"Variable#";
         name += ss.str();
@@ -81,10 +81,10 @@ void VariablesTest::stress()
 void VariablesTest::iterators()
 {
     Variables vars;
-    std::tstringstream ss;
+    tstringstream ss;
 
     for (int i = 0; i < 1000; ++i) {
-        std::tstringstream ss;
+        tstringstream ss;
         ss << i;
         vars.add(ss.str(), Complex(i, 1000-i));
     }

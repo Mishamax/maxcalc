@@ -36,8 +36,11 @@ namespace MaxCalcEngine {
 
 #define _T(x) L ## x                    ///< String literal
 
-typedef wchar_t tchar;                  ///< tchar definition
-typedef std::wstring tstring;           ///< tstring definition
+// Type definitions
+typedef wchar_t tchar;
+typedef std::wstring tstring;
+typedef std::wstringstream tstringstream;
+typedef std::wostream tostream;
 
 // Character case conversion functions
 #define totlower(c) towlower(c)         ///< Converts \a c to lower case
@@ -49,9 +52,8 @@ typedef std::wstring tstring;           ///< tstring definition
 #define istspace(c) iswspace(c)         ///< Determines if \a c is a space char
 
 // IO
-#define tcout wcout                     ///< Standard output stream
-#define tcin wcin                       ///< Standard input stream
-#define tstringstream wstringstream     ///< stringstream
+#define tcout std::wcout                ///< Standard output stream
+#define tcin std::wcin                  ///< Standard input stream
 
 // String functions
 #define tstrcmp wcscmp
@@ -68,8 +70,11 @@ std::string wideStringToString(const std::wstring & from);
 
 #define _T(x) x                         ///< String literal
 
-typedef char tchar;                     ///< tchar definition
-typedef std::string tstring;            ///< tstring definition
+// Type definitions
+typedef char tchar;
+typedef std::string tstring;
+typedef std::stringstream tstringstream;
+typedef std::ostream tostream;
 
 
 // Character case conversion functions
@@ -84,7 +89,6 @@ typedef std::string tstring;            ///< tstring definition
 // IO
 #define tcout cout                      ///< Standard output stream
 #define tcin cin                        ///< Standard input stream
-#define tstringstream stringstream      ///< stringstream
 
 // String functions
 #define tstrcmp strcmp

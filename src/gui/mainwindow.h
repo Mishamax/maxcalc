@@ -38,6 +38,7 @@ class QActionGroup;
 class InputBox;
 namespace MaxCalcEngine {
     class Parser;
+    class CommandParser;
 }
 
 
@@ -85,7 +86,9 @@ private:
 #endif
 
     // Parser
+    MaxCalcEngine::CommandParser * mCmdParser;
     MaxCalcEngine::Parser * mParser;
+    std::wostringstream * mOut;
 
     void readSettings();
     void saveSettings();
@@ -93,6 +96,7 @@ private:
     void createMainMenu();
     void updateVariablesList();
     void createFunctionsList();
+    void printResult(const QString & message);
     void printError(const QString & message);
 
 protected:

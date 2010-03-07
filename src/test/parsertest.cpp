@@ -271,7 +271,7 @@ void ParserTest::userVars()
 
     tstring var = _T("");
     for (int i = 0; i < 100; ++i) {
-        std::tstringstream ss;
+        tstringstream ss;
         ss << i;
         var += _T("x");
         var += ss.str();
@@ -280,7 +280,7 @@ void ParserTest::userVars()
     var += _T("11.1+1.1i");
     PARSER_TEST(parser, var, Complex("11.1", "1.1"));
     for (int i = 0; i < 100; ++i) {
-        std::tstringstream ss;
+        tstringstream ss;
         ss << i;
         var = _T("x");
         var += ss.str();

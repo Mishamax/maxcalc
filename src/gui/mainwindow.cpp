@@ -21,11 +21,14 @@
 #include "parser.h"
 #include "parsercontext.h"
 #include "unitconversion.h"
+#include "commandparser.h"
 // Local
 #include "mainwindow.h"
 #include "aboutbox.h"
 #include "myaction.h"
 #include "inputbox.h"
+// STL
+#include <sstream>
 // Qt
 #include <QApplication>
 #include <QDesktopServices>
@@ -63,6 +66,8 @@ MainWindow::MainWindow() : QMainWindow(), mTrayIcon(0), mTrayContextMenu(0),
 {
     // Create Parser first, so that we can read its settings into it
     mParser = new Parser();
+    mOut = new std::wostringstream;
+    mCmdParser = new CommandParser(*mOut, mParser->context());
 
     readSettings();
     createUi();
@@ -74,6 +79,11 @@ MainWindow::MainWindow() : QMainWindow(), mTrayIcon(0), mTrayContextMenu(0),
 MainWindow::~MainWindow()
 {
     saveSettings();
+
+    // Delete parser
+    delete mCmdParser;
+    delete mOut;
+    delete mParser;
 
     // Delete tray icon
     if (mTrayIcon) {
@@ -425,38 +435,56 @@ void MainWindow::onExpressionEntered()
     // Get expression from input box
     QString expr = mInputBox->text();
     expr = expr.trimmed();
-    if (expr.isEmpty()) {
-        return;
-    }
-    wchar_t * str = new wchar_t[expr.length() + 1];
-    expr.toWCharArray(str);
-    str[expr.length()] = L'\0';
-    mParser->setExpression(str);
-    delete[] str;
+    if (expr.isEmpty()) return;
 
     // Add expression to history
     mHistoryBox->moveCursor(QTextCursor::End);
     mHistoryBox->setTextColor(Qt::blue);
-    mHistoryBox->append(mInputBox->text());
+    mHistoryBox->insertPlainText(mInputBox->text() + "\n");
+
+    wchar_t * str = new wchar_t[expr.length() + 1];
+    expr.toWCharArray(str);
+    str[expr.length()] = L'\0';
+
+    if (mCmdParser->parse(str)) {
+        // Add expression to input box history
+        emit expressionCalculated();
+        // Output result
+        printResult(QString::fromWCharArray(mOut->str().c_str()));
+        mOut->str(_T(""));
+        return;
+    }
+
+    mParser->setExpression(str);
+    delete[] str;
 
     try {
         ParserContext & context = mParser->parse();
-
-        // No error during parsing, output result (otherwise an exception will be caught)
-
         // Add expression to input box history
         emit expressionCalculated();
-
-        // Add result to history, clear input box, update variables
-        mHistoryBox->setTextColor(Qt::darkGreen);
-        mHistoryBox->append(indent +
-            QString::fromWCharArray(context.result().toWideString(context.numberFormat()).c_str()));
-        mInputBox->clear();
-        mInputBox->setFocus();
-        updateVariablesList();
+        // No error during parsing, output result (otherwise an exception will be caught)
+        printResult(QString::fromWCharArray(context.result().toWideString(context.numberFormat()).c_str()));
     } catch (MaxCalcException & ex) {
         printError(QString::fromStdWString(ex.toString()));
     }
+}
+
+/*!
+    Prints result into history box, clears and focuses input box,
+    and updates variables list.
+*/
+void MainWindow::printResult(const QString & message)
+{
+    mHistoryBox->setTextColor(Qt::darkGreen);
+    QStringList strList = message.split("\n");
+    foreach (QString str, strList) {
+        if (str != "")
+            mHistoryBox->insertPlainText(indent + str + "\n");
+    }
+    mHistoryBox->ensureCursorVisible();
+    mInputBox->clear();
+    mInputBox->setFocus();
+    updateVariablesList();
 }
 
 /*!
@@ -465,7 +493,12 @@ void MainWindow::onExpressionEntered()
 void MainWindow::printError(const QString & message)
 {
     mHistoryBox->setTextColor(Qt::red);
-    mHistoryBox->append(indent + message);
+    QStringList strList = message.split("\n");
+    foreach (QString str, strList) {
+        if (str != "")
+            mHistoryBox->insertPlainText(indent + str + "\n");
+    }
+    mHistoryBox->ensureCursorVisible();
     mInputBox->selectAll();
     mInputBox->setFocus();
 }

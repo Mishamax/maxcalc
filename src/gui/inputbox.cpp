@@ -19,6 +19,7 @@
 
 // Local
 #include "inputbox.h"
+#include <QString>
 
 /*!
     \class InputBox
@@ -46,6 +47,8 @@ InputBox::InputBox(QWidget * parent) : QLineEdit(parent)
 */
 void InputBox::addTextToHistory()
 {
+    QString t = text();
+    if (mHistory.size() > 1) mHistory.removeAll(t);
     *mHistory.begin() = text();
     mHistory.push_front("");
     mCurrentHistoryEntry = mHistory.begin();

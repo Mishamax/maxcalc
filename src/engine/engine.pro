@@ -21,7 +21,8 @@ HEADERS += \
         version.h \
         variables.h \
         unitconversion.h \
-        exceptions.h
+        exceptions.h \
+        commandparser.h
 
 SOURCES += \
         bigdecimal.cpp \
@@ -30,7 +31,8 @@ SOURCES += \
         parsercontext.cpp \
         parser.cpp \
         variables.cpp \
-        unitconversion.cpp
+        unitconversion.cpp \
+        commandparser.cpp
 
 PRECOMPILED_HEADER = pch.h
 

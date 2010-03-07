@@ -3,9 +3,10 @@ v2.0.0 (IN DEVELOPMENT).
     - Added: Radians / degrees / grads support.
     - Added: Comma decimal separator support.
     - Added: Support for 'j' as imaginary one.
-    - Added: Minimize to system tray and single instance mode (GUI).
+    - Added: Minimize / close to system tray and single instance mode (GUI).
     - Added: Links to Web site and bug tracker (GUI).
     - Added: Save settings to .ini file (GUI).
+    - Added: Execution of commands starting with '#' (GUI).
     - Added: Command line arguments support on Linux (Console).
     - Added: More error messages; improved internal exception system.
     - Improved: Menu structure (GUI).

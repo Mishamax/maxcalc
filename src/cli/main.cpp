@@ -24,6 +24,7 @@
 #include "version.h"
 #include "unitconversion.h"
 #include "unicode.h"
+#include "commandparser.h"
 // STL
 #include <iostream>
 #include <clocale>
@@ -37,294 +38,6 @@ using namespace MaxCalcEngine;
 
 /// Indentation used for output
 static const tchar * indent = _T("    ");
-
-/*!
-    Prints list of supported functions.
-*/
-void printFunctions()
-{
-    tcout << indent << _T("abs") << endl;
-    tcout << indent << _T("sqr") << endl;
-    tcout << indent << _T("sqrt") << endl;
-    tcout << indent << _T("pow") << endl;
-    tcout << indent << _T("fact") << endl;
-    tcout << indent << _T("sin") << endl;
-    tcout << indent << _T("cos") << endl;
-    tcout << indent << _T("tan") << endl;
-    tcout << indent << _T("cot") << endl;
-    tcout << indent << _T("asin") << endl;
-    tcout << indent << _T("acos") << endl;
-    tcout << indent << _T("atan") << endl;
-    tcout << indent << _T("acot") << endl;
-    tcout << indent << _T("sinh") << endl;
-    tcout << indent << _T("cosh") << endl;
-    tcout << indent << _T("tanh") << endl;
-    tcout << indent << _T("coth") << endl;
-    tcout << indent << _T("asinh") << endl;
-    tcout << indent << _T("acosh") << endl;
-    tcout << indent << _T("atanh") << endl;
-    tcout << indent << _T("acoth") << endl;
-    tcout << indent << _T("ln") << endl;
-    tcout << indent << _T("log2") << endl;
-    tcout << indent << _T("log10") << endl;
-    tcout << indent << _T("exp") << endl;
-    tcout << endl;
-}
-
-/*!
-    Prints list of unit conversions.
-*/
-void printUnitConversions()
-{
-    tcout << _T("Unit conversion syntax: <expression> [unit1->unit2]") << endl;
-    tcout << _T("Example: 140[km->mi]") << endl << endl;
-    tcout << _T("Supported units are:");
-
-    UnitConversion::Type type = UnitConversion::NO_TYPE;
-    const UnitConversion::UnitDef * c;
-    for (c = UnitConversion::units(); c->unit != UnitConversion::NO_UNIT; ++c) {
-        if (type != c->type) {
-            type = c->type;
-            switch (type) {
-            case UnitConversion::LENGTH:
-                tcout << endl << indent << _T("Length: ");
-                break;
-            case UnitConversion::WEIGHT:
-                tcout << endl << indent << _T("Weight: ");
-                break;
-            case UnitConversion::TIME:
-                tcout << endl << indent << _T("Time: ");
-                break;
-            case UnitConversion::SPEED:
-                tcout << endl << indent << _T("Speed: ");
-                break;
-            case UnitConversion::TEMPERATURE:
-                tcout << endl << indent << _T("Temperature: ");
-                break;
-            default:
-                tcout << endl << indent << _T("Unknown units: ");
-                break;
-            }
-        }
-
-        tcout << c->name;
-        if ((c+1)->type == type) tcout << _T(", ");
-    }
-    tcout << endl << endl;
-}
-
-/*!
-    Prints list of supported constants and res variable.
-*/
-void printConstants(ParserContext & context)
-{
-    tcout << indent << _T("e = ") << BigDecimal::E.toTString() << endl;
-    tcout << indent << _T("pi = ") << BigDecimal::PI.toTString() << endl;
-    if (context.resultExists()) {
-        tcout << indent << _T("res = ") << context.result().toTString() << endl;
-    }
-}
-
-/*!
-    Prints list of defined variables.
-*/
-void printVariables(ParserContext & context)
-{
-    if (!context.resultExists() && context.variables().count() == 0) {
-        tcout << indent << _T("No variables defined") << endl;
-        return;
-    }
-
-    if (context.resultExists()) {
-        tcout << indent << _T("res = ") << context.result().toTString() << endl;
-    }
-
-    Variables::const_iterator iter;
-    Variables & vars = context.variables();
-    for (iter = vars.begin(); iter != vars.end(); ++iter) {
-        tcout << indent << iter->name << _T(" = ") << iter->value.toTString()
-                << endl;
-    }
-}
-
-/*!
-    Prints version information and displays copyright information if
-    \a displayCopyright is true.
-*/
-void printVersion(bool displayCopyright)
-{
-    tcout << _T("MaxCalc v") << VERSION << _T(" (");
-    if (VERSION_LABEL[0] != 0) tcout << VERSION_LABEL << _T(", ");
-    tcout << _T("built: ") << __DATE__ << _T(")") << endl;
-    if (displayCopyright) tcout << COPYRIGHT << endl << endl;
-    tcout << WEBSITE << endl;
-    tcout << endl;
-}
-
-/*!
-    Prints help (list of supported command).
-*/
-void printHelp()
-{
-    tcout <<  _T("General commands:") << endl;
-    tcout << indent << _T("#funcs - Display list of built-in functions.") << endl;
-    tcout << indent << _T("#convs - Display list of unit conversions.") << endl;
-    tcout << indent << _T("#consts - Display list of built-in constants.") << endl;
-    tcout << indent << _T("#vars - Display list of variables.") << endl;
-    tcout << indent << _T("#del [<var>] - Delete <var> (all variables if no argument specified).") << endl;
-    tcout << indent << _T("#angles [radians / degrees / grads] - Display / set angle unit.") << endl;
-    tcout << indent << _T("#output [, / . / i / j / <precision>] - Display / set output settings.") << endl;
-    tcout << indent << _T("#ver - Display version information.") << endl;
-    tcout << indent << _T("help - Display this help.") << endl;
-    tcout << indent << _T("exit - Close the program.") << endl;
-    tcout << endl;
-}
-
-/*!
-    Splits \a cmd into list of arguments (space-separated).
-*/
-vector<tstring> splitCommand(const tstring & cmd)
-{
-    tstring space = _T(" \t\f\v\n\r");
-    vector<tstring> args;
-
-    size_t space_pos = 0, start_pos = 0;
-
-    while (true) {
-        space_pos = cmd.find_first_of(space, start_pos);
-        if (space_pos == tstring::npos) {
-            args.push_back(cmd.substr(start_pos, cmd.length() - start_pos));
-            break;
-        } else {
-            args.push_back(cmd.substr(start_pos, space_pos - start_pos));
-        }
-
-        start_pos = cmd.find_first_not_of(space, space_pos);
-    }
-
-    return args;
-}
-
-int ttoi(const tstring & str)
-{
-    tstringstream ss(str);
-    int num = 0;
-    ss >> num;
-    return num;
-}
-
-/*!
-    Checks that \a expr contains a command and executes it. \a context is
-    used to get parser state for commands like printing list of variables.
-
-    Returns true if a command was found and parsed, false otherwise.
-*/
-bool executeCommand(const tstring & expr, ParserContext & context)
-{
-    tstring cmd = expr;
-    strToLower(cmd);
-
-    if (cmd == _T("exit") || cmd == _T("quit") ||
-        cmd == _T("#exit") || cmd == _T("#quit")) {
-        exit(0);
-    }
-
-    if (cmd == _T("help") || cmd == _T("#help")) {
-        printHelp();
-        return true;
-    }
-
-    if (cmd[0] != _T('#')) {
-        return false;
-    }
-
-    vector<tstring> args = splitCommand(cmd);
-    tstring & name = args[0];
-
-    if (name == _T("#funcs")) {
-        printFunctions();
-    } else if (name == _T("#convs")) {
-        printUnitConversions();
-    } else if (name == _T("#consts")) {
-        printConstants(context);
-    } else if (name == _T("#vars")) {
-        printVariables(context);
-    } else if (name == _T("#ver") || name == _T("#version")) {
-        printVersion(true);
-    } else if (name == _T("#del") || name == _T("#delete")) {
-        if (args.size() == 1) {
-            context.variables().removeAll();
-            tcout << "Deleted all variables." << endl;
-        } else {
-            for (size_t i = 1; i < args.size(); ++i) {
-                tstring & var = args[i];
-                if (var == _T("res") || var == _T("result")) {
-                    tcout << _T("Built-in variable '") << var <<
-                            _T("' cannot be deleted.") << endl;
-                    continue;
-                }
-                if (var == _T("e") || var == _T("pi")) {
-                    tcout << _T("Built-in constant '") << var <<
-                            _T("' cannot be deleted.") << endl;
-                    continue;
-                }
-                try {
-                    context.variables().remove(var);
-                    tcout << "Deleted variable '" << var << "'." << endl;
-                } catch (...) {
-                    tcout << _T("Unknown variable '") << var << _T("'.") << endl;
-                }
-            }
-        }
-    } else if (name == _T("#angle") || name == _T("#angles")) {
-        if (args.size() == 1) {
-            if (context.angleUnit() == ParserContext::RADIANS) {
-                tcout << _T("Radians") << endl;
-            } else if (context.angleUnit() == ParserContext::DEGREES) {
-                tcout << _T("Degrees") << endl;
-            } else {
-                tcout << _T("Grads") << endl;
-            }
-        } else {
-            tstring & unit = args[1];
-            if (unit == _T("radian") || unit == _T("radians")) {
-                context.setAngleUnit(ParserContext::RADIANS);
-                tcout << _T("Angle unit is set to radians.") << endl;
-            } else if (unit == _T("degree") || unit == _T("degrees")) {
-                context.setAngleUnit(ParserContext::DEGREES);
-                tcout << _T("Angle unit is set to degrees.") << endl;
-            } else if (unit == _T("grad") || unit == _T("grads")) {
-                context.setAngleUnit(ParserContext::GRADS);
-                tcout << _T("Angle unit is set to grads.") << endl;
-            } else {
-                tcout << _T("Unknown parameter '") << unit << _T("'") << endl;
-            }
-        }
-    } else if (name == _T("#output")) {
-        ComplexFormat & format = context.numberFormat();
-        for (size_t i = 1; i < args.size(); ++i) {
-            if (args[i] == _T(".")) format.decimalSeparator = ComplexFormat::DOT_SEPARATOR;
-            else if (args[i] == _T(",")) format.decimalSeparator = ComplexFormat::COMMA_SEPARATOR;
-            else if (args[i] == _T("i")) format.imaginaryOne = ComplexFormat::IMAGINARY_ONE_I;
-            else if (args[i] == _T("j")) format.imaginaryOne = ComplexFormat::IMAGINARY_ONE_J;
-            else if (istdigit(args[i][0])) format.precision = ttoi(args[i].c_str());
-            else tcout << _T("Unknown parameter '") <<  args[i] << _T("'") << endl;
-
-            if (format.precision <= 0 || format.precision > MAX_IO_PRECISION) {
-                format.precision = MAX_IO_PRECISION;
-                tcout << _T("Invalid output precision '") << args[i] << _T("'") << endl;
-            }
-        }
-        tcout << _T("Output settings:") << endl <<
-            indent << _T("Precision = ") << format.precision << _T(" digits") << endl <<
-            indent << _T("Decimal separator = '") << format.decimalSeparatorTChar() << _T("'") << endl <<
-            indent << _T("Imaginary one = '") << format.imaginaryOneTChar() << _T("'") << endl;
-    } else {
-        tcout << indent << _T("Unknown command '") << cmd << _T("'.") << endl;
-    }
-
-    return true;
-}
 
 /*!
     Runs \a parser and prints results to standard output.
@@ -379,10 +92,11 @@ int main(int argc, char ** argv)
         return 0;
     }
 
-    printVersion(false);
-
     tstring expr;
     Parser parser;
+    CommandParser cmdParser(tcout, parser.context());
+
+    cmdParser.parse(_T("#version"));
 
     // Main working loop
     while (true) {
@@ -396,7 +110,7 @@ int main(int argc, char ** argv)
 
         trim(expr);
 
-        if (expr.empty() || executeCommand(expr, parser.context())) {
+        if (expr.empty() || cmdParser.parse(expr)) {
             continue;
         }
 
