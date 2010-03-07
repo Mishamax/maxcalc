@@ -47,8 +47,10 @@ InputBox::InputBox(QWidget * parent) : QLineEdit(parent)
 */
 void InputBox::addTextToHistory()
 {
-    QString t = text();
-    if (mHistory.size() > 1) mHistory.removeAll(t);
+    if (mHistory.size() > 1) {
+        int index = mHistory.indexOf(text(), 1);
+        if (index != -1) mHistory.removeAt(index);
+    }
     *mHistory.begin() = text();
     mHistory.push_front("");
     mCurrentHistoryEntry = mHistory.begin();
