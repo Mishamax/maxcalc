@@ -38,7 +38,7 @@ public:
         // Length
         MIL, INCH, FOOT, YARD, MILE, MICRON, MILLIMETER, CENTIMETER, METER, KILOMETER,
         // Weight
-        POUND, OUNCE, GRAMME, KILOGRAMME,
+        POUND, OUNCE, GRAMM, KILOGRAM,
         // Time
         MICROSECOND, MILLISECOND, SECOND, MINUTE, HOUR, DAY,
         // Speed

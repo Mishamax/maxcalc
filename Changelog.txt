@@ -1,3 +1,15 @@
+
+  ***********************************************************************
+  *                                                                     *
+  *   MaxCalc - powerful yet simple to use scientific calculator        *
+  *                                                                     *
+  *                                                     MaxCalc 2.0.0   *
+  *                                     (c) Michael Maximov 2005-2010   *
+  *                                  http://code.google.com/p/maxcalc   *
+  *                                                                     *
+  ***********************************************************************
+
+
 v2.0.0 (IN DEVELOPMENT).
 
     - Added: Radians / degrees / grads support.
@@ -19,36 +31,102 @@ v2.0.0 (IN DEVELOPMENT).
 v1.9.3 Milestone-4 (19-Sep-2009).
 
     - Added: Meaningful error messages instead of 'Error!'.
-    - Fixed: Command line params handling in console version.
+    - Fixed: Command line parameters handling (Console).
 
 v1.9.2 Milestone-3 (2-May-2009).
 
     - Added: Unit conversions.
     - Added: C-like assignment operators (+=, -=, *=, /=, ^=).
-    - Changed: Functions and variables lists in GUI improved.
+    - Improved: Functions and variables lists (GUI).
 
 v1.9.1 Milestone-2 (19-Feb-2009).
 
     - Added: Unlimited variables support.
-    - Added: factorial function.
+    - Added: Factorial function.
     - Changed: General number format is now used instead of scientific.
     - Changed: Complex numbers like 'i1' are no longer supported; use '1i' instead.
-    - Fixed: number scaling bugs.
+    - Fixed: Number scaling bugs.
     - Internal: Overhauled exception handling in engine.
 
 v1.9.0 Milestone-1 (31-Dec-2008).
 
     First public release.
     
-    Includes graphical (Qt 4) and console versions which can be build on Windows and Linux
-    without changes (binaries are currently available only for Windows).
+    Includes graphical (Qt 4) and console versions which can be build on Windows
+    and Linux without changes (binaries are available only for Windows yet).
     
     Main features:
-      - Expressions are inputed as strings from keyboard.
+      - Expressions are typed from keyboard.
       - 50 digits precision of calculations.
       - Complex numbers support.
-      - Collection of built-in functions (abs, sqr, sqrt, pow, exp, trigonometric, inverse
-            trigonometric and hyperbolic functions, logarithms).
+      - Collection of built-in functions (abs, sqr, sqrt, pow, exp,
+            trigonometric, inverse trigonometric and hyperbolic functions,
+            logarithms).
       - Built-in E and PI constants, and RES variable which saves last calculated result.
       - Internal parser and console version are written on pure C++ and use STL only.
       - Graphical version is based on Qt 4 library.
+
+
+
+Early releases which were not publicly available
+================================================
+
+These versions supported only Russian language.
+
+
+v1.1.3 (04-Jan-2007)
+
+    - Added: <Ctrl+Q> shortcut to switch between degrees and radians (GUI).
+    - Added: "#conv_list" command to print unit conversions (Console).
+    - Improved: Help.
+    - Improved: Exception handling in Console version.
+
+v1.1.2 (30-Dec-2006)
+
+    - Added: 52 new unit conversions (micrometers, mils, microseconds and milliseconds).
+    - Fixed: Console version didn't run on computers without MSVCP80.DLL.
+
+v1.1.1 (18-Dec-2006)
+
+    - Added: "#var_list" command in Console version now also prints built-in "res" variable.
+    - Improved: Exception handling when working with variables.
+    - Fixed: Problem with user variables when its first characters are equal to one of built-in function or variable.
+
+v1.1.0 (16-Dec-2006).
+
+    - Added: Hyperbolic trigonometric functions (sinh, cosh, th, cth).
+    - Added: Unicode support.
+    - Added: History can be saved in ANSI or Unicode (GUI).
+    - Improved: Error handling.
+    - Changed: Do not show trailing zeros after decimal separator (show just 10 instead of 10.000000000000000).
+    - Changed: Error messages are printed in Russian (GUI).
+    - Changed: Some commands in Console version.
+    - Changed: Maximum expression length increased to 1000 characters (Console), removed limitation for expression length (GUI).
+    - Changed: Precision decreased from 16 to 15 digits.
+    - Changed: Size decreased significantly due to use of STL strings instead of MFC.
+    - Changed: Built-in "result" variable is renamed to "res".
+    - Fixed: Possible overflow when calculating factorial.
+    - Fixed: Bug with some unit conversions of negative numbers.
+    - Fixed: Bugs in [km->mm] and [in->mile] unit conversions in GUI.
+    - Fixed: Several possible buffer overflows.
+
+v1.0.3 (14-Nov-2005).
+
+    - Added: Exponential notation support.
+    - Changed: Sign function renamed to sgn.
+
+v1.0.2 (19-Aug-2005).
+
+    - Fixed: Some small bugs.
+
+v1.0.1 (28-Jul-2005).
+
+    - Added: sqr and pow functions.
+    - Added: Color highlighting in history box.
+    - Improved: Help.
+
+v1.0.0 (22-Jul-2005).
+
+    First version; available only in Russian language.
+    Written for Windows using MS Visual Studio 2005.
+    Includes graphical (MFC) and console versions.
