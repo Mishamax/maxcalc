@@ -182,42 +182,42 @@ const UnitConversion::ArbitraryConversion UnitConversion::mArbitraryConversions[
 const UnitConversion::UnitDef UnitConversion::mUnits[] =
 {
     // Length
-    { _T("mil"),        MIL,                LENGTH },
-    { _T("in"),         INCH,               LENGTH },
-    { _T("ft"),         FOOT,               LENGTH },
-    { _T("yd"),         YARD,               LENGTH },
-    { _T("mi"),         MILE,               LENGTH },
-    { _T("micron"),     MICRON,             LENGTH },
-    { _T("mm"),         MILLIMETER,         LENGTH },
-    { _T("cm"),         CENTIMETER,         LENGTH },
-    { _T("m"),          METER,              LENGTH },
-    { _T("km"),         KILOMETER,          LENGTH },
+    { _T("mil"),        MIL,                LENGTH, _T("Mil") },
+    { _T("in"),         INCH,               LENGTH, _T("Inch") },
+    { _T("ft"),         FOOT,               LENGTH, _T("Foot") },
+    { _T("yd"),         YARD,               LENGTH, _T("Yard") },
+    { _T("mi"),         MILE,               LENGTH, _T("Mile") },
+    { _T("micron"),     MICRON,             LENGTH, _T("Micron") },
+    { _T("mm"),         MILLIMETER,         LENGTH, _T("Millimeter") },
+    { _T("cm"),         CENTIMETER,         LENGTH, _T("Centimeter") },
+    { _T("m"),          METER,              LENGTH, _T("Meter") },
+    { _T("km"),         KILOMETER,          LENGTH, _T("Kilometer") },
 
     // Weight
-    { _T("lb"),         POUND,              WEIGHT },
-    { _T("oz"),         OUNCE,              WEIGHT },
-    { _T("g"),          GRAMM,              WEIGHT },
-    { _T("kg"),         KILOGRAM,           WEIGHT },
+    { _T("lb"),         POUND,              WEIGHT, _T("Pound") },
+    { _T("oz"),         OUNCE,              WEIGHT, _T("Ounce") },
+    { _T("g"),          GRAMM,              WEIGHT, _T("Gramm") },
+    { _T("kg"),         KILOGRAM,           WEIGHT, _T("Kilogram") },
 
     // Time
-    { _T("micros"),     MICROSECOND,        TIME },
-    { _T("ms"),         MILLISECOND,        TIME },
-    { _T("s"),          SECOND,             TIME },
-    { _T("min"),        MINUTE,             TIME },
-    { _T("h"),          HOUR,               TIME },
-    { _T("d"),          DAY,                TIME },
+    { _T("micros"),     MICROSECOND,        TIME,   _T("Microsecond") },
+    { _T("ms"),         MILLISECOND,        TIME,   _T("Millisecond") },
+    { _T("s"),          SECOND,             TIME,   _T("Second") },
+    { _T("min"),        MINUTE,             TIME,   _T("Minute") },
+    { _T("h"),          HOUR,               TIME,   _T("Hour") },
+    { _T("d"),          DAY,                TIME,   _T("Day") },
 
     // Speed
-    { _T("mi/h"),       MILE_PER_HOUR,      SPEED },
-    { _T("m/s"),        METER_PER_SECOND,   SPEED },
-    { _T("ft/h"),       FOOT_PER_HOUR,      SPEED },
-    { _T("km/h"),       KILOMETER_PER_HOUR, SPEED },
-    { _T("knot"),       KNOT,               SPEED },
+    { _T("mi/h"),       MILE_PER_HOUR,      SPEED,  _T("Mile per Hour") },
+    { _T("m/s"),        METER_PER_SECOND,   SPEED,  _T("Meter per Second") },
+    { _T("ft/h"),       FOOT_PER_HOUR,      SPEED,  _T("Foot per Hour") },
+    { _T("km/h"),       KILOMETER_PER_HOUR, SPEED,  _T("Kilometer per Hour") },
+    { _T("knot"),       KNOT,               SPEED,  _T("Knot") },
 
     // Temperature
-    { _T("k"),          KELVIN,             TEMPERATURE },
-    { _T("c"),          CELSIUS,            TEMPERATURE },
-    { _T("f"),          FAHRENHEIT,         TEMPERATURE },
+    { _T("k"),          KELVIN,             TEMPERATURE, _T("Kelvin") },
+    { _T("c"),          CELSIUS,            TEMPERATURE, _T("Celsius") },
+    { _T("f"),          FAHRENHEIT,         TEMPERATURE, _T("Fahrenheit") },
 
     { _T(""),           NO_UNIT,            NO_TYPE }
 };

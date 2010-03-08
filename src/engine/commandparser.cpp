@@ -115,10 +115,10 @@ void CommandParser::printUnitConversions()
                 mOut << endl << indent << _T("Unknown units: ");
                 break;
             }
+            mOut << endl;
         }
 
-        mOut << c->name;
-        if ((c+1)->type == type) mOut << _T(", ");
+        mOut << indent << indent << c->name << _T("       \t") << c->desc << endl;
     }
     mOut << endl;
 }
@@ -128,10 +128,12 @@ void CommandParser::printUnitConversions()
 */
 void CommandParser::printConstants()
 {
-    mOut << indent << _T("e = ") << BigDecimal::E.toTString() << endl;
-    mOut << indent << _T("pi = ") << BigDecimal::PI.toTString() << endl;
+    ComplexFormat & format = mContext.numberFormat();
+    mOut << indent << _T("e = ") << BigDecimal::E.toTString(format) << endl;
+    mOut << indent << _T("pi = ") << BigDecimal::PI.toTString(format) << endl;
     if (mContext.resultExists()) {
-        mOut << indent << _T("res = ") << mContext.result().toTString() << endl;
+        mOut << indent << _T("res = ") << mContext.result().toTString(format) <<
+                endl;
     }
 }
 
@@ -140,20 +142,22 @@ void CommandParser::printConstants()
 */
 void CommandParser::printVariables()
 {
+    ComplexFormat & format = mContext.numberFormat();
     if (!mContext.resultExists() && mContext.variables().count() == 0) {
         mOut << indent << _T("No variables defined") << endl;
         return;
     }
 
     if (mContext.resultExists()) {
-        mOut << indent << _T("res = ") << mContext.result().toTString() << endl;
+        mOut << indent << _T("res = ") << mContext.result().toTString(format) <<
+                endl;
     }
 
     Variables::const_iterator iter;
     Variables & vars = mContext.variables();
     for (iter = vars.begin(); iter != vars.end(); ++iter) {
-        mOut << indent << iter->name << _T(" = ") << iter->value.toTString()
-                << endl;
+        mOut << indent << iter->name << _T(" = ") <<
+                iter->value.toTString(format) << endl;
     }
 }
 

@@ -27,6 +27,7 @@
 #include "aboutbox.h"
 #include "myaction.h"
 #include "inputbox.h"
+#include "outputsettings.h"
 // STL
 #include <sstream>
 // Qt
@@ -91,22 +92,6 @@ MainWindow::~MainWindow()
         delete mTrayContextMenu;
         delete mTrayIcon;
     }
-
-    // Delete main menu
-    delete mAngleUnitActionGroup;
-    delete mMainMenu;
-
-    // Delete UI
-    delete mVariablesList;
-    delete mFunctionsList;
-    delete mVariablesListWrapper;
-    delete mFunctionsListWrapper;
-    delete mOkButton;
-    delete mInputBox;
-    delete mHistoryBox;
-    delete mBottomLayout;
-    delete mLayout;
-    delete mCentralWidget;
 }
 
 /*!
@@ -116,12 +101,10 @@ void MainWindow::readSettings()
 {
     QSettings settings(mSettingFileName, QSettings::IniFormat);
     mMinimizeToTray = QSystemTrayIcon::isSystemTrayAvailable() ?
-                      settings.value("MinimizeToTray", false).toBool() :
-                      false;
+                      settings.value("MinimizeToTray", false).toBool() : false;
     mCloseToTray = QSystemTrayIcon::isSystemTrayAvailable() ?
-                   settings.value("CloseToTray", false).toBool() :
-                   false;
-    addRemoveTrayIcon(mCloseToTray || mMinimizeToTray);
+                   settings.value("CloseToTray", false).toBool() : false;
+    onAddRemoveTrayIcon(mCloseToTray || mMinimizeToTray);
     mShowFunctions = settings.value("ShowFunctions", true).toBool();
     mShowVariables = settings.value("ShowVariables", true).toBool();
 #if defined(MAXCALC_SINGLE_INSTANCE_MODE)
@@ -162,24 +145,24 @@ void MainWindow::createUi()
     resize(750, 550);
 
     // Create central widget
-    mCentralWidget = new QWidget(this);
+    mCentralWidget = new QWidget();
     setCentralWidget(mCentralWidget);
 
     // Create history box
-    mHistoryBox = new QTextEdit(this);
+    mHistoryBox = new QTextEdit();
     QFont font = mHistoryBox->currentFont();
     font.setPixelSize(12);
     mHistoryBox->setFont(font);
     mHistoryBox->setReadOnly(true);
 
     // Create input box
-    mInputBox = new InputBox(this);
+    mInputBox = new InputBox();
     font = mInputBox->font();
     font.setPixelSize(16);
     mInputBox->setFont(font);
 
     // Create OK button
-    mOkButton = new QPushButton(this);
+    mOkButton = new QPushButton();
     font = mOkButton->font();
     font.setPixelSize(14);
     mOkButton->setFont(font);
@@ -232,7 +215,7 @@ void MainWindow::createUi()
 */
 void MainWindow::createMainMenu()
 {
-    mMainMenu = new QMenuBar(this);
+    mMainMenu = new QMenuBar();
     setMenuBar(mMainMenu);
 
     // Commands menu
@@ -248,24 +231,26 @@ void MainWindow::createMainMenu()
     // Settings menu
 
     QMenu * settings = mMainMenu->addMenu(tr("&Settings"));
-    QAction * action;
-    mAngleUnitActionGroup = new QActionGroup(this);
-    action = settings->addAction(tr("&Radians"), this, SLOT(onSettingsRadians()), tr("F2"));
-    action->setCheckable(true);
-    action->setChecked(mParser->context().angleUnit() == ParserContext::RADIANS);
-    mAngleUnitActionGroup->addAction(action);
-    action = settings->addAction(tr("&Degrees"), this, SLOT(onSettingsDegrees()), tr("F3"));
-    action->setCheckable(true);
-    action->setChecked(mParser->context().angleUnit() == ParserContext::DEGREES);
-    mAngleUnitActionGroup->addAction(action);
-    action = settings->addAction(tr("&Grads"), this, SLOT(onSettingsGrads()), tr("F4"));
-    action->setCheckable(true);
-    action->setChecked(mParser->context().angleUnit() == ParserContext::GRADS);
-    mAngleUnitActionGroup->addAction(action);
+
+    QActionGroup * actionGroup = new QActionGroup(this);
+    addRadioAction(settings, tr("&Radians"), SLOT(onSettingsRadians()),
+        tr("F2"), mParser->context().angleUnit() == ParserContext::RADIANS,
+        actionGroup);
+    addRadioAction(settings, tr("&Degrees"), SLOT(onSettingsDegrees()),
+        tr("F3"), mParser->context().angleUnit() == ParserContext::DEGREES,
+        actionGroup);
+    addRadioAction(settings, tr("&Grads"), SLOT(onSettingsGrads()),
+        tr("F4"), mParser->context().angleUnit() == ParserContext::GRADS,
+        actionGroup);
 
     settings->addSeparator();
 
-    action = settings->addAction(tr("Show &variables"));
+    settings->addAction(tr("Output format"), this, SLOT(onSettingsOutput()),
+                        tr("F5"));
+
+    settings->addSeparator();
+
+    QAction * action = settings->addAction(tr("Show &variables"));
     action->setCheckable(true);
     action->setChecked(mShowVariables);
     connect(action, SIGNAL(toggled(bool)), mVariablesListWrapper,
@@ -339,22 +324,19 @@ void MainWindow::createMainMenu()
             }
         }
 
-        firstLevelMenu = currentUnits->addMenu(QString::fromWCharArray(
-                cur->name.c_str()));
+        QString firstName = QString::fromWCharArray(cur->name.c_str());
+        QString firstDesc = QString::fromWCharArray(cur->desc.c_str());
+        QString menu = QString("%1 (%2)").arg(firstDesc, firstName);
+        firstLevelMenu = currentUnits->addMenu(menu);
         const UnitConversion::UnitDef * cur2;
         for (cur2 = firstLevelCur; cur2->type == type; ++cur2) {
-            if (cur2 == cur) {
-                continue;
-            }
-            QString conversion = QString("[") +
-                                 firstLevelMenu->title() +
-                                 QString("->") +
-                                 QString::fromWCharArray(cur2->name.c_str()) +
-                                 QString("]");
-            MyAction * action = new MyAction(firstLevelMenu,
-                                             QString::fromWCharArray(cur2->name.c_str()),
-                                             conversion, this,
-                                             SLOT(onUnitConversion(const QString &)));
+            if (cur2 == cur) continue;
+            QString secondName = QString::fromWCharArray(cur2->name.c_str());
+            QString secondDesc = QString::fromWCharArray(cur2->desc.c_str());
+            QString conversion = QString("[%1->%2]").arg(firstName, secondName);
+            menu = QString("%1 (%2)").arg(secondDesc, secondName);
+            MyAction * action = new MyAction(firstLevelMenu, menu, conversion,
+                this, SLOT(onUnitConversion(const QString &)));
             firstLevelMenu->addAction(action);
         }
     }
@@ -368,6 +350,20 @@ void MainWindow::createMainMenu()
     help->addSeparator();
     help->addAction(tr("About &MaxCalc"), this, SLOT(onHelpAbout()));
     help->addAction(tr("About &Qt"), QApplication::instance(), SLOT(aboutQt()));
+}
+
+/*!
+    Adds radio button-like action to menu.
+*/
+QAction * MainWindow::addRadioAction(QMenu * menu, const QString & title,
+    const char * slot, const QString & shortcut, bool checked,
+    QActionGroup * actionGroup)
+{
+    QAction * action = menu->addAction(title, this, slot, shortcut);
+    action->setCheckable(true);
+    action->setChecked(checked);
+    actionGroup->addAction(action);
+    return action;
 }
 
 /*!
@@ -604,13 +600,19 @@ void MainWindow::onSettingsGrads()
     mParser->context().setAngleUnit(ParserContext::GRADS);
 }
 
+void MainWindow::onSettingsOutput()
+{
+    OutputSettings outputSettings(this, mParser->context());
+    outputSettings.exec();
+}
+
 /*!
     Settings -> Minimize to tray command.
 */
 void MainWindow::onSettingsMinimizeToTray(bool active)
 {
     mMinimizeToTray = active;
-    addRemoveTrayIcon(mMinimizeToTray || mCloseToTray);
+    onAddRemoveTrayIcon(mMinimizeToTray || mCloseToTray);
 }
 
 /*!
@@ -619,13 +621,13 @@ void MainWindow::onSettingsMinimizeToTray(bool active)
 void MainWindow::onSettingsCloseToTray(bool active)
 {
     mCloseToTray = active;
-    addRemoveTrayIcon(mMinimizeToTray || mCloseToTray);
+    onAddRemoveTrayIcon(mMinimizeToTray || mCloseToTray);
 }
 
 /*!
     Adds or removes tray icon depending on \a addIcon parameter.
 */
-void MainWindow::addRemoveTrayIcon(bool addIcon)
+void MainWindow::onAddRemoveTrayIcon(bool addIcon)
 {
     if (addIcon && !mTrayIcon) {
         // Create tray icon

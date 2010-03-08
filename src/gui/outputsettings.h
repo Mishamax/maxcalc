@@ -17,19 +17,36 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
-#ifndef ABOUTBOX_H
-#define ABOUTBOX_H
+#ifndef OUTPUTSETTINGS_H
+#define OUTPUTSETTINGS_H
 
+// Engine
+#include "parsercontext.h"
 // Qt
 #include <QDialog>
 
+class QLineEdit;
+class QRadioButton;
 
-class AboutBox : public QDialog
+class OutputSettings : public QDialog
 {
     Q_OBJECT
 
 public:
-    AboutBox(QWidget * parent);
+    OutputSettings(QWidget * parent, MaxCalcEngine::ParserContext & context);
+
+private:
+    MaxCalcEngine::ParserContext & mContext;
+
+    QLineEdit * mLineEdit;
+    QRadioButton * mRadioDot;
+    QRadioButton * mRadioComma;
+    QRadioButton * mRadioI;
+    QRadioButton * mRadioJ;
+
+private slots:
+    void onOkButtonClicked();
+    void onDefaultsButtonClicked();
 };
 
-#endif // ABOUTBOX_H
+#endif // OUTPUTSETTINGS_H

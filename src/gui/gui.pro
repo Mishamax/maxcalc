@@ -19,14 +19,16 @@ HEADERS += \
         mainwindow.h \
         inputbox.h \
         aboutbox.h \
-        myaction.h
+        myaction.h \
+        outputsettings.h
 
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
         inputbox.cpp \
         aboutbox.cpp \
-        myaction.cpp
+        myaction.cpp \
+        outputsettings.cpp
 
 RESOURCES += resources.qrc
 

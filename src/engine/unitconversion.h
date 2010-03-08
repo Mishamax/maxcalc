@@ -56,9 +56,10 @@ public:
     /*! Unit definition for table of units. */
     struct UnitDef
     {
-        tstring name;   ///< English name of unit.
+        tstring name;   ///< English name of the unit.
         Unit unit;      ///< Unit
-        Type type;      ///< Type of unit.
+        Type type;      ///< Type of the unit.
+        tstring desc;   ///< Description (full name of the unit).
     };
 
 private:

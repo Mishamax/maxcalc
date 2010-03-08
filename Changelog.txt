@@ -20,7 +20,10 @@ v2.0.0 (IN DEVELOPMENT).
     - Added: Save settings to .ini file (GUI).
     - Added: Execution of commands starting with '#' (GUI).
     - Added: Command line arguments support on Linux (Console).
+    - Added: Number output format settings.
+    - Added: Descriptions to unit conversions.
     - Added: More error messages; improved internal exception system.
+    - Added: Readme.
     - Improved: Menu structure (GUI).
     - Improved: Syntax of commands (Console).
     - Fixed: History highlighting (GUI).

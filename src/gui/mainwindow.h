@@ -69,7 +69,6 @@ private:
     QListWidget * mFunctionsList;
     QDockWidget * mFunctionsListWrapper;
     QMenuBar * mMainMenu;
-    QActionGroup * mAngleUnitActionGroup;
 
     // Tray icon
     QSystemTrayIcon * mTrayIcon;
@@ -90,16 +89,21 @@ private:
     MaxCalcEngine::Parser * mParser;
     std::wostringstream * mOut;
 
+    // Private functions
     void readSettings();
     void saveSettings();
     void createUi();
     void createMainMenu();
+    QAction * addRadioAction(QMenu * menu, const QString & title,
+        const char * slot, const QString & shortcut, bool checked,
+        QActionGroup * actionGroup);
     void updateVariablesList();
     void createFunctionsList();
     void printResult(const QString & message);
     void printError(const QString & message);
 
 protected:
+    // Overriden events
     void changeEvent(QEvent * event);
     void closeEvent(QCloseEvent * event);
 
@@ -116,12 +120,13 @@ private slots:
     void onSettingsRadians();
     void onSettingsDegrees();
     void onSettingsGrads();
+    void onSettingsOutput();
     void onSettingsMinimizeToTray(bool active);
     void onSettingsCloseToTray(bool active);
 #if defined(MAXCALC_SINGLE_INSTANCE_MODE)
     void onSettingsSingleInstanceMode(bool active);
 #endif
-    void addRemoveTrayIcon(bool addIcon);
+    void onAddRemoveTrayIcon(bool addIcon);
     void onTrayIconClicked(QSystemTrayIcon::ActivationReason reason);
     void onTrayMinimizeRestore();
     void onDockWidgetToggled(bool visible);

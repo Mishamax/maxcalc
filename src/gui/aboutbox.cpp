@@ -24,6 +24,9 @@
 // Qt
 #include <QSpacerItem>
 #include <QPalette>
+#include <QTextBrowser>
+#include <QPushButton>
+#include <QGridLayout>
 
 /*!
     \class AboutBox
@@ -33,16 +36,13 @@
 */
 
 /*!
-    Constructs new about box on top of given \a parent window.
+    Constructs a new about box on top of given \a parent window.
 */
 AboutBox::AboutBox(QWidget * parent) : QDialog(parent)
 {
-    Q_ASSERT(parent);
-
     setWindowTitle("MaxCalc");
 
-    MaxCalcEngine::tstring labelText;
-    labelText = _T("MaxCalc v");
+    MaxCalcEngine::tstring labelText = _T("MaxCalc v");
     labelText += MaxCalcEngine::VERSION;
     labelText += _T(" (");
     if (MaxCalcEngine::VERSION_LABEL[0] != 0) {
@@ -50,8 +50,7 @@ AboutBox::AboutBox(QWidget * parent) : QDialog(parent)
         labelText += _T(", ");
     }
     labelText += _T("built: ");
-    MaxCalcEngine::tstring date;
-    date = MaxCalcEngine::stringToWideString(__DATE__);
+    MaxCalcEngine::tstring date = MaxCalcEngine::stringToWideString(__DATE__);
     labelText += date;
     labelText += _T(")<br>");
     labelText += MaxCalcEngine::COPYRIGHT;
@@ -61,32 +60,35 @@ AboutBox::AboutBox(QWidget * parent) : QDialog(parent)
     labelText += MaxCalcEngine::WEBSITE;
     labelText += _T("</a>");
 
-    mLabel.setHtml(QString::fromWCharArray(labelText.c_str()));
-    mLabel.setOpenExternalLinks(true);
-    mLabel.setFrameStyle(QFrame::NoFrame);
+    QTextBrowser * label = new QTextBrowser;
+    label->setHtml(QString::fromWCharArray(labelText.c_str()));
+    label->setOpenExternalLinks(true);
+    label->setFrameStyle(QFrame::NoFrame);
     QPalette p;
     p.setColor(QPalette::Base, p.color(QPalette::Background));
-    mLabel.setPalette(p);
-    mLabel.setLineWrapMode(QTextEdit::NoWrap);
-    mLabel.document()->adjustSize();
-    mLabel.setMinimumSize(mLabel.document()->size().toSize());
-    mLabel.setMaximumSize(mLabel.document()->size().toSize());
+    label->setPalette(p);
+    label->setLineWrapMode(QTextEdit::NoWrap);
+    label->document()->adjustSize();
+    label->setMinimumSize(label->document()->size().toSize());
+    label->setMaximumSize(label->document()->size().toSize());
 
-    mCloseButton.setText(tr("&Close"));
+    QPushButton * closeButton = new QPushButton;
+    closeButton->setText(tr("&Close"));
 
-    mLayout.addWidget(&mLabel, 1, 0, 1, -1);
-    mLayout.addItem(new QSpacerItem(20, 10, QSizePolicy::Minimum,
+    QGridLayout * layout = new QGridLayout;
+    layout->addWidget(label, 1, 0, 1, -1);
+    layout->addItem(new QSpacerItem(20, 10, QSizePolicy::Minimum,
         QSizePolicy::Fixed), 2, 1, 1, 1);
-    mLayout.addItem(new QSpacerItem(20, 20,
+    layout->addItem(new QSpacerItem(20, 20,
         QSizePolicy::Expanding), 3, 0, 1, 1);
-    mLayout.addWidget(&mCloseButton, 3, 1, 1, 1);
-    mLayout.addItem(new QSpacerItem(20, 20,
+    layout->addWidget(closeButton, 3, 1, 1, 1);
+    layout->addItem(new QSpacerItem(20, 20,
         QSizePolicy::Expanding), 3, 2, 1, 1);    
 
-    setLayout(&mLayout);
+    setLayout(layout);
 
     setMaximumSize(sizeHint());
     setMinimumSize(sizeHint());
 
-    connect(&mCloseButton, SIGNAL(clicked()), this, SLOT(close()));
+    connect(closeButton, SIGNAL(clicked()), this, SLOT(close()));
 }
