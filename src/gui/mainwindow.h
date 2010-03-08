@@ -107,6 +107,7 @@ private slots:
     void onExpressionEntered();
     void onVariableClicked(QListWidgetItem * item);
     void onFunctionClicked(QListWidgetItem * item);
+    void onHelpReadme();
     void onHelpAbout();
     void onHelpWebSite();
     void onHelpReportIssue();

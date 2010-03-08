@@ -2,7 +2,7 @@
 
 rem Variables - adjust them to environment
 set VSCOMNTOOLS="%VS90COMNTOOLS%\vsvars32.bat"
-set QT_DIR=D:\Programming\qt-4.6.1-msvc2008-static\bin
+set QT_DIR=D:\Programming\qt-4.6.2-msvc2008-static\bin
 set SEVEN_ZIP_PATH=D:\Misc\7-Zip-x86
 set RELEASE=..\..\release
 set MAXCALC_VERSION=2.0.0
@@ -35,9 +35,11 @@ mkdir %RELEASE%\tmp
 copy ..\src\release\maxcalc.exe %RELEASE%\tmp
 copy ..\Changelog.txt %RELEASE%\tmp
 copy ..\License.txt %RELEASE%\tmp
+copy ..\Readme.txt %RELEASE%\tmp
 rem copy ..\src\intl_win\intl.dll %RELEASE%\tmp
 todos -p %RELEASE%\tmp\Changelog.txt
 todos -p %RELEASE%\tmp\License.txt
+todos -p %RELEASE%\tmp\Readme.txt
 
 pushd %RELEASE%
 pushd tmp
@@ -57,9 +59,11 @@ mkdir %RELEASE%\tmp
 copy ..\src\release\maxcalcwin.exe %RELEASE%\tmp
 copy ..\Changelog.txt %RELEASE%\tmp
 copy ..\License.txt %RELEASE%\tmp
+copy ..\Readme.txt %RELEASE%\tmp
 rem copy ..\src\intl_win\intl.dll %RELEASE%\tmp
 todos -p %RELEASE%\tmp\Changelog.txt
 todos -p %RELEASE%\tmp\License.txt
+todos -p %RELEASE%\tmp\Readme.txt
 
 pushd %RELEASE%
 pushd tmp

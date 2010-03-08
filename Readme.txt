@@ -91,16 +91,9 @@ Usage
   Complex numbers are supported:
   
       i + sqrt(-1) + 2 / i
-  
-  To change number output format, use "#output" command:
-  
-      #output
-      #output 15
-      #output , j 20
-      #output default
 
-
-  To display all commands type "help".
+  MaxCalc also support several commands starting with "#".
+  Type "help" to see them.
 
 
 Functions
@@ -108,8 +101,7 @@ Functions
 
   Example: abs(sin(-pi/4)) + cos(pi/4) + pow(8; 2)
   
-  All functions except "pow" have one argument.
-  "pow" has two semicolon-separated arguments.
+  All functions except "pow" have one argument. "pow" has two arguments.
 
   Common:
     abs                                 absolute value

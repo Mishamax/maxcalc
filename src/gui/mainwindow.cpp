@@ -362,10 +362,11 @@ void MainWindow::createMainMenu()
     // Help menu
 
     QMenu * help = mMainMenu->addMenu(tr("&Help"));
+    help->addAction(tr("&Readme..."), this, SLOT(onHelpReadme()), tr("F1"));
     help->addAction(tr("MaxCalc &Web Site..."), this, SLOT(onHelpWebSite()));
-    help->addAction(tr("&Report issue..."), this, SLOT(onHelpReportIssue()));
+    help->addAction(tr("Report &issue..."), this, SLOT(onHelpReportIssue()));
     help->addSeparator();
-    help->addAction(tr("About &MaxCalc"), this, SLOT(onHelpAbout()), tr("F1"));
+    help->addAction(tr("About &MaxCalc"), this, SLOT(onHelpAbout()));
     help->addAction(tr("About &Qt"), QApplication::instance(), SLOT(aboutQt()));
 }
 
@@ -526,6 +527,15 @@ void MainWindow::onFunctionClicked(QListWidgetItem * item)
     mInputBox->insert("()");
     mInputBox->setCursorPosition(mInputBox->cursorPosition() - 1);
     mInputBox->setFocus();
+}
+
+/*!
+    Help -> Readme command.
+*/
+void MainWindow::onHelpReadme()
+{
+    QDesktopServices::openUrl(QUrl(QApplication::applicationDirPath() +
+                                   "/Readme.txt"));
 }
 
 /*!

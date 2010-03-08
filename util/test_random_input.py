@@ -13,7 +13,7 @@ def generate_expr():
 def test():
     expr = generate_expr()
     output = subprocess.Popen([test_program, '-c', expr], stdout=subprocess.PIPE).communicate()[0]
-    if b'Unknown token' in output or b'Incorrect unit conversion syntax' in output:
+    if b'Unknown token' in output or b'Invalid unit conversion syntax' in output:
         print('PASS')
     else:
         print('FAIL')
