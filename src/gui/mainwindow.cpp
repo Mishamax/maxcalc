@@ -74,7 +74,6 @@ MainWindow::MainWindow() : QMainWindow(), mTrayIcon(0), mTrayContextMenu(0),
     createUi();
     createMainMenu();
     updateVariablesList();
-    createFunctionsList();
 }
 
 MainWindow::~MainWindow()
@@ -107,7 +106,6 @@ void MainWindow::readSettings()
     mCloseToTray = QSystemTrayIcon::isSystemTrayAvailable() ?
                    settings.value("CloseToTray", false).toBool() : false;
     onAddRemoveTrayIcon(mCloseToTray || mMinimizeToTray);
-    mShowFunctions = settings.value("ShowFunctions", true).toBool();
     mShowVariables = settings.value("ShowVariables", true).toBool();
 #if defined(MAXCALC_SINGLE_INSTANCE_MODE)
     mSingleInstanceMode = settings.value("SingleInstanceMode", false).toBool();
@@ -136,7 +134,6 @@ void MainWindow::saveSettings()
     // UI settings
     settings.setValue("MinimizeToTray", mMinimizeToTray);
     settings.setValue("CloseToTray", mCloseToTray);
-    settings.setValue("ShowFunctions", mShowFunctions);
     settings.setValue("ShowVariables", mShowVariables);
 #if defined(MAXCALC_SINGLE_INSTANCE_MODE)
     settings.setValue("SingleInstanceMode", mSingleInstanceMode);
@@ -203,28 +200,20 @@ void MainWindow::createUi()
 
     // Create functions and variables lists
     mVariablesList = new QListWidget();
-    mFunctionsList = new QListWidget();
-    mVariablesListWrapper = new QDockWidget(tr("Variables"), this);
-    mFunctionsListWrapper = new QDockWidget(tr("Functions"), this);
-    mVariablesListWrapper->setWidget(mVariablesList);
-    mFunctionsListWrapper->setWidget(mFunctionsList);
-    addDockWidget(Qt::RightDockWidgetArea, mVariablesListWrapper);
-    tabifyDockWidget(mVariablesListWrapper, mFunctionsListWrapper);
-    mVariablesListWrapper->raise();
-    mVariablesListWrapper->setVisible(mShowVariables);
-    mFunctionsListWrapper->setVisible(mShowFunctions);
+    mVariablesListDock = new QDockWidget(tr("Variables"), this);
+    mVariablesListDock->setWidget(mVariablesList);
+    addDockWidget(Qt::RightDockWidgetArea, mVariablesListDock);
+    mVariablesListDock->setVisible(mShowVariables);
 
     // Connect
-    QObject::connect(this, SIGNAL(expressionCalculated()), mInputBox,
+    connect(this, SIGNAL(expressionCalculated()), mInputBox,
         SLOT(addTextToHistory()));
-    QObject::connect(mOkButton, SIGNAL(clicked()), this,
+    connect(mOkButton, SIGNAL(clicked()), this,
         SLOT(onExpressionEntered()));
-    QObject::connect(mInputBox, SIGNAL(returnPressed()), this,
+    connect(mInputBox, SIGNAL(returnPressed()), this,
         SLOT(onExpressionEntered()));
-    QObject::connect(mVariablesList, SIGNAL(itemActivated(QListWidgetItem *)),
+    connect(mVariablesList, SIGNAL(itemActivated(QListWidgetItem *)),
         this, SLOT(onVariableClicked(QListWidgetItem *)));
-    QObject::connect(mFunctionsList, SIGNAL(itemActivated(QListWidgetItem *)),
-        this, SLOT(onFunctionClicked(QListWidgetItem *)));
 
     // Set focus
     mInputBox->setFocus();
@@ -235,6 +224,8 @@ void MainWindow::createUi()
 */
 void MainWindow::createMainMenu()
 {
+    QAction * action;
+
     mMainMenu = new QMenuBar();
     setMenuBar(mMainMenu);
 
@@ -253,15 +244,12 @@ void MainWindow::createMainMenu()
     QMenu * settings = mMainMenu->addMenu(tr("&Settings"));
 
     QActionGroup * actionGroup = new QActionGroup(this);
-    addRadioAction(settings, tr("&Radians"), SLOT(onSettingsRadians()),
-        tr("F2"), mParser->context().angleUnit() == ParserContext::RADIANS,
-        actionGroup);
-    addRadioAction(settings, tr("&Degrees"), SLOT(onSettingsDegrees()),
-        tr("F3"), mParser->context().angleUnit() == ParserContext::DEGREES,
-        actionGroup);
-    addRadioAction(settings, tr("&Grads"), SLOT(onSettingsGrads()),
-        tr("F4"), mParser->context().angleUnit() == ParserContext::GRADS,
-        actionGroup);
+    settings->addAction(newRadioAction(tr("&Radians"), SLOT(onSettingsRadians()),
+        tr("F2"), mParser->context().angleUnit() == ParserContext::RADIANS, actionGroup));
+    settings->addAction(newRadioAction(tr("&Degrees"), SLOT(onSettingsDegrees()),
+        tr("F3"), mParser->context().angleUnit() == ParserContext::DEGREES, actionGroup));
+    settings->addAction(newRadioAction(tr("&Grads"), SLOT(onSettingsGrads()),
+        tr("F4"), mParser->context().angleUnit() == ParserContext::GRADS, actionGroup));
 
     settings->addSeparator();
 
@@ -270,20 +258,10 @@ void MainWindow::createMainMenu()
 
     settings->addSeparator();
 
-    QAction * action = settings->addAction(tr("Show &variables"));
-    action->setCheckable(true);
-    action->setChecked(mShowVariables);
-    connect(action, SIGNAL(toggled(bool)), mVariablesListWrapper,
-            SLOT(setVisible(bool)));
-    connect(action, SIGNAL(toggled(bool)), this,
-            SLOT(onDockWidgetToggled(bool)));
-    action = settings->addAction(tr("Show &functions"));
-    action->setCheckable(true);
-    action->setChecked(mShowFunctions);
-    connect(action, SIGNAL(toggled(bool)), mFunctionsListWrapper,
-            SLOT(setVisible(bool)));
-    connect(action, SIGNAL(toggled(bool)), this,
-            SLOT(onDockWidgetToggled(bool)));
+    action = mVariablesListDock->toggleViewAction();
+    settings->addAction(action);
+    action->setText(tr("Show &variables"));
+    connect(action, SIGNAL(toggled(bool)), this, SLOT(onSettingsVariables(bool)));
 
     if (QSystemTrayIcon::isSystemTrayAvailable()) {
         settings->addSeparator();
@@ -308,6 +286,44 @@ void MainWindow::createMainMenu()
     connect(action, SIGNAL(toggled(bool)), this,
             SLOT(onSettingsSingleInstanceMode(bool)));
 #endif
+
+    // Functions menu
+
+    QMenu * functions = mMainMenu->addMenu(tr("&Functions"));
+
+    QMenu * subMenu = functions->addMenu(tr("&Common"));
+    subMenu->addAction(newFunctionAction(subMenu, "abs (Absolute value)"));
+    subMenu->addAction(newFunctionAction(subMenu, "sqr (Square)"));
+    subMenu->addAction(newFunctionAction(subMenu, "sqrt (Square root)"));
+    subMenu->addAction(newFunctionAction(subMenu, "pow (Power)"));
+    subMenu->addAction(newFunctionAction(subMenu, "fact (Factorial)"));
+
+    subMenu = functions->addMenu(tr("&Trigonometric"));
+    subMenu->addAction(newFunctionAction(subMenu, "sin (Sine)"));
+    subMenu->addAction(newFunctionAction(subMenu, "cos (Cosine)"));
+    subMenu->addAction(newFunctionAction(subMenu, "tan (Tangent)"));
+    subMenu->addAction(newFunctionAction(subMenu, "cot (Cotangent)"));
+    subMenu->addSeparator();
+    subMenu->addAction(newFunctionAction(subMenu, "asin (Arc Sine)"));
+    subMenu->addAction(newFunctionAction(subMenu, "acos (Arc Cosine)"));
+    subMenu->addAction(newFunctionAction(subMenu, "atan (Arc Tangent)"));
+    subMenu->addAction(newFunctionAction(subMenu, "acot (Arc Cotangent)"));
+    subMenu->addSeparator();
+    subMenu->addAction(newFunctionAction(subMenu, "sinh (Hyperbolic Sine)"));
+    subMenu->addAction(newFunctionAction(subMenu, "cosh (Hyperbolic Cosine)"));
+    subMenu->addAction(newFunctionAction(subMenu, "tanh (Hyperbolic Tangent)"));
+    subMenu->addAction(newFunctionAction(subMenu, "coth (Hyperbolic Cotangent)"));
+    subMenu->addSeparator();
+    subMenu->addAction(newFunctionAction(subMenu, "asinh (Hyperbolic Arc Sine)"));
+    subMenu->addAction(newFunctionAction(subMenu, "acosh (Hyperbolic Arc Cosine)"));
+    subMenu->addAction(newFunctionAction(subMenu, "atanh (Hyperbolic Arc Tangent)"));
+    subMenu->addAction(newFunctionAction(subMenu, "acoth (Hyperbolic Arc Cotangent)"));
+
+    subMenu = functions->addMenu(tr("&Logarithmic"));
+    subMenu->addAction(newFunctionAction(subMenu, "ln (Natural Logarithm)"));
+    subMenu->addAction(newFunctionAction(subMenu, "log2 (Base-2 Logarithm)"));
+    subMenu->addAction(newFunctionAction(subMenu, "log10 (Base-10 Logarithm)"));
+    subMenu->addAction(newFunctionAction(subMenu, "exp (Exponent)"));
 
     // Unit conversion menu
 
@@ -355,9 +371,8 @@ void MainWindow::createMainMenu()
             QString secondDesc = QString::fromWCharArray(cur2->desc.c_str());
             QString conversion = QString("[%1->%2]").arg(firstName, secondName);
             menu = QString("%1 (%2)").arg(secondDesc, secondName);
-            MyAction * action = new MyAction(firstLevelMenu, menu, conversion,
-                this, SLOT(onUnitConversion(const QString &)));
-            firstLevelMenu->addAction(action);
+            firstLevelMenu->addAction(new MyAction(firstLevelMenu, menu,
+                conversion, this, SLOT(onUnitConversion(const QString &))));
         }
     }
 
@@ -375,15 +390,24 @@ void MainWindow::createMainMenu()
 /*!
     Adds radio button-like action to menu.
 */
-QAction * MainWindow::addRadioAction(QMenu * menu, const QString & title,
-    const char * slot, const QString & shortcut, bool checked,
-    QActionGroup * actionGroup)
+QAction * MainWindow::newRadioAction(const QString & title, const char * slot,
+    const QString & shortcut, bool checked, QActionGroup * actionGroup)
 {
-    QAction * action = menu->addAction(title, this, slot, shortcut);
+    QAction * action = new QAction(title, actionGroup);
+    connect(action, SIGNAL(triggered()), this, slot);
+    action->setShortcut(shortcut);
     action->setCheckable(true);
     action->setChecked(checked);
-    actionGroup->addAction(action);
     return action;
+}
+
+/*!
+    Adds radio button-like action to menu.
+*/
+QAction * MainWindow::newFunctionAction(QObject * parent, const QString & title)
+{
+    return new MyAction(parent, title, title.section(' ', 0, 0), this,
+                        SLOT(onFunction(QString)));
 }
 
 /*!
@@ -410,38 +434,6 @@ void MainWindow::updateVariablesList()
         mVariablesList->addItem(QString::fromWCharArray(iter->name.c_str()) +
             " = " + QString::fromWCharArray(iter->value.toWideString().c_str()));
     }
-}
-
-/*!
-    Adds supported functions to functions list.
-*/
-void MainWindow::createFunctionsList()
-{
-    mFunctionsList->addItem("abs");
-    mFunctionsList->addItem("sqr");
-    mFunctionsList->addItem("sqrt");
-    mFunctionsList->addItem("pow");
-    mFunctionsList->addItem("fact");
-    mFunctionsList->addItem("sin");
-    mFunctionsList->addItem("cos");
-    mFunctionsList->addItem("tan");
-    mFunctionsList->addItem("cot");
-    mFunctionsList->addItem("asin");
-    mFunctionsList->addItem("acos");
-    mFunctionsList->addItem("atan");
-    mFunctionsList->addItem("acot");
-    mFunctionsList->addItem("sinh");
-    mFunctionsList->addItem("cosh");
-    mFunctionsList->addItem("tanh");
-    mFunctionsList->addItem("coth");
-    mFunctionsList->addItem("asinh");
-    mFunctionsList->addItem("acosh");
-    mFunctionsList->addItem("atanh");
-    mFunctionsList->addItem("acoth");
-    mFunctionsList->addItem("ln");
-    mFunctionsList->addItem("log2");
-    mFunctionsList->addItem("log10");
-    mFunctionsList->addItem("exp");
 }
 
 /*!
@@ -534,18 +526,6 @@ void MainWindow::onVariableClicked(QListWidgetItem * item)
 }
 
 /*!
-    Called when function in the list is clicked.
-*/
-void MainWindow::onFunctionClicked(QListWidgetItem * item)
-{
-    Q_ASSERT(item);
-    mInputBox->insert(item->text());
-    mInputBox->insert("()");
-    mInputBox->setCursorPosition(mInputBox->cursorPosition() - 1);
-    mInputBox->setFocus();
-}
-
-/*!
     Help -> Readme command.
 */
 void MainWindow::onHelpReadme()
@@ -591,6 +571,22 @@ void MainWindow::onDeleteAllVariables()
 /*!
     Unit conversion menu command handler.
 */
+void MainWindow::onFunction(const QString & function)
+{
+    mInputBox->insert(function);
+    if (function == "pow") {
+        mInputBox->insert("(;)");
+        mInputBox->setCursorPosition(mInputBox->cursorPosition() - 2);
+    } else {
+        mInputBox->insert("()");
+        mInputBox->setCursorPosition(mInputBox->cursorPosition() - 1);
+    }
+    mInputBox->setFocus();
+}
+
+/*!
+    Unit conversion menu command handler.
+*/
 void MainWindow::onUnitConversion(const QString & conversion)
 {
     mInputBox->insert(conversion);
@@ -620,10 +616,21 @@ void MainWindow::onSettingsGrads()
     mParser->context().setAngleUnit(ParserContext::GRADS);
 }
 
+/*!
+    Settings -> Output format command.
+*/
 void MainWindow::onSettingsOutput()
 {
     OutputSettings outputSettings(this, mParser->context());
     outputSettings.exec();
+}
+
+/*!
+    Settings -> Variables command.
+*/
+void MainWindow::onSettingsVariables(bool active)
+{
+    if (isVisible()) mShowVariables = active;
 }
 
 /*!
@@ -723,16 +730,6 @@ void MainWindow::onTrayIconClicked(QSystemTrayIcon::ActivationReason reason)
 void MainWindow::onTrayMinimizeRestore()
 {
     onTrayIconClicked(QSystemTrayIcon::Trigger);
-}
-
-/*!
-    Called when a dock widget (functions or variables list) is toggled.
-    Updates mShowFunctions and mShowVariables.
-*/
-void MainWindow::onDockWidgetToggled(bool /*visible*/)
-{
-    mShowFunctions = mFunctionsListWrapper->isVisible();
-    mShowVariables = mVariablesListWrapper->isVisible();
 }
 
 #if defined(MAXCALC_SINGLE_INSTANCE_MODE)

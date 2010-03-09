@@ -65,9 +65,7 @@ private:
     QTextEdit * mHistoryBox;
     QPushButton * mOkButton;
     QListWidget * mVariablesList;
-    QDockWidget * mVariablesListWrapper;
-    QListWidget * mFunctionsList;
-    QDockWidget * mFunctionsListWrapper;
+    QDockWidget * mVariablesListDock;
     QMenuBar * mMainMenu;
 
     // Tray icon
@@ -78,7 +76,6 @@ private:
     QString mSettingFileName;
     bool mMinimizeToTray;
     bool mCloseToTray;
-    bool mShowFunctions;
     bool mShowVariables;
 #if defined(MAXCALC_SINGLE_INSTANCE_MODE)
     bool mSingleInstanceMode;
@@ -94,11 +91,10 @@ private:
     void saveSettings();
     void createUi();
     void createMainMenu();
-    QAction * addRadioAction(QMenu * menu, const QString & title,
-        const char * slot, const QString & shortcut, bool checked,
-        QActionGroup * actionGroup);
+    QAction * newRadioAction(const QString & title, const char * slot,
+        const QString & shortcut, bool checked, QActionGroup * actionGroup);
+    QAction * newFunctionAction(QObject * parent, const QString & title);
     void updateVariablesList();
-    void createFunctionsList();
     void printResult(const QString & message);
     void printError(const QString & message);
 
@@ -110,17 +106,18 @@ protected:
 private slots:
     void onExpressionEntered();
     void onVariableClicked(QListWidgetItem * item);
-    void onFunctionClicked(QListWidgetItem * item);
     void onHelpReadme();
     void onHelpAbout();
     void onHelpWebSite();
     void onHelpReportIssue();
     void onDeleteAllVariables();
+    void onFunction(const QString & function);
     void onUnitConversion(const QString & conversion);
     void onSettingsRadians();
     void onSettingsDegrees();
     void onSettingsGrads();
     void onSettingsOutput();
+    void onSettingsVariables(bool active);
     void onSettingsMinimizeToTray(bool active);
     void onSettingsCloseToTray(bool active);
 #if defined(MAXCALC_SINGLE_INSTANCE_MODE)
@@ -129,7 +126,6 @@ private slots:
     void onAddRemoveTrayIcon(bool addIcon);
     void onTrayIconClicked(QSystemTrayIcon::ActivationReason reason);
     void onTrayMinimizeRestore();
-    void onDockWidgetToggled(bool visible);
 
 public slots:
     void activate(const QString & str);
