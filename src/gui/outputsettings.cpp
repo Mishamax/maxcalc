@@ -46,7 +46,7 @@ using namespace MaxCalcEngine;
 OutputSettings::OutputSettings(QWidget * parent, ParserContext & context)
     : QDialog(parent), mContext(context)
 {
-    setWindowTitle("MaxCalc");
+    setWindowTitle("Output Format");
 
     QVBoxLayout * vlayout = new QVBoxLayout(this);
     setLayout(vlayout);

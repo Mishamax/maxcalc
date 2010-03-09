@@ -100,6 +100,8 @@ MainWindow::~MainWindow()
 void MainWindow::readSettings()
 {
     QSettings settings(mSettingFileName, QSettings::IniFormat);
+
+    // UI settings
     mMinimizeToTray = QSystemTrayIcon::isSystemTrayAvailable() ?
                       settings.value("MinimizeToTray", false).toBool() : false;
     mCloseToTray = QSystemTrayIcon::isSystemTrayAvailable() ?
@@ -110,8 +112,18 @@ void MainWindow::readSettings()
 #if defined(MAXCALC_SINGLE_INSTANCE_MODE)
     mSingleInstanceMode = settings.value("SingleInstanceMode", false).toBool();
 #endif
+
+    // Parser state
     mParser->context().setAngleUnit(
             (ParserContext::AngleUnit)settings.value("AngleUnit", 0).toInt());
+    mParser->context().numberFormat().precision = settings.value("Precision",
+        MAX_IO_PRECISION).toInt();
+    mParser->context().numberFormat().decimalSeparator =
+        (ComplexFormat::DecimalSeparator)settings.value("DecimalSeparator",
+        ComplexFormat::DOT_SEPARATOR).toInt();
+    mParser->context().numberFormat().imaginaryOne =
+        (ComplexFormat::ImaginaryOne)settings.value("ImaginaryOne",
+        ComplexFormat::IMAGINARY_ONE_I).toInt();
 }
 
 /*!
@@ -120,6 +132,8 @@ void MainWindow::readSettings()
 void MainWindow::saveSettings()
 {
     QSettings settings(mSettingFileName, QSettings::IniFormat);
+
+    // UI settings
     settings.setValue("MinimizeToTray", mMinimizeToTray);
     settings.setValue("CloseToTray", mCloseToTray);
     settings.setValue("ShowFunctions", mShowFunctions);
@@ -127,7 +141,13 @@ void MainWindow::saveSettings()
 #if defined(MAXCALC_SINGLE_INSTANCE_MODE)
     settings.setValue("SingleInstanceMode", mSingleInstanceMode);
 #endif
+
+    // Parser state
     settings.setValue("AngleUnit", mParser->context().angleUnit());
+    settings.setValue("Precision", mParser->context().numberFormat().precision);
+    settings.setValue("DecimalSeparator", mParser->context().numberFormat().decimalSeparator);
+    settings.setValue("ImaginaryOne", mParser->context().numberFormat().imaginaryOne);
+
     settings.sync();
 }
 
@@ -245,7 +265,7 @@ void MainWindow::createMainMenu()
 
     settings->addSeparator();
 
-    settings->addAction(tr("Output format"), this, SLOT(onSettingsOutput()),
+    settings->addAction(tr("Output format..."), this, SLOT(onSettingsOutput()),
                         tr("F5"));
 
     settings->addSeparator();

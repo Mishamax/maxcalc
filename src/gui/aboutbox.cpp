@@ -40,7 +40,7 @@
 */
 AboutBox::AboutBox(QWidget * parent) : QDialog(parent)
 {
-    setWindowTitle("MaxCalc");
+    setWindowTitle("About MaxCalc");
 
     MaxCalcEngine::tstring labelText = _T("MaxCalc v");
     labelText += MaxCalcEngine::VERSION;
