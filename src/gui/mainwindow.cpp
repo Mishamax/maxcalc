@@ -590,6 +590,7 @@ void MainWindow::onFunction(const QString & function)
 void MainWindow::onUnitConversion(const QString & conversion)
 {
     mInputBox->insert(conversion);
+    mInputBox->setFocus();
 }
 
 /*!

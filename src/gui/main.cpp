@@ -53,10 +53,10 @@ int main(int argc, char ** argv)
 
 #if defined(MAXCALC_SINGLE_INSTANCE_MODE)
     app.setActivationWindow(&mainWindow);
-#endif
-
     QObject::connect(&app, SIGNAL(messageReceived(const QString &)),
                      &mainWindow, SLOT(activate(const QString &)));
+#endif
+
     mainWindow.show();
 
     return app.exec();
