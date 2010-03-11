@@ -116,6 +116,7 @@ OutputSettings::OutputSettings(QWidget * parent, ParserContext & context)
     setMinimumSize(sizeHint());
 
     connect(buttonOk, SIGNAL(clicked()), this, SLOT(onOkButtonClicked()));
+    connect(buttonOk, SIGNAL(clicked()), parent, SLOT(updateVariablesList()));
     connect(buttonDefaults, SIGNAL(clicked()), this, SLOT(onDefaultsButtonClicked()));
 }
 

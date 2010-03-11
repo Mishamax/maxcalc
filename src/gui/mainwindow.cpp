@@ -418,21 +418,23 @@ void MainWindow::updateVariablesList()
 {
     mVariablesList->clear();
 
+    ComplexFormat & format = mParser->context().numberFormat();
+
     mVariablesList->addItem("e = " +
-        QString::fromWCharArray(MaxCalcEngine::BigDecimal::E.toWideString().c_str()));
+        QString::fromWCharArray(MaxCalcEngine::BigDecimal::E.toWideString(format).c_str()));
     mVariablesList->addItem("pi = " +
-        QString::fromWCharArray(MaxCalcEngine::BigDecimal::PI.toWideString().c_str()));
+        QString::fromWCharArray(MaxCalcEngine::BigDecimal::PI.toWideString(format).c_str()));
 
     if (mParser->context().resultExists()) {
         mVariablesList->addItem("res = " +
-            QString::fromWCharArray(mParser->context().result().toWideString().c_str()));
+            QString::fromWCharArray(mParser->context().result().toWideString(format).c_str()));
     }
 
     MaxCalcEngine::Variables::const_iterator iter;
     for (iter = mParser->context().variables().begin();
         iter != mParser->context().variables().end(); ++iter) {
         mVariablesList->addItem(QString::fromWCharArray(iter->name.c_str()) +
-            " = " + QString::fromWCharArray(iter->value.toWideString().c_str()));
+            " = " + QString::fromWCharArray(iter->value.toWideString(format).c_str()));
     }
 }
 

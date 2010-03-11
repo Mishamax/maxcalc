@@ -94,7 +94,6 @@ private:
     QAction * newRadioAction(const QString & title, const char * slot,
         const QString & shortcut, bool checked, QActionGroup * actionGroup);
     QAction * newFunctionAction(QObject * parent, const QString & title);
-    void updateVariablesList();
     void printResult(const QString & message);
     void printError(const QString & message);
 
@@ -104,6 +103,7 @@ protected:
     void closeEvent(QCloseEvent * event);
 
 private slots:
+    void updateVariablesList();
     void onExpressionEntered();
     void onVariableClicked(QListWidgetItem * item);
     void onHelpReadme();
