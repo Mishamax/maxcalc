@@ -32,12 +32,23 @@
 #include <cstring>
 #include <vector>
 #include <sstream>
+// SimpleIni
+#include "simpleini.h"
+
+// To get location of program's executable file
+#if defined(WIN32)
+#include <windows.h>    // For GetModuleFileName(), GetModuleHandle()
+#else
+#include "binreloc.h"   // Binreloc
+#endif
 
 using namespace std;
 using namespace MaxCalcEngine;
 
-/// Indentation used for output
-static const tchar * indent = _T("    ");
+/// Name of .ini file with settings.
+static const char * INI_FILE_NAME = "maxcalc.ini";
+/// Section in .ini file.
+static const tchar * INI_SECTION = _T("General");
 
 /*!
     Runs \a parser and prints results to standard output.
@@ -82,12 +93,78 @@ bool parseCmdLineArgs(int argc, char ** argv)
     return false;
 }
 
+/*!
+    Returns path to .ini file with settings (which is in the same dir as
+    program executable).
+*/
+char * getIniPath()
+{
+#if defined(WIN32)
+    int length = MAX_PATH + 1;
+    char * name = (char*)malloc(length);
+    if (name == 0) return 0;
+    HMODULE handle = GetModuleHandle(NULL);
+    if (handle == 0 || !GetModuleFileNameA(handle, name, length)) {
+        delete[] name;
+        return 0;
+    }
+    char * lastBackslash = strrchr(name, '\\') + 1;
+    strcpy(lastBackslash, INI_FILE_NAME);
+    return name;
+#else
+    char * exeDir = br_find_exe_dir(NULL);
+    if (exeDir != NULL) {
+        char * iniPath = br_build_path(exeDir, INI_FILE_NAME);
+        free(exeDir);
+        return iniPath;
+    }
+    return NULL;
+#endif
+}
+
+/*!
+    Reads settings from \a iniFile into \a ParserContext using CSimpleIni class.
+*/
+void readSettings(CSimpleIni * ini, ParserContext & context, char * iniFile)
+{
+    ini->LoadFile(iniFile);
+    ComplexFormat & format = context.numberFormat();
+    context.setAngleUnit((ParserContext::AngleUnit)ini->GetLongValue(
+        INI_SECTION, _T("AngleUnit"), ParserContext::RADIANS));
+    format.precision = ini->GetLongValue(INI_SECTION, _T("Precision"),
+        MAX_IO_PRECISION);
+    format.decimalSeparator = (ComplexFormat::DecimalSeparator)ini->GetLongValue(
+        INI_SECTION, _T("DecimalSeparator"), ComplexFormat::DOT_SEPARATOR);
+    format.imaginaryOne = (ComplexFormat::ImaginaryOne)ini->GetLongValue(
+        INI_SECTION, _T("ImaginaryOne"), ComplexFormat::IMAGINARY_ONE_I);
+}
+
+/*!
+    Saves settings from \a ParserContext into \a iniFile using CSimpleIni class.
+*/
+void saveSettings(CSimpleIni * ini, ParserContext & context, char * iniFile)
+{
+    ComplexFormat & format = context.numberFormat();
+    ini->SetLongValue(INI_SECTION, _T("AngleUnit"), context.angleUnit());
+    ini->SetLongValue(INI_SECTION, _T("Precision"), format.precision);
+    ini->SetLongValue(INI_SECTION, _T("DecimalSeparator"), format.decimalSeparator);
+    ini->SetLongValue(INI_SECTION, _T("ImaginaryOne"), format.imaginaryOne);
+    ini->SaveFile(iniFile);
+}
+
 int main(int argc, char ** argv)
 {
+    // Get path to .ini file
+#if !defined(WIN32)
+    if (!br_init(0)) return 1;
+#endif
+    char * iniFileName = getIniPath();
+
     // Without that locale may be set incorrecly on Linux
     // (non-latic characters may not work)
     setlocale(LC_ALL, "");
 
+    // Parse command line args
     if (parseCmdLineArgs(argc, argv)) {
         return 0;
     }
@@ -96,7 +173,12 @@ int main(int argc, char ** argv)
     Parser parser;
     CommandParser cmdParser(tcout, parser.context());
 
+    // Display version information
     cmdParser.parse(_T("#version"));
+
+    // Read settings from .ini file
+    CSimpleIni simpleIni;
+    readSettings(&simpleIni, parser.context(), iniFileName);
 
     // Main working loop
     while (true) {
@@ -110,7 +192,12 @@ int main(int argc, char ** argv)
 
         trim(expr);
 
-        if (expr.empty() || cmdParser.parse(expr)) {
+        if (expr.empty()) continue;
+
+        CommandParser::Result res = cmdParser.parse(expr);
+        if (res == CommandParser::EXIT_COMMAND) break;
+        else if (res == CommandParser::COMMAND_PARSED) {
+            saveSettings(&simpleIni, parser.context(), iniFileName);
             continue;
         }
 
@@ -118,6 +205,9 @@ int main(int argc, char ** argv)
         runParser(parser);
         tcout << endl;
     }
+
+    saveSettings(&simpleIni, parser.context(), iniFileName);
+    free(iniFileName);
 
     return 0;
 }

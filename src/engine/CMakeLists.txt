@@ -9,10 +9,10 @@ set(SOURCES
     parsercontext.cpp
     unicode.cpp
     unitconversion.cpp
-    variables.cpp)
+    variables.cpp
+    commandparser.cpp)
 
 if (MSVC)
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:wchar_t-")
 endif (MSVC)
 

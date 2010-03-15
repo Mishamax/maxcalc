@@ -6,8 +6,16 @@ include(../maxcalc_config.pri)
 CONFIG -= qt
 CONFIG += debug_and_release warn_on console precompile_header
 
-HEADERS += pch.h
-SOURCES += main.cpp
+HEADERS += pch.h \
+           simpleini.h \
+           ConvertUTF.h
+
+!win32:HEADERS += binreloc.h
+
+SOURCES += main.cpp \
+           ConvertUTF.cpp
+
+!win32:SOURCES += binreloc.cpp
 
 PRECOMPILED_HEADER = pch.h
 
@@ -28,5 +36,6 @@ win32:maxcalc_gettext:LIBS += -L../intl_win -lintl
 
 maxcalc_unicode:DEFINES += MAXCALC_UNICODE
 maxcalc_gettext:DEFINES += MAXCALC_GETTEXT
-win32:DEFINES += WIN32
+win32:DEFINES += WIN32 _CRT_SECURE_NO_WARNINGS
+!win32:DEFINES += ENABLE_BINRELOC
 win32:RC_FILE = resources.rc

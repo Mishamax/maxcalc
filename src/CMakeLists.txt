@@ -31,7 +31,9 @@ endif (MAXCALC_GETTEXT)
 if (WIN32)
     add_definitions(-DWIN32)
 endif (WIN32)
-
+if (MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif(MSVC)
 
 add_subdirectory(engine)
 add_subdirectory(cli)

@@ -29,13 +29,15 @@ set(SOURCES
     inputbox.cpp
     main.cpp
     mainwindow.cpp
-    myaction.cpp)
+    myaction.cpp
+    outputsettings.cpp)
 
 set(MOC_HEADERS
     aboutbox.h
     inputbox.h
     mainwindow.h
-    myaction.h)
+    myaction.h
+    outputsettings.h)
 
 # Enable single instance mode only on Qt 4.4 and higher
 if (${QT_VERSION_MINOR} AND ${QT_VERSION_MINOR} GREATER 3)

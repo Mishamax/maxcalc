@@ -824,16 +824,17 @@ bool Parser::isImaginaryOne(tchar c)
 */
 Complex Parser::toRadians(Complex angle, const tstring & functionName)
 {
-    if (!angle.im.isZero()) {
-        throw InvalidArgumentException(functionName,
-                                       InvalidArgumentException::COMPLEX_ANGLE);
+    if (mContext.angleUnit() != ParserContext::RADIANS) {
+        if (!angle.im.isZero()) {
+            throw InvalidArgumentException(functionName,
+                InvalidArgumentException::COMPLEX_ANGLE);
+        }
+        if (mContext.angleUnit() == ParserContext::DEGREES) {
+            return angle * BigDecimal::PI / 180;
+        } else if (mContext.angleUnit() == ParserContext::GRADS) {
+            return angle * BigDecimal::PI / 200;
+        }
     }
-    if (mContext.angleUnit() == ParserContext::DEGREES) {
-        return angle * BigDecimal::PI / 180;
-    } else if (mContext.angleUnit() == ParserContext::GRADS) {
-        return angle * BigDecimal::PI / 200;
-    }
-    // Radians
     return angle;
 }
 
@@ -844,16 +845,17 @@ Complex Parser::toRadians(Complex angle, const tstring & functionName)
 */
 Complex Parser::fromRadians(Complex angle, const tstring & functionName)
 {
-    if (!angle.im.isZero()) {
-        throw InvalidArgumentException(functionName,
-                                       InvalidArgumentException::COMPLEX_ANGLE);
+    if (mContext.angleUnit() != ParserContext::RADIANS) {
+        if (!angle.im.isZero()) {
+            throw InvalidArgumentException(functionName,
+                InvalidArgumentException::COMPLEX_ANGLE);
+        }
+        if (mContext.angleUnit() == ParserContext::DEGREES) {
+            return angle * 180 / BigDecimal::PI;
+        } else if (mContext.angleUnit() == ParserContext::GRADS) {
+            return angle * 200 / BigDecimal::PI;
+        }
     }
-    if (mContext.angleUnit() == ParserContext::DEGREES) {
-        return angle * 180 / BigDecimal::PI;
-    } else if (mContext.angleUnit() == ParserContext::GRADS) {
-        return angle * 200 / BigDecimal::PI;
-    }
-    // Radians
     return angle;
 }
 

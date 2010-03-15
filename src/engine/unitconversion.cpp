@@ -219,7 +219,7 @@ const UnitConversion::UnitDef UnitConversion::mUnits[] =
     { _T("c"),          CELSIUS,            TEMPERATURE, _T("Celsius") },
     { _T("f"),          FAHRENHEIT,         TEMPERATURE, _T("Fahrenheit") },
 
-    { _T(""),           NO_UNIT,            NO_TYPE }
+    { _T(""),           NO_UNIT,            NO_TYPE, _T("") }
 };
 
 

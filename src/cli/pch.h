@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,6 +25,12 @@
 #include <clocale>
 #include <cstdlib>
 #include <cstring>
+#include <string>
 #include <vector>
+#include <map>
+#include <list>
+#include <algorithm>
+#include <sstream>
+#include <stdio.h>
 
 #endif // PCH_H

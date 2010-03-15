@@ -37,9 +37,12 @@ private:
     ParserContext & mContext;
 
 public:
+
+    enum Result { NO_COMMAND, COMMAND_PARSED, EXIT_COMMAND };
+
     CommandParser(tostream & outStream, ParserContext & context)
         : mOut(outStream), mContext(context) {};
-    bool parse(const tstring & cmd);
+    Result parse(const tstring & cmd);
 
 private:
     int ttoi(const tstring & str);

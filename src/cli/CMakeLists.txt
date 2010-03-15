@@ -9,10 +9,15 @@ endif (WIN32 AND MAXCALC_GETTEXT)
 
 # Files
 set(SOURCES
-    main.cpp)
+    main.cpp
+    ConvertUTF.cpp)
 
+# Platform-specific files
 if (WIN32)
-    set (WIN32_RESOURCES resources.rc)
+    set(WIN32_RESOURCES resources.rc)
+else (WIN32)
+    set(SOURCES ${SOURCES} binreloc.cpp)
+    add_definitions(-DENABLE_BINRELOC)
 endif (WIN32)
 
 if (MSVC)

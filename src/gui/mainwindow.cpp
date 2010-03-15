@@ -457,7 +457,10 @@ void MainWindow::onExpressionEntered()
     expr.toWCharArray(str);
     str[expr.length()] = L'\0';
 
-    if (mCmdParser->parse(str)) {
+    CommandParser::Result res = mCmdParser->parse(str);
+
+    if (res == CommandParser::EXIT_COMMAND) close();
+    if (res == CommandParser::COMMAND_PARSED) {
         // Add expression to input box history
         emit expressionCalculated();
         // Output result

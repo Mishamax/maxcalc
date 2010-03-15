@@ -33,6 +33,8 @@
 #include <sstream>
 #include <cstdlib>
 #include <cstdarg>
+#include <iostream>
+#include <ostream>
 
 // CRT (for decNumber)
 #include <stdlib.h>

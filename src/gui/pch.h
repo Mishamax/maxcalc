@@ -43,8 +43,8 @@
 #include <QUrl>
 #include <QSystemTrayIcon>
 #include <QSettings>
-#include <QTranslator>
-#include <QLocale>
+#include <QRadioButton>
+#include <QButtonGroup>
 
 
 #endif // PCH_H

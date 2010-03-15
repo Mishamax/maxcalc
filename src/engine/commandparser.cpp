@@ -236,23 +236,23 @@ int CommandParser::ttoi(const tstring & str)
 
     Returns true if a command was found and parsed, false otherwise.
 */
-bool CommandParser::parse(const tstring & expr)
+CommandParser::Result CommandParser::parse(const tstring & expr)
 {
     tstring cmd = expr;
     strToLower(cmd);
 
     if (cmd == _T("exit") || cmd == _T("quit") ||
         cmd == _T("#exit") || cmd == _T("#quit")) {
-        exit(0);
+        return EXIT_COMMAND;
     }
 
     if (cmd == _T("help") || cmd == _T("#help")) {
         printHelp();
-        return true;
+        return COMMAND_PARSED;
     }
 
     if (cmd[0] != _T('#')) {
-        return false;
+        return NO_COMMAND;
     }
 
     vector<tstring> args = splitCommand(cmd);
@@ -319,9 +319,9 @@ bool CommandParser::parse(const tstring & expr)
         }
     } else if (name == _T("#output")) {
         ComplexFormat & format = mContext.numberFormat();
-        if (args.size() == 2 && args[1] == _T("default")) {
+        if (args.size() == 2 && (args[1] == _T("default") || args[1] == _T("defaults"))) {
             parse(_T("#output . i 50"));
-            return true;
+            return COMMAND_PARSED;
         }
         for (size_t i = 1; i < args.size(); ++i) {
             if (args[i] == _T(".")) format.decimalSeparator = ComplexFormat::DOT_SEPARATOR;
@@ -344,7 +344,7 @@ bool CommandParser::parse(const tstring & expr)
         mOut << indent << _T("Unknown command '") << cmd << _T("'.") << endl;
     }
 
-    return true;
+    return COMMAND_PARSED;
 }
 
 } // namespace MaxCalcEngine
