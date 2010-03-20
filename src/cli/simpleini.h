@@ -1315,6 +1315,8 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadFile(
         return SI_FILE;
     }
 
+    pData[uRead - 1] = '\0';
+
     // convert the raw data to unicode
     SI_Error rc = Load(pData, uRead);
     delete[] pData;

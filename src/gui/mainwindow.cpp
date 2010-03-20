@@ -62,8 +62,7 @@ using namespace MaxCalcEngine;
 /*!
     Constructs a new main window.
 */
-MainWindow::MainWindow() : QMainWindow(), mTrayIcon(0), mTrayContextMenu(0),
-        mSettingFileName(QApplication::applicationDirPath() + "/maxcalc.ini")
+MainWindow::MainWindow() : QMainWindow(), mTrayIcon(0), mTrayContextMenu(0)
 {
     // Create Parser first, so that we can read its settings into it
     mParser = new Parser();
@@ -98,7 +97,7 @@ MainWindow::~MainWindow()
 */
 void MainWindow::readSettings()
 {
-    QSettings settings(mSettingFileName, QSettings::IniFormat);
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "maxcalc", "maxcalc");
 
     // UI settings
     mMinimizeToTray = QSystemTrayIcon::isSystemTrayAvailable() ?
@@ -129,7 +128,7 @@ void MainWindow::readSettings()
 */
 void MainWindow::saveSettings()
 {
-    QSettings settings(mSettingFileName, QSettings::IniFormat);
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "maxcalc", "maxcalc");
 
     // UI settings
     settings.setValue("MinimizeToTray", mMinimizeToTray);
@@ -155,7 +154,7 @@ void MainWindow::createUi()
 {
     // Set window parameters
     setWindowTitle("MaxCalc");
-#if !defined(WIN32)
+#if !defined(_WIN32)
     setWindowIcon(QIcon(":/appicon.png"));
 #endif
     setMinimumSize(500, 350);

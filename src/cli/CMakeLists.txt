@@ -15,9 +15,6 @@ set(SOURCES
 # Platform-specific files
 if (WIN32)
     set(WIN32_RESOURCES resources.rc)
-else (WIN32)
-    set(SOURCES ${SOURCES} binreloc.cpp)
-    add_definitions(-DENABLE_BINRELOC)
 endif (WIN32)
 
 if (MSVC)

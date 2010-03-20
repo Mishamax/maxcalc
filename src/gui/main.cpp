@@ -37,8 +37,7 @@ int main(int argc, char ** argv)
 #if defined(MAXCALC_SINGLE_INSTANCE_MODE)
     QtSingleApplication app(argc, argv);
 
-    QString settingsFile = QApplication::applicationDirPath() + "/maxcalc.ini";
-    QSettings settings(settingsFile, QSettings::IniFormat);
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "maxcalc", "maxcalc");
     bool singleInstanceMode = settings.value("SingleInstanceMode", false).toBool();
 
     if (singleInstanceMode && app.isRunning()) {

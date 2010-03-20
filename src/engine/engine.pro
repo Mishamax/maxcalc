@@ -47,4 +47,4 @@ CONFIG(release, debug|release) {
 
 maxcalc_unicode:DEFINES += MAXCALC_UNICODE
 maxcalc_gettext:DEFINES += MAXCALC_GETTEXT
-win32:DEFINES += WIN32 _CRT_SECURE_NO_WARNINGS
+win32:DEFINES += _CRT_SECURE_NO_WARNINGS

@@ -115,7 +115,7 @@ tstring & trim(tstring & str);
 
 #if defined(MAXCALC_GETTEXT)
 
-#if defined(WIN32)
+#if defined(_WIN32)
 #include "../intl_win/libintl.h"
 #else
 #include <libintl.h>

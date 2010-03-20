@@ -32,23 +32,32 @@
 #include <cstring>
 #include <vector>
 #include <sstream>
+// For mkdir()
+#if defined(_WIN32)
+#include <direct.h>
+#else
+#include <sys/stat.h>
+#endif
 // SimpleIni
 #include "simpleini.h"
-
-// To get location of program's executable file
-#if defined(WIN32)
-#include <windows.h>    // For GetModuleFileName(), GetModuleHandle()
-#else
-#include "binreloc.h"   // Binreloc
-#endif
 
 using namespace std;
 using namespace MaxCalcEngine;
 
-/// Name of .ini file with settings.
-static const char * INI_FILE_NAME = "maxcalc.ini";
-/// Section in .ini file.
+// Ini file constants
+#if defined(_WIN32)
+static const char * ENV_VAR = "APPDATA";
+static const char * INI_FIRST_LEVEL_DIR = "maxcalc";
+static const char * PATH_SEPARATOR = "\\";
+#else
+static const char * ENV_VAR = "HOME";
+static const char * INI_FIRST_LEVEL_DIR = ".config";
+static const char * INI_SECOND_LEVEL_DIR = "maxcalc";
+static const char * PATH_SEPARATOR = "/";
+#endif
+static const char * INI_NAME = "maxcalc.ini";
 static const tchar * INI_SECTION = _T("General");
+static const int INI_PATH_LENGTH = 30;
 
 /*!
     Runs \a parser and prints results to standard output.
@@ -94,40 +103,63 @@ bool parseCmdLineArgs(int argc, char ** argv)
 }
 
 /*!
-    Returns path to .ini file with settings (which is in the same dir as
-    program executable).
+    Returns path to .ini file with settings.
 */
 char * getIniPath()
 {
-#if defined(WIN32)
-    int length = MAX_PATH + 1;
-    char * name = (char*)malloc(length);
-    if (name == 0) return 0;
-    HMODULE handle = GetModuleHandle(NULL);
-    if (handle == 0 || !GetModuleFileNameA(handle, name, length)) {
-        delete[] name;
-        return 0;
-    }
-    char * lastBackslash = strrchr(name, '\\') + 1;
-    strcpy(lastBackslash, INI_FILE_NAME);
-    return name;
-#else
-    char * exeDir = br_find_exe_dir(NULL);
-    if (exeDir != NULL) {
-        char * iniPath = br_build_path(exeDir, INI_FILE_NAME);
-        free(exeDir);
-        return iniPath;
-    }
-    return NULL;
+    char * location = getenv(ENV_VAR);
+    if (location == 0) return 0;
+    char * path = new char[strlen(location) + INI_PATH_LENGTH];
+    strcpy(path, location);
+    strcat(path, PATH_SEPARATOR);
+    strcat(path, INI_FIRST_LEVEL_DIR);
+    strcat(path, PATH_SEPARATOR);
+#if !defined(WIN32)
+    strcat(path, INI_SECOND_LEVEL_DIR);
+    strcat(path, PATH_SEPARATOR);
 #endif
+    strcat(path, INI_NAME);
+    return path;
+}
+
+/*!
+    Creates directory for .ini file.
+    Returns true if the directory was successfully created, false otherwise.
+*/
+bool createIniDir()
+{
+    bool result = false;
+    char * location = getenv(ENV_VAR);
+    if (location == 0) return false;
+    char * path = new char[strlen(location) + INI_PATH_LENGTH];
+    strcpy(path, location);
+    strcat(path, PATH_SEPARATOR);
+    strcat(path, INI_FIRST_LEVEL_DIR);
+#if defined(_WIN32)
+    result = (_mkdir(path) == 0);
+#else
+    result = (mkdir(path, S_IRWXU) == 0);
+    if (!result) {
+        strcat(path, PATH_SEPARATOR);
+        strcat(path, INI_SECOND_LEVEL_DIR);
+        result = (mkdir(path, S_IRWXU) == 0);
+    }
+#endif
+    delete[] path;
+    return result;
 }
 
 /*!
     Reads settings from \a iniFile into \a ParserContext using CSimpleIni class.
 */
-void readSettings(CSimpleIni * ini, ParserContext & context, char * iniFile)
+void readSettings(CSimpleIni * ini, ParserContext & context)
 {
-    ini->LoadFile(iniFile);
+    // Load .ini file
+    char * iniPath = getIniPath();
+    if (iniPath == 0) return;
+    ini->LoadFile(iniPath);
+    delete[] iniPath;
+
     ComplexFormat & format = context.numberFormat();
     context.setAngleUnit((ParserContext::AngleUnit)ini->GetLongValue(
         INI_SECTION, _T("AngleUnit"), ParserContext::RADIANS));
@@ -142,24 +174,26 @@ void readSettings(CSimpleIni * ini, ParserContext & context, char * iniFile)
 /*!
     Saves settings from \a ParserContext into \a iniFile using CSimpleIni class.
 */
-void saveSettings(CSimpleIni * ini, ParserContext & context, char * iniFile)
+void saveSettings(CSimpleIni * ini, ParserContext & context)
 {
+    char * iniPath = getIniPath();
+    if (iniPath == 0) return;
+
     ComplexFormat & format = context.numberFormat();
     ini->SetLongValue(INI_SECTION, _T("AngleUnit"), context.angleUnit());
     ini->SetLongValue(INI_SECTION, _T("Precision"), format.precision);
     ini->SetLongValue(INI_SECTION, _T("DecimalSeparator"), format.decimalSeparator);
     ini->SetLongValue(INI_SECTION, _T("ImaginaryOne"), format.imaginaryOne);
-    ini->SaveFile(iniFile);
+
+    // Save .ini file
+    if (ini->SaveFile(iniPath) != SI_OK) {
+        if (createIniDir()) ini->SaveFile(iniPath);
+    }
+    delete[] iniPath;
 }
 
 int main(int argc, char ** argv)
 {
-    // Get path to .ini file
-#if !defined(WIN32)
-    if (!br_init(0)) return 1;
-#endif
-    char * iniFileName = getIniPath();
-
     // Without that locale may be set incorrecly on Linux
     // (non-latic characters may not work)
     setlocale(LC_ALL, "");
@@ -178,7 +212,7 @@ int main(int argc, char ** argv)
 
     // Read settings from .ini file
     CSimpleIni simpleIni;
-    readSettings(&simpleIni, parser.context(), iniFileName);
+    readSettings(&simpleIni, parser.context());
 
     // Main working loop
     while (true) {
@@ -197,7 +231,7 @@ int main(int argc, char ** argv)
         CommandParser::Result res = cmdParser.parse(expr);
         if (res == CommandParser::EXIT_COMMAND) break;
         else if (res == CommandParser::COMMAND_PARSED) {
-            saveSettings(&simpleIni, parser.context(), iniFileName);
+            saveSettings(&simpleIni, parser.context());
             continue;
         }
 
@@ -206,8 +240,7 @@ int main(int argc, char ** argv)
         tcout << endl;
     }
 
-    saveSettings(&simpleIni, parser.context(), iniFileName);
-    free(iniFileName);
+    saveSettings(&simpleIni, parser.context());
 
     return 0;
 }

@@ -73,7 +73,6 @@ private:
     QMenu * mTrayContextMenu;
 
     // Settings
-    QString mSettingFileName;
     bool mMinimizeToTray;
     bool mCloseToTray;
     bool mShowVariables;
