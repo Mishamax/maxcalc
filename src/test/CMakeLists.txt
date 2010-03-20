@@ -52,3 +52,5 @@ else (WIN32 AND MAXCALC_GETTEXT)
     target_link_libraries(maxcalctest ${QT_LIBRARIES} engine)
 endif (WIN32 AND MAXCALC_GETTEXT)
 add_test(maxcalctest ${EXECUTABLE_OUTPUT_PATH}/maxcalctest MaxCalcTest)
+
+set(EXECUTABLE_OUTPUT_PATH ../bin)

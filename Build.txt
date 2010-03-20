@@ -93,3 +93,4 @@ Variant 2: Using CMake
   If you're using MinGW, replace "make" with "mingw32-make".
   You may have to specify generator by adding "-G <generator>"
   (see "cmake -h" for help).
+  Compiled binaries will be put in "build\bin" directory.

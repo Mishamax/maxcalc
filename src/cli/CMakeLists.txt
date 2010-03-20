@@ -32,3 +32,5 @@ if (WIN32 AND MAXCALC_GETTEXT)
 else (WIN32 AND MAXCALC_GETTEXT)
     target_link_libraries(maxcalc engine)
 endif (WIN32 AND MAXCALC_GETTEXT)
+
+set(EXECUTABLE_OUTPUT_PATH ../bin)

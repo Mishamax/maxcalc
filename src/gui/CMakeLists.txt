@@ -61,7 +61,14 @@ if (${QT_VERSION_MINOR} AND ${QT_VERSION_MINOR} GREATER 3)
 endif (${QT_VERSION_MINOR} AND ${QT_VERSION_MINOR} GREATER 3)
 
 if (WIN32)
-    set (WIN32_RESOURCES resources.rc)
+    if (MINGW)
+        # Compile resources on MinGW
+        ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/resources.o
+            COMMAND windres.exe -I${CMAKE_CURRENT_SOURCE_DIR} -i${CMAKE_CURRENT_SOURCE_DIR}/resources.rc -o ${CMAKE_CURRENT_BINARY_DIR}/resources.o)
+        SET(WIN32_RESOURCES ${CMAKE_CURRENT_BINARY_DIR}/resources.o)
+    else (MINGW)
+        set (WIN32_RESOURCES resources.rc)
+    endif (MINGW)
 endif (WIN32)
 
 if (MSVC)
@@ -84,3 +91,5 @@ else (WIN32)
     add_executable(maxcalcgui ${SOURCES} ${MOC_SOURCES} ${QT_RESOURCES})
     target_link_libraries(maxcalcgui ${QT_LIBRARIES} engine)
 endif (WIN32)
+
+set(EXECUTABLE_OUTPUT_PATH ../bin)
