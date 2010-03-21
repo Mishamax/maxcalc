@@ -39,7 +39,7 @@ static const tchar * indent = _T("    ");
     \class CommandParser
     \brief Provides support for commands execution.
 
-    Parses commands (see \link CommandParser#parse()) from the inputed string
+    Parses commands (see CommandParser::parse()) from the inputed string
     and prints results to \a ostream specified in constructor.
     Many commands also affect \a ParserContext.
     Commands usually start with '#' (except 'exit' and 'help' commands).
@@ -54,31 +54,34 @@ static const tchar * indent = _T("    ");
 */
 void CommandParser::printFunctions()
 {
-    mOut << indent << _T("abs") << endl;
-    mOut << indent << _T("sqr") << endl;
-    mOut << indent << _T("sqrt") << endl;
-    mOut << indent << _T("pow") << endl;
-    mOut << indent << _T("fact") << endl;
-    mOut << indent << _T("sin") << endl;
-    mOut << indent << _T("cos") << endl;
-    mOut << indent << _T("tan") << endl;
-    mOut << indent << _T("cot") << endl;
-    mOut << indent << _T("asin") << endl;
-    mOut << indent << _T("acos") << endl;
-    mOut << indent << _T("atan") << endl;
-    mOut << indent << _T("acot") << endl;
-    mOut << indent << _T("sinh") << endl;
-    mOut << indent << _T("cosh") << endl;
-    mOut << indent << _T("tanh") << endl;
-    mOut << indent << _T("coth") << endl;
-    mOut << indent << _T("asinh") << endl;
-    mOut << indent << _T("acosh") << endl;
-    mOut << indent << _T("atanh") << endl;
-    mOut << indent << _T("acoth") << endl;
-    mOut << indent << _T("ln") << endl;
-    mOut << indent << _T("log2") << endl;
-    mOut << indent << _T("log10") << endl;
-    mOut << indent << _T("exp") << endl;
+    mOut << _T("Common:") << endl;
+    mOut << indent << _T("abs \t\tAbsolute value") << endl;
+    mOut << indent << _T("sqr \t\tSquare") << endl;
+    mOut << indent << _T("sqrt\t\tSquare root") << endl;
+    mOut << indent << _T("pow \t\tPower") << endl;
+    mOut << indent << _T("fact\t\tFactorial") << endl;
+    mOut << _T("Trigonometric:") << endl;
+    mOut << indent << _T("sin \t\tSine") << endl;
+    mOut << indent << _T("cos \t\tCosine") << endl;
+    mOut << indent << _T("tan \t\tTangent") << endl;
+    mOut << indent << _T("cot \t\tCotangent") << endl;
+    mOut << indent << _T("asin\t\tArc sine") << endl;
+    mOut << indent << _T("acos\t\tArc cosine") << endl;
+    mOut << indent << _T("atan\t\tArc tangent") << endl;
+    mOut << indent << _T("acot\t\tArc cotangent") << endl;
+    mOut << indent << _T("sinh\t\tHyperbolic sine") << endl;
+    mOut << indent << _T("cosh\t\tHyperbolic cosine") << endl;
+    mOut << indent << _T("tanh\t\tHyperbolic tangent") << endl;
+    mOut << indent << _T("coth\t\tHyperbolic cotangent") << endl;
+    mOut << indent << _T("asinh\t\tHyperbolic arc sine") << endl;
+    mOut << indent << _T("acosh\t\tHyperbolic arc cosine") << endl;
+    mOut << indent << _T("atanh\t\tHyperbolic arc tangent") << endl;
+    mOut << indent << _T("acoth\t\tHyperbolic arc cotangent") << endl;
+    mOut << _T("Logarithmic:") << endl;
+    mOut << indent << _T("ln  \t\tNatural logarithm") << endl;
+    mOut << indent << _T("log2\t\tBase-2 logarithm") << endl;
+    mOut << indent << _T("log10\t\tBase-10 logarithm") << endl;
+    mOut << indent << _T("exp \t\tExponent") << endl;
 }
 
 /*!

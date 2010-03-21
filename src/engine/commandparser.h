@@ -33,13 +33,16 @@ namespace MaxCalcEngine {
 class CommandParser
 {
 private:
-    tostream & mOut;
-    ParserContext & mContext;
+    tostream & mOut;            ///< Stream where output is printed.
+    ParserContext & mContext;   ///< Parser context which is modified command processing.
 
 public:
 
+    /// Possible results of command parsing.
     enum Result { NO_COMMAND, COMMAND_PARSED, EXIT_COMMAND };
 
+    /// Constructs new command parser which will use specified \a context and
+    /// output results into \a outStream.
     CommandParser(tostream & outStream, ParserContext & context)
         : mOut(outStream), mContext(context) {};
     Result parse(const tstring & cmd);

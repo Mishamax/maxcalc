@@ -1,5 +1,5 @@
+Fix bug: minimize to tray works as close to tray in Qt 4.2.
 Is "^" (power) operator predictable?
-Save settings in console version
 Save window settings in GUI
 Complete i18n support
 Sessions support

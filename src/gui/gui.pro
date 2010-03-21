@@ -8,7 +8,8 @@ CONFIG += qt debug_and_release warn_on precompile_header
 win32:CONFIG += windows
 
 # Enable single instance mode only on Qt 4.4 and higher
-contains(QT_MINOR_VERSION, 4) | contains(QT_MINOR_VERSION, 5) | contains(QT_MINOR_VERSION, 6) {
+contains(QT_MINOR_VERSION, 4) | contains(QT_MINOR_VERSION, 5) |
+contains(QT_MINOR_VERSION, 6) | contains(QT_MINOR_VERSION, 7) {
     QT += network
     include(qtsingleapplication/qtsingleapplication.pri)
     DEFINES += MAXCALC_SINGLE_INSTANCE_MODE

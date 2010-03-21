@@ -53,6 +53,7 @@ public:
 signals:
     /// Emitted when expression is calculated by parser.
     void expressionCalculated();
+    /// Emitted when the window needs to be minimized to tray.
     void minimizeToTray();
 
 private:
@@ -67,6 +68,9 @@ private:
     QListWidget * mVariablesList;
     QDockWidget * mVariablesListDock;
     QMenuBar * mMainMenu;
+    QAction * mMenuSettingsRadians;
+    QAction * mMenuSettingsDegrees;
+    QAction * mMenuSettingsGrads;
 
     // Tray icon
     QSystemTrayIcon * mTrayIcon;

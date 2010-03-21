@@ -23,6 +23,7 @@
 
 namespace MaxCalcEngine {
 
+using std::vector;
 
 /*!
     \class Parser
@@ -607,7 +608,7 @@ Complex Parser::parseFunctions()
         tstring name = mCurToken->str;
         ++mCurToken;
 
-        std::vector<Complex> args;
+        vector<Complex> args;
 
         if (!parseFunctionArguments(args)) {
             // Go back if it is not a function
@@ -726,7 +727,7 @@ Complex Parser::parseNumbers()
 
     \exception NoClosingBracketException Closing bracket is missing.
 */
-bool Parser::parseFunctionArguments(std::vector<Complex> & args)
+bool Parser::parseFunctionArguments(vector<Complex> & args)
 {
     if (mCurToken != mTokens.end() && OPENING_BRACKET == mCurToken->token) {
         ++mCurToken;

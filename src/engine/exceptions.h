@@ -35,8 +35,10 @@ protected:
     const tstring mWhat;
 
 public:
+    /// Constructs new MaxCalc exception with empty informational string.
     MaxCalcException() : mWhat(_T("")) {}
     
+    /// Constructs new MaxCalc exception with specified informational string.
     MaxCalcException(const tstring & what) : mWhat(what) {}
 
     /// Returns additional info for the exception.
@@ -81,11 +83,13 @@ protected:
     Reasons mReason;
 
 public:
+    /// Constructs new parser exception with specified reason and empty info string.
     ParserException(const Reasons reason)
     {
         mReason = reason;
     }
 
+    /// Constructs new parser exception with specified reason and info string.
     ParserException(const Reasons reason, const tstring & what) : MaxCalcException(what)
     {
         mReason = reason;
@@ -173,6 +177,8 @@ protected:
     Reasons mReason;
 
 public:
+    /// Constructs new parser exception with specified reason.
+    /// Informational string is generated on the fly by toString() function.
     ArithmeticException(const Reasons reason)
     {
         mReason = reason;
@@ -244,6 +250,7 @@ protected:
     Reasons mReason;
 
 public:
+    /// Constructs new parser exception with specified function and reason.
     InvalidArgumentException(const tstring & function, const Reasons reason) :
             MaxCalcException(function)
     {

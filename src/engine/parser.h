@@ -31,6 +31,8 @@
 
 namespace MaxCalcEngine {
 
+using std::list;
+using std::vector;
 
 class Parser
 {
@@ -113,7 +115,7 @@ private:
         tstring str;                    ///< String corresponding to token.
     };
 
-    std::list<Token> mTokens;           ///< List of tokens
+    list<Token> mTokens;           ///< List of tokens
     tstring::const_iterator mCurChar;   ///< Current char of expression
 
     void lexicalAnalysis();
@@ -132,7 +134,7 @@ private:
     ///////////////////////////////////////////////////////////////////////////
     // Syntax analyzer
 
-    std::list<Token>::const_iterator mCurToken; ///< Current token in the list of tokens
+    list<Token>::const_iterator mCurToken; ///< Current token in the list of tokens
 
     void syntaxAnalysis();
     Complex parseAssign();
@@ -146,7 +148,7 @@ private:
     Complex parseConstsVars();
     Complex parseNumbers();
 
-    bool parseFunctionArguments(std::vector<Complex> & args);
+    bool parseFunctionArguments(vector<Complex> & args);
     Complex toRadians(Complex angle, const tstring & functionName);
     Complex fromRadians(Complex angle, const tstring & functionName);
 };

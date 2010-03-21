@@ -128,7 +128,7 @@ BigDecimal::BigDecimal()
 
     \exception ArithmeticException(CONVERSION_IMPOSSIBLE) Given \a str is incorrect.
 */
-BigDecimal::BigDecimal(const std::string & str)
+BigDecimal::BigDecimal(const string & str)
 {
     construct(str);
 }
@@ -151,7 +151,7 @@ BigDecimal::BigDecimal(const char * str)
 
     \exception ArithmeticException(CONVERSION_IMPOSSIBLE) Given \a str is incorrect.
 */
-BigDecimal::BigDecimal(const std::wstring & str)
+BigDecimal::BigDecimal(const wstring & str)
 {
     construct(wideStringToString(str));
 }
@@ -216,7 +216,7 @@ BigDecimal::BigDecimal(const double num)
 
     \sa BigDecimalFormat
 */
-std::string BigDecimal::toString(const BigDecimalFormat & format) const
+string BigDecimal::toString(const BigDecimalFormat & format) const
 {
     NEW_PRECISE_CONTEXT(context, format.precision);
 
@@ -238,21 +238,21 @@ std::string BigDecimal::toString(const BigDecimalFormat & format) const
     // Make conversion
     decNumberToString(&num, str, size, (uint8_t)format.numberFormat);
 
-    // Convert char* to std::string
-    std::string s(str);
+    // Convert char* to string
+    string s(str);
     
     delete[] str;
 
     // Replace 'E' with 'e' if needed
     if (format.exponentCase == BigDecimalFormat::LOWER_CASE_EXPONENT) {
         size_t expPos = s.find('E');
-        if (expPos != std::string::npos) s.replace(expPos, 1, "e");
+        if (expPos != string::npos) s.replace(expPos, 1, "e");
     }
 
     // Replace '.' with ',' if needed
     if (format.decimalSeparator == BigDecimalFormat::COMMA_SEPARATOR) {
         size_t expPos = s.find('.');
-        if (expPos != std::string::npos) s.replace(expPos, 1, ",");
+        if (expPos != string::npos) s.replace(expPos, 1, ",");
     }
 
     return s;
@@ -267,7 +267,7 @@ std::string BigDecimal::toString(const BigDecimalFormat & format) const
 
     \sa BigDecimalFormat
 */
-std::wstring BigDecimal::toWideString(const BigDecimalFormat & format) const
+wstring BigDecimal::toWideString(const BigDecimalFormat & format) const
 {
     return stringToWideString(toString(format));
 }
@@ -1307,15 +1307,15 @@ BigDecimal::BigDecimal(const decNumber & num)
 
     \exception ArithmeticException(CONVERSION_IMPOSSIBLE) Given \a str is incorrect.
 */
-void BigDecimal::construct(const std::string & str)
+void BigDecimal::construct(const string & str)
 {
     NEW_CONTEXT(context);
 
-    std::string s = str;
+    string s = str;
 
     // Replace ',' decimal separator with '.'
     size_t pos = str.find(_T(','));
-    if (pos != std::string::npos) {
+    if (pos != string::npos) {
         s.replace(pos, 1, ".");
     }
 

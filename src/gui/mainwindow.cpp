@@ -75,6 +75,9 @@ MainWindow::MainWindow() : QMainWindow(), mTrayIcon(0), mTrayContextMenu(0)
     updateVariablesList();
 }
 
+/*!
+    Saves settings and destructs the main window.
+*/
 MainWindow::~MainWindow()
 {
     saveSettings();
@@ -243,12 +246,18 @@ void MainWindow::createMainMenu()
     QMenu * settings = mMainMenu->addMenu(tr("&Settings"));
 
     QActionGroup * actionGroup = new QActionGroup(this);
-    settings->addAction(newRadioAction(tr("&Radians"), SLOT(onSettingsRadians()),
-        tr("F2"), mParser->context().angleUnit() == ParserContext::RADIANS, actionGroup));
-    settings->addAction(newRadioAction(tr("&Degrees"), SLOT(onSettingsDegrees()),
-        tr("F3"), mParser->context().angleUnit() == ParserContext::DEGREES, actionGroup));
-    settings->addAction(newRadioAction(tr("&Grads"), SLOT(onSettingsGrads()),
-        tr("F4"), mParser->context().angleUnit() == ParserContext::GRADS, actionGroup));
+    mMenuSettingsRadians = newRadioAction(tr("&Radians"),
+        SLOT(onSettingsRadians()), tr("F2"),
+        mParser->context().angleUnit() == ParserContext::RADIANS, actionGroup);
+    mMenuSettingsDegrees = newRadioAction(tr("&Degrees"),
+        SLOT(onSettingsDegrees()), tr("F3"),
+        mParser->context().angleUnit() == ParserContext::DEGREES, actionGroup);
+    mMenuSettingsGrads = newRadioAction(tr("&Grads"),
+        SLOT(onSettingsGrads()), tr("F4"),
+        mParser->context().angleUnit() == ParserContext::GRADS, actionGroup);
+    settings->addAction(mMenuSettingsRadians);
+    settings->addAction(mMenuSettingsDegrees);
+    settings->addAction(mMenuSettingsGrads);
 
     settings->addSeparator();
 
@@ -460,6 +469,11 @@ void MainWindow::onExpressionEntered()
 
     if (res == CommandParser::EXIT_COMMAND) close();
     if (res == CommandParser::COMMAND_PARSED) {
+        // Update settings menu
+        ParserContext::AngleUnit angles = mParser->context().angleUnit();
+        if (angles == ParserContext::RADIANS) mMenuSettingsRadians->setChecked(true);
+        else if (angles == ParserContext::DEGREES) mMenuSettingsDegrees->setChecked(true);
+        else mMenuSettingsGrads->setChecked(true);
         // Add expression to input box history
         emit expressionCalculated();
         // Output result
@@ -534,8 +548,9 @@ void MainWindow::onVariableClicked(QListWidgetItem * item)
 */
 void MainWindow::onHelpReadme()
 {
-    QDesktopServices::openUrl(QUrl(QApplication::applicationDirPath() +
-                                   "/Readme.txt"));
+    QDesktopServices::openUrl(QUrl(
+        "file:///" + QApplication::applicationDirPath() + "/Readme.txt",
+        QUrl::TolerantMode));
 }
 
 /*!
@@ -635,7 +650,7 @@ void MainWindow::onSettingsOutput()
 */
 void MainWindow::onSettingsVariables(bool active)
 {
-    if (isVisible()) mShowVariables = active;
+    if (isVisible() && !isMinimized()) mShowVariables = active;
 }
 
 /*!
@@ -697,6 +712,9 @@ void MainWindow::closeEvent(QCloseEvent * event)
     }
 }
 
+/*!
+    Overrides QWidget::changeEvent() to catch window state changes.
+*/
 void MainWindow::changeEvent(QEvent * event)
 {
     if (mMinimizeToTray && event->type() == QEvent::WindowStateChange &&

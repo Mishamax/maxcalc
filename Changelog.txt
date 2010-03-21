@@ -5,27 +5,27 @@
   *                                                                     *
   *                                                     MaxCalc 2.0.0   *
   *                                     (c) Michael Maximov 2005-2010   *
-  *                                  http://code.google.com/p/maxcalc   *
+  *                                 http://code.google.com/p/maxcalc/   *
   *                                                                     *
   ***********************************************************************
 
 
-v2.0.0 (IN DEVELOPMENT).
+v2.0.0 (21-Mar-2010).
 
     - Added: Radians / degrees / grads support.
     - Added: Comma decimal separator support.
     - Added: Support for 'j' as imaginary one.
     - Added: Minimize / close to system tray and single instance mode (GUI).
     - Added: Links to Web site and bug tracker (GUI).
-    - Added: Save settings to .ini file (GUI).
     - Added: Execution of commands starting with '#' (GUI).
     - Added: Command line arguments support on Linux (Console).
+    - Added: Save settings to .ini file.
     - Added: Number output format settings.
     - Added: Descriptions to unit conversions.
-    - Added: More error messages; improved internal exception system.
     - Added: Readme.
     - Improved: Menu structure (GUI).
     - Improved: Syntax of commands (Console).
+    - Improved: Internal exception system; added more error messages.
     - Fixed: History highlighting (GUI).
     - Fixed: EOF handling (Console).
     - Internal: Improved code portability; added CMake build system support.

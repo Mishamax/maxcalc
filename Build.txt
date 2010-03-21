@@ -5,7 +5,7 @@
   *                                                                     *
   *                                                     MaxCalc 2.0.0   *
   *                                     (c) Michael Maximov 2005-2010   *
-  *                                  http://code.google.com/p/maxcalc   *
+  *                                 http://code.google.com/p/maxcalc/   *
   *                                                                     *
   ***********************************************************************
 
@@ -14,7 +14,7 @@ Getting sources
 ===============
 
   The latest stable version of MaxCalc including sources can be downloaded from
-  http://code.google.com/p/maxcalc.
+  http://code.google.com/p/maxcalc/.
 
   To get the latest development version, use Mercurial:
 
@@ -24,7 +24,7 @@ Getting sources
 Project Layout
 ==============
 
-  There are four subprojects:
+  There are four subprojects (in "src" folder):
 
    * engine - calculation engine (back-end); it is used by other three projects.
    * cli - console front-end.
@@ -36,7 +36,7 @@ Prerequisites
 =============
 
    * Console version depends only on STL and can be built on any system with
-     decent C++ compiler. To do so, use CMake build system and remove
+     a decent C++ compiler. To do so, use CMake build system and remove
      "gui" and "test" subprojects from CMakeLists.txt file.
 
    * Graphical interface and test project require Qt v4.2 or higher.

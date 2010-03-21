@@ -39,7 +39,7 @@ static const tchar * WEBSITE = _T("http://code.google.com/p/maxcalc/");
 /*!
     Copyright.
 */
-static const tchar * COPYRIGHT = _T("Copyright (c) 2005-2009 Michael Maximov");
+static const tchar * COPYRIGHT = _T("Copyright (c) 2005-2010 Michael Maximov");
 
 } // namespace MaxCalcEngine
 

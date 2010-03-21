@@ -5,7 +5,7 @@
   *                                                                     *
   *                                                     MaxCalc 2.0.0   *
   *                                     (c) Michael Maximov 2005-2010   *
-  *                                  http://code.google.com/p/maxcalc   *
+  *                                 http://code.google.com/p/maxcalc/   *
   *                                                                     *
   ***********************************************************************
 
@@ -104,32 +104,32 @@ Functions
   All functions except "pow" have one argument. "pow" has two arguments.
 
   Common:
-    abs                                 absolute value
-    sqr                                 square
-    sqrt                                square root
-    pow                                 power
-    fact / factorial                    factorial
+    abs                                 Absolute value
+    sqr                                 Square
+    sqrt                                Square root
+    pow                                 Power
+    fact / factorial                    Factorial
 
   Trigonometric:
-    sin                                 sine
-    cos                                 cosine
-    tan / tg                            tangent
-    cot / ctg                           cotangent
+    sin                                 Sine
+    cos                                 Cosine
+    tan / tg                            Tangent
+    cot / ctg                           Cotangent
     
-    asin / arcsin                       arc sine
-    acos / arccos                       arc cosine
-    atan / arctan / atg / arctg         arc tangent
-    acot / arccot / actg / arcctg       arc cotangent
+    asin / arcsin                       Arc sine
+    acos / arccos                       Arc cosine
+    atan / arctan / atg / arctg         Arc tangent
+    acot / arccot / actg / arcctg       Arc cotangent
     
-    sinh                                hyperbolic sine
-    cosh                                hyperbolic cosine
-    tanh / tgh                          hyperbolic tangent
-    coth / ctgh                         hyperbolic cotangent
+    sinh                                Hyperbolic sine
+    cosh                                Hyperbolic cosine
+    tanh / tgh                          Hyperbolic tangent
+    coth / ctgh                         Hyperbolic cotangent
 
-    asinh / arcsinh                     hyperbolic arc sine
-    acosh / arccosh                     hyperbolic arc cosine
-    atanh / arctanh / atgh / arctgh     hyperbolic arc tangent
-    acoth / arccoth / actgh / arcctgh   hyperbolic arc cotangent
+    asinh / arcsinh                     Hyperbolic arc sine
+    acosh / arccosh                     Hyperbolic arc cosine
+    atanh / arctanh / atgh / arctgh     Hyperbolic arc tangent
+    acoth / arccoth / actgh / arcctgh   Hyperbolic arc cotangent
 
   Logarithmic
     ln                                  Natural logarithm

@@ -70,7 +70,7 @@ Complex::Complex(const char * real, const char * imaginary) :
     Constructs a new instance of Complex class from given \a real and
     \a imaginary parts.
 */
-Complex::Complex(const std::string & real, const std::string & imaginary) :
+Complex::Complex(const string & real, const string & imaginary) :
         re(real), im(imaginary)
 {
 }
@@ -90,7 +90,7 @@ Complex::Complex(const wchar_t * real, const wchar_t * imaginary) :
     Constructs a new instance of Complex class from given \a real and
     \a imaginary parts.
 */
-Complex::Complex(const std::wstring & real, const std::wstring & imaginary) :
+Complex::Complex(const wstring & real, const wstring & imaginary) :
         re(real), im(imaginary)
 {
 }
@@ -148,15 +148,15 @@ Complex::Complex(const Complex & num)
 
     \sa ComplexFormat
 */
-std::string Complex::toString(const ComplexFormat & format) const
+string Complex::toString(const ComplexFormat & format) const
 {
-    std::string rePart = re.toString(format);
-    std::string imPart = BigDecimal::abs(im).toString(format);
+    string rePart = re.toString(format);
+    string imPart = BigDecimal::abs(im).toString(format);
     bool isReZero = re.isZero();
     bool isImZero = im.isZero();
     bool isImNegative = im.isNegative();
 
-    std::string result = "";
+    string result = "";
 
     if (isReZero && isImZero) {
         return "0";
@@ -188,7 +188,7 @@ std::string Complex::toString(const ComplexFormat & format) const
 
     \sa ComplexFormat
 */
-std::wstring Complex::toWideString(const ComplexFormat & format) const
+wstring Complex::toWideString(const ComplexFormat & format) const
 {
     return stringToWideString(toString(format));
 }

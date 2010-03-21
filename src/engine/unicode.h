@@ -25,11 +25,17 @@
 
 namespace MaxCalcEngine {
 
+
 #ifdef _T
 #undef _T
 #endif
 
 #if defined(MAXCALC_UNICODE)
+
+using std::string;
+using std::wstring;
+using std::wstringstream;
+using std::wostream;
 
 ///////////////////////////////////////////////////////////////////////////
 // Unicode identifiers
@@ -38,9 +44,9 @@ namespace MaxCalcEngine {
 
 // Type definitions
 typedef wchar_t tchar;
-typedef std::wstring tstring;
-typedef std::wstringstream tstringstream;
-typedef std::wostream tostream;
+typedef wstring tstring;
+typedef wstringstream tstringstream;
+typedef wostream tostream;
 
 // Character case conversion functions
 #define totlower(c) towlower(c)         ///< Converts \a c to lower case
@@ -52,29 +58,33 @@ typedef std::wostream tostream;
 #define istspace(c) iswspace(c)         ///< Determines if \a c is a space char
 
 // IO
-#define tcout std::wcout                ///< Standard output stream
-#define tcin std::wcin                  ///< Standard input stream
+#define tcout wcout                     ///< Standard output stream
+#define tcin wcin                       ///< Standard input stream
 
 // String functions
 #define tstrcmp wcscmp
 
 
 // String conversion functions
-std::wstring stringToWideString(const std::string & from);
-std::string wideStringToString(const std::wstring & from);
+wstring stringToWideString(const string & from);
+string wideStringToString(const wstring & from);
 
 #else // #if defined(MAXCALC_UNICODE)
 
 ///////////////////////////////////////////////////////////////////////////
 // Non-Unicode identifiers
 
+using std::string;
+using std::stringstream;
+using std::ostream;
+
 #define _T(x) x                         ///< String literal
 
 // Type definitions
 typedef char tchar;
-typedef std::string tstring;
-typedef std::stringstream tstringstream;
-typedef std::ostream tostream;
+typedef string tstring;
+typedef stringstream tstringstream;
+typedef ostream tostream;
 
 
 // Character case conversion functions

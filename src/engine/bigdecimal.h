@@ -28,6 +28,10 @@
 
 namespace MaxCalcEngine {
 
+using DecNumber::decContext;
+using DecNumber::decNumber;
+using std::string;
+using std::wstring;
 
 class BigDecimal
 {
@@ -43,10 +47,10 @@ public:
     // Constructors
     
     BigDecimal();
-    BigDecimal(const std::string & str);
+    BigDecimal(const string & str);
     BigDecimal(const char * str);
 #if defined(MAXCALC_UNICODE)
-    BigDecimal(const std::wstring & str);
+    BigDecimal(const wstring & str);
     BigDecimal(const wchar_t * str);
 #endif
     BigDecimal(const BigDecimal & num);
@@ -58,9 +62,9 @@ public:
     ///////////////////////////////////////////////////////////////////////////
     // Conversion functions
     
-    std::string toString(const BigDecimalFormat & format = BigDecimalFormat()) const;
+    string toString(const BigDecimalFormat & format = BigDecimalFormat()) const;
 #if defined(MAXCALC_UNICODE)
-    std::wstring toWideString(const BigDecimalFormat & format = BigDecimalFormat()) const;
+    wstring toWideString(const BigDecimalFormat & format = BigDecimalFormat()) const;
 #endif
     tstring toTString(const BigDecimalFormat & format = BigDecimalFormat()) const;
 
@@ -154,19 +158,17 @@ public:
 private:
 
     // Decimal number
-    DecNumber::decNumber mNumber;
+    decNumber mNumber;
 
     ///////////////////////////////////////////////////////////////////////////
     // Internal functions
     
-    BigDecimal(const DecNumber::decNumber & num);
-    void construct(const std::string & str);
+    BigDecimal(const decNumber & num);
+    void construct(const string & str);
 
-    static void checkContextStatus(const DecNumber::decContext & context);
-    static int compare(const DecNumber::decNumber & n1,
-        const DecNumber::decNumber & n2);
-    static void rescale(DecNumber::decNumber & number, const int exp,
-        DecNumber::decContext & context);
+    static void checkContextStatus(const decContext & context);
+    static int compare(const decNumber & n1, const decNumber & n2);
+    static void rescale(decNumber & number, const int exp, decContext & context);
     
     static BigDecimal pi();
     static BigDecimal FMA(const BigDecimal & multiplier1,
