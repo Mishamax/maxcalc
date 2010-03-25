@@ -3,12 +3,17 @@
   *                                                                     *
   *   MaxCalc - powerful yet simple to use scientific calculator        *
   *                                                                     *
-  *                                                     MaxCalc 2.0.0   *
+  *                                                     MaxCalc 2.0.1   *
   *                                     (c) Michael Maximov 2005-2010   *
   *                                 http://code.google.com/p/maxcalc/   *
   *                                                                     *
   ***********************************************************************
 
+v2.0.1 (IN PROGRESS).
+
+    - Changed: Default precision is 25 digits instead of 50.
+    - Fixed: Bugs in sin() and asin() functions for complex arguments.
+    - Internal: Some code refactoring.
 
 v2.0.0 (21-Mar-2010).
 
