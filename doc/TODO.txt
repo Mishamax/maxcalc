@@ -1,3 +1,4 @@
+Fix bug: log2(0), log10(0) -> error in function 'ln'
 Fix bug: minimize to tray works as close to tray in Qt 4.2.
 Is "^" (power) operator predictable?
 Save window settings in GUI

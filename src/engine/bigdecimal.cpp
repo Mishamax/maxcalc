@@ -908,8 +908,10 @@ BigDecimal BigDecimal::exp(const BigDecimal & num)
 */
 BigDecimal BigDecimal::ln(const BigDecimal & num)
 {
-    if (num.isZero() || num.isNegative()) {
-        throw InvalidArgumentException(_T("ln"), InvalidArgumentException::ZERO_OR_NEGATIVE);
+    if (num.isZero()) {
+        throw InvalidArgumentException(_T("ln"), InvalidArgumentException::ZERO);
+    } else if (num.isNegative()) {
+        throw InvalidArgumentException(_T("ln"), InvalidArgumentException::NEGATIVE);
     }
 
     NEW_CONTEXT(context);

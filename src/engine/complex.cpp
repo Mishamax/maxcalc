@@ -539,52 +539,36 @@ Complex Complex::cot(const Complex & num)
 /*!
     Calculates arcsine of \a num.
 
-    arcsin(num) = -i * ln(i * (num + sqrt(num^2 - 1)))
-    
-    We use square root with minus sign to correctly
-    calculate arcsin for real arguments -1..1.
-    If we use +sqrt(), arcsin(-1..1) will be in range 0..Pi.
-    With -sqrt() it will be -Pi/2..Pi/2 as needed.
+    arcsin(num) = -i * ln(i * num + sqrt(1 - num^2))
 */
 Complex Complex::arcsin(const Complex & num)
 {
     if (num.im.isZero() && num.re >= -1 && num.re <= 1) {
         return BigDecimal::arcsin(num.re);
     }
-    return -i * ln(i * (num + sqrt(num * num - 1)));
+    return -i * ln(i * num + sqrt(Complex(1) - num * num));
 }
 
 /*!
     Calculates arccosine of \a num.
 
-    arccos(num) = -i * ln(num + sqrt(num^2 - 1))
-    
-    We use +sqrt() to achieve range 0..Pi (see arcsin() description for
-    explanation)
+    arccos(num) = -i * ln(num + i * sqrt(1 - num^2))
 */
 Complex Complex::arccos(const Complex & num)
 {
     if (num.im.isZero() && num.re >= -1 && num.re <= 1) {
         return BigDecimal::arccos(num.re);
     }
-    return -i * ln(num + sqrt(num * num - 1));
+    return -i * ln(num + i * sqrt(Complex(1) - num * num));
 }
 
 /*!
     Calculates arctangent of \a num.
 
     arctan(num) = (i / 2) * ln((i + num) / (i - num))
-    
-    We calculate logarithm as: ln(num) = ln(|num|) + i*arg(num) with k = 0
-    (for arctan() it will work and we will have correct range for real
-    arguments - see arccot() description for explanation)
 */
 Complex Complex::arctan(const Complex & num)
 {
-    // TODO: handle positive infinite when re(num) == 0 and abs(im(a) + im(i)) == 0
-    // TODO: maybe is is better to calculate through arcsin
-    // (http://en.wikipedia.org/wiki/Arctangent)
-
     if (num.im.isZero()) {
         return BigDecimal::arctan(num.re);
     }
@@ -595,17 +579,13 @@ Complex Complex::arctan(const Complex & num)
     Calculates arccotangent of \a num.
 
     arccot(a) = (i / 2) * ln((num - i) / (num + i))
-
-    This formula doesn't work correctly for real arguments.
-    Maybe we should calculate logarithm as Ln(z) = ln(r) + i*arg(z) + 2*Pi*k*i
-    with correct 'k' but it's simpler to use formula
-    arccot(num) = Pi/2 - arctan(num).
-    This works fine for any argument.
 */
 Complex Complex::arccot(const Complex & num)
 {
-    // TODO: check this implementation again (see description)
-    return -arctan(num) + BigDecimal::PI / 2;
+    if (num.im.isZero()) {
+        return BigDecimal::arccot(num.re);
+    }
+    return (i / 2) * ln((num - i) / (num + i));
 }
 
 /*!
@@ -615,9 +595,6 @@ Complex Complex::arccot(const Complex & num)
 */
 Complex Complex::sinh(const Complex & num)
 {
-    // TODO: maybe add sinh() and cosh() to BigDecimal
-//    if (num.im.isZero())
-//        return BigDecimal::sinh(num.re);
     return (exp(num) - exp(-num)) / 2;
 }
 
@@ -628,9 +605,6 @@ Complex Complex::sinh(const Complex & num)
 */
 Complex Complex::cosh(const Complex & num)
 {
-    // TODO: maybe add sinh() and cosh() to BigDecimal
-//    if (num.im.isZero())
-//        return BigDecimal::cosh(num.re);
     return (exp(num) + exp(-num)) / 2;
 }
 

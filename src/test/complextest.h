@@ -56,7 +56,29 @@ private slots:
     void sqr();
     void abs();
     void arg();
+    void factorial();
     void ln();
+    void log2();
+    void log10();
+    void exp();
+    void pow();
+    void sqrt();
+    void sin();
+    void cos();
+    void tan();
+    void cot();
+    void arcsin();
+    void arccos();
+    void arctan();
+    void arccot();
+    void sinh();
+    void cosh();
+    void tanh();
+    void coth();
+    void arcsinh();
+    void arccosh();
+    void arctanh();
+    void arccoth();
 };
 
 #endif // COMPLEXTEST_H
