@@ -20,14 +20,12 @@
 // Local
 #include "bigdecimal.h"
 #include "exceptions.h"
+#include "constants.h"
 #include "unicode.h"
 // STL
 #include <cassert>
 #include <sstream>
 
-namespace MaxCalcEngine {
-
-using namespace DecNumber;
 
 /*!
     \defgroup MaxCalcEngine MaxCalc Engine
@@ -59,29 +57,6 @@ using namespace DecNumber;
     \ingroup MaxCalcEngine
 */
 
-/*!
-    Working precision of BigDecimal represented as string.
-
-    The default value is 1E-WORKING_PRECISION.
-    This is used internally in BigDecimal.
-
-    \sa BigDecimal, WORKING_PRECISION
-    \ingroup MaxCalcEngine
-*/
-static const char * WORKING_PRECISION_STRING = "1E-136";
-
-/*!
-    Default precision used to rounding during conversion from BigDecimal to
-    string and from string to BigDecimal represented as string.
-
-    The default value is 1E-MAX_IO_PRECISION.
-    This is used internally in BigDecimal.
-
-    \sa BigDecimal, WORKING_PRECISION
-    \ingroup MaxCalcEngine
-*/
-static const char * MAX_IO_PRECISION_STRING = "1E-50";
-
 
 // Macro for creating new decContext with default settings and specified precision
 #define NEW_PRECISE_CONTEXT(context, precision) \
@@ -96,10 +71,10 @@ static const char * MAX_IO_PRECISION_STRING = "1E-50";
 
 
 // Macro for creating new decContext with default settings and working precision
-#define NEW_CONTEXT(context) NEW_PRECISE_CONTEXT(context, WORKING_PRECISION)
+#define NEW_CONTEXT(context) NEW_PRECISE_CONTEXT(context, Constants::WORKING_PRECISION)
 
 // Macro for creating new decContext with default settings and max IO precision
-#define NEW_IO_CONTEXT(context) NEW_PRECISE_CONTEXT(context, MAX_IO_PRECISION)
+#define NEW_IO_CONTEXT(context) NEW_PRECISE_CONTEXT(context, Constants::MAX_IO_PRECISION)
 
 /*!
     E number.
@@ -1124,7 +1099,7 @@ BigDecimal BigDecimal::sin(const BigDecimal & num)
     BigDecimal numerator = angle, denominator = 1;
     BigDecimal sqrNum = sqr(angle);
 
-    while (abs(fraction) > WORKING_PRECISION_STRING) {
+    while (abs(fraction) > Constants::WORKING_PRECISION_STRING) {
         numerator *= sqrNum;
         denominator *= FMA(count, count, count);
         count += 2;
@@ -1141,7 +1116,7 @@ BigDecimal BigDecimal::sin(const BigDecimal & num)
     NEW_IO_CONTEXT(context);
     decNumber reduced;
     decNumberReduce(&reduced, &result.mNumber, &context);
-    if (BigDecimal::abs(reduced) < MAX_IO_PRECISION_STRING) {
+    if (BigDecimal::abs(reduced) < Constants::MAX_IO_PRECISION_STRING) {
         result = 0;
     }
 
@@ -1159,7 +1134,7 @@ BigDecimal BigDecimal::cos(const BigDecimal & num)
     BigDecimal numerator = 1, denominator = 1;
     BigDecimal sqrNum = sqr(angle);
 
-    while (abs(fraction) > WORKING_PRECISION_STRING) {
+    while (abs(fraction) > Constants::WORKING_PRECISION_STRING) {
         numerator *= sqrNum;
         denominator *= FMA(count, count, count);
         count += 2;
@@ -1176,7 +1151,7 @@ BigDecimal BigDecimal::cos(const BigDecimal & num)
     NEW_IO_CONTEXT(context);
     decNumber reduced;
     decNumberReduce(&reduced, &result.mNumber, &context);
-    if (BigDecimal::abs(reduced) < MAX_IO_PRECISION_STRING) {
+    if (BigDecimal::abs(reduced) < Constants::MAX_IO_PRECISION_STRING) {
         result = 0;
     }
 
@@ -1269,7 +1244,7 @@ BigDecimal BigDecimal::arctan(const BigDecimal & num)
         BigDecimal fraction = num, result = num;
         BigDecimal numerator = num, denominator = 1;
 
-        while (abs(fraction) > WORKING_PRECISION_STRING) {
+        while (abs(fraction) > Constants::WORKING_PRECISION_STRING) {
             numerator *= -num * num;
             denominator += 2;
             fraction = numerator / denominator;
@@ -1401,7 +1376,7 @@ BigDecimal BigDecimal::pi()
     BigDecimal t = BigDecimal("0.25");
     BigDecimal p = 1;
 
-    while (abs(a - b) > WORKING_PRECISION_STRING) {
+    while (abs(a - b) > Constants::WORKING_PRECISION_STRING) {
         a_old = a;
         a = (a + b) / 2;
         b = sqrt(a_old * b);
@@ -1427,5 +1402,3 @@ BigDecimal BigDecimal::FMA(const BigDecimal & multiplier1,
     return result;
 }
 
-
-} // namespace MaxCalcEngine

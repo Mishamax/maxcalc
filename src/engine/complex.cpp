@@ -21,9 +21,7 @@
 #include "complex.h"
 #include "exceptions.h"
 
-namespace MaxCalcEngine {
 
-    
 /*!
     \class Complex
     \brief Represents a complex number.
@@ -488,7 +486,7 @@ Complex Complex::sin(const Complex & num)
     if (num.im.isZero()) {
         return BigDecimal::sin(num.re);
     }
-    return (exp(i * num) - exp(-i * num)) / 2;
+    return (exp(i * num) - exp(-i * num)) / (i * 2);
 }
 
 /*!
@@ -553,7 +551,7 @@ Complex Complex::arcsin(const Complex & num)
     if (num.im.isZero() && num.re >= -1 && num.re <= 1) {
         return BigDecimal::arcsin(num.re);
     }
-    return -i * ln(i * (num - sqrt(num * num - 1)));
+    return -i * ln(i * (num + sqrt(num * num - 1)));
 }
 
 /*!
@@ -711,4 +709,3 @@ Complex Complex::arccoth(const Complex & num)
 }
 
 
-} // namespace MaxCalcEngine

@@ -20,8 +20,7 @@
 // Engine
 #include "parser.h"
 #include "parsercontext.h"
-#include "precision.h"
-#include "version.h"
+#include "constants.h"
 #include "unitconversion.h"
 #include "unicode.h"
 #include "commandparser.h"
@@ -42,7 +41,6 @@
 #include "simpleini.h"
 
 using namespace std;
-using namespace MaxCalcEngine;
 
 // Ini file constants
 #if defined(_WIN32)
@@ -164,7 +162,7 @@ void readSettings(CSimpleIni * ini, ParserContext & context)
     context.setAngleUnit((ParserContext::AngleUnit)ini->GetLongValue(
         INI_SECTION, _T("AngleUnit"), ParserContext::RADIANS));
     format.precision = ini->GetLongValue(INI_SECTION, _T("Precision"),
-        MAX_IO_PRECISION);
+        Constants::DEFAULT_IO_PRECISION);
     format.decimalSeparator = (ComplexFormat::DecimalSeparator)ini->GetLongValue(
         INI_SECTION, _T("DecimalSeparator"), ComplexFormat::DOT_SEPARATOR);
     format.imaginaryOne = (ComplexFormat::ImaginaryOne)ini->GetLongValue(

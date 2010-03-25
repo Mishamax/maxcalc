@@ -20,7 +20,8 @@
 // Local
 #include "aboutbox.h"
 // MaxCalc Engine
-#include "version.h"
+#include "constants.h"
+#include "unicode.h"
 // Qt
 #include <QSpacerItem>
 #include <QPalette>
@@ -35,6 +36,7 @@
     \ingroup MaxCalcGui
 */
 
+
 /*!
     Constructs a new about box on top of given \a parent window.
 */
@@ -42,22 +44,18 @@ AboutBox::AboutBox(QWidget * parent) : QDialog(parent)
 {
     setWindowTitle("About MaxCalc");
 
-    MaxCalcEngine::tstring labelText = _T("MaxCalc v");
-    labelText += MaxCalcEngine::VERSION;
+    tstring labelText = _T("MaxCalc v");
+    labelText += Constants::VERSION;
     labelText += _T(" (");
-    if (MaxCalcEngine::VERSION_LABEL[0] != 0) {
-        labelText += MaxCalcEngine::VERSION_LABEL;
-        labelText += _T(", ");
-    }
     labelText += _T("built: ");
-    MaxCalcEngine::tstring date = MaxCalcEngine::stringToWideString(__DATE__);
+    tstring date = stringToWideString(__DATE__);
     labelText += date;
     labelText += _T(")<br>");
-    labelText += MaxCalcEngine::COPYRIGHT;
+    labelText += Constants::COPYRIGHT;
     labelText += _T("<br><a href='");
-    labelText += MaxCalcEngine::WEBSITE;
+    labelText += Constants::WEBSITE;
     labelText += _T("'>");
-    labelText += MaxCalcEngine::WEBSITE;
+    labelText += Constants::WEBSITE;
     labelText += _T("</a>");
 
     QTextBrowser * label = new QTextBrowser;

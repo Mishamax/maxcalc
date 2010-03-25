@@ -26,8 +26,6 @@
 #include "exceptions.h"
 #include "variables.h"
 
-namespace MaxCalcEngine {
-
 
 class ParserContext
 {
@@ -81,7 +79,5 @@ private:
     AngleUnit mAngleUnit;           ///< Angle unit.
 };
 
-
-} // namespace MaxCalcEngine
 
 #endif // PARSERCONTEXT_H

@@ -29,7 +29,6 @@
 #include <list>
 #include <vector>
 
-namespace MaxCalcEngine {
 
 using std::list;
 using std::vector;
@@ -153,7 +152,5 @@ private:
     Complex fromRadians(Complex angle, const tstring & functionName);
 };
 
-
-} // namespace MaxCalcEngine
 
 #endif // PARSER_H

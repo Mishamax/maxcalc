@@ -27,7 +27,6 @@
 #include <string>
 #include <cstdlib>
 
-using namespace MaxCalcEngine;
 using namespace std;
 
 void UnitConversionTest::convert()

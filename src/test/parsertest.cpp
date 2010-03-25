@@ -371,6 +371,10 @@ void ParserTest::functionsTrig()
 
     PARSER_TEST(parser, _T("asin(sin(1))"), "1" );
     PARSER_TEST(parser, _T("acos(cos(1))"), "1" );
+    PARSER_TEST(parser, _T("sin(asin(2))"), "2" );
+    PARSER_TEST(parser, _T("cos(acos(3))"), "3" );
+    PARSER_TEST(parser, _T("tan(atg(4))"), "4" );
+    PARSER_TEST(parser, _T("cot(arcctg(5))"), "5" );
 
     parser.context().setAngleUnit(ParserContext::DEGREES);
     PARSER_TEST(parser, _T("sin(30)"), "0.5" );

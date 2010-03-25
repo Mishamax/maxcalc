@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,13 +22,13 @@
 
 // MaxCalc Engine
 #include "complex.h"
+#include "constants.h"
 // Qt
 #include <QTest>
 
-using namespace MaxCalcEngine;
 
 // Default precision for number comparison
-#define DEFAULT_PRECISION MAX_IO_PRECISION
+#define DEFAULT_PRECISION Constants::MAX_IO_PRECISION
 
 #define COMPARE(a, b) QCOMPARE(a, b)
 

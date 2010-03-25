@@ -21,15 +21,10 @@
 #define BIGDECIMAL_H
 
 // Local
-#include "precision.h" // precision.h must be included before decNumber.h
 #include "decNumber/decNumber.h"
 #include "bigdecimalformat.h"
 #include "unicode.h"
 
-namespace MaxCalcEngine {
-
-using DecNumber::decContext;
-using DecNumber::decNumber;
 using std::string;
 using std::wstring;
 
@@ -175,7 +170,5 @@ private:
         const BigDecimal & multiplier2, const BigDecimal & summand);
 };
 
-
-} // namespace MaxCalcEngine
 
 #endif // BIGDECIMAL_H

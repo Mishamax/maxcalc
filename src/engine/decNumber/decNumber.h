@@ -23,12 +23,23 @@
   #define DECFULLNAME "Decimal Number Module"         /* Verbose name */
   #define DECAUTHOR   "Mike Cowlishaw"                /* Who to blame */
 
+  /*!
+    Maximum precision of decNumber in decimal digits.
+
+    The maximum precision of decNumber and thus BigDecimal is hard-written by
+    this macro and cannot be changed at runtime.
+
+    The default value is 136 to use 512 bits (32 bytes) of data
+    (see decNumber definition in decNumber.h for details).
+
+    \sa BigDecimal
+    \ingroup MaxCalcEngine
+  */
+  #define DECNUMDIGITS 136
+
   #if !defined(DECCONTEXT)
     #include "decContext.h"
   #endif
-
-namespace MaxCalcEngine {
-    namespace DecNumber {
 
   /* Bit settings for decNumber.bits                                  */
   #define DECNEG    0x80      /* Sign; 1=negative, 0=positive or zero */
@@ -180,8 +191,5 @@ namespace MaxCalcEngine {
                                     && (dn)->digits==1 \
                                     && (((dn)->bits&DECSPECIAL)==0))
   #define decNumberRadix(dn)       (10)
-
-}    // namespace DecNumber
-}    // namespace MaxCalcEngine
 
 #endif

@@ -9,11 +9,13 @@
   *                                                                     *
   ***********************************************************************
 
+  MaxCalc can be built on Windows, Linux and other UNIX systems (Mac OS X,
+  FreeBSD and OpenSolaris are known to work).
 
 Getting sources
 ===============
 
-  The latest stable version of MaxCalc including sources can be downloaded from
+  The latest stable version of MaxCalc, including sources, can be downloaded from
   http://code.google.com/p/maxcalc/.
 
   To get the latest development version, use Mercurial:
@@ -47,7 +49,8 @@ Prerequisites
    
    * Supported compilers: GCC 4, Microsoft Visual Studio 2005 / 2008 / 2010.
    
-   * To enable localization support (disabled by default) you need gettext.
+   * To enable localization support (disabled by default as it is currently
+     broken) you need gettext.
      On Linux and Windows x86 you can just enable it in build options (see
      below) since on Linux gettext is built in the system libc and on Windows
      all necessary files are provided in "src/intl_win" folder and will be
@@ -68,7 +71,7 @@ Variant 1: Using QMake
       qmake
       make
 
-  If you're using Visual Studio, replace "make" with "nmake"
+  If you're using Visual Studio, replace "make" with "nmake".
   If you're using MinGW, replace "make" with "mingw32-make".
   Compiled binaries will be put in "src\debug" and "src\release" directories.
 

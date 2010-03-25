@@ -23,8 +23,6 @@
 // STL
 #include <string>
 
-namespace MaxCalcEngine {
-
 
 #ifdef _T
 #undef _T
@@ -146,6 +144,5 @@ tstring & trim(tstring & str);
 // Formatting function
 tstring format(const tstring & str, const tstring * arg, ...);
 
-} // namespace MaxCalcEngine
 
 #endif // UNICODE_H

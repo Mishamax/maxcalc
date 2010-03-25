@@ -22,6 +22,7 @@
 #include "parsercontext.h"
 #include "unitconversion.h"
 #include "commandparser.h"
+#include "constants.h"
 // Local
 #include "mainwindow.h"
 #include "aboutbox.h"
@@ -57,7 +58,6 @@ static const QString indent = "    ";
     \ingroup MaxCalcGui
 */
 
-using namespace MaxCalcEngine;
 
 /*!
     Constructs a new main window.
@@ -117,7 +117,7 @@ void MainWindow::readSettings()
     mParser->context().setAngleUnit(
             (ParserContext::AngleUnit)settings.value("AngleUnit", 0).toInt());
     mParser->context().numberFormat().precision = settings.value("Precision",
-        MAX_IO_PRECISION).toInt();
+        Constants::DEFAULT_IO_PRECISION).toInt();
     mParser->context().numberFormat().decimalSeparator =
         (ComplexFormat::DecimalSeparator)settings.value("DecimalSeparator",
         ComplexFormat::DOT_SEPARATOR).toInt();
@@ -429,16 +429,16 @@ void MainWindow::updateVariablesList()
     ComplexFormat & format = mParser->context().numberFormat();
 
     mVariablesList->addItem("e = " +
-        QString::fromWCharArray(MaxCalcEngine::BigDecimal::E.toWideString(format).c_str()));
+        QString::fromWCharArray(BigDecimal::E.toWideString(format).c_str()));
     mVariablesList->addItem("pi = " +
-        QString::fromWCharArray(MaxCalcEngine::BigDecimal::PI.toWideString(format).c_str()));
+        QString::fromWCharArray(BigDecimal::PI.toWideString(format).c_str()));
 
     if (mParser->context().resultExists()) {
         mVariablesList->addItem("res = " +
             QString::fromWCharArray(mParser->context().result().toWideString(format).c_str()));
     }
 
-    MaxCalcEngine::Variables::const_iterator iter;
+    Variables::const_iterator iter;
     for (iter = mParser->context().variables().begin();
         iter != mParser->context().variables().end(); ++iter) {
         mVariablesList->addItem(QString::fromWCharArray(iter->name.c_str()) +

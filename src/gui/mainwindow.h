@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -36,10 +36,8 @@ class QDockWidget;
 class QMenuBar;
 class QActionGroup;
 class InputBox;
-namespace MaxCalcEngine {
-    class Parser;
-    class CommandParser;
-}
+class Parser;
+class CommandParser;
 
 
 class MainWindow : public QMainWindow
@@ -85,8 +83,8 @@ private:
 #endif
 
     // Parser
-    MaxCalcEngine::CommandParser * mCmdParser;
-    MaxCalcEngine::Parser * mParser;
+    CommandParser * mCmdParser;
+    Parser * mParser;
     std::wostringstream * mOut;
 
     // Private functions

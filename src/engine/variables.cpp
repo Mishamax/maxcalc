@@ -21,7 +21,6 @@
 #include "variables.h"
 #include "exceptions.h"
 
-namespace MaxCalcEngine {
 
 using namespace std;
 
@@ -137,4 +136,3 @@ Variables::const_iterator Variables::end()
     return const_iterator(mVars.end());
 }
 
-} // namespace MaxCalcEngine

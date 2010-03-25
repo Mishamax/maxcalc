@@ -21,6 +21,7 @@
 #include "outputsettings.h"
 // Engine
 #include "parsercontext.h"
+#include "constants.h"
 // Qt
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -31,7 +32,6 @@
 #include <QButtonGroup>
 #include <QGridLayout>
 
-using namespace MaxCalcEngine;
 
 /*!
     \class OutputSettings
@@ -55,7 +55,7 @@ OutputSettings::OutputSettings(QWidget * parent, ParserContext & context)
     vlayout->addLayout(hlayout);
 
     QLabel * label1 = new QLabel(tr("Precision:"));
-    QLabel * label2 = new QLabel(tr("decimal digits"));
+    QLabel * label2 = new QLabel(tr("decimal digits (1..50)"));
     mLineEdit = new QLineEdit(QString().setNum(context.numberFormat().precision));
     hlayout->addWidget(label1);
     hlayout->addWidget(mLineEdit);
@@ -124,7 +124,9 @@ void OutputSettings::onOkButtonClicked()
 {
     bool ok;
     int precision = mLineEdit->text().toInt(&ok);
-    if (!ok || precision < 1 || precision > 50) precision = MAX_IO_PRECISION;
+    if (!ok || precision < 1 || precision > Constants::MAX_IO_PRECISION) {
+        precision = Constants::DEFAULT_IO_PRECISION;
+    }
     mContext.numberFormat().precision = precision;
 
     mContext.numberFormat().decimalSeparator = mRadioDot->isChecked() ?
@@ -140,7 +142,7 @@ void OutputSettings::onOkButtonClicked()
 
 void OutputSettings::onDefaultsButtonClicked()
 {
-    mLineEdit->setText(QString().setNum(MAX_IO_PRECISION));
+    mLineEdit->setText(QString().setNum(Constants::DEFAULT_IO_PRECISION));
     mRadioDot->setChecked(true);
     mRadioI->setChecked(true);
 }

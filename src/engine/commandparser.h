@@ -28,8 +28,6 @@
 #include <vector>
 #include <ostream>
 
-namespace MaxCalcEngine {
-
 class CommandParser
 {
 private:
@@ -58,6 +56,5 @@ private:
     void printFunctions();
 };
 
-} // namespace MaxCalcEngine
 
 #endif // COMMANDPARSER_H

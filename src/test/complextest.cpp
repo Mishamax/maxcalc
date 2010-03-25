@@ -23,16 +23,16 @@
 // MaxCalcEngine
 #include "complex.h"
 #include "exceptions.h"
+#include "constants.h"
 // STL
 #include <string>
 
-using namespace MaxCalcEngine;
 
 void ComplexTest::complexFormatDefault()
 {
     ComplexFormat actual;
 
-    COMPARE(actual.precision, MAX_IO_PRECISION);
+    COMPARE(actual.precision, Constants::DEFAULT_IO_PRECISION);
     COMPARE(actual.numberFormat, ComplexFormat::GENERAL_FORMAT);
     COMPARE(actual.exponentCase, ComplexFormat::UPPER_CASE_EXPONENT);
     COMPARE(actual.decimalSeparator, ComplexFormat::DOT_SEPARATOR);

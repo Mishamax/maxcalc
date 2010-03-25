@@ -22,10 +22,8 @@
 #define BIGDECIMALFORMAT_H
 
 // Local
-#include "precision.h"
 #include "unicode.h"
-
-namespace MaxCalcEngine {
+#include "constants.h"
 
 /*!
     \class BigDecimalFormat
@@ -78,7 +76,7 @@ public:
 
     /// Contructs a new instance of BigDecimalFormat with given settings.
     explicit BigDecimalFormat(
-        const int precision_ = MAX_IO_PRECISION,
+        const int precision_ = Constants::DEFAULT_IO_PRECISION,
         const NumberFormat numberFormat_ = GENERAL_FORMAT,
         const ExponentCase exponentCase_ = UPPER_CASE_EXPONENT,
         const DecimalSeparator decimalSeparator_ = DOT_SEPARATOR)
@@ -100,7 +98,5 @@ public:
     }
 };
 
-
-} // namespace MaxCalcEngine
 
 #endif // BIGDECIMALFORMAT_H

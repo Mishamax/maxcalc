@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ class UnitConversionTest : public QObject
     Q_OBJECT
 
 private:
-    bool isUnit(const MaxCalcEngine::tstring str);
+    bool isUnit(const tstring str);
 
 private slots:
     void convert();

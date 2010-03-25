@@ -25,9 +25,6 @@
 #include "decContext.h"       // context and base types
 #include "decNumberLocal.h"   // decNumber local types, etc.
 
-namespace MaxCalcEngine {
-    namespace DecNumber {
-
 /* compile-time endian tester [assumes sizeof(Int)>1] */
 static  const  Int mfcone=1;                 // constant 1
 static  const  Flag *mfctop=(Flag *)&mfcone; // -> top byte
@@ -438,5 +435,3 @@ decContext *decContextZeroStatus(decContext *context) {
   return context;
   } // decContextZeroStatus
 
-}    // namespace DecNumber
-}    // namespace MaxCalcEngine

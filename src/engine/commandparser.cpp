@@ -20,19 +20,17 @@
 // Engine
 #include "commandparser.h"
 #include "unitconversion.h"
-#include "version.h"
+#include "constants.h"
 // STL
 #include <iostream>
 #include <vector>
 #include <sstream>
 #include <ostream>
 
-namespace MaxCalcEngine {
-
 using namespace std;
 
 /// Indentation used for output
-static const tchar * indent = _T("    ");
+static const tchar * indent = _T("  ");
 
 
 /*!
@@ -170,11 +168,10 @@ void CommandParser::printVariables()
 */
 void CommandParser::printVersion(bool displayCopyright)
 {
-    mOut << _T("MaxCalc v") << VERSION << _T(" (");
-    if (VERSION_LABEL[0] != 0) mOut << VERSION_LABEL << _T(", ");
+    mOut << _T("MaxCalc v") << Constants::VERSION << _T(" (");
     mOut << _T("built: ") << __DATE__ << _T(")") << endl;
-    if (displayCopyright) mOut << COPYRIGHT << endl << endl;
-    mOut << WEBSITE << endl;
+    if (displayCopyright) mOut << Constants::COPYRIGHT << endl;
+    mOut << Constants::WEBSITE << endl << endl;
 }
 
 /*!
@@ -323,7 +320,9 @@ CommandParser::Result CommandParser::parse(const tstring & expr)
     } else if (name == _T("#output")) {
         ComplexFormat & format = mContext.numberFormat();
         if (args.size() == 2 && (args[1] == _T("default") || args[1] == _T("defaults"))) {
-            parse(_T("#output . i 50"));
+            tstringstream strstream;
+            strstream << _T("#output i . ") << Constants::DEFAULT_IO_PRECISION;
+            parse(strstream.str());
             return COMMAND_PARSED;
         }
         for (size_t i = 1; i < args.size(); ++i) {
@@ -332,17 +331,17 @@ CommandParser::Result CommandParser::parse(const tstring & expr)
             else if (args[i] == _T("i")) format.imaginaryOne = ComplexFormat::IMAGINARY_ONE_I;
             else if (args[i] == _T("j")) format.imaginaryOne = ComplexFormat::IMAGINARY_ONE_J;
             else if (istdigit(args[i][0])) format.precision = ttoi(args[i].c_str());
-            else mOut << _T("Unknown parameter '") <<  args[i] << _T("'") << endl;
+            else mOut << _T("Unknown parameter '") <<  args[i] << _T("'.") << endl;
 
-            if (format.precision <= 0 || format.precision > MAX_IO_PRECISION) {
-                format.precision = MAX_IO_PRECISION;
-                mOut << _T("Invalid output precision '") << args[i] << _T("'") << endl;
+            if (format.precision <= 0 || format.precision > Constants::MAX_IO_PRECISION) {
+                format.precision = Constants::DEFAULT_IO_PRECISION;
+                mOut << _T("Invalid output precision '") << args[i] << _T("' (valid values are 1..") << Constants::MAX_IO_PRECISION << _T(").") << endl;
             }
         }
         mOut << _T("Output settings:") << endl <<
-            indent << _T("Precision = ") << format.precision << _T(" digits") << endl <<
-            indent << _T("Decimal separator = '") << format.decimalSeparatorTChar() << _T("'") << endl <<
-            indent << _T("Imaginary one = '") << format.imaginaryOneTChar() << _T("'") << endl;
+            indent << _T("Precision = ") << format.precision << _T(" digits.") << endl <<
+            indent << _T("Decimal separator = '") << format.decimalSeparatorTChar() << _T("'.") << endl <<
+            indent << _T("Imaginary one = '") << format.imaginaryOneTChar() << _T("'.") << endl;
     } else {
         mOut << indent << _T("Unknown command '") << cmd << _T("'.") << endl;
     }
@@ -350,4 +349,3 @@ CommandParser::Result CommandParser::parse(const tstring & expr)
     return COMMAND_PARSED;
 }
 
-} // namespace MaxCalcEngine

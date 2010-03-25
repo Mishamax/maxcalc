@@ -194,7 +194,7 @@ Commands
   #angles                               Display angle unit
   #angles radians / degrees / grads     Set angle unit.
   #output                               Display output settings
-  #output , / . / i / j / <precision>   Set output settings.
+  #output , / . / i / j / <precision>   Set output settings (precision = 1..50).
   #ver                                  Display version information.
   help                                  Display help about these commands.
   exit                                  Close the program.

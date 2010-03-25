@@ -24,8 +24,6 @@
 // Local
 #include "bigdecimalformat.h"
 
-namespace MaxCalcEngine {
-
 
 /*!
     \class ComplexFormat
@@ -50,7 +48,7 @@ struct ComplexFormat : public BigDecimalFormat
 
     /// Constructs a new instance of ComplexFormat.
     explicit ComplexFormat(
-        const int precision_ = MAX_IO_PRECISION,
+        const int precision_ = Constants::DEFAULT_IO_PRECISION,
         const NumberFormat numberFormat_ = GENERAL_FORMAT,
         const ExponentCase exponentCase_ = UPPER_CASE_EXPONENT,
         const DecimalSeparator decimalSeparator_ = DOT_SEPARATOR,
@@ -73,7 +71,5 @@ struct ComplexFormat : public BigDecimalFormat
     }
 };
 
-
-} // namespace MaxCalcEngine
 
 #endif // COMPLEXFORMAT_H

@@ -33,10 +33,10 @@ class OutputSettings : public QDialog
     Q_OBJECT
 
 public:
-    OutputSettings(QWidget * parent, MaxCalcEngine::ParserContext & context);
+    OutputSettings(QWidget * parent, ParserContext & context);
 
 private:
-    MaxCalcEngine::ParserContext & mContext;
+    ParserContext & mContext;
 
     QLineEdit * mLineEdit;
     QRadioButton * mRadioDot;

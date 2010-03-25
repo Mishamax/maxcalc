@@ -169,9 +169,6 @@
 #include "decNumber.h"             // base number library
 #include "decNumberLocal.h"        // decNumber local types, etc.
 
-namespace MaxCalcEngine {
-    namespace DecNumber {
-
 /* Constants */
 // Public lookup table used by the D2U macro
 const uByte d2utable[DECMAXD2U+1]=D2UTABLE;
@@ -8143,5 +8140,3 @@ static void decFree(void *alloc) {
 #define free(a) decFree(a)
 #endif
 
-}    // namespace DecNumber
-}    // namespace MaxCalcEngine

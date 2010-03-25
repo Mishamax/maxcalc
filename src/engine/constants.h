@@ -1,6 +1,6 @@
 /******************************************************************************
  *  MaxCalc - a powerful scientific calculator.
- *  Copyright (C) 2005, 2009 Michael Maximov (michael.maximov@gmail.com)
+ *  Copyright (C) 2005, 2010 Michael Maximov (michael.maximov@gmail.com)
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,30 +17,22 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *****************************************************************************/
 
-#ifndef VERSION_H
-#define VERSION_H
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
 
 #include "unicode.h"
 
-namespace MaxCalcEngine {
+class Constants
+{
+public:
+    static const int WORKING_PRECISION;
+    static const int MAX_IO_PRECISION;
+    static const int DEFAULT_IO_PRECISION;
+    static const char * WORKING_PRECISION_STRING;
+    static const char * MAX_IO_PRECISION_STRING;
+    static const tchar * VERSION;
+    static const tchar * WEBSITE;
+    static const tchar * COPYRIGHT;
+};
 
-/*!
-    Version number.
-*/
-static const tchar * VERSION = _T("2.0.0");
-/*!
-    Version label.
-*/
-static const tchar * VERSION_LABEL = _T("");
-/*!
-    Web site.
-*/
-static const tchar * WEBSITE = _T("http://code.google.com/p/maxcalc/");
-/*!
-    Copyright.
-*/
-static const tchar * COPYRIGHT = _T("Copyright (c) 2005-2010 Michael Maximov");
-
-} // namespace MaxCalcEngine
-
-#endif // VERSION_H
+#endif // CONSTANTS_H

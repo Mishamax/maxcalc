@@ -20,8 +20,6 @@
 // Local
 #include "parsercontext.h"
 
-namespace MaxCalcEngine {
-
 
 /*!
     \class ParserContext
@@ -69,4 +67,3 @@ void ParserContext::setResult(const Complex & result)
     mResultExists = true;
 }
 
-} // namespace MaxCalcEngine

@@ -33,7 +33,6 @@
 #include <cctype>
 #endif
 
-namespace MaxCalcEngine {
 
 using namespace std;
 
@@ -170,4 +169,3 @@ tstring format(const tstring & str, const tstring * arg, ...)
 }
 
 
-} // namespace MaxCalcEngine

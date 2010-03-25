@@ -12,13 +12,12 @@ HEADERS += \
         pch.h \
         bigdecimal.h \
         complex.h \
-        precision.h \
+        constants.h \
         bigdecimalformat.h \
         complexformat.h \
         unicode.h \
         parsercontext.h \
         parser.h \
-        version.h \
         variables.h \
         unitconversion.h \
         exceptions.h \
@@ -27,6 +26,7 @@ HEADERS += \
 SOURCES += \
         bigdecimal.cpp \
         complex.cpp \
+        constants.cpp \
         unicode.cpp \
         parsercontext.cpp \
         parser.cpp \

@@ -23,8 +23,6 @@
 // Local
 #include "unicode.h"
 
-namespace MaxCalcEngine {
-
 
 //------------------------------------------------------------------------------
 /// General MaxCalc engine exception.
@@ -40,6 +38,9 @@ public:
     
     /// Constructs new MaxCalc exception with specified informational string.
     MaxCalcException(const tstring & what) : mWhat(what) {}
+    
+    /// Destructs MaxCalcException.
+    virtual ~MaxCalcException() {}
 
     /// Returns additional info for the exception.
     virtual const tstring & what() const throw()
@@ -310,7 +311,5 @@ public:
     }
 };
 
-
-} // namespace MaxCalcEngine
 
 #endif // EXCEPTION_H

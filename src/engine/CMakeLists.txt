@@ -10,7 +10,8 @@ set(SOURCES
     unicode.cpp
     unitconversion.cpp
     variables.cpp
-    commandparser.cpp)
+    commandparser.cpp
+    constants.cpp)
 
 if (MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Zc:wchar_t-")

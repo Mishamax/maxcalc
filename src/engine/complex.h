@@ -25,7 +25,6 @@
 #include "complexformat.h"
 #include "unicode.h"
 
-namespace MaxCalcEngine {
 
 using std::string;
 using std::wstring;
@@ -128,6 +127,5 @@ public:
 
 };
 
-} // namespace MaxCalcEngine
 
 #endif

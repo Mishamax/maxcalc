@@ -21,7 +21,6 @@
 #include "parser.h"
 #include "exceptions.h"
 
-namespace MaxCalcEngine {
 
 using std::vector;
 
@@ -860,4 +859,3 @@ Complex Parser::fromRadians(Complex angle, const tstring & functionName)
     return angle;
 }
 
-} // namespace MaxCalcEngine

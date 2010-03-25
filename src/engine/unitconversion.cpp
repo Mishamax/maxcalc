@@ -21,7 +21,6 @@
 #include "unitconversion.h"
 #include "exceptions.h"
 
-namespace MaxCalcEngine {
 
 /*!
     \class UnitConversion
@@ -272,4 +271,3 @@ const UnitConversion::UnitDef * UnitConversion::units()
     return mUnits;
 }
 
-} // namespace MaxCalcEngine
