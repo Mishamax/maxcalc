@@ -207,15 +207,11 @@ string BigDecimal::toString(const BigDecimalFormat & format) const
         checkContextStatus(context);
     }
 
-    size_t size = format.precision + 14;
-    char * str = new char[size];
 
     // Make conversion
-    decNumberToString(&num, str, size, (uint8_t)format.numberFormat);
-
-    // Convert char* to string
+    char * str = new char[format.precision + 14];
+    decNumberToString(&num, str, (uint8_t)format.numberFormat);
     string s(str);
-    
     delete[] str;
 
     // Replace 'E' with 'e' if needed

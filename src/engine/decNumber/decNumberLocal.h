@@ -1,7 +1,7 @@
 /* ------------------------------------------------------------------ */
 /* decNumber package local type, tuning, and macro definitions        */
 /* ------------------------------------------------------------------ */
-/* Copyright (c) IBM Corporation, 2000, 2008.  All rights reserved.   */
+/* Copyright (c) IBM Corporation, 2000, 2010.  All rights reserved.   */
 /*                                                                    */
 /* This software is made available under the terms of the             */
 /* ICU License -- ICU 1.8.1 and later.                                */
@@ -24,7 +24,7 @@
 
 #if !defined(DECNUMBERLOC)
   #define DECNUMBERLOC
-  #define DECVERSION    "decNumber 3.61" /* Package Version [16 max.] */
+  #define DECVERSION    "decNumber 3.68" /* Package Version [16 max.] */
   #define DECNLAUTHOR   "Mike Cowlishaw"              /* Who to blame */
 
   #include <stdlib.h>         /* for abs                              */
@@ -38,6 +38,11 @@
   /* Conditional code flag -- set this to 1 for best performance      */
   #if !defined(DECUSE64)
   #define DECUSE64  1         /* 1=use int64s, 0=int32 & smaller only */
+  #endif
+
+  /* Conditional code flag -- set this to 0 to exclude printf calls   */
+  #if !defined(DECPRINT)
+  #define DECPRINT  0         /* 1=allow printf calls; 0=no printf    */
   #endif
 
   /* Conditional check flags -- set these to 0 for best performance   */
@@ -57,6 +62,20 @@
                               /* should be a common maximum precision */
                               /* rounded up to a multiple of 4; must  */
                               /* be zero or positive.                 */
+  #endif
+
+
+  /* ---------------------------------------------------------------- */
+  /* Check parameter dependencies                                     */
+  /* ---------------------------------------------------------------- */
+  #if DECCHECK & !DECPRINT
+    #error DECCHECK needs DECPRINT to be useful
+  #endif
+  #if DECALLOC & !DECPRINT
+    #error DECALLOC needs DECPRINT to be useful
+  #endif
+  #if DECTRACE & !DECPRINT
+    #error DECTRACE needs DECPRINT to be useful
   #endif
 
   /* ---------------------------------------------------------------- */
@@ -319,7 +338,7 @@
   #endif
 
   /* Tests for sign or specials, directly on DECFLOATs                */
-  #define DFISSIGNED(df)   (DFWORD(df, 0)&0x80000000)
+  #define DFISSIGNED(df)  ((DFWORD(df, 0)&0x80000000)!=0)
   #define DFISSPECIAL(df) ((DFWORD(df, 0)&0x78000000)==0x78000000)
   #define DFISINF(df)     ((DFWORD(df, 0)&0x7c000000)==0x78000000)
   #define DFISNAN(df)     ((DFWORD(df, 0)&0x7c000000)==0x7c000000)
@@ -354,6 +373,7 @@
     /*   DFISUINT01 -- test for sign=0, finite, exponent q=0, and     */
     /*                 MSD=0 or 1                                     */
     /*   ZEROWORD is also defined here.                               */
+    /*                                                                */
     /* In DFISZERO the first test checks the least-significant word   */
     /* (most likely to be non-zero); the penultimate tests MSD and    */
     /* DPDs in the signword, and the final test excludes specials and */
@@ -439,7 +459,9 @@
         && UBTOUS(u)==0)
     #endif
 
-    /* Macros and masks for the exponent continuation field and MSD   */
+    /* Macros and masks for the sign, exponent continuation, and MSD  */
+    /* Get the sign as DECFLOAT_Sign or 0                             */
+    #define GETSIGN(df) (DFWORD(df, 0)&0x80000000)
     /* Get the exponent continuation from a decFloat *df as an Int    */
     #define GETECON(df) ((Int)((DFWORD((df), 0)&0x03ffffff)>>(32-6-DECECONL)))
     /* Ditto, from the next-wider format                              */

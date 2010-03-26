@@ -1,7 +1,7 @@
 /* ------------------------------------------------------------------ */
 /* Decimal Context module                                             */
 /* ------------------------------------------------------------------ */
-/* Copyright (c) IBM Corporation, 2000, 2005.  All rights reserved.   */
+/* Copyright (c) IBM Corporation, 2000, 2009.  All rights reserved.   */
 /*                                                                    */
 /* This software is made available under the terms of the             */
 /* ICU License -- ICU 1.8.1 and later.                                */
@@ -26,9 +26,9 @@
 #include "decNumberLocal.h"   // decNumber local types, etc.
 
 /* compile-time endian tester [assumes sizeof(Int)>1] */
-static  const  Int mfcone=1;                 // constant 1
-static  const  Flag *mfctop=(Flag *)&mfcone; // -> top byte
-#define LITEND *mfctop             // named flag; 1=little-endian
+static  const  Int mfcone=1;                       // constant 1
+static  const  Flag *mfctop=(const Flag *)&mfcone; // -> top byte
+#define LITEND *mfctop        // named flag; 1=little-endian
 
 /* ------------------------------------------------------------------ */
 /* round-for-reround digits                                           */
@@ -382,12 +382,14 @@ Int decContextTestEndian(Flag quiet) {
   if (dle>1) dle=1;           // ensure 0 or 1
 
   if (LITEND!=DECLITEND) {
-    const char *adj;
-    if (!quiet) {
+    if (!quiet) {             // always refer to this
+      #if DECPRINT
+      const char *adj;
       if (LITEND) adj="little";
              else adj="big";
       printf("Warning: DECLITEND is set to %d, but this computer appears to be %s-endian\n",
              DECLITEND, adj);
+      #endif
       }
     res=(Int)LITEND-dle;
     }

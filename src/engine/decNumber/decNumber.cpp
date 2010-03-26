@@ -1,7 +1,7 @@
 /* ------------------------------------------------------------------ */
 /* Decimal Number arithmetic module                                   */
 /* ------------------------------------------------------------------ */
-/* Copyright (c) IBM Corporation, 2000, 2008.  All rights reserved.   */
+/* Copyright (c) IBM Corporation, 2000, 2009.  All rights reserved.   */
 /*                                                                    */
 /* This software is made available under the terms of the             */
 /* ICU License -- ICU 1.8.1 and later.                                */
@@ -256,7 +256,7 @@ static void        decSetSubnormal(decNumber *, decContext *, Int *, uInt *);
 static Int         decShiftToLeast(Unit *, Int, Int);
 static Int         decShiftToMost(Unit *, Int, Int);
 static void        decStatus(decNumber *, uInt, decContext *);
-static void        decToString(const decNumber *, char[], size_t, Flag);
+static void        decToString(const decNumber *, char[], Flag);
 static decNumber * decTrim(decNumber *, decContext *, Flag, Flag, Int *);
 static Int         decUnitAddSub(const Unit *, Int, const Unit *, Int, Int,
                               Unit *, Int);
@@ -352,7 +352,7 @@ decNumber * decNumberFromUInt32(decNumber *dn, uInt uin) {
     *up=(Unit)(uin%(DECDPUNMAX+1));
     uin=uin/(DECDPUNMAX+1);
     }
-  dn->digits=decGetDigits(dn->lsu, (int32_t)(up-dn->lsu));
+  dn->digits=decGetDigits(dn->lsu, up-dn->lsu);
   return dn;
   } // decNumberFromUInt32
 
@@ -434,19 +434,18 @@ uInt decNumberToUInt32(const decNumber *dn, decContext *set) {
 /* ------------------------------------------------------------------ */
 /* to-string -- conversion to numeric string                          */
 /*                                                                    */
-/*   decNumberToString(dn, string, string_size, format);              */
+/*   decNumberToString(dn, string, format);                           */
 /*                                                                    */
 /*  dn is the decNumber to convert                                    */
 /*  string is the string where the result will be laid out            */
-/*  string_size is the maximum size of the string                     */
 /*  format is 0 if General, 1 if Scientific and 2 if Engineering      */
 /*                                                                    */
 /*  string must be at least dn->digits+14 characters long             */
 /*                                                                    */
 /*  No error is possible, and no status can be set.                   */
 /* ------------------------------------------------------------------ */
-char * decNumberToString(const decNumber *dn, char *string, size_t string_size, uint8_t format){
-  decToString(dn, string, string_size, format);
+char * decNumberToString(const decNumber *dn, char *string, uint8_t format){
+  decToString(dn, string, format);
   return string;
   } // DecNumberToString
 
@@ -627,7 +626,7 @@ decNumber * decNumberFromString(decNumber *dn, const char chars[],
 
     // Handle decimal point...
     if (dotchar!=NULL && dotchar<last)  // non-trailing '.' found?
-      exponent-=(int32_t)(last-dotchar); // adjust exponent
+      exponent-=(last-dotchar);         // adjust exponent
     // [we can now ignore the .]
 
     // OK, the digits string is good.  Assemble in the decNumber, or in
@@ -649,7 +648,7 @@ decNumber * decNumberFromString(decNumber *dn, const char chars[],
     #if DECDPUN>1
     out=0;                         // accumulator
     up=res+D2U(d)-1;               // -> msu
-    cut=d-(int32_t)(up-res)*DECDPUN;        // digits in top unit
+    cut=d-(up-res)*DECDPUN;        // digits in top unit
     for (c=cfirst;; c++) {         // along the digits
       if (*c=='.') continue;       // ignore '.' [don't decrement cut]
       out=X10(out)+(Int)*c-(Int)'0';
@@ -827,7 +826,7 @@ decNumber * decNumberAnd(decNumber *res, const decNumber *lhs,
       } // both OK
     } // each unit
   // [here uc-1 is the msu of the result]
-  res->digits=decGetDigits(res->lsu, (int32_t)(uc-res->lsu));
+  res->digits=decGetDigits(res->lsu, uc-res->lsu);
   res->exponent=0;                      // integer
   res->bits=0;                          // sign=0
   return res;  // [no status to set]
@@ -1214,7 +1213,7 @@ decNumber * decNumberInvert(decNumber *res, const decNumber *rhs,
       } // each digit
     } // each unit
   // [here uc-1 is the msu of the result]
-  res->digits=decGetDigits(res->lsu, (int32_t)(uc-res->lsu));
+  res->digits=decGetDigits(res->lsu, uc-res->lsu);
   res->exponent=0;                      // integer
   res->bits=0;                          // sign=0
   return res;  // [no status to set]
@@ -1299,9 +1298,9 @@ decNumber * decNumberLn(decNumber *res, const decNumber *rhs,
 /*   rhs is A                                                         */
 /*   set is the context, used only for digits and status              */
 /*                                                                    */
-/* C must have space for 10 digits (A might have 10**9 digits and     */
-/* an exponent of +999999999, or one digit and an exponent of         */
-/* -1999999999).                                                      */
+/* For an unrounded result, digits may need to be 10 (A might have    */
+/* 10**9 digits and an exponent of +999999999, or one digit and an    */
+/* exponent of -1999999999).                                          */
 /*                                                                    */
 /* This returns the adjusted exponent of A after (in theory) padding  */
 /* with zeros on the right to set->digits digits while keeping the    */
@@ -1332,7 +1331,13 @@ decNumber * decNumberLogB(decNumber *res, const decNumber *rhs,
     }
    else { // finite non-zero
     Int ae=rhs->exponent+rhs->digits-1; // adjusted exponent
-    decNumberFromInt32(res, ae);        // lay it out
+    if (set->digits>=10) decNumberFromInt32(res, ae);  // lay it out
+     else {
+      decNumber buft[D2N(10)];          // temporary number
+      decNumber *t=buft;                // ..
+      decNumberFromInt32(t, ae);        // lay it out
+      decNumberPlus(res, t, set);       // round as necessary
+      }
     }
 
   if (status!=0) decStatus(res, status, set);
@@ -1834,7 +1839,7 @@ decNumber * decNumberOr(decNumber *res, const decNumber *lhs,
       } // non-zero
     } // each unit
   // [here uc-1 is the msu of the result]
-  res->digits=decGetDigits(res->lsu, (int32_t)(uc-res->lsu));
+  res->digits=decGetDigits(res->lsu, uc-res->lsu);
   res->exponent=0;                      // integer
   res->bits=0;                          // sign=0
   return res;  // [no status to set]
@@ -2540,7 +2545,7 @@ decNumber * decNumberRotate(decNumber *res, const decNumber *lhs,
           } // whole units to rotate
         // the rotation may have left an undetermined number of zeros
         // on the left, so true length needs to be calculated
-        res->digits=decGetDigits(res->lsu, (int32_t)(msumax-res->lsu+1));
+        res->digits=decGetDigits(res->lsu, msumax-res->lsu+1);
         } // rotate needed
       } // rhs OK
     } // numerics
@@ -2611,16 +2616,25 @@ decNumber * decNumberScaleB(decNumber *res, const decNumber *lhs,
    else {
     // lhs is a number; rhs is a finite with q==0
     reqexp=decGetInt(rhs);                   // [cannot fail]
+    // maximum range is larger than getInt can handle, so this is
+    // more restrictive than the specification
     if (reqexp==BADINT                       // something bad ..
-     || reqexp==BIGODD || reqexp==BIGEVEN    // .. very big ..
-     || abs(reqexp)>(2*(set->digits+set->emax))) // .. or out of range
+     || reqexp==BIGODD || reqexp==BIGEVEN    // it was huge
+     || (abs(reqexp)+1)/2>(set->digits+set->emax)) // .. or out of range
       status=DEC_Invalid_operation;
      else {                                  // rhs is OK
       decNumberCopy(res, lhs);               // all done if infinite lhs
       if (!decNumberIsInfinite(res)) {       // prepare to scale
+        Int exp=res->exponent;               // save for overflow test
         res->exponent+=reqexp;               // adjust the exponent
+        if (((exp^reqexp)>=0)                // same sign ...
+         && ((exp^res->exponent)<0)) {       // .. but result had different
+          // the calculation overflowed, so force right treatment
+          if (exp<0) res->exponent=DEC_MIN_EMIN-DEC_MAX_DIGITS;
+           else      res->exponent=DEC_MAX_EMAX+1;
+          }
         residue=0;
-        decFinalize(res, set, &residue, &status); // .. and check
+        decFinalize(res, set, &residue, &status); // final check
         } // finite LHS
       } // rhs OK
     } // rhs finite
@@ -3257,7 +3271,7 @@ decNumber * decNumberXor(decNumber *res, const decNumber *lhs,
       } // non-zero
     } // each unit
   // [here uc-1 is the msu of the result]
-  res->digits=decGetDigits(res->lsu, (int32_t)(uc-res->lsu));
+  res->digits=decGetDigits(res->lsu, uc-res->lsu);
   res->exponent=0;                      // integer
   res->bits=0;                          // sign=0
   return res;  // [no status to set]
@@ -3596,7 +3610,7 @@ decNumber * decNumberZero(decNumber *dn) {
 /* ------------------------------------------------------------------ */
 // If DECCHECK is enabled the string "?" is returned if a number is
 // invalid.
-static void decToString(const decNumber *dn, char *string, size_t string_size, Flag format) {
+static void decToString(const decNumber *dn, char *string, Flag format) {
   Int exp=dn->exponent;       // local copy
   Int e;                      // E-part value
   Int pre;                    // digits before the '.'
@@ -3617,24 +3631,15 @@ static void decToString(const decNumber *dn, char *string, size_t string_size, F
     }
   if (dn->bits&DECSPECIAL) {       // Is a special value
     if (decNumberIsInfinite(dn)) {
-#if _MSC_VER > 1400
-      strcpy_s(c, string_size,   "Inf");
-      strcpy_s(c+3, string_size, "inity");
-#else
       strcpy(c,   "Inf");
       strcpy(c+3, "inity");
-#endif
       return;}
     // a NaN
     if (dn->bits&DECSNAN) {        // signalling NaN
       *c='s';
       c++;
       }
-#if _MSC_VER > 1400
-    strcpy_s(c, string_size, "NaN");
-#else
     strcpy(c, "NaN");
-#endif
     c+=3;                          // step past
     // if not a clean non-zero coefficient, that's all there is in a
     // NaN string
@@ -6541,11 +6546,11 @@ static Int decUnitAddSub(const Unit *a, Int alength,
 
   // OK, all A and B processed; might still have carry or borrow
   // return number of Units in the result, negated if a borrow
-  if (carry==0) return (int32_t)(c-clsu);     // no carry, so no more to do
+  if (carry==0) return c-clsu;     // no carry, so no more to do
   if (carry>0) {                   // positive carry
     *c=(Unit)carry;                // place as new unit
     c++;                           // ..
-    return (int32_t)(c-clsu);
+    return c-clsu;
     }
   // -ve carry: it's a borrow; complement needed
   add=1;                           // temporary carry...
@@ -6568,7 +6573,7 @@ static Int decUnitAddSub(const Unit *a, Int alength,
     *c=(Unit)(add-carry-1);
     c++;                      // interesting, include it
     }
-  return (int32_t)(clsu-c);   // -ve result indicates borrowed
+  return clsu-c;              // -ve result indicates borrowed
   } // decUnitAddSub
 
 /* ------------------------------------------------------------------ */
@@ -6752,7 +6757,7 @@ static Int decShiftToLeast(Unit *uar, Int units, Int shift) {
   if (cut==DECDPUN) {              // unit-boundary case; easy
     up=uar+D2U(shift);
     for (; up<uar+units; target++, up++) *target=*up;
-    return (int32_t)(target-uar);
+    return target-uar;
     }
 
   // messier
@@ -6780,7 +6785,7 @@ static Int decShiftToLeast(Unit *uar, Int units, Int shift) {
     count-=cut;
     if (count<=0) break;
     }
-  return (int32_t)(target-uar+1);
+  return target-uar+1;
   } // decShiftToLeast
 
 #if DECSUBSET
@@ -7643,7 +7648,7 @@ static decNumber *decDecap(decNumber *dn, Int drop) {
   cut=MSUDIGITS(dn->digits-drop);       // digits to be in use in msu
   if (cut!=DECDPUN) *msu%=powers[cut];  // clear left digits
   // that may have left leading zero digits, so do a proper count...
-  dn->digits=decGetDigits(dn->lsu, (int32_t)(msu-dn->lsu+1));
+  dn->digits=decGetDigits(dn->lsu, msu-dn->lsu+1);
   return dn;
   } // decDecap
 
@@ -8139,4 +8144,3 @@ static void decFree(void *alloc) {
 #define malloc(a) decMalloc(a)
 #define free(a) decFree(a)
 #endif
-
