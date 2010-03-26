@@ -38,6 +38,7 @@ class QActionGroup;
 class InputBox;
 class Parser;
 class CommandParser;
+class QSettings;
 
 
 class MainWindow : public QMainWindow

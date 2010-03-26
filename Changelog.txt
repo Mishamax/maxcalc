@@ -15,6 +15,7 @@ v2.0.1 (IN PROGRESS).
     - Changed: Default precision is 25 digits instead of 50.
     - Fixed: Bug in sin() function for complex arguments.
     - Fixed: Bugs in inverse trigonometric functions for complex arguments.
+    - Internal: decNumber library updated to v3.68.
 
 v2.0.0 (21-Mar-2010).
 

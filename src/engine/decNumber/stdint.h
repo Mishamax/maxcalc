@@ -1,8 +1,8 @@
 /* stdint.h –– some standard integer types from C99 */
 
-#if defined(_WIN32)
+#if defined(_MSC_VER)
 
-// Windows: There is no stdint.h
+// MSVC: There is no stdint.h
 typedef unsigned char uint8_t;
 typedef char int8_t;
 typedef unsigned short uint16_t;
@@ -14,7 +14,7 @@ typedef long long int64_t;
 
 #else
 
-// Linux: Include file from standard library
+// Other compilers: Include file from standard library
 #include <stdint.h>
 
 #endif
