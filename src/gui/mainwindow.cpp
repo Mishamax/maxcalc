@@ -362,14 +362,14 @@ void MainWindow::createMainMenu()
             case UnitConversion::LENGTH:
                 currentUnits = unitConversion->addMenu(tr("&Length"));
                 break;
-            case UnitConversion::WEIGHT:
-                currentUnits = unitConversion->addMenu(tr("&Weight"));
+            case UnitConversion::MASS:
+                currentUnits = unitConversion->addMenu(tr("&Mass"));
                 break;
             case UnitConversion::TIME:
                 currentUnits = unitConversion->addMenu(tr("&Time"));
                 break;
-            case UnitConversion::SPEED:
-                currentUnits = unitConversion->addMenu(tr("&Speed"));
+            case UnitConversion::VELOCITY:
+                currentUnits = unitConversion->addMenu(tr("&Velocity"));
                 break;
             case UnitConversion::TEMPERATURE:
                 currentUnits = unitConversion->addMenu(tr("T&emperature"));

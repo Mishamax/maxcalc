@@ -35,11 +35,11 @@ public:
         NO_UNIT,
         // Length
         MIL, INCH, FOOT, YARD, MILE, MICRON, MILLIMETER, CENTIMETER, METER, KILOMETER,
-        // Weight
-        POUND, OUNCE, GRAMM, KILOGRAM,
+        // Mass
+        POUND, OUNCE, GRAM, KILOGRAM,
         // Time
         MICROSECOND, MILLISECOND, SECOND, MINUTE, HOUR, DAY,
-        // Speed
+        // Velocity
         MILE_PER_HOUR, METER_PER_SECOND, FOOT_PER_HOUR, KILOMETER_PER_HOUR, KNOT,
         // Temperature
         CELSIUS, FAHRENHEIT, KELVIN
@@ -48,7 +48,7 @@ public:
     /*! Types of unit conversions. */
     enum Type
     {
-        NO_TYPE, LENGTH, WEIGHT, TIME, SPEED, TEMPERATURE
+        NO_TYPE, LENGTH, MASS, TIME, VELOCITY, TEMPERATURE
     };
 
     /*! Unit definition for table of units. */

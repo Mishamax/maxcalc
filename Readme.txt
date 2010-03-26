@@ -148,17 +148,17 @@ Unit conversions
     in          Inch
     ft          Foot
     yd          Yard
-    mi          Mile
+    mile        Mile
     micron      Micron
     mm          Millimeter
     cm          Centimeter
     m           Meter
     km          Kilometer
   
-  Weight:
+  Mass:
     lb          Pound
     oz          Ounce
-    g           Gramm
+    g           Gram
     kg          Kilogram
   
   Time:
@@ -169,8 +169,8 @@ Unit conversions
     h           Hour
     d           Day
   
-  Speed:
-    mi/h        Mile per Hour
+  Velocity:
+    mile/h      Mile per Hour
     m/s         Meter per Second
     ft/h        Foot per Hour
     km/h        Kilometer per Hour

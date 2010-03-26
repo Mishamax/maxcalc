@@ -35,6 +35,12 @@ private:
 private slots:
     void convert();
     void iterators();
+
+    void length();
+    void weight();
+    void time();
+    void speed();
+    void temperature();
 };
 
 #endif // UNITCONVERSIONTEST_H

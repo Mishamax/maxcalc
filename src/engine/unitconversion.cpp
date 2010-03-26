@@ -103,16 +103,16 @@ const UnitConversion::SimpleConversion UnitConversion::mSimpleConversions[] =
     { KILOMETER,    METER,          "1000" },
 
     //---------------------------------------------------------------------
-    // Weight
+    // Mass
     // Pound
-    { POUND,        OUNCE,          "16.000002821917267029565227206668754885444268544934799601545281895425389918418371810175269281455206296261806196365934943519325900403251977458524870967832965" },
-    { POUND,        GRAMM,          "453.5924" },
+    { POUND,        OUNCE,          "16" },
+    { POUND,        GRAM,           "453.59237" },
     // Ounce
-    { OUNCE,        GRAMM,          "28.34952" },
+    { OUNCE,        GRAM,           "28.349523125" },
     // Kilogramme
-    { KILOGRAM,   POUND,            "2.2046224760379583079434311509628468201848179114112141208715137202475173746297336551494249021809007381957898765499598317784865883996292706844294569309362326" },
-    { KILOGRAM,   OUNCE,            "35.273965837869565340083359436068053356811684995019316023692817373980229647627190866018190078703272577454574186793991573755040649718231560887097912063414125" },
-    { KILOGRAM,   GRAMM,            "1000" },
+    { KILOGRAM,     POUND,          "2.2046226218487758072297380134502703385420702733601978357792923192248582135541653842193156820517064694011497591989918172565380674282506118874971375731033" },
+    { KILOGRAM,     OUNCE,          "35.2739619495804129156758082152043254166731243737631653724686771075977314168666461475090509128273035104183961471838690761046090788520097901999542011696" },
+    { KILOGRAM,     GRAM,           "1000" },
 
     //---------------------------------------------------------------------
     // Time
@@ -138,7 +138,7 @@ const UnitConversion::SimpleConversion UnitConversion::mSimpleConversions[] =
     { DAY,          HOUR,           "24" },
 
     //---------------------------------------------------------------------
-    // Speed
+    // Velocity
     // mi/hour
     { MILE_PER_HOUR,        FOOT_PER_HOUR,      "1760" },
     { MILE_PER_HOUR,        KILOMETER_PER_HOUR, "1.609344" },
@@ -185,18 +185,18 @@ const UnitConversion::UnitDef UnitConversion::mUnits[] =
     { _T("in"),         INCH,               LENGTH, _T("Inch") },
     { _T("ft"),         FOOT,               LENGTH, _T("Foot") },
     { _T("yd"),         YARD,               LENGTH, _T("Yard") },
-    { _T("mi"),         MILE,               LENGTH, _T("Mile") },
+    { _T("mile"),       MILE,               LENGTH, _T("Mile") },
     { _T("micron"),     MICRON,             LENGTH, _T("Micron") },
     { _T("mm"),         MILLIMETER,         LENGTH, _T("Millimeter") },
     { _T("cm"),         CENTIMETER,         LENGTH, _T("Centimeter") },
     { _T("m"),          METER,              LENGTH, _T("Meter") },
     { _T("km"),         KILOMETER,          LENGTH, _T("Kilometer") },
 
-    // Weight
-    { _T("lb"),         POUND,              WEIGHT, _T("Pound") },
-    { _T("oz"),         OUNCE,              WEIGHT, _T("Ounce") },
-    { _T("g"),          GRAMM,              WEIGHT, _T("Gramm") },
-    { _T("kg"),         KILOGRAM,           WEIGHT, _T("Kilogram") },
+    // Mass
+    { _T("lb"),         POUND,              MASS,   _T("Pound") },
+    { _T("oz"),         OUNCE,              MASS,   _T("Ounce") },
+    { _T("g"),          GRAM,               MASS,   _T("Gram") },
+    { _T("kg"),         KILOGRAM,           MASS,   _T("Kilogram") },
 
     // Time
     { _T("micros"),     MICROSECOND,        TIME,   _T("Microsecond") },
@@ -206,12 +206,12 @@ const UnitConversion::UnitDef UnitConversion::mUnits[] =
     { _T("h"),          HOUR,               TIME,   _T("Hour") },
     { _T("d"),          DAY,                TIME,   _T("Day") },
 
-    // Speed
-    { _T("mi/h"),       MILE_PER_HOUR,      SPEED,  _T("Mile per Hour") },
-    { _T("m/s"),        METER_PER_SECOND,   SPEED,  _T("Meter per Second") },
-    { _T("ft/h"),       FOOT_PER_HOUR,      SPEED,  _T("Foot per Hour") },
-    { _T("km/h"),       KILOMETER_PER_HOUR, SPEED,  _T("Kilometer per Hour") },
-    { _T("knot"),       KNOT,               SPEED,  _T("Knot") },
+    // Velocity
+    { _T("mile/h"),     MILE_PER_HOUR,      VELOCITY,_T("Mile per Hour") },
+    { _T("m/s"),        METER_PER_SECOND,   VELOCITY,_T("Meter per Second") },
+    { _T("ft/h"),       FOOT_PER_HOUR,      VELOCITY,_T("Foot per Hour") },
+    { _T("km/h"),       KILOMETER_PER_HOUR, VELOCITY,_T("Kilometer per Hour") },
+    { _T("knot"),       KNOT,               VELOCITY,_T("Knot") },
 
     // Temperature
     { _T("k"),          KELVIN,             TEMPERATURE, _T("Kelvin") },
@@ -246,6 +246,9 @@ BigDecimal UnitConversion::convert(const BigDecimal number,
     // Check that units are found
     if (u1 == NO_UNIT) throw ParserException(ParserException::UNKNOWN_UNIT, unit1);
     if (u2 == NO_UNIT) throw ParserException(ParserException::UNKNOWN_UNIT, unit2);
+
+    // No conversion
+    if (u1 == u2) return number;
 
     // Look up simple conversions table
     for (const SimpleConversion * sc = mSimpleConversions; sc->unit1 != NO_UNIT; ++sc) {

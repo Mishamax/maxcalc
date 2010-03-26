@@ -28,6 +28,8 @@
 #include <vector>
 #include <ostream>
 
+using std::vector;
+
 class CommandParser
 {
 private:
@@ -54,6 +56,9 @@ private:
     void printConstants();
     void printUnitConversions();
     void printFunctions();
+    void deleteVariables(const vector<tstring> & args);
+    void printOrChangeAngleUnit(const vector<tstring> & args);
+    void printOrChangeOutputSettings(const vector<tstring> & args);
 };
 
 

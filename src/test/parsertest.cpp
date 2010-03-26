@@ -466,7 +466,7 @@ void ParserTest::unitConversions()
     PARSER_TEST(parser, _T("  1  [  ft  ->  in  ]  "), "12");
     PARSER_TEST(parser, _T("0 [c->f]"), "32");
     PARSER_TEST(parser, _T("0 [in->ft] [c->f] [ft->in]"), "384");
-    PARSER_TEST(parser, _T("0 [km/h->mi/h]"), "0");
+    PARSER_TEST(parser, _T("0 [km/h->mile/h]"), "0");
     PARSER_TEST(parser, _T("0 [knot->km/h]"), "0");
     PARSER_TEST(parser, _T("0 [kNoT->kM/H]"), "0");
     PARSER_TEST(parser, _T("1[c->f]"), "33.8");
