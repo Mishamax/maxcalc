@@ -73,6 +73,12 @@ MainWindow::MainWindow() : QMainWindow(), mTrayIcon(0), mTrayContextMenu(0)
     createUi();
     createMainMenu();
     updateVariablesList();
+
+    // Restore window settings
+    QSettings * settings = getSettings();
+    restoreGeometry(settings->value("WindowGeometry").toByteArray());
+    restoreState(settings->value("WindowState").toByteArray());
+    delete settings;
 }
 
 /*!
@@ -100,30 +106,32 @@ MainWindow::~MainWindow()
 */
 void MainWindow::readSettings()
 {
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "maxcalc", "maxcalc");
+    QSettings * settings = getSettings();
 
     // UI settings
     mMinimizeToTray = QSystemTrayIcon::isSystemTrayAvailable() ?
-                      settings.value("MinimizeToTray", false).toBool() : false;
+                      settings->value("MinimizeToTray", false).toBool() : false;
     mCloseToTray = QSystemTrayIcon::isSystemTrayAvailable() ?
-                   settings.value("CloseToTray", false).toBool() : false;
+                   settings->value("CloseToTray", false).toBool() : false;
     onAddRemoveTrayIcon(mCloseToTray || mMinimizeToTray);
-    mShowVariables = settings.value("ShowVariables", true).toBool();
+    mShowVariables = settings->value("ShowVariables", true).toBool();
 #if defined(MAXCALC_SINGLE_INSTANCE_MODE)
-    mSingleInstanceMode = settings.value("SingleInstanceMode", false).toBool();
+    mSingleInstanceMode = settings->value("SingleInstanceMode", false).toBool();
 #endif
 
     // Parser state
     mParser->context().setAngleUnit(
-            (ParserContext::AngleUnit)settings.value("AngleUnit", 0).toInt());
-    mParser->context().numberFormat().precision = settings.value("Precision",
+            (ParserContext::AngleUnit)settings->value("AngleUnit", 0).toInt());
+    mParser->context().numberFormat().precision = settings->value("Precision",
         Constants::DEFAULT_IO_PRECISION).toInt();
     mParser->context().numberFormat().decimalSeparator =
-        (ComplexFormat::DecimalSeparator)settings.value("DecimalSeparator",
+        (ComplexFormat::DecimalSeparator)settings->value("DecimalSeparator",
         ComplexFormat::DOT_SEPARATOR).toInt();
     mParser->context().numberFormat().imaginaryOne =
-        (ComplexFormat::ImaginaryOne)settings.value("ImaginaryOne",
+        (ComplexFormat::ImaginaryOne)settings->value("ImaginaryOne",
         ComplexFormat::IMAGINARY_ONE_I).toInt();
+
+    delete settings;
 }
 
 /*!
@@ -131,23 +139,26 @@ void MainWindow::readSettings()
 */
 void MainWindow::saveSettings()
 {
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "maxcalc", "maxcalc");
+    QSettings * settings = getSettings();
 
     // UI settings
-    settings.setValue("MinimizeToTray", mMinimizeToTray);
-    settings.setValue("CloseToTray", mCloseToTray);
-    settings.setValue("ShowVariables", mShowVariables);
+    settings->setValue("MinimizeToTray", mMinimizeToTray);
+    settings->setValue("CloseToTray", mCloseToTray);
+    settings->setValue("ShowVariables", mShowVariables);
+    settings->setValue("WindowGeometry", saveGeometry());
+    settings->setValue("WindowState", saveState());
 #if defined(MAXCALC_SINGLE_INSTANCE_MODE)
-    settings.setValue("SingleInstanceMode", mSingleInstanceMode);
+    settings->setValue("SingleInstanceMode", mSingleInstanceMode);
 #endif
 
     // Parser state
-    settings.setValue("AngleUnit", mParser->context().angleUnit());
-    settings.setValue("Precision", mParser->context().numberFormat().precision);
-    settings.setValue("DecimalSeparator", mParser->context().numberFormat().decimalSeparator);
-    settings.setValue("ImaginaryOne", mParser->context().numberFormat().imaginaryOne);
+    settings->setValue("AngleUnit", mParser->context().angleUnit());
+    settings->setValue("Precision", mParser->context().numberFormat().precision);
+    settings->setValue("DecimalSeparator", mParser->context().numberFormat().decimalSeparator);
+    settings->setValue("ImaginaryOne", mParser->context().numberFormat().imaginaryOne);
 
-    settings.sync();
+    settings->sync();
+    delete settings;
 }
 
 /*!
@@ -201,8 +212,9 @@ void MainWindow::createUi()
     mCentralWidget->setLayout(mLayout);
 
     // Create functions and variables lists
-    mVariablesList = new QListWidget();
+    mVariablesList = new QListWidget(this);
     mVariablesListDock = new QDockWidget(tr("Variables"), this);
+    mVariablesListDock->setObjectName("VariablesDockWidget");
     mVariablesListDock->setWidget(mVariablesList);
     addDockWidget(Qt::RightDockWidgetArea, mVariablesListDock);
     mVariablesListDock->setVisible(mShowVariables);
@@ -779,4 +791,13 @@ void MainWindow::activate(const QString & /*str*/)
         onTrayIconClicked(QSystemTrayIcon::Trigger);
     }
     activateWindow();
+}
+
+/*!
+    Returns QSettings object to access MaxCalc's .ini file with settings.
+*/
+QSettings * MainWindow::getSettings()
+{
+    return new QSettings(QSettings::IniFormat, QSettings::UserScope, "maxcalc",
+        "maxcalc");
 }

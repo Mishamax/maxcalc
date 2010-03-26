@@ -47,6 +47,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow();
     ~MainWindow();
+    static QSettings * getSettings();
 
 signals:
     /// Emitted when expression is calculated by parser.

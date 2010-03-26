@@ -34,11 +34,13 @@
 
 int main(int argc, char ** argv)
 {
+
 #if defined(MAXCALC_SINGLE_INSTANCE_MODE)
     QtSingleApplication app(argc, argv);
 
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "maxcalc", "maxcalc");
-    bool singleInstanceMode = settings.value("SingleInstanceMode", false).toBool();
+    QSettings * settings = MainWindow::getSettings();
+    bool singleInstanceMode = settings->value("SingleInstanceMode", false).toBool();
+    delete settings;
 
     if (singleInstanceMode && app.isRunning()) {
         app.sendMessage("");
@@ -57,6 +59,5 @@ int main(int argc, char ** argv)
 #endif
 
     mainWindow.show();
-
     return app.exec();
 }
