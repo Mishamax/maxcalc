@@ -273,7 +273,7 @@ void MainWindow::createMainMenu()
 
     settings->addSeparator();
 
-    settings->addAction(tr("Output format..."), this, SLOT(onSettingsOutput()),
+    settings->addAction(tr("&Output format..."), this, SLOT(onSettingsOutput()),
                         tr("F5"));
 
     settings->addSeparator();

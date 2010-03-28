@@ -160,16 +160,11 @@ string Complex::toString(const ComplexFormat & format) const
         return "0";
     }
 
-    if (!isReZero) {
-        result = rePart;
-    }
+    result = rePart;
 
     if (!isImZero) {
-        if (!isReZero && !isImNegative) {
-            result += '+';
-        } else if (isImNegative) {
-            result += '-';
-        }
+        if (isImNegative) result += " - ";
+        else result += " + ";
 
         result += imPart + format.imaginaryOneChar();
     }

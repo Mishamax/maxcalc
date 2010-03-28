@@ -13,6 +13,7 @@ v2.0.1 (IN PROGRESS).
 
     - Added: Save window geometry to ini file (GUI).
     - Added: Support for complex arguments of trigonometric functions in degrees/grads mode.
+    - Improved: Output of complex numbers.
     - Changed: Default precision is 25 digits instead of 50.
     - Fixed: Bug in sin() function for complex arguments.
     - Fixed: Bugs in inverse trigonometric functions for complex arguments.

@@ -105,41 +105,41 @@ void ComplexTest::fromUInt()
 void ComplexTest::toString()
 {
     COMPARE(Complex().toString().c_str(), "0");
-    COMPARE(Complex::i.toString().c_str(), "1i");
+    COMPARE(Complex::i.toString().c_str(), "0 + 1i");
     COMPARE(Complex(1).toString().c_str(), "1");
     COMPARE(Complex(-1).toString().c_str(), "-1");
     COMPARE(Complex(-10000).toString().c_str(), "-10000");
     COMPARE(Complex(1000).toString().c_str(), "1000");
-    COMPARE(Complex(0, 1).toString().c_str(), "1i");
-    COMPARE(Complex(0, -1).toString().c_str(), "-1i");
-    COMPARE(Complex(0, -1000).toString().c_str(), "-1000i");
-    COMPARE(Complex(0, 10000).toString().c_str(), "10000i");
+    COMPARE(Complex(0, 1).toString().c_str(), "0 + 1i");
+    COMPARE(Complex(0, -1).toString().c_str(), "0 - 1i");
+    COMPARE(Complex(0, -1000).toString().c_str(), "0 - 1000i");
+    COMPARE(Complex(0, 10000).toString().c_str(), "0 + 10000i");
     COMPARE(Complex("0.512").toString().c_str(), "0.512");
     COMPARE(Complex("-0.0246").toString().c_str(), "-0.0246");
-    COMPARE(Complex("0", "0.512").toString().c_str(), "0.512i");
-    COMPARE(Complex("0", "-0.0246").toString().c_str(), "-0.0246i");
-    COMPARE(Complex(1, 1).toString().c_str(), "1+1i");
-    COMPARE(Complex(1, -1).toString().c_str(), "1-1i");
-    COMPARE(Complex(1000, 1).toString().c_str(), "1000+1i");
-    COMPARE(Complex(1, 10000).toString().c_str(), "1+10000i");
-    COMPARE(Complex(-1, 1000).toString().c_str(), "-1+1000i");
-    COMPARE(Complex(100000, -1).toString().c_str(), "100000-1i");
-    COMPARE(Complex(100000, 1000000).toString().c_str(), "100000+1E+6i");
-    COMPARE(Complex(-1, -1).toString().c_str(), "-1-1i");
-    COMPARE(Complex("0.512", "0.256").toString().c_str(), "0.512+0.256i");
-    COMPARE(Complex("-0.512", "0.256").toString().c_str(), "-0.512+0.256i");
-    COMPARE(Complex("0.512", "-0.256").toString().c_str(), "0.512-0.256i");
-    COMPARE(Complex("-0.512", "-0.256").toString().c_str(), "-0.512-0.256i");
+    COMPARE(Complex("0", "0.512").toString().c_str(), "0 + 0.512i");
+    COMPARE(Complex("0", "-0.0246").toString().c_str(), "0 - 0.0246i");
+    COMPARE(Complex(1, 1).toString().c_str(), "1 + 1i");
+    COMPARE(Complex(1, -1).toString().c_str(), "1 - 1i");
+    COMPARE(Complex(1000, 1).toString().c_str(), "1000 + 1i");
+    COMPARE(Complex(1, 10000).toString().c_str(), "1 + 10000i");
+    COMPARE(Complex(-1, 1000).toString().c_str(), "-1 + 1000i");
+    COMPARE(Complex(100000, -1).toString().c_str(), "100000 - 1i");
+    COMPARE(Complex(100000, 1000000).toString().c_str(), "100000 + 1E+6i");
+    COMPARE(Complex(-1, -1).toString().c_str(), "-1 - 1i");
+    COMPARE(Complex("0.512", "0.256").toString().c_str(), "0.512 + 0.256i");
+    COMPARE(Complex("-0.512", "0.256").toString().c_str(), "-0.512 + 0.256i");
+    COMPARE(Complex("0.512", "-0.256").toString().c_str(), "0.512 - 0.256i");
+    COMPARE(Complex("-0.512", "-0.256").toString().c_str(), "-0.512 - 0.256i");
 }
 
 void ComplexTest::toWideString()
 {
     COMPARE(Complex("0.512").toWideString(), std::wstring(L"0.512"));
     COMPARE(Complex(L"-0.0246").toWideString(), std::wstring(L"-0.0246"));
-    COMPARE(Complex("0.512", "0.256").toWideString(), std::wstring(L"0.512+0.256i"));
-    COMPARE(Complex(L"-0.512", L"0.256").toWideString(), std::wstring(L"-0.512+0.256i"));
-    COMPARE(Complex("0.512", "-0.256").toWideString(), std::wstring(L"0.512-0.256i"));
-    COMPARE(Complex(L"-0.512", L"-0.256").toWideString(), std::wstring(L"-0.512-0.256i"));
+    COMPARE(Complex("0.512", "0.256").toWideString(), std::wstring(L"0.512 + 0.256i"));
+    COMPARE(Complex(L"-0.512", L"0.256").toWideString(), std::wstring(L"-0.512 + 0.256i"));
+    COMPARE(Complex("0.512", "-0.256").toWideString(), std::wstring(L"0.512 - 0.256i"));
+    COMPARE(Complex(L"-0.512", L"-0.256").toWideString(), std::wstring(L"-0.512 - 0.256i"));
 }
 
 void ComplexTest::unaryOperators()
