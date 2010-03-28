@@ -102,6 +102,8 @@ Functions
   Example: abs(sin(-pi/4)) + cos(pi/4) + pow(8; 2)
   
   All functions except "pow" have one argument. "pow" has two arguments.
+  
+  Arithmetic operators: + (plus), - (minus), * (multiply), / (divide), ^ (power)
 
   Common:
     abs                                 Absolute value

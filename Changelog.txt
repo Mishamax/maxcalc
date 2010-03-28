@@ -9,7 +9,7 @@
   *                                                                     *
   ***********************************************************************
 
-v2.0.1 (IN PROGRESS).
+v2.0.1 (28-Mar-2010).
 
     - Added: Save window geometry to ini file (GUI).
     - Added: Support for complex arguments of trigonometric functions in degrees/grads mode.

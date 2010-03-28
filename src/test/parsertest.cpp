@@ -100,6 +100,7 @@ void ParserTest::mulDiv()
     PARSER_FAIL_TEST(parser, _T("1 / 0"), "Division by zero", ArithmeticException);
     COMPARE_COMPLEX(parser.context().result(), "0.5");
     PARSER_TEST(parser, _T("1 / i"), -Complex::i);
+    PARSER_TEST(parser, _T("1 / i*i"), "1");
     PARSER_FAIL_TEST(parser, _T("1 / sin(0)"), "Division by zero", ArithmeticException);
     PARSER_FAIL_TEST(parser, _T("1/sin(pi)"), "Division by zero", ArithmeticException);
     PARSER_FAIL_TEST(parser, _T(" 1 / cos ( pi / 2 ) "), "Division by zero", ArithmeticException);

@@ -1,8 +1,0 @@
-Fix small rounding errors in Complex tests.
-Fix bug: log2(0), log10(0) -> error in function 'ln'
-Fix bug: minimize to tray works as close to tray in Qt 4.2.
-Complete i18n support
-Sessions support
-Save history between sessions
-Scripts execution (it's inconvenient to type the same formulas 10 times)
-Auto-updater?
