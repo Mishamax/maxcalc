@@ -50,6 +50,8 @@
 
 /// Indentation used for output
 static const QString indent = "    ";
+/// Version for saveState() / restoreState()
+static const int version = 201;
 
 /*!
     \class MainWindow
@@ -77,7 +79,8 @@ MainWindow::MainWindow() : QMainWindow(), mTrayIcon(0), mTrayContextMenu(0)
     // Restore window settings
     QSettings * settings = getSettings();
     restoreGeometry(settings->value("WindowGeometry").toByteArray());
-    restoreState(settings->value("WindowState").toByteArray());
+    restoreState(settings->value("WindowState").toByteArray(), version);
+
     delete settings;
 }
 
@@ -146,7 +149,7 @@ void MainWindow::saveSettings()
     settings->setValue("CloseToTray", mCloseToTray);
     settings->setValue("ShowVariables", mShowVariables);
     settings->setValue("WindowGeometry", saveGeometry());
-    settings->setValue("WindowState", saveState());
+    settings->setValue("WindowState", saveState(version));
 #if defined(MAXCALC_SINGLE_INSTANCE_MODE)
     settings->setValue("SingleInstanceMode", mSingleInstanceMode);
 #endif
