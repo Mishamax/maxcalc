@@ -131,7 +131,7 @@ Functions
     atanh / arctanh / atgh / arctgh     Hyperbolic arc tangent
     acoth / arccoth / actgh / arcctgh   Hyperbolic arc cotangent
 
-  Logarithmic
+  Logarithmic:
     ln                                  Natural logarithm
     log2                                Base-2 logarithm
     log10                               Base-10 logarithm

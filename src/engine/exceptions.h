@@ -242,8 +242,7 @@ public:
         ARCSINE_FUNCTION,                   ///< Invalid argument in asin().
         ARCCOSINE_FUNCTION,                 ///< Invalid argument in acos().
         HYPERBOLIC_TANGENT_FUNCTION,        ///< Invalid argument in tanh().
-        HYPERBOLIC_COTANGENT_FUNCTION,      ///< Invalid argument in coth().
-        COMPLEX_ANGLE                       ///< Complex angle.
+        HYPERBOLIC_COTANGENT_FUNCTION       ///< Invalid argument in coth().
     };
 
 protected:
@@ -299,9 +298,6 @@ public:
             break;
         case InvalidArgumentException::HYPERBOLIC_COTANGENT_FUNCTION:
             arg = _("sinh(argument) = 0");
-            break;
-        case InvalidArgumentException::COMPLEX_ANGLE:
-            arg = _("cannot convert complex angle from/to radians");
             break;
         default:
             // Add nothing

@@ -375,6 +375,9 @@ void ParserTest::functionsTrig()
     PARSER_TEST(parser, _T("cos(acos(3))"), "3" );
     PARSER_TEST(parser, _T("tan(atg(4))"), "4" );
     PARSER_TEST(parser, _T("cot(arcctg(5))"), "5" );
+    PARSER_TEST(parser, _T("asin(sin(2))"), "1.14159265358979323846264338327950288419716939937511");
+    PARSER_TEST(parser, _T("acos(2)"), Complex("0", "1.316957896924816708625046347307968444026981971467516479768"));
+    PARSER_TEST(parser, _T("acos(i)"), Complex(BigDecimal::PI / 2, "-0.88137358701954302523260932497979230902816032826163541"));
 
     parser.context().setAngleUnit(ParserContext::DEGREES);
     PARSER_TEST(parser, _T("sin(30)"), "0.5" );
@@ -385,6 +388,15 @@ void ParserTest::functionsTrig()
     PARSER_TEST(parser, _T("arccos(1)"), "0" );
     PARSER_TEST(parser, _T("arctg(0)"), "0" );
     PARSER_TEST(parser, _T("arcctg(0)"), "90" );
+    PARSER_TEST(parser, _T("asin(sin(1))"), "1" );
+    PARSER_TEST(parser, _T("acos(cos(1))"), "1" );
+    PARSER_TEST(parser, _T("sin(asin(2))"), "2" );
+    PARSER_TEST(parser, _T("cos(acos(3))"), "3" );
+    PARSER_TEST(parser, _T("tan(atg(4))"), "4" );
+    PARSER_TEST(parser, _T("cot(arcctg(5))"), "5" );
+    PARSER_TEST(parser, _T("sin(asin(2))"), "2");
+    PARSER_TEST(parser, _T("acos(2)"), Complex("0", "75.45612929021689200410012580776119479962294404631122"));
+    PARSER_TEST(parser, _T("acos(i)"), Complex("90", "-50.498986710526211442214763004171572352798518216529"));
 
     parser.context().setAngleUnit(ParserContext::GRADS);
     PARSER_TEST(parser, _T("sin(100/3)"), "0.5" );
@@ -395,6 +407,15 @@ void ParserTest::functionsTrig()
     PARSER_TEST(parser, _T("arccos(1)"), "0" );
     PARSER_TEST(parser, _T("arctg(0)"), "0" );
     PARSER_TEST(parser, _T("arcctg(0)"), "100" );
+    PARSER_TEST(parser, _T("asin(sin(1))"), "1" );
+    PARSER_TEST(parser, _T("acos(cos(1))"), "1" );
+    PARSER_TEST(parser, _T("sin(asin(2))"), "2" );
+    PARSER_TEST(parser, _T("cos(acos(3))"), "3" );
+    PARSER_TEST(parser, _T("tan(atg(4))"), "4" );
+    PARSER_TEST(parser, _T("cot(arcctg(5))"), "5" );
+    PARSER_TEST(parser, _T("sin(asin(2))"), "2");
+    PARSER_TEST(parser, _T("acos(2)"), Complex("0", "83.840143655796546671222362008623549777358826718123579"));
+    PARSER_TEST(parser, _T("acos(i)"), Complex("100", "-56.1099852339180127135719588935239692808872424628099"));
 
     parser.context().setAngleUnit(ParserContext::RADIANS);
     PARSER_TEST(parser, _T("sin(pi/6)"), "0.5" );

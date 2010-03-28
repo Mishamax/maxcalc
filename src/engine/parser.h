@@ -148,8 +148,8 @@ private:
     Complex parseNumbers();
 
     bool parseFunctionArguments(vector<Complex> & args);
-    Complex toRadians(Complex angle, const tstring & functionName);
-    Complex fromRadians(Complex angle, const tstring & functionName);
+    Complex toRadians(Complex angle);
+    Complex fromRadians(Complex angle);
 };
 
 

@@ -619,22 +619,22 @@ Complex Parser::parseFunctions()
             else if (name == _T("sqrt") && args.size() == 1) return Complex::sqrt(args[0]);
             else if (name == _T("pow") && args.size() == 2) return Complex::pow(args[0], args[1]);
             else if ((name == _T("fact") || name == _T("factorial")) && args.size() == 1) return Complex::factorial(args[0]);
-            else if (name == _T("sin") && args.size() == 1) return Complex::sin(toRadians(args[0], name));
-            else if (name == _T("cos") && args.size() == 1) return Complex::cos(toRadians(args[0], name));
-            else if ((name == _T("tan") || name == _T("tg")) && args.size() == 1) return Complex::tan(toRadians(args[0], name));
-            else if ((name == _T("cot") || name == _T("ctg")) && args.size() == 1) return Complex::cot(toRadians(args[0], name));
-            else if ((name == _T("asin") || name == _T("arcsin")) && args.size() == 1) return fromRadians(Complex::arcsin(args[0]), name);
-            else if ((name == _T("acos") || name == _T("arccos")) && args.size() == 1) return fromRadians(Complex::arccos(args[0]), name);
-            else if ((name == _T("atan") || name == _T("arctan") || name == _T("atg") || name == _T("arctg")) && args.size() == 1) return fromRadians(Complex::arctan(args[0]), name);
-            else if ((name == _T("acot") || name == _T("arccot") || name == _T("actg") || name == _T("arcctg")) && args.size() == 1) return fromRadians(Complex::arccot(args[0]), name);
-            else if (name == _T("sinh") && args.size() == 1) return Complex::sinh(toRadians(args[0], name));
-            else if (name == _T("cosh") && args.size() == 1) return Complex::cosh(toRadians(args[0], name));
-            else if ((name == _T("tanh") || name == _T("th")) && args.size() == 1) return Complex::tanh(toRadians(args[0], name));
-            else if ((name == _T("coth") || name == _T("cth")) && args.size() == 1) return Complex::coth(toRadians(args[0], name));
-            else if ((name == _T("asinh") || name == _T("arcsinh")) && args.size() == 1) return fromRadians(Complex::arcsinh(args[0]), name);
-            else if ((name == _T("acosh") || name == _T("arccosh")) && args.size() == 1) return fromRadians(Complex::arccosh(args[0]), name);
-            else if ((name == _T("atanh") || name == _T("arctanh") || name == _T("ath") || name == _T("arcth")) && args.size() == 1) return fromRadians(Complex::arctanh(args[0]), name);
-            else if ((name == _T("acoth") || name == _T("arccoth") || name == _T("acth") || name == _T("arccth")) && args.size() == 1) return fromRadians(Complex::arccoth(args[0]), name);
+            else if (name == _T("sin") && args.size() == 1) return Complex::sin(toRadians(args[0]));
+            else if (name == _T("cos") && args.size() == 1) return Complex::cos(toRadians(args[0]));
+            else if ((name == _T("tan") || name == _T("tg")) && args.size() == 1) return Complex::tan(toRadians(args[0]));
+            else if ((name == _T("cot") || name == _T("ctg")) && args.size() == 1) return Complex::cot(toRadians(args[0]));
+            else if ((name == _T("asin") || name == _T("arcsin")) && args.size() == 1) return fromRadians(Complex::arcsin(args[0]));
+            else if ((name == _T("acos") || name == _T("arccos")) && args.size() == 1) return fromRadians(Complex::arccos(args[0]));
+            else if ((name == _T("atan") || name == _T("arctan") || name == _T("atg") || name == _T("arctg")) && args.size() == 1) return fromRadians(Complex::arctan(args[0]));
+            else if ((name == _T("acot") || name == _T("arccot") || name == _T("actg") || name == _T("arcctg")) && args.size() == 1) return fromRadians(Complex::arccot(args[0]));
+            else if (name == _T("sinh") && args.size() == 1) return Complex::sinh(toRadians(args[0]));
+            else if (name == _T("cosh") && args.size() == 1) return Complex::cosh(toRadians(args[0]));
+            else if ((name == _T("tanh") || name == _T("th")) && args.size() == 1) return Complex::tanh(toRadians(args[0]));
+            else if ((name == _T("coth") || name == _T("cth")) && args.size() == 1) return Complex::coth(toRadians(args[0]));
+            else if ((name == _T("asinh") || name == _T("arcsinh")) && args.size() == 1) return fromRadians(Complex::arcsinh(args[0]));
+            else if ((name == _T("acosh") || name == _T("arccosh")) && args.size() == 1) return fromRadians(Complex::arccosh(args[0]));
+            else if ((name == _T("atanh") || name == _T("arctanh") || name == _T("ath") || name == _T("arcth")) && args.size() == 1) return fromRadians(Complex::arctanh(args[0]));
+            else if ((name == _T("acoth") || name == _T("arccoth") || name == _T("acth") || name == _T("arccth")) && args.size() == 1) return fromRadians(Complex::arccoth(args[0]));
             else if (name == _T("ln") && args.size() == 1) return Complex::ln(args[0]);
             else if (name == _T("log2") && args.size() == 1) return Complex::log2(args[0]);
             else if (name == _T("log10") && args.size() == 1) return Complex::log10(args[0]);
@@ -819,20 +819,19 @@ bool Parser::isImaginaryOne(tchar c)
 
 /*!
     Converts \a angle from current unit (ParserContext::angleUnit()) to radians.
-
-    \throw InvalidArgumentException(COMPLEX_ANGLE) Complex angle is given.
 */
-Complex Parser::toRadians(Complex angle, const tstring & functionName)
+Complex Parser::toRadians(Complex angle)
 {
     if (mContext.angleUnit() != ParserContext::RADIANS) {
-        if (!angle.im.isZero()) {
-            throw InvalidArgumentException(functionName,
-                InvalidArgumentException::COMPLEX_ANGLE);
-        }
+        int divider = 1;
         if (mContext.angleUnit() == ParserContext::DEGREES) {
-            return angle * BigDecimal::PI / 180;
+            divider = 180;
         } else if (mContext.angleUnit() == ParserContext::GRADS) {
-            return angle * BigDecimal::PI / 200;
+            divider = 200;
+        }
+        angle.re = angle.re * BigDecimal::PI / divider;
+        if (!angle.im.isZero()) {
+            angle.im = angle.im * BigDecimal::PI / divider;
         }
     }
     return angle;
@@ -840,20 +839,19 @@ Complex Parser::toRadians(Complex angle, const tstring & functionName)
 
 /*!
     Converts \a angle from radians to current unit (ParserContext::angleUnit()).
-
-    \throw InvalidArgumentException(COMPLEX_ANGLE) Complex angle is given.
 */
-Complex Parser::fromRadians(Complex angle, const tstring & functionName)
+Complex Parser::fromRadians(Complex angle)
 {
     if (mContext.angleUnit() != ParserContext::RADIANS) {
-        if (!angle.im.isZero()) {
-            throw InvalidArgumentException(functionName,
-                InvalidArgumentException::COMPLEX_ANGLE);
-        }
+        int multiplier = 1;
         if (mContext.angleUnit() == ParserContext::DEGREES) {
-            return angle * 180 / BigDecimal::PI;
+            multiplier = 180;
         } else if (mContext.angleUnit() == ParserContext::GRADS) {
-            return angle * 200 / BigDecimal::PI;
+            multiplier = 200;
+        }
+        angle.re = angle.re * multiplier / BigDecimal::PI;
+        if (!angle.im.isZero()) {
+            angle.im = angle.im * multiplier / BigDecimal::PI;
         }
     }
     return angle;
