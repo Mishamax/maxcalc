@@ -7,4 +7,4 @@ CONFIG += maxcalc_unicode
 
 # GetText support.
 # This enables localization.
-#CONFIG += maxcalc_gettext
+CONFIG += maxcalc_gettext
