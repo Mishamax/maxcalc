@@ -15,6 +15,8 @@ option(MAXCALC_UNICODE "Enable Unicode support (note that without unicode only c
 # This enables localization.
 option(MAXCALC_GETTEXT "Enable GetText localization support" OFF)
 
+option(MAXCALC_GTK_GUI "Build GTK GUI" OFF)
+
 
 # To eliminate warning when linking to Qt4
 if (COMMAND cmake_policy)
@@ -36,6 +38,8 @@ add_subdirectory(engine)
 add_subdirectory(cli)
 if (MAXCALC_UNICODE)
 	add_subdirectory(gui)
-	add_subdirectory(gui_gtk)
+	if (MAXCALC_GTK_GUI)
+        add_subdirectory(gui_gtk)
+    endif (MAXCALC_GTK_GUI)
 	add_subdirectory(test)
 endif (MAXCALC_UNICODE)
