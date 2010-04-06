@@ -47,6 +47,7 @@
 #include <QPushButton>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QFile>
 
 /// Indentation used for output
 static const QString indent = "    ";
@@ -563,9 +564,19 @@ void MainWindow::onVariableClicked(QListWidgetItem * item)
 */
 void MainWindow::onHelpReadme()
 {
-    QDesktopServices::openUrl(QUrl(
-        "file:///" + QApplication::applicationDirPath() + "/Readme.txt",
-        QUrl::TolerantMode));
+    QString readme = QApplication::applicationDirPath() + "/Readme.txt";
+    if (!QFile::exists(readme)) {
+#if !defined(_WIN32)
+        readme = QApplication::applicationDirPath() + "/../share/doc/maxcalc/README";
+        if (!QFile::exists(readme)) {
+#endif
+            qDebug("Readme file not found");
+            return;
+#if !defined(_WIN32)
+        }
+#endif
+    }
+    QDesktopServices::openUrl(QUrl("file:///" + readme, QUrl::TolerantMode));
 }
 
 /*!
