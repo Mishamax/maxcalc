@@ -24,8 +24,10 @@ endif (MSVC)
 # Executable
 if (WIN32)
     add_executable(maxcalc ${SOURCES} ${WIN32_RESOURCES})
+    install(TARGETS maxcalc RUNTIME DESTINATION .)
 else (WIN32)
     add_executable(maxcalc ${SOURCES})
+    install(TARGETS maxcalc RUNTIME DESTINATION bin)
 endif (WIN32)
 if (WIN32 AND MAXCALC_GETTEXT)
     target_link_libraries(maxcalc engine intl)
@@ -34,3 +36,4 @@ else (WIN32 AND MAXCALC_GETTEXT)
 endif (WIN32 AND MAXCALC_GETTEXT)
 
 set(EXECUTABLE_OUTPUT_PATH ../bin)
+

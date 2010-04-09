@@ -36,5 +36,6 @@ win32:maxcalc_gettext:LIBS += -L../intl_win -lintl
 
 maxcalc_unicode:DEFINES += MAXCALC_UNICODE
 maxcalc_gettext:DEFINES += MAXCALC_GETTEXT
+maxcalc_portable:DEFINES += MAXCALC_PORTABLE
 win32:DEFINES += _CRT_SECURE_NO_WARNINGS
 win32:RC_FILE = resources.rc

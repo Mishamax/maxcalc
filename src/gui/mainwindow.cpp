@@ -812,6 +812,11 @@ void MainWindow::activate(const QString & /*str*/)
 */
 QSettings * MainWindow::getSettings()
 {
+#if defined(MAXCALC_PORTABLE)
+    return new QSettings(QApplication::applicationDirPath() + "/maxcalc.ini",
+        QSettings::IniFormat);
+#else
     return new QSettings(QSettings::IniFormat, QSettings::UserScope, "maxcalc",
         "maxcalc");
+#endif
 }

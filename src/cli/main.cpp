@@ -43,6 +43,7 @@
 using namespace std;
 
 // Ini file constants
+#if !defined(MAXCALC_PORTABLE)
 #if defined(_WIN32)
 static const char * ENV_VAR = "APPDATA";
 static const char * INI_FIRST_LEVEL_DIR = "maxcalc";
@@ -53,9 +54,13 @@ static const char * INI_FIRST_LEVEL_DIR = ".config";
 static const char * INI_SECOND_LEVEL_DIR = "maxcalc";
 static const char * PATH_SEPARATOR = "/";
 #endif
+static const int INI_PATH_LENGTH = 30;
+#endif
 static const char * INI_NAME = "maxcalc.ini";
 static const tchar * INI_SECTION = _T("General");
-static const int INI_PATH_LENGTH = 30;
+#if defined(MAXCALC_PORTABLE) && !defined(_WIN32)
+static char * sModulePath = 0;
+#endif
 
 /*!
     Runs \a parser and prints results to standard output.
@@ -105,6 +110,23 @@ bool parseCmdLineArgs(int argc, char ** argv)
 */
 char * getIniPath()
 {
+#if defined(MAXCALC_PORTABLE)
+#if defined(_WIN32)
+    char * path = new char[MAX_PATH];
+    if (!GetModuleFileNameA(NULL, path, MAX_PATH)) { delete[] path; return 0; }
+    char * lastSlash = strrchr(path, '\\');
+    if (lastSlash == 0) { delete[] path; return 0; }
+    lastSlash[1] = '\0';
+    strcat(path, INI_NAME);
+#else // _WIN32
+    char * path = new char[MAX_PATH];
+    strcpy(path, sModulePath);
+    char * lastSlash = strrchr(path, '/');
+    if (lastSlash == 0) { delete[] path; return 0; }
+    lastSlash[1] = '\0';
+    strcat(path, INI_NAME);
+#endif // _WIN32
+#else // MAXCALC_PORTABLE
     char * location = getenv(ENV_VAR);
     if (location == 0) return 0;
     char * path = new char[strlen(location) + INI_PATH_LENGTH];
@@ -112,11 +134,12 @@ char * getIniPath()
     strcat(path, PATH_SEPARATOR);
     strcat(path, INI_FIRST_LEVEL_DIR);
     strcat(path, PATH_SEPARATOR);
-#if !defined(WIN32)
+#if !defined(_WIN32)
     strcat(path, INI_SECOND_LEVEL_DIR);
     strcat(path, PATH_SEPARATOR);
-#endif
+#endif // _WIN32
     strcat(path, INI_NAME);
+#endif // MAXCALC_PORTABLE
     return path;
 }
 
@@ -127,6 +150,8 @@ char * getIniPath()
 bool createIniDir()
 {
     bool result = false;
+    // Do not create anything in portable version
+#if !defined(MAXCALC_PORTABLE)
     char * location = getenv(ENV_VAR);
     if (location == 0) return false;
     char * path = new char[strlen(location) + INI_PATH_LENGTH];
@@ -135,15 +160,16 @@ bool createIniDir()
     strcat(path, INI_FIRST_LEVEL_DIR);
 #if defined(_WIN32)
     result = (_mkdir(path) == 0);
-#else
+#else // _WIN32
     result = (mkdir(path, S_IRWXU) == 0);
     if (!result) {
         strcat(path, PATH_SEPARATOR);
         strcat(path, INI_SECOND_LEVEL_DIR);
         result = (mkdir(path, S_IRWXU) == 0);
     }
-#endif
+#endif // _WIN32
     delete[] path;
+#endif // MAXCALC_PORTABLE
     return result;
 }
 
@@ -195,6 +221,10 @@ int main(int argc, char ** argv)
     // Without that locale may be set incorrecly on Linux
     // (non-latic characters may not work)
     setlocale(LC_ALL, "");
+
+#if defined(MAXCALC_PORTABLE) && !defined(_WIN32)
+    sModulePath = argv[0];
+#endif
 
     // Parse command line args
     if (parseCmdLineArgs(argc, argv)) {

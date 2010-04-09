@@ -87,9 +87,12 @@ if (WIN32)
     else (MAXCALC_GETTEXT)
         target_link_libraries(maxcalcwin ${QT_LIBRARIES} engine)
     endif (MAXCALC_GETTEXT)
+    install(TARGETS maxcalcwin RUNTIME DESTINATION .)
 else (WIN32)
     add_executable(maxcalcgui ${SOURCES} ${MOC_SOURCES} ${QT_RESOURCES})
     target_link_libraries(maxcalcgui ${QT_LIBRARIES} engine)
+    install(TARGETS maxcalcgui RUNTIME DESTINATION bin)
 endif (WIN32)
 
 set(EXECUTABLE_OUTPUT_PATH ../bin)
+

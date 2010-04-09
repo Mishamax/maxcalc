@@ -3,6 +3,8 @@ project(MAXCALC)
 
 cmake_minimum_required(VERSION 2.4.4)
 
+include(CPack)
+
 ### Options ###
 
 # Unicode build.
@@ -15,7 +17,13 @@ option(MAXCALC_UNICODE "Enable Unicode support (note that without unicode only c
 # This enables localization.
 option(MAXCALC_GETTEXT "Enable GetText localization support" OFF)
 
+# Build GTKmm GUI.
 option(MAXCALC_GTK_GUI "Build GTK GUI" OFF)
+
+# Build portable version.
+# Portable version stores .ini file with settings in the program directory.
+# Non-portable version stores settings in data directory in user's folder.
+option(MAXCALC_PORTABLE "Build portable version" ON)
 
 
 # To eliminate warning when linking to Qt4
@@ -30,6 +38,9 @@ endif (MAXCALC_UNICODE)
 if (MAXCALC_GETTEXT)
 	add_definitions(-DMAXCALC_GETTEXT)
 endif (MAXCALC_GETTEXT)
+if (MAXCALC_PORTABLE)
+	add_definitions(-DMAXCALC_PORTABLE)
+endif (MAXCALC_PORTABLE)
 if (MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif(MSVC)
@@ -43,3 +54,11 @@ if (MAXCALC_UNICODE)
     endif (MAXCALC_GTK_GUI)
 	add_subdirectory(test)
 endif (MAXCALC_UNICODE)
+
+if (WIN32)
+    install(FILES ../Changelog.txt DESTINATION .)
+    install(FILES ../License.txt DESTINATION .)
+    install(FILES ../Readme.txt DESTINATION .)
+else (WIN32)
+    install(FILES ../Readme.txt DESTINATION usr/share/doc/maxcalc/README)
+endif (WIN32)

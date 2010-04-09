@@ -8,3 +8,8 @@ CONFIG += maxcalc_unicode
 # GetText support.
 # This enables localization.
 #CONFIG += maxcalc_gettext
+
+# Build portable version.
+# Portable version stores .ini file with settings in the program directory.
+# Non-portable version stores settings in data directory in user's folder.
+#CONFIG += maxcalc_portable
