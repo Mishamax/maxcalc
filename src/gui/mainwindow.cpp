@@ -268,9 +268,9 @@ void MainWindow::createMainMenu()
     mMenuSettingsDegrees = newRadioAction(tr("&Degrees"),
         SLOT(onSettingsDegrees()), tr("F3"),
         mParser->context().angleUnit() == ParserContext::DEGREES, actionGroup);
-    mMenuSettingsGrads = newRadioAction(tr("&Grads"),
-        SLOT(onSettingsGrads()), tr("F4"),
-        mParser->context().angleUnit() == ParserContext::GRADS, actionGroup);
+    mMenuSettingsGrads = newRadioAction(tr("&Gradians"),
+        SLOT(onSettingsGradians()), tr("F4"),
+        mParser->context().angleUnit() == ParserContext::GRADIANS, actionGroup);
     settings->addAction(mMenuSettingsRadians);
     settings->addAction(mMenuSettingsDegrees);
     settings->addAction(mMenuSettingsGrads);
@@ -363,20 +363,23 @@ void MainWindow::createMainMenu()
             type = cur->type;
             firstLevelCur = cur;
             switch (type) {
+            case UnitConversion::ANGLE:
+                currentUnits = unitConversion->addMenu(tr("&Angle"));
+                break;
             case UnitConversion::LENGTH:
                 currentUnits = unitConversion->addMenu(tr("&Length"));
                 break;
             case UnitConversion::MASS:
                 currentUnits = unitConversion->addMenu(tr("&Mass"));
                 break;
+            case UnitConversion::TEMPERATURE:
+                currentUnits = unitConversion->addMenu(tr("&Temperature"));
+                break;
             case UnitConversion::TIME:
-                currentUnits = unitConversion->addMenu(tr("&Time"));
+                currentUnits = unitConversion->addMenu(tr("T&ime"));
                 break;
             case UnitConversion::VELOCITY:
                 currentUnits = unitConversion->addMenu(tr("&Velocity"));
-                break;
-            case UnitConversion::TEMPERATURE:
-                currentUnits = unitConversion->addMenu(tr("T&emperature"));
                 break;
             default:
                 currentUnits = unitConversion->addMenu(tr("&Unknown units"));
@@ -657,9 +660,9 @@ void MainWindow::onSettingsDegrees()
 /*!
     Settings -> Grads command.
 */
-void MainWindow::onSettingsGrads()
+void MainWindow::onSettingsGradians()
 {
-    mParser->context().setAngleUnit(ParserContext::GRADS);
+    mParser->context().setAngleUnit(ParserContext::GRADIANS);
 }
 
 /*!

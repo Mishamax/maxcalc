@@ -826,7 +826,7 @@ Complex Parser::toRadians(Complex angle)
         int divider = 1;
         if (mContext.angleUnit() == ParserContext::DEGREES) {
             divider = 180;
-        } else if (mContext.angleUnit() == ParserContext::GRADS) {
+        } else if (mContext.angleUnit() == ParserContext::GRADIANS) {
             divider = 200;
         }
         angle.re = angle.re * BigDecimal::PI / divider;
@@ -846,7 +846,7 @@ Complex Parser::fromRadians(Complex angle)
         int multiplier = 1;
         if (mContext.angleUnit() == ParserContext::DEGREES) {
             multiplier = 180;
-        } else if (mContext.angleUnit() == ParserContext::GRADS) {
+        } else if (mContext.angleUnit() == ParserContext::GRADIANS) {
             multiplier = 200;
         }
         angle.re = angle.re * multiplier / BigDecimal::PI;

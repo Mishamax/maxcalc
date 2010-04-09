@@ -12,6 +12,8 @@
 v2.0.2 (IN PROGRESS).
 
     - Added: Portable version which stores settings in program's directory.
+    - Added: More unit conversions (angles, week to time conversions).
+    - Improved: #help and other commands.
 
 v2.0.1 (28-Mar-2010).
 

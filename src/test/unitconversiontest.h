@@ -36,11 +36,12 @@ private slots:
     void convert();
     void iterators();
 
+    void angle();
     void length();
     void weight();
+    void temperature();
     void time();
     void speed();
-    void temperature();
 };
 
 #endif // UNITCONVERSIONTEST_H

@@ -52,7 +52,7 @@ Usage
       
   Type
   
-      #funcs
+      #func
   
   to see all of them.
   In graphical version you can also see them in the list at the right.
@@ -63,7 +63,7 @@ Usage
 
   Type
   
-      #convs
+      #conv
   
   To display them all.
   In graphical version you can select them from the menu.
@@ -75,13 +75,13 @@ Usage
       x + 2*y
       x = result ^ 2
       variable = 10
-      #vars
+      #var
       x + y + result
-      #vars
+      #var
       #del x
-      #vars
+      #var
       #del
-      #vars
+      #var
       result
 
   Variable "result" (or "res") is built in and contains result of previous
@@ -145,6 +145,11 @@ Unit conversions
 
   Example: 15 [in->cm]
 
+  Angle:
+    rad         Radian
+    deg         Degree
+    grad        Gradian
+
   Length:
     mil         Mil
     in          Inch
@@ -162,6 +167,11 @@ Unit conversions
     oz          Ounce
     g           Gram
     kg          Kilogram
+
+  Temperature:
+    k           Kelvin
+    c           Celsius
+    f           Fahrenheit
   
   Time:
     micros      Microsecond
@@ -170,6 +180,7 @@ Unit conversions
     min         Minute
     h           Hour
     d           Day
+    w           Week
   
   Velocity:
     mile/h      Mile per Hour
@@ -177,24 +188,19 @@ Unit conversions
     ft/h        Foot per Hour
     km/h        Kilometer per Hour
     knot        Knot
-    
-  Temperature:
-    k           Kelvin
-    c           Celsius
-    f           Fahrenheit
 
 
 Commands
 ========
 
-  #funcs                                Display list of built-in functions.
-  #convs                                Display list of unit conversions.
-  #consts                               Display list of built-in constants.
-  #vars                                 Display list of variables.
+  #func                                 Display list of built-in functions.
+  #conv                                 Display list of unit conversions.
+  #const                                Display list of built-in constants.
+  #var                                  Display list of variables.
   #del                                  Delete all variables
-  #del [<var>]                          Delete variable <var>
-  #angles                               Display angle unit
-  #angles radians / degrees / grads     Set angle unit.
+  #del <var>                            Delete variable <var>
+  #angle                                Display angle unit
+  #angle  rad / deg / grad              Set angle unit.
   #output                               Display output settings
   #output , / . / i / j / <precision>   Set output settings (precision = 1..50).
   #ver                                  Display version information.

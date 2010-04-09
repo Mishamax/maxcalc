@@ -118,7 +118,7 @@ private slots:
     void onUnitConversion(const QString & conversion);
     void onSettingsRadians();
     void onSettingsDegrees();
-    void onSettingsGrads();
+    void onSettingsGradians();
     void onSettingsOutput();
     void onSettingsVariables(bool active);
     void onSettingsMinimizeToTray(bool active);

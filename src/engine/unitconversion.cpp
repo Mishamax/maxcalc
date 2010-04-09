@@ -46,6 +46,14 @@
 const UnitConversion::SimpleConversion UnitConversion::mSimpleConversions[] =
 {
     //---------------------------------------------------------------------
+    // Angle
+    // Radian
+    { RADIAN,       DEGREE,         "57.2957795130823208767981548141051703324054724665643215491602438612028471483215526324409689958511109441862233816328648932814482646012483150360682678" },
+    { RADIAN,       GRADIAN,        "63.6619772367581343075535053490057448137838582961825794990669376235587190536906140360455211065012343824291370907031832147571647384458314611511869642" },
+    // Gradian
+    { GRADIAN,      DEGREE,         "0.9" },
+
+    //---------------------------------------------------------------------
     // Length
     // Mil
     { MIL,          MICRON,         "25.4" },
@@ -136,6 +144,13 @@ const UnitConversion::SimpleConversion UnitConversion::mSimpleConversions[] =
     { DAY,          SECOND,         "86400" },
     { DAY,          MINUTE,         "1440" },
     { DAY,          HOUR,           "24" },
+    // Week
+    { WEEK,         MICROSECOND,    "604800000000" },
+    { WEEK,         MILLISECOND,    "604800000" },
+    { WEEK,         SECOND,         "604800" },
+    { WEEK,         MINUTE,         "10080" },
+    { WEEK,         HOUR,           "168" },
+    { WEEK,         DAY,            "7" },
 
     //---------------------------------------------------------------------
     // Velocity
@@ -180,6 +195,11 @@ const UnitConversion::ArbitraryConversion UnitConversion::mArbitraryConversions[
 */
 const UnitConversion::UnitDef UnitConversion::mUnits[] =
 {
+    // Angle
+    { _T("rad"),         RADIAN,             ANGLE,   _T("Radian") },
+    { _T("deg"),         DEGREE,             ANGLE,   _T("Degree") },
+    { _T("grad"),        GRADIAN,            ANGLE,   _T("Gradian") },
+
     // Length
     { _T("mil"),        MIL,                LENGTH, _T("Mil") },
     { _T("in"),         INCH,               LENGTH, _T("Inch") },
@@ -198,6 +218,11 @@ const UnitConversion::UnitDef UnitConversion::mUnits[] =
     { _T("g"),          GRAM,               MASS,   _T("Gram") },
     { _T("kg"),         KILOGRAM,           MASS,   _T("Kilogram") },
 
+    // Temperature
+    { _T("k"),          KELVIN,             TEMPERATURE, _T("Kelvin") },
+    { _T("c"),          CELSIUS,            TEMPERATURE, _T("Celsius") },
+    { _T("f"),          FAHRENHEIT,         TEMPERATURE, _T("Fahrenheit") },
+
     // Time
     { _T("micros"),     MICROSECOND,        TIME,   _T("Microsecond") },
     { _T("ms"),         MILLISECOND,        TIME,   _T("Millisecond") },
@@ -205,6 +230,7 @@ const UnitConversion::UnitDef UnitConversion::mUnits[] =
     { _T("min"),        MINUTE,             TIME,   _T("Minute") },
     { _T("h"),          HOUR,               TIME,   _T("Hour") },
     { _T("d"),          DAY,                TIME,   _T("Day") },
+    { _T("w"),          WEEK,               TIME,   _T("Week") },
 
     // Velocity
     { _T("mile/h"),     MILE_PER_HOUR,      VELOCITY,_T("Mile per Hour") },
@@ -212,11 +238,6 @@ const UnitConversion::UnitDef UnitConversion::mUnits[] =
     { _T("ft/h"),       FOOT_PER_HOUR,      VELOCITY,_T("Foot per Hour") },
     { _T("km/h"),       KILOMETER_PER_HOUR, VELOCITY,_T("Kilometer per Hour") },
     { _T("knot"),       KNOT,               VELOCITY,_T("Knot") },
-
-    // Temperature
-    { _T("k"),          KELVIN,             TEMPERATURE, _T("Kelvin") },
-    { _T("c"),          CELSIUS,            TEMPERATURE, _T("Celsius") },
-    { _T("f"),          FAHRENHEIT,         TEMPERATURE, _T("Fahrenheit") },
 
     { _T(""),           NO_UNIT,            NO_TYPE, _T("") }
 };
