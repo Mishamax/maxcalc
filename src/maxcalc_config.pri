@@ -13,3 +13,4 @@ CONFIG += maxcalc_unicode
 # Portable version stores .ini file with settings in the program directory.
 # Non-portable version stores settings in data directory in user's folder.
 #CONFIG += maxcalc_portable
+
