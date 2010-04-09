@@ -96,20 +96,23 @@ void CommandParser::printUnitConversions()
         if (type != c->type) {
             type = c->type;
             switch (type) {
+            case UnitConversion::ANGLE:
+                mOut << endl << _T("Angle: ");
+                break;
             case UnitConversion::LENGTH:
                 mOut << endl << _T("Length: ");
                 break;
             case UnitConversion::MASS:
                 mOut << endl << _T("Mass: ");
                 break;
+            case UnitConversion::TEMPERATURE:
+                mOut << endl << _T("Temperature: ");
+                break;
             case UnitConversion::TIME:
                 mOut << endl << _T("Time: ");
                 break;
             case UnitConversion::VELOCITY:
                 mOut << endl << _T("Velocity: ");
-                break;
-            case UnitConversion::TEMPERATURE:
-                mOut << endl << _T("Temperature: ");
                 break;
             default:
                 mOut << endl << _T("Unknown units: ");
@@ -180,13 +183,16 @@ void CommandParser::printVersion(bool displayCopyright)
 void CommandParser::printHelp()
 {
     mOut <<  _T("Commands:") << endl;
-    mOut << indent << _T("#funcs - Display list of built-in functions.") << endl;
-    mOut << indent << _T("#convs - Display list of unit conversions.") << endl;
-    mOut << indent << _T("#consts - Display list of built-in constants.") << endl;
-    mOut << indent << _T("#vars - Display list of variables.") << endl;
-    mOut << indent << _T("#del [<var>] - Delete <var> (all variables if no argument specified).") << endl;
-    mOut << indent << _T("#angles [radians / degrees / grads] - Display / set angle unit.") << endl;
-    mOut << indent << _T("#output [, / . / i / j / <precision> / default] - Display / set output settings.") << endl;
+    mOut << indent << _T("#func - Display list of built-in functions.") << endl;
+    mOut << indent << _T("#conv - Display list of unit conversions.") << endl;
+    mOut << indent << _T("#const - Display list of built-in constants.") << endl;
+    mOut << indent << _T("#var - Display list of variables.") << endl;
+    mOut << indent << _T("#del - Delete all variables.") << endl;
+    mOut << indent << _T("#del [<var>] - Delete <var>.") << endl;
+    mOut << indent << _T("#angle - Display angle unit.") << endl;
+    mOut << indent << _T("#angle rad / deg / grad - Set angle unit.") << endl;
+    mOut << indent << _T("#output - Display output settings.") << endl;
+    mOut << indent << _T("#output , / . / i / j / <precision> / default - Set output settings.") << endl;
     mOut << indent << _T("#ver - Display version information.") << endl;
     mOut << indent << _T("help - Display this help.") << endl;
     mOut << indent << _T("exit - Close the program.") << endl;
@@ -234,19 +240,20 @@ void CommandParser::printOrChangeAngleUnit(const vector<tstring> & args)
         } else if (mContext.angleUnit() == ParserContext::DEGREES) {
             mOut << _T("Degrees") << endl;
         } else {
-            mOut << _T("Grads") << endl;
+            mOut << _T("Gradians") << endl;
         }
     } else {
         tstring unit = args[1];
-        if (unit == _T("radian") || unit == _T("radians")) {
+        if (unit == _T("rad") || unit == _T("radian") || unit == _T("radians")) {
             mContext.setAngleUnit(ParserContext::RADIANS);
             mOut << _T("Angle unit is set to radians.") << endl;
-        } else if (unit == _T("degree") || unit == _T("degrees")) {
+        } else if (unit == _T("deg") || unit == _T("degree") || unit == _T("degrees")) {
             mContext.setAngleUnit(ParserContext::DEGREES);
             mOut << _T("Angle unit is set to degrees.") << endl;
-        } else if (unit == _T("grad") || unit == _T("grads")) {
-            mContext.setAngleUnit(ParserContext::GRADS);
-            mOut << _T("Angle unit is set to grads.") << endl;
+        } else if (unit == _T("grad") || unit == _T("grads") ||
+                   unit == _T("gradian") || unit == _T("gradians")) {
+            mContext.setAngleUnit(ParserContext::GRADIANS);
+            mOut << _T("Angle unit is set to gradians.") << endl;
         } else {
             mOut << _T("Unknown parameter '") << unit << _T("'") << endl;
         }
@@ -350,13 +357,13 @@ CommandParser::Result CommandParser::parse(const tstring & expr)
     vector<tstring> args = splitCommand(cmd);
     tstring & name = args[0];
 
-    if (name == _T("#funcs")) {
+    if (name == _T("#func") || name == _T("#funcs")) {
         printFunctions();
-    } else if (name == _T("#convs")) {
+    } else if (name == _T("#conv") || name == _T("#convs")) {
         printUnitConversions();
-    } else if (name == _T("#consts")) {
+    } else if (name == _T("#const") || name == _T("#consts")) {
         printConstants();
-    } else if (name == _T("#vars")) {
+    } else if (name == _T("#var") || name == _T("#vars")) {
         printVariables();
     } else if (name == _T("#ver") || name == _T("#version")) {
         printVersion(true);

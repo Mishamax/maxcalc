@@ -399,7 +399,7 @@ void ParserTest::functionsTrig()
     PARSER_TEST(parser, _T("acos(2)"), Complex("0", "75.45612929021689200410012580776119479962294404631122"));
     PARSER_TEST(parser, _T("acos(i)"), Complex("90", "-50.498986710526211442214763004171572352798518216529"));
 
-    parser.context().setAngleUnit(ParserContext::GRADS);
+    parser.context().setAngleUnit(ParserContext::GRADIANS);
     PARSER_TEST(parser, _T("sin(100/3)"), "0.5" );
     PARSER_TEST(parser, _T("cos(200/3)"), "0.5" );
     PARSER_TEST(parser, _T("tg(150)"), "-1" );

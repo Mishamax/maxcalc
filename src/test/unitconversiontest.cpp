@@ -55,7 +55,7 @@ void UnitConversionTest::iterators()
         VERIFY(cur->type != UnitConversion::NO_TYPE);
     }
 
-    VERIFY(i == 28);
+    VERIFY(i == 32);
 }
 
 bool UnitConversionTest::isUnit(const tstring str)
@@ -66,6 +66,20 @@ bool UnitConversionTest::isUnit(const tstring str)
         }
     }
     return true;
+}
+
+// Units: rad deg grad
+void UnitConversionTest::angle()
+{
+    // rad
+    COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("rad"), _T("deg")), "57.29577951308233", 14);
+    COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("rad"), _T("grad")), "63.66197723675814", 14);
+    // deg
+    COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("deg"), _T("rad")), "0.0174532925199433", 14);
+    COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("deg"), _T("grad")), "1.111111111111111", 14);
+    // grad
+    COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("grad"), _T("rad")), "0.015707963267949", 14);
+    COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("grad"), _T("deg")), "0.9", 14);
 }
 
 // Units: mil in ft yd mi micron mm cm m km
@@ -194,7 +208,21 @@ void UnitConversionTest::weight()
     COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("kg"), _T("g")), "1000");
 }
 
-// Units: micros ms s min h d
+// Units: k c f
+void UnitConversionTest::temperature()
+{
+    // k
+    COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("k"), _T("c")), "-272.15");
+    COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("k"), _T("f")), "-457.87");
+    // c
+    COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("c"), _T("k")), "274.15");
+    COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("c"), _T("f")), "33.8");
+    // f
+    COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("f"), _T("c")), "-17.22222222222222", 14);
+    COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("f"), _T("k")), "255.9277777777778", 14);
+}
+
+// Units: micros ms s min h d w
 void UnitConversionTest::time()
 {
     // micros
@@ -203,36 +231,49 @@ void UnitConversionTest::time()
     COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("micros"), _T("min")), "1.666666666666667e-8", 14);
     COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("micros"), _T("h")), "2.777777777777778e-10", 14);
     COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("micros"), _T("d")), "1.157407407407407e-11", 14);
+    COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("micros"), _T("w")), "1.653439153439153e-12", 14);
     // ms
     COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("ms"), _T("micros")), "1000");
     COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("ms"), _T("s")), "0.001");
     COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("ms"), _T("min")), "1.666666666666667e-5", 14);
     COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("ms"), _T("h")), "2.777777777777778e-7", 14);
     COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("ms"), _T("d")), "1.157407407407407e-8", 14);
+    COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("ms"), _T("w")), "1.653439153439153e-9", 14);
     // s
     COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("s"), _T("micros")), "1000000");
     COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("s"), _T("ms")), "1000");
     COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("s"), _T("min")), "0.0166666666666667", 14);
     COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("s"), _T("h")), "2.777777777777778e-4", 14);
     COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("s"), _T("d")), "1.157407407407407e-5", 14);
+    COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("s"), _T("w")), "1.653439153439153e-6", 14);
     // min
     COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("min"), _T("ms")), "60000");
     COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("min"), _T("s")), "60");
     COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("min"), _T("micros")), "60000000");
     COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("min"), _T("h")), "0.0166666666666667", 14);
     COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("min"), _T("d")), "6.944444444444444e-4", 14);
+    COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("min"), _T("w")), "9.920634920634921e-5", 14);
     // h
     COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("h"), _T("ms")), "3600000");
     COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("h"), _T("s")), "3600");
     COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("h"), _T("micros")), "3600000000");
     COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("h"), _T("min")), "60");
     COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("h"), _T("d")), "0.0416666666666667", 14);
+    COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("h"), _T("w")), "0.005952380952381", 14);
     // d
     COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("d"), _T("ms")), "86400000");
     COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("d"), _T("s")), "86400");
     COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("d"), _T("micros")), "86400000000");
     COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("d"), _T("min")), "1440");
     COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("d"), _T("h")), "24");
+    COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("d"), _T("w")), "0,1428571428571429", 14);
+    // w
+    COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("w"), _T("ms")), "604800000");
+    COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("w"), _T("s")), "604800");
+    COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("w"), _T("micros")), "604800000000");
+    COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("w"), _T("min")), "10080");
+    COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("w"), _T("h")), "168");
+    COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("w"), _T("d")), "7");
 }
 
 // Units: mile/h m/s ft/h km/h knot
@@ -265,16 +306,3 @@ void UnitConversionTest::speed()
     COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("knot"), _T("km/h")), "1.852");
 }
 
-// Units: k, c, f
-void UnitConversionTest::temperature()
-{
-    // k
-    COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("k"), _T("c")), "-272.15");
-    COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("k"), _T("f")), "-457.87");
-    // c
-    COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("c"), _T("k")), "274.15");
-    COMPARE_BIGDECIMAL(UnitConversion::convert(1, _T("c"), _T("f")), "33.8");
-    // f
-    COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("f"), _T("c")), "-17.22222222222222", 14);
-    COMPARE_BIGDECIMAL_PRECISION(UnitConversion::convert(1, _T("f"), _T("k")), "255.9277777777778", 14);
-}

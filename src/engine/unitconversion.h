@@ -33,22 +33,24 @@ public:
     enum Unit
     {
         NO_UNIT,
+        // Angle
+        RADIAN, DEGREE, GRADIAN,
         // Length
         MIL, INCH, FOOT, YARD, MILE, MICRON, MILLIMETER, CENTIMETER, METER, KILOMETER,
         // Mass
         POUND, OUNCE, GRAM, KILOGRAM,
-        // Time
-        MICROSECOND, MILLISECOND, SECOND, MINUTE, HOUR, DAY,
-        // Velocity
-        MILE_PER_HOUR, METER_PER_SECOND, FOOT_PER_HOUR, KILOMETER_PER_HOUR, KNOT,
         // Temperature
-        CELSIUS, FAHRENHEIT, KELVIN
+        CELSIUS, FAHRENHEIT, KELVIN,
+        // Time
+        MICROSECOND, MILLISECOND, SECOND, MINUTE, HOUR, DAY, WEEK,
+        // Velocity
+        MILE_PER_HOUR, METER_PER_SECOND, FOOT_PER_HOUR, KILOMETER_PER_HOUR, KNOT
     };
 
     /*! Types of unit conversions. */
     enum Type
     {
-        NO_TYPE, LENGTH, MASS, TIME, VELOCITY, TEMPERATURE
+        NO_TYPE, ANGLE, LENGTH, MASS, TEMPERATURE, TIME, VELOCITY
     };
 
     /*! Unit definition for table of units. */

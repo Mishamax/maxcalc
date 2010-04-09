@@ -35,7 +35,7 @@ public:
     // Enums
 
     /// Determines angle unit
-    enum AngleUnit { RADIANS, DEGREES, GRADS };
+    enum AngleUnit { RADIANS, DEGREES, GRADIANS };
 
     ///////////////////////////////////////////////////////////////////////////
     // Constructors
