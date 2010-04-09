@@ -54,10 +54,10 @@ static const char * INI_FIRST_LEVEL_DIR = ".config";
 static const char * INI_SECOND_LEVEL_DIR = "maxcalc";
 static const char * PATH_SEPARATOR = "/";
 #endif
-static const int INI_PATH_LENGTH = 30;
 #endif
 static const char * INI_NAME = "maxcalc.ini";
 static const tchar * INI_SECTION = _T("General");
+static const int INI_PATH_LENGTH = 30;
 #if defined(MAXCALC_PORTABLE) && !defined(_WIN32)
 static char * sModulePath = 0;
 #endif
@@ -119,7 +119,7 @@ char * getIniPath()
     lastSlash[1] = '\0';
     strcat(path, INI_NAME);
 #else // _WIN32
-    char * path = new char[MAX_PATH];
+    char * path = new char[strlen(sModulePath) + INI_PATH_LENGTH];
     strcpy(path, sModulePath);
     char * lastSlash = strrchr(path, '/');
     if (lastSlash == 0) { delete[] path; return 0; }
