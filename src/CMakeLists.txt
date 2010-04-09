@@ -23,7 +23,7 @@ option(MAXCALC_GTK_GUI "Build GTK GUI" OFF)
 # Build portable version.
 # Portable version stores .ini file with settings in the program directory.
 # Non-portable version stores settings in data directory in user's folder.
-option(MAXCALC_PORTABLE "Build portable version" ON)
+option(MAXCALC_PORTABLE "Build portable version" OFF)
 
 
 # To eliminate warning when linking to Qt4

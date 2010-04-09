@@ -3,11 +3,15 @@
   *                                                                     *
   *   MaxCalc - powerful yet simple to use scientific calculator        *
   *                                                                     *
-  *                                                     MaxCalc 2.0.1   *
+  *                                                     MaxCalc 2.0.2   *
   *                                     (c) Michael Maximov 2005-2010   *
   *                                 http://code.google.com/p/maxcalc/   *
   *                                                                     *
   ***********************************************************************
+
+v2.0.2 (IN PROGRESS).
+
+    - Added: Portable version which stores settings in program's directory.
 
 v2.0.1 (28-Mar-2010).
 

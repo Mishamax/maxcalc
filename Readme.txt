@@ -3,7 +3,7 @@
   *                                                                     *
   *   MaxCalc - powerful yet simple to use scientific calculator        *
   *                                                                     *
-  *                                                     MaxCalc 2.0.1   *
+  *                                                     MaxCalc 2.0.2   *
   *                                     (c) Michael Maximov 2005-2010   *
   *                                 http://code.google.com/p/maxcalc/   *
   *                                                                     *

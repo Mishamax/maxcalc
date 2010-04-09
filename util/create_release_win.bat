@@ -5,7 +5,7 @@ set VSCOMNTOOLS="%VS90COMNTOOLS%\vsvars32.bat"
 set QT_DIR=D:\Programming\qt-4.6.2-msvc2008-static\bin
 set SEVEN_ZIP_PATH=D:\Misc\7-Zip-x86
 set RELEASE=..\..\release
-set MAXCALC_VERSION=2.0.1
+set MAXCALC_VERSION=2.0.2
 
 rem Set up environment
 
@@ -18,13 +18,13 @@ call clean.bat
 
 pushd ..\src
 pushd engine
-call qmake -config release && nmake clean && nmake release
+call qmake -config release CONFIG+=maxcalc_portable && nmake clean && nmake release
 popd
 pushd cli
-call qmake -config release && nmake clean && nmake release
+call qmake -config release CONFIG+=maxcalc_portable && nmake clean && nmake release
 popd
 pushd gui
-call qmake -config release && nmake clean && nmake release
+call qmake -config release CONFIG+=maxcalc_portable && nmake clean && nmake release
 popd
 popd
 

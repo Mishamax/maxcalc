@@ -88,7 +88,7 @@ const char * Constants::MAX_IO_PRECISION_STRING = "1E-50";
 /*!
     Version number.
 */
-const tchar * Constants::VERSION = _T("2.0.1");
+const tchar * Constants::VERSION = _T("2.0.2");
 /*!
     Web site.
 */

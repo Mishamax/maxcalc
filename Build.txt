@@ -3,7 +3,7 @@
   *                                                                     *
   *   MaxCalc - powerful yet simple to use scientific calculator        *
   *                                                                     *
-  *                                                     MaxCalc 2.0.1   *
+  *                                                     MaxCalc 2.0.2   *
   *                                     (c) Michael Maximov 2005-2010   *
   *                                 http://code.google.com/p/maxcalc/   *
   *                                                                     *
@@ -63,7 +63,7 @@ Variant 1: Using QMake
 
   Change build options, if necessary, in "maxcalc_config.pri" file.
   You can choose Unicode / non-Unicode build and enable / disable gettext
-  support.
+  support or build portable version.
   Note, that without Unicode support only console version can be built.
 
   Execute in "src" directory:
@@ -81,7 +81,7 @@ Variant 2: Using CMake
 
   To change build options, run "cmake -i .." instead of plain cmake
   (or use "cmake-gui"). You can choose Unicode / non-Unicode build and
-  enable / disable gettext support.
+  enable / disable gettext support or build portable version.
   Note, that without Unicode support only console version can be built.
 
   Compilation has to be performed in a separate directory:
