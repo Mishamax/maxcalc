@@ -1,0 +1,17 @@
+syntax: glob
+
+Makefile*
+vc*.pdb
+maxcalc.pro.user
+debug
+release
+pch.h.cpp
+vc*.idb
+maxcalc.ncb
+maxcalc.sln
+maxcalc.suo
+*.vcproj*
+object_script.*.Debug
+object_script.*.Release
+doxygen
+src/gui/translations/*.qm

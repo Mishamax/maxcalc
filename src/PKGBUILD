@@ -1,0 +1,40 @@
+# This is Arch Linux PKGBUILD file
+
+pkgname=maxcalc
+pkgver=2.0.1
+pkgrel=1
+pkgdesc="Powerful yet simple to use scientific calculator"
+arch=('i686' 'x86_64')
+url="http://code.google.com/p/maxcalc/"
+license=('GPL2')
+depends=()
+makedepends=('mercurial' 'qt>=4.4.0')
+optdepends=('qt: graphical interface')
+provides=()
+conflicts=()
+replaces=()
+source=()
+md5sums=()
+
+build() {
+  cd $srcdir
+
+  if [ -d maxcalc/.hg ]; then
+    msg "MaxCalc repository found, update it"
+    cd maxcalc
+    hg pull -u
+  else
+    msg "Clone MaxCalc repository"
+    hg clone https://maxcalc.googlecode.com/hg/ maxcalc
+  fi
+
+  cd $srcdir/maxcalc/src
+  msg "qmake"
+  qmake CONFIG+="release" || return 1
+  msg "make"
+  make || return 1
+  msg "install"
+  install -sD $srcdir/maxcalc/src/release/maxcalc $pkgdir/usr/bin/maxcalc
+  install -sD $srcdir/maxcalc/src/release/maxcalcgui $pkgdir/usr/bin/maxcalcgui
+  install -D $srcdir/maxcalc/Readme.txt $pkgdir/usr/share/doc/maxcalc/README
+}
