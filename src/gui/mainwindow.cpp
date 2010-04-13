@@ -807,7 +807,12 @@ void MainWindow::activate(const QString & /*str*/)
     if (!isVisible()) {
         onTrayIconClicked(QSystemTrayIcon::Trigger);
     }
-    activateWindow();
+    // Hack to force window activation
+    bool tmp = mMinimizeToTray;
+    mMinimizeToTray = false;
+    if (!isMinimized()) showMinimized();
+    setWindowState(windowState() & ~Qt::WindowMinimized | Qt::WindowActive);
+    mMinimizeToTray = tmp;
 }
 
 /*!

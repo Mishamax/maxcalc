@@ -127,7 +127,7 @@ Functions
     cosh                                Hyperbolic cosine
     tanh / tgh                          Hyperbolic tangent
     coth / ctgh                         Hyperbolic cotangent
-
+    
     asinh / arcsinh                     Hyperbolic arc sine
     acosh / arccosh                     Hyperbolic arc cosine
     atanh / arctanh / atgh / arctgh     Hyperbolic arc tangent
