@@ -39,3 +39,8 @@ maxcalc_gettext:DEFINES += MAXCALC_GETTEXT
 maxcalc_portable:DEFINES += MAXCALC_PORTABLE
 win32:DEFINES += _CRT_SECURE_NO_WARNINGS
 win32:RC_FILE = resources.rc
+
+unix {
+    target.path = /usr/local/bin
+    INSTALLS += target
+}

@@ -811,7 +811,7 @@ void MainWindow::activate(const QString & /*str*/)
     bool tmp = mMinimizeToTray;
     mMinimizeToTray = false;
     if (!isMinimized()) showMinimized();
-    setWindowState(windowState() & ~Qt::WindowMinimized | Qt::WindowActive);
+    setWindowState((windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
     mMinimizeToTray = tmp;
 }
 

@@ -58,3 +58,8 @@ maxcalc_unicode:DEFINES += MAXCALC_UNICODE
 maxcalc_gettext:DEFINES += MAXCALC_GETTEXT
 maxcalc_portable:DEFINES += MAXCALC_PORTABLE
 win32:RC_FILE = resources.rc
+
+unix {
+    target.path = /usr/local/bin
+    INSTALLS += target
+}
