@@ -17,9 +17,6 @@ option(MAXCALC_UNICODE "Enable Unicode support (note that without unicode only c
 # This enables localization.
 option(MAXCALC_GETTEXT "Enable GetText localization support" OFF)
 
-# Build GTKmm GUI.
-option(MAXCALC_GTK_GUI "Build GTK GUI" OFF)
-
 # Build portable version.
 # Portable version stores .ini file with settings in the program directory.
 # Non-portable version stores settings in data directory in user's folder.
@@ -49,9 +46,6 @@ add_subdirectory(engine)
 add_subdirectory(cli)
 if (MAXCALC_UNICODE)
 	add_subdirectory(gui)
-	if (MAXCALC_GTK_GUI)
-        add_subdirectory(gui_gtk)
-    endif (MAXCALC_GTK_GUI)
 	add_subdirectory(test)
 endif (MAXCALC_UNICODE)
 
