@@ -14,7 +14,8 @@ v2.0.2 (IN PROGRESS).
     - Added: Portable version which stores settings in program's directory.
     - Added: More unit conversions (angles, week to time conversions).
     - Improved: #help and other commands.
-    - Fixed: Correctly activate window in single instance mode.
+    - Fixed bug #3: log2(0) and log10(0) print "error in function 'ln'".
+    - Fixed bug #8: Window is not focused after starting second instance in single instance mode.
 
 v2.0.1 (28-Mar-2010).
 

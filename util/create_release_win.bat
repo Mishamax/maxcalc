@@ -2,7 +2,7 @@
 
 rem Variables - adjust them to environment
 set VSCOMNTOOLS="%VS90COMNTOOLS%\vsvars32.bat"
-set QT_DIR=D:\Programming\qt-4.6.2-msvc2008-static\bin
+set QT_DIR=D:\Programming\qt-4.6.3-msvc2008-static\bin
 set SEVEN_ZIP_PATH=D:\Misc\7-Zip-x86
 set RELEASE=..\..\release
 set MAXCALC_VERSION=2.0.2
