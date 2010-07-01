@@ -416,7 +416,11 @@ Complex Complex::ln(const Complex & num)
 */
 Complex Complex::log2(const Complex & num)
 {
-    return ln(num) / ln(2);
+    try {
+        return ln(num) / BigDecimal::ln(2);
+    } catch (InvalidArgumentException & ex) {
+        throw InvalidArgumentException(_T("log2"), ex.reason());
+    }
 }
 
 /*!
@@ -426,7 +430,11 @@ Complex Complex::log2(const Complex & num)
 */
 Complex Complex::log10(const Complex & num)
 {
-    return ln(num) / ln(10);
+    try {
+        return ln(num) / BigDecimal::ln(10);
+    } catch (InvalidArgumentException & ex) {
+        throw InvalidArgumentException(_T("log10"), ex.reason());
+    }
 }
 
 /*!
