@@ -170,7 +170,9 @@ public:
         ARITHMETIC_OVERFLOW,                ///< Arithmetic overflow (DEC_Overflow).
         ARITHMETIC_UNDERFLOW,               ///< Arithmetic underflow (DEC_Overflow).
         CONVERSION_IMPOSSIBLE,              ///< Conversion to different type is impossible (DEC_Conversion_syntax).
-        INVALID_OPERATION_ON_FRACTIONAL_NUMBER  ///< Invalid operation on fractional number (like logical operation).
+        INVALID_OPERATION_ON_FRACTIONAL_NUMBER,  ///< Invalid operation on fractional number (like logical operation).
+        INVALID_BASE,                       ///< Invalid number base (valid are 2..36)
+        INVALID_BASE_CONVERSION             ///< Cannot convert number to specified base
     };
 
 protected:
@@ -213,6 +215,12 @@ public:
             break;
         case ArithmeticException::INVALID_OPERATION_ON_FRACTIONAL_NUMBER:
             str = _("Invalid operation on fractional number");
+            break;
+        case ArithmeticException::INVALID_BASE:
+            str = _("Invalid number base (valid bases are 2..36)");
+            break;
+        case ArithmeticException::INVALID_BASE_CONVERSION:
+            str = _("Cannot convert number to specified base");
             break;
         case ArithmeticException::GENERIC_REASON:
         default:

@@ -71,7 +71,7 @@ void runParser(Parser & parser)
         ParserContext & context = parser.parse();
         tcout << context.result().toTString(context.numberFormat()).c_str();
     } catch (MaxCalcException & ex) {
-        tcout << ex.toString().c_str();
+        tcout << ex.toString().c_str() << _T('.');
     }
 }
 

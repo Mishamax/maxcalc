@@ -33,6 +33,7 @@ void ComplexTest::complexFormatDefault()
     ComplexFormat actual;
 
     COMPARE(actual.precision, Constants::DEFAULT_IO_PRECISION);
+    COMPARE(actual.base, 10);
     COMPARE(actual.numberFormat, ComplexFormat::GENERAL_FORMAT);
     COMPARE(actual.exponentCase, ComplexFormat::UPPER_CASE_EXPONENT);
     COMPARE(actual.decimalSeparator, ComplexFormat::DOT_SEPARATOR);

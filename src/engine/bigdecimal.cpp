@@ -96,6 +96,7 @@ const BigDecimal BigDecimal::PI = BigDecimal::pi();
 BigDecimal::BigDecimal()
 {
     decNumberFromInt32(&mNumber, 0);
+    mBase = 0;
 }
 
 /*!
@@ -150,6 +151,7 @@ BigDecimal::BigDecimal(const wchar_t * str)
 BigDecimal::BigDecimal(const BigDecimal & num)
 {
     decNumberCopy(&mNumber, &num.mNumber);
+    mBase = num.mBase;
 }
 
 /*!
@@ -158,6 +160,7 @@ BigDecimal::BigDecimal(const BigDecimal & num)
 BigDecimal::BigDecimal(const int num)
 {
     decNumberFromInt32(&mNumber, num);
+    mBase = 0;
 }
 
 /*!
@@ -166,6 +169,7 @@ BigDecimal::BigDecimal(const int num)
 BigDecimal::BigDecimal(const unsigned num)
 {
     decNumberFromUInt32(&mNumber, num);
+    mBase = 0;
 }
 
 /*!
@@ -207,26 +211,48 @@ string BigDecimal::toString(const BigDecimalFormat & format) const
         checkContextStatus(context);
     }
 
-
     // Make conversion
-    char * str = new char[format.precision + 14];
-    decNumberToString(&num, str, (uint8_t)format.numberFormat);
-    string s(str);
-    delete[] str;
+    string result;
+    int base = (mBase == 0) ? format.base : mBase;
+    if (base == 10) {
+        char * str = new char[format.precision + 14];
+        decNumberToString(&num, str, (uint8_t)format.numberFormat);
+        result = str;
+        delete[] str;
+    } else {
+        if (isNegative() || !fractional().isZero()) {
+            throw ArithmeticException(
+                    ArithmeticException::INVALID_BASE_CONVERSION);
+        }
+        if (base < 2 || base > 36) {
+            throw ArithmeticException(ArithmeticException::INVALID_BASE);
+        }
+        BigDecimal n = *this;
+        BigDecimal b = base;
+        BigDecimal rem;
+        char digit;
+        while (!n.isZero()) {
+            rem = n % b;
+            n = div(n, b);
+            digit = rem.toInt() + (rem < 10 ? '0' : 'A' - 10);
+            result = digit + result;
+        }
+        result = b.toString() + '#' + result;
+    }
 
     // Replace 'E' with 'e' if needed
     if (format.exponentCase == BigDecimalFormat::LOWER_CASE_EXPONENT) {
-        size_t expPos = s.find('E');
-        if (expPos != string::npos) s.replace(expPos, 1, "e");
+        size_t expPos = result.find('E');
+        if (expPos != string::npos) result.replace(expPos, 1, "e");
     }
 
     // Replace '.' with ',' if needed
     if (format.decimalSeparator == BigDecimalFormat::COMMA_SEPARATOR) {
-        size_t expPos = s.find('.');
-        if (expPos != string::npos) s.replace(expPos, 1, ",");
+        size_t expPos = result.find('.');
+        if (expPos != string::npos) result.replace(expPos, 1, ",");
     }
 
-    return s;
+    return result;
 }
 
 #if defined(MAXCALC_UNICODE)
@@ -406,6 +432,28 @@ BigDecimal BigDecimal::ceil() const
     return ((*this - integral).isZero() || isNegative()) ? integral : integral + 1;
 }
 
+/*!
+    Sets number base.
+    This setting overrides base set in BigDecimalFormat during conversion to string.
+    Set base = 0 to disable override.
+
+    \throws ArithmeticException Invalid base is specified.
+    \returns this number.
+*/
+BigDecimal & BigDecimal::setBase(int base)
+{
+    if (base == 0 || (base >= 2 && base <= 36)) mBase = base;
+    else throw ArithmeticException(ArithmeticException::INVALID_BASE);
+    return *this;
+}
+
+/*!
+    Returns number base.
+*/
+int BigDecimal::base() const
+{
+    return mBase;
+}
 
 //****************************************************************************
 // Operators
@@ -1273,6 +1321,7 @@ BigDecimal BigDecimal::arccot(const BigDecimal & num)
 BigDecimal::BigDecimal(const decNumber & num)
 {
     decNumberCopy(&mNumber, &num);
+    mBase = 0;
 }
 
 /*!
@@ -1299,6 +1348,8 @@ void BigDecimal::construct(const string & str)
     // Remove trailing zeros
     decNumberReduce(&mNumber, &mNumber, &context);
     checkContextStatus(context);
+
+    mBase = 0;
 }
 
 /*!
