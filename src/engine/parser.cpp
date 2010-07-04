@@ -639,6 +639,10 @@ Complex Parser::parseFunctions()
             else if (name == _T("log2") && args.size() == 1) return Complex::log2(args[0]);
             else if (name == _T("log10") && args.size() == 1) return Complex::log10(args[0]);
             else if (name == _T("exp") && args.size() == 1) return Complex::exp(args[0]);
+            else if (name == _T("bin") && args.size() == 1) { return args[0].setBase(2); }
+            else if (name == _T("oct") && args.size() == 1) { return args[0].setBase(8); }
+            else if (name == _T("dec") && args.size() == 1) { return args[0].setBase(10); }
+            else if (name == _T("hex") && args.size() == 1) { return args[0].setBase(16); }
             else throw ParserException(ParserException::UNKNOWN_FUNCTION, name);
 
             // TODO: correctly report known function with incorrect number

@@ -149,7 +149,7 @@ Complex::Complex(const Complex & num)
 string Complex::toString(const ComplexFormat & format) const
 {
     string rePart = re.toString(format);
-    string imPart = BigDecimal::abs(im).toString(format);
+    string imPart = BigDecimal::abs(im).setBase(im.base()).toString(format);
     bool isReZero = re.isZero();
     bool isImZero = im.isZero();
     bool isImNegative = im.isNegative();
@@ -160,13 +160,13 @@ string Complex::toString(const ComplexFormat & format) const
         return "0";
     }
 
-    result = rePart;
+    result = isReZero ? "0" : rePart;
 
     if (!isImZero) {
         if (isImNegative) result += " - ";
         else result += " + ";
 
-        result += imPart + format.imaginaryOneChar();
+        result += (isImZero ? "0" : imPart) + format.imaginaryOneChar();
     }
 
     return result;
@@ -202,6 +202,36 @@ tstring Complex::toTString(const ComplexFormat & format) const
 #else
         return toString(format);
 #endif
+}
+
+//****************************************************************************
+// Misc functions
+//****************************************************************************
+
+/*!
+    Sets number base.
+    This setting overrides base set in BigDecimalFormat during conversion to string.
+    Set base = 0 to disable override.
+
+    \throws ArithmeticException Invalid base is specified.
+    \returns this number.
+    \see BigDecimal.setBase
+*/
+Complex & Complex::setBase(int base)
+{
+    re.setBase(base);
+    im.setBase(base);
+    return *this;
+}
+
+/*!
+    Returns number base.
+
+    \see BigDecimal.base
+*/
+int Complex::base() const
+{
+    return re.base();
 }
 
 //****************************************************************************

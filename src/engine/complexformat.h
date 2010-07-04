@@ -49,11 +49,12 @@ struct ComplexFormat : public BigDecimalFormat
     /// Constructs a new instance of ComplexFormat.
     explicit ComplexFormat(
         const int precision_ = Constants::DEFAULT_IO_PRECISION,
+        const int base_ = 10,
         const NumberFormat numberFormat_ = GENERAL_FORMAT,
         const ExponentCase exponentCase_ = UPPER_CASE_EXPONENT,
         const DecimalSeparator decimalSeparator_ = DOT_SEPARATOR,
         const ImaginaryOne imaginaryOne_ = IMAGINARY_ONE_I)
-            : BigDecimalFormat(precision_, numberFormat_, exponentCase_,
+            : BigDecimalFormat(precision_, base_, numberFormat_, exponentCase_,
                                decimalSeparator_), imaginaryOne(imaginaryOne_)
     {
     }

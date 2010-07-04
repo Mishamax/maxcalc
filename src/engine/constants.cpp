@@ -34,7 +34,6 @@
     precision of decNumber.
     
     \sa BigDecimal, DECNUMDIGITS
-    \ingroup MaxCalcEngine
 */
 const int Constants::WORKING_PRECISION = DECNUMDIGITS;
 
@@ -47,7 +46,6 @@ const int Constants::WORKING_PRECISION = DECNUMDIGITS;
     errors. The default value is 50.
 
     \sa BigDecimal::toString(), WORKING_PRECISION
-    \ingroup MaxCalcEngine
 */
 const int Constants::MAX_IO_PRECISION = 50;
 
@@ -58,7 +56,6 @@ const int Constants::MAX_IO_PRECISION = 50;
     This constant must be less than \a MAX_IO_PRECISION. The default value is 25.
 
     \sa BigDecimal::toString(), WORKING_PRECISION
-    \ingroup MaxCalcEngine
 */
 const int Constants::DEFAULT_IO_PRECISION = 25;
 
@@ -69,7 +66,6 @@ const int Constants::DEFAULT_IO_PRECISION = 25;
     This is used internally in BigDecimal.
 
     \sa BigDecimal, WORKING_PRECISION
-    \ingroup MaxCalcEngine
 */
 const char * Constants::WORKING_PRECISION_STRING = "1E-136";
 
@@ -81,7 +77,6 @@ const char * Constants::WORKING_PRECISION_STRING = "1E-136";
     This is used internally in BigDecimal.
 
     \sa BigDecimal, WORKING_PRECISION
-    \ingroup MaxCalcEngine
 */
 const char * Constants::MAX_IO_PRECISION_STRING = "1E-50";
 

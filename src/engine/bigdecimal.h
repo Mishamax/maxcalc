@@ -80,6 +80,9 @@ public:
     BigDecimal floor() const;
     BigDecimal ceil() const;
 
+    BigDecimal & setBase(int base);
+    int base() const;
+
 
     ///////////////////////////////////////////////////////////////////////////
     // Operators
@@ -152,8 +155,12 @@ public:
 
 private:
 
-    // Decimal number
+    // Decimal number.
     decNumber mNumber;
+
+    // Number base; overrides the base specified in BigDecimalFormat.
+    // Default value is 0, which means do not override BigDecimalFormat.
+    int mBase;
 
     ///////////////////////////////////////////////////////////////////////////
     // Internal functions

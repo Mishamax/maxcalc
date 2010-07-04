@@ -30,12 +30,15 @@
     \brief Represents format settings used for convertion from BigDecimal
     to string.
 
-    Format of BigDecimal number includes precision used for rounding, format
-    (general, scientific or engineering), case of 'E' letter when exponent
-    is needed and decimal separator (dot or comma).
+    Format of BigDecimal number includes precision used for rounding, number
+    base, format (general, scientific or engineering), case of 'E' letter
+    when exponent is needed and decimal separator (dot or comma).
 
     Precision may not be less than 1 and more than MAX_IO_PRECISION.
     Default value is MAX_IO_PRECISION.
+
+    Number base has range 2..36.
+    Default value is 10.
 
     In general format exponential form is used when exponent is more than 5
     by absolute    value, otherwise it is not used.
@@ -69,6 +72,7 @@ public:
 
 
     int precision;                          ///< Output precision of number.
+    int base;                               ///< Output base of number (2..36)
     NumberFormat numberFormat;              ///< Format of number.
     ExponentCase exponentCase;              ///< Case of 'E' letter.
     DecimalSeparator decimalSeparator;      ///< Decimal separator.
@@ -77,10 +81,11 @@ public:
     /// Contructs a new instance of BigDecimalFormat with given settings.
     explicit BigDecimalFormat(
         const int precision_ = Constants::DEFAULT_IO_PRECISION,
+        const int base_ = 10,
         const NumberFormat numberFormat_ = GENERAL_FORMAT,
         const ExponentCase exponentCase_ = UPPER_CASE_EXPONENT,
         const DecimalSeparator decimalSeparator_ = DOT_SEPARATOR)
-            : precision(precision_), numberFormat(numberFormat_),
+            : precision(precision_), base(base_), numberFormat(numberFormat_),
               exponentCase(exponentCase_), decimalSeparator(decimalSeparator_)
     {
     }
