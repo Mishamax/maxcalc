@@ -1,0 +1,75 @@
+MaxCalc can be built on Windows, Linux and other UNIX systems (Mac OS X, FreeBSD and OpenSolaris are known to work).
+
+### Getting sources ###
+
+The latest stable version of MaxCalc, including sources, can be downloaded from http://code.google.com/p/maxcalc/.
+
+To get the latest development version, use Mercurial:
+
+```
+hg clone https://maxcalc.googlecode.com/hg/ maxcalc
+```
+
+
+### Project Layout ###
+
+There are four subprojects (in "src" folder):
+
+  * engine - calculation engine (back-end); it is used by other three projects.
+  * cli - console front-end.
+  * gui - graphical (Qt4) front-end.
+  * test - tests for engine (based on QtTest library).
+
+
+### Prerequisites ###
+
+  * Console version depends only on STL and can be built on any system with a decent C++ compiler. To do so, use CMake build system and remove "gui" and "test" subprojects from CMakeLists.txt file.
+
+  * Graphical interface and test project require Qt v4.2 or higher. Qt v4.4 or higher is recommended to enable all features.
+
+  * Build system: you can use QMake (Qt v4.2 or higher is required) or CMake (v2.4.4 or higher; v2.6 / 2.8 recommended).
+
+  * Supported compilers: GCC 4, Microsoft Visual Studio 2005 / 2008 / 2010.
+
+  * To enable localization support (disabled by default as it is currently broken) you need gettext. On Linux and Windows x86 you can just enable it in build options (see below) since on Linux gettext is built in the system libc and on Windows all necessary files are provided in "src/intl\_win" folder and will be picked up automatically. On other systems gettext support is not tested.
+
+
+### Variant 1: Using QMake ###
+
+Change build options, if necessary, in "maxcalc\_config.pri" file.
+You can choose Unicode / non-Unicode build and enable / disable gettext
+support.<br>
+Note, that without Unicode support only console version can be built.<br>
+<br>
+Execute in "src" directory:<br>
+<br>
+<pre><code>qmake<br>
+make<br>
+</code></pre>
+
+If you're using Visual Studio, replace "make" with "nmake".<br>
+If you're using MinGW, replace "make" with "mingw32-make".<br>
+Compiled binaries will be put in "src\debug" and "src\release" directories.<br>
+<br>
+<br>
+<h3>Variant 2: Using CMake</h3>
+
+To change build options, run "cmake -i .." instead of plain cmake<br>
+(or use "cmake-gui"). You can choose Unicode / non-Unicode build and<br>
+enable / disable gettext support.<br>
+Note, that without Unicode support only console version can be built.<br>
+<br>
+Compilation has to be performed in a separate directory:<br>
+<br>
+<pre><code>cd src<br>
+mkdir build<br>
+cd build<br>
+cmake ..<br>
+make<br>
+</code></pre>
+
+If you're using Visual Studio, replace "make" with "nmake".<br>
+If you're using MinGW, replace "make" with "mingw32-make".<br>
+You may have to specify generator by adding "-G <code>&lt;</code>generator<code>&gt;</code>"<br>
+(see "cmake -h" for help).<br>
+Compiled binaries will be put in "build\bin" directory.
